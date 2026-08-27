@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_demo_run_viewer,clinic.demo.run viewer,model_clinic_demo_run,clinic_demo.group_demo_viewer,1,0,0,0
+access_demo_run_operator,clinic.demo.run operator,model_clinic_demo_run,clinic_demo.group_demo_operator,1,1,1,0
+access_demo_run_manager,clinic.demo.run manager,model_clinic_demo_run,clinic_demo.group_demo_manager,1,1,1,1
+access_demo_reference_viewer,clinic.demo.reference viewer,model_clinic_demo_reference,clinic_demo.group_demo_viewer,1,0,0,0
+access_demo_reference_operator,clinic.demo.reference operator,model_clinic_demo_reference,clinic_demo.group_demo_operator,1,1,1,0
+access_demo_reference_manager,clinic.demo.reference manager,model_clinic_demo_reference,clinic_demo.group_demo_manager,1,1,1,1
+access_demo_checkpoint_viewer,clinic.demo.checkpoint viewer,model_clinic_demo_checkpoint,clinic_demo.group_demo_viewer,1,0,0,0
+access_demo_checkpoint_operator,clinic.demo.checkpoint operator,model_clinic_demo_checkpoint,clinic_demo.group_demo_operator,1,1,1,0
+access_demo_checkpoint_manager,clinic.demo.checkpoint manager,model_clinic_demo_checkpoint,clinic_demo.group_demo_manager,1,1,1,1
+access_demo_log_viewer,clinic.demo.log viewer,model_clinic_demo_log,clinic_demo.group_demo_viewer,1,0,0,0
+access_demo_log_operator,clinic.demo.log operator,model_clinic_demo_log,clinic_demo.group_demo_operator,1,1,1,0
+access_demo_log_manager,clinic.demo.log manager,model_clinic_demo_log,clinic_demo.group_demo_manager,1,1,1,1
+access_demo_validation_viewer,clinic.demo.validation.result viewer,model_clinic_demo_validation_result,clinic_demo.group_demo_viewer,1,0,0,0
+access_demo_validation_operator,clinic.demo.validation.result operator,model_clinic_demo_validation_result,clinic_demo.group_demo_operator,1,1,1,0
+access_demo_validation_manager,clinic.demo.validation.result manager,model_clinic_demo_validation_result,clinic_demo.group_demo_manager,1,1,1,1

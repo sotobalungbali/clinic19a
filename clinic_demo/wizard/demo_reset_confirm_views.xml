@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_demo_reset_confirm_form" model="ir.ui.view">
+        <field name="name">clinic.demo.reset.confirm.wizard.form</field>
+        <field name="model">clinic.demo.reset.confirm.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reset Demo Dataset">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Source-driven reset only.</strong>
+                        Demo-owned deletable records may be removed, while reused,
+                        immutable, signed, posted, or Fresh-DB-only evidence can be retained.
+                    </div>
+                    <group>
+                        <field name="run_id" readonly="1"/>
+                        <field name="dry_run_summary" readonly="1" nolabel="1"/>
+                    </group>
+                    <group string="Explicit Confirmation">
+                        <field name="expected_confirmation" readonly="1"/>
+                        <field name="confirmation_text"
+                               placeholder="Type the exact confirmation phrase"/>
+                        <field name="acknowledge_retained_evidence"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_reset"
+                            string="Reset Demo Dataset"
+                            type="object"
+                            class="btn-danger"
+                            groups="base.group_system,clinic_demo.group_demo_manager"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

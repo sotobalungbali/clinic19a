@@ -11,6 +11,7 @@ from odoo.exceptions import ValidationError
 from .constants import (
     RESET_CANCEL_THEN_DELETE,
     RESET_DELETE_SAFE,
+    RESET_DEACTIVATE,
     RESET_FRESH_DB_ONLY,
     RESET_RETAIN_IMMUTABLE,
     RESET_REVERSE_THEN_RETAIN,
@@ -29,6 +30,30 @@ class ResetPolicyRegistry:
 
     def decision_for_values(self, model_name, values):
         state = (values or {}).get("state")
+
+        if model_name == "resource.resource":
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason="Resources auto-created for demo branch locations are archived on reset.",
+            )
+
+        if model_name == "ir.sequence":
+            return ResetPolicyDecision(
+                RESET_FRESH_DB_ONLY,
+                reason=(
+                    "Branch-owned sequences are retained as technical numbering evidence; "
+                    "fresh-database reset removes them with the database."
+                ),
+            )
+
+        if model_name in {"clinic.branch", "clinic.branch.location"}:
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason=(
+                    "Demo organization masters are archived/deactivated so related "
+                    "historical references are never destroyed by generic reset."
+                ),
+            )
 
         if model_name == "clinic.audit.event":
             return ResetPolicyDecision(

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Runtime compatibility bridge:
+        the local Demo Dataset menu is deliberately created without a hard
+        clinic_patient parent XML-ID, then reparented after all clinic_demo
+        menus are safely loaded.
+    -->
+    <function model="clinic.demo.run" name="_ensure_demo_dataset_menu_parent"/>
+</odoo>

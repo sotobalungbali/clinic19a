@@ -34,3 +34,22 @@ transactions yet.
 - executive demo script/release hardening (Prompt 24)
 
 No existing ClinicOne addon is patched or replaced by this package.
+
+
+## MASTER PROMPT 07 status
+
+Version `19.0.1.0.2` adds the Enterprise Demo Control Center UI and reset
+confirmation flow. Full business-data generation remains intentionally gated until
+the bounded domain generators are implemented beginning with MASTER PROMPT 08.
+
+
+## MASTER PROMPT 08 status
+
+Version `19.0.1.0.3` registers the first two real domain generators:
+
+- `foundation.native`
+- `foundation.organization`
+
+Generate Full now creates/reuses real source-valid company/branch/location foundation
+records for the selected profile. The full enterprise generator registry remains
+progressive and is not claimed complete until later prompts.

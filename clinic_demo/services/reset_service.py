@@ -115,6 +115,15 @@ class DemoResetService:
                 raise ValidationError(
                     f"Model {record._name} has no active field; deactivation is not possible."
                 )
+
+            if record._name == "clinic.branch":
+                company = record.company_id
+                if (
+                    "default_branch_id" in company._fields
+                    and company.default_branch_id == record
+                ):
+                    company.write({"default_branch_id": False})
+
             record.write({"active": False})
             reference.write({
                 "record_status": "reset_retained",
@@ -133,3 +142,104 @@ class DemoResetService:
         raise ValidationError(
             f"Unsupported reset policy {decision.policy!r} for {reference.demo_key}."
         )
+
+
+    def preview_run(self, run):
+        """Return a policy-aware reset preview without modifying business records."""
+        run.ensure_one()
+        references = self.env["clinic.demo.reference"].search(
+            [("run_id", "=", run.id)],
+            order="reset_sequence desc, id desc",
+        )
+        summary = {
+            "total": len(references),
+            "delete_or_cancel": 0,
+            "deactivate": 0,
+            "retain": 0,
+            "missing": 0,
+            "blocked": 0,
+        }
+        for reference in references:
+            try:
+                inspection = self.inspect(reference)
+            except Exception:
+                summary["blocked"] += 1
+                continue
+            action = inspection.get("action")
+            if action == "missing":
+                summary["missing"] += 1
+            elif action in {"delete_safe", "cancel_then_delete"}:
+                summary["delete_or_cancel"] += 1
+            elif action == "deactivate":
+                summary["deactivate"] += 1
+            elif action in {
+                "retain",
+                "retain_immutable",
+                "fresh_db_reset_only",
+                "reverse_then_retain",
+            }:
+                summary["retain"] += 1
+            else:
+                summary["blocked"] += 1
+        return summary
+
+    def reset_run(self, run):
+        """Reset demo-owned references in explicit child-first sequence.
+
+        This Prompt-07 foundation keeps immutable/reused/financial evidence and
+        blocks unknown policies. Prompt 23 performs the final cross-domain reset
+        acceptance audit once all domain generators exist.
+        """
+        run.ensure_one()
+        references = self.env["clinic.demo.reference"].search(
+            [("run_id", "=", run.id)],
+            order="reset_sequence desc, id desc",
+        )
+        summary = {
+            "removed": 0,
+            "deactivated": 0,
+            "retained": 0,
+            "missing": 0,
+            "errors": 0,
+        }
+
+        for reference in references:
+            try:
+                with self.env.cr.savepoint():
+                    result = self.reset_reference(reference)
+            except Exception:
+                summary["errors"] += 1
+                continue
+
+            status = result.get("status")
+            if status in {"removed"}:
+                summary["removed"] += 1
+            elif status in {"deactivated"}:
+                summary["deactivated"] += 1
+            elif status in {"retained", "retained_reused"}:
+                summary["retained"] += 1
+            elif status == "already_missing":
+                summary["missing"] += 1
+
+        if run.checkpoint_ids:
+            run.checkpoint_ids.write({
+                "state": "pending",
+                "completed_at": False,
+                "error_summary": False,
+            })
+
+        run.write({
+            "state": "failed" if summary["errors"] else "draft",
+            "validation_status": "not_run",
+            "current_phase": False,
+            "current_scenario": False,
+            "last_successful_checkpoint_key": False,
+            "completed_at": False,
+            "created_count": 0,
+            "reused_count": 0,
+            "updated_count": 0,
+            "skipped_count": 0,
+            "warning_count": 0,
+            "error_count": summary["errors"],
+        })
+        return summary

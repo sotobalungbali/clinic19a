@@ -9,8 +9,15 @@ access_demo_checkpoint_viewer,clinic.demo.checkpoint viewer,model_clinic_demo_ch
 access_demo_checkpoint_operator,clinic.demo.checkpoint operator,model_clinic_demo_checkpoint,clinic_demo.group_demo_operator,1,1,1,0
 access_demo_checkpoint_manager,clinic.demo.checkpoint manager,model_clinic_demo_checkpoint,clinic_demo.group_demo_manager,1,1,1,1
 access_demo_log_viewer,clinic.demo.log viewer,model_clinic_demo_log,clinic_demo.group_demo_viewer,1,0,0,0
-access_demo_log_operator,clinic.demo.log operator,model_clinic_demo_log,clinic_demo.group_demo_operator,1,1,1,0
+access_demo_log_operator,clinic.demo.log operator,model_clinic_demo_log,clinic_demo.group_demo_operator,1,0,1,0
 access_demo_log_manager,clinic.demo.log manager,model_clinic_demo_log,clinic_demo.group_demo_manager,1,1,1,1
 access_demo_validation_viewer,clinic.demo.validation.result viewer,model_clinic_demo_validation_result,clinic_demo.group_demo_viewer,1,0,0,0
 access_demo_validation_operator,clinic.demo.validation.result operator,model_clinic_demo_validation_result,clinic_demo.group_demo_operator,1,1,1,0
 access_demo_validation_manager,clinic.demo.validation.result manager,model_clinic_demo_validation_result,clinic_demo.group_demo_manager,1,1,1,1
+access_demo_reset_wizard_manager,clinic.demo.reset.confirm.wizard manager,model_clinic_demo_reset_confirm_wizard,clinic_demo.group_demo_manager,1,1,1,1
+access_demo_run_system_admin,clinic.demo.run system administrator,model_clinic_demo_run,base.group_system,1,1,1,1
+access_demo_reference_system_admin,clinic.demo.reference system administrator,model_clinic_demo_reference,base.group_system,1,1,1,1
+access_demo_checkpoint_system_admin,clinic.demo.checkpoint system administrator,model_clinic_demo_checkpoint,base.group_system,1,1,1,1
+access_demo_log_system_admin,clinic.demo.log system administrator,model_clinic_demo_log,base.group_system,1,1,1,1
+access_demo_validation_system_admin,clinic.demo.validation.result system administrator,model_clinic_demo_validation_result,base.group_system,1,1,1,1
+access_demo_reset_wizard_system_admin,clinic.demo.reset.confirm.wizard system administrator,model_clinic_demo_reset_confirm_wizard,base.group_system,1,1,1,1

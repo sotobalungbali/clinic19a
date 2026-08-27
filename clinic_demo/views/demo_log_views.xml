@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_demo_log_search" model="ir.ui.view">
+        <field name="name">clinic.demo.log.search</field>
+        <field name="model">clinic.demo.log</field>
+        <field name="arch" type="xml">
+            <search string="Demo Logs">
+                <field name="run_id"/>
+                <field name="phase_key"/>
+                <field name="generator_key"/>
+                <field name="scenario_key"/>
+                <field name="operation"/>
+                <field name="model_name"/>
+                <field name="demo_key"/>
+                <field name="message"/>
+                <filter name="warning" string="Warnings" domain="[('level','=','warning')]"/>
+                <filter name="error" string="Errors" domain="[('level','=','error')]"/>
+                <group>
+                    <filter name="group_run" string="Demo Run" context="{'group_by':'run_id'}"/>
+                    <filter name="group_level" string="Level" context="{'group_by':'level'}"/>
+                    <filter name="group_phase" string="Phase" context="{'group_by':'phase_key'}"/>
+                    <filter name="group_generator" string="Generator" context="{'group_by':'generator_key'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_demo_log_list" model="ir.ui.view">
+        <field name="name">clinic.demo.log.list</field>
+        <field name="model">clinic.demo.log</field>
+        <field name="arch" type="xml">
+            <list string="Demo Logs" create="false" delete="false"
+                  decoration-warning="level == 'warning'"
+                  decoration-danger="level == 'error'">
+                <field name="logged_at"/>
+                <field name="level"/>
+                <field name="run_id"/>
+                <field name="phase_key"/>
+                <field name="generator_key"/>
+                <field name="scenario_key"/>
+                <field name="operation"/>
+                <field name="model_name" optional="show"/>
+                <field name="demo_key" optional="show"/>
+                <field name="message"/>
+                <button name="action_open_run" string="Run" type="object" icon="fa-arrow-up"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_demo_log_form" model="ir.ui.view">
+        <field name="name">clinic.demo.log.form</field>
+        <field name="model">clinic.demo.log</field>
+        <field name="arch" type="xml">
+            <form string="Demo Log" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_open_run" string="Open Demo Run" type="object" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Context">
+                            <field name="logged_at"/>
+                            <field name="level"/>
+                            <field name="run_id"/>
+                            <field name="checkpoint_id"/>
+                            <field name="phase_key"/>
+                            <field name="generator_key"/>
+                            <field name="scenario_key"/>
+                        </group>
+                        <group string="Target">
+                            <field name="operation"/>
+                            <field name="model_name"/>
+                            <field name="demo_key"/>
+                            <field name="exception_class"/>
+                        </group>
+                    </group>
+                    <group string="Message">
+                        <field name="message" nolabel="1"/>
+                    </group>
+                    <group string="Sanitized Traceback" invisible="not traceback_excerpt">
+                        <field name="traceback_excerpt" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_demo_log" model="ir.actions.act_window">
+        <field name="name">Demo Logs</field>
+        <field name="res_model">clinic.demo.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_demo_log_search"/>
+    </record>
+</odoo>

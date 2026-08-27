@@ -60,3 +60,29 @@ class ClinicDemoCheckpoint(models.Model):
         "CHECK(attempt_count >= 0)",
         "Checkpoint attempt count cannot be negative.",
     )
+
+
+    def action_open_run(self):
+        """Navigate back to the owning Demo Control Center run."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.run_id.display_name,
+            "res_model": "clinic.demo.run",
+            "view_mode": "form",
+            "res_id": self.run_id.id,
+            "target": "current",
+        }
+
+
+    def action_open_checkpoint(self):
+        """Open this exact service-managed record from an embedded One2many row."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Generation Checkpoint",
+            "res_model": "clinic.demo.checkpoint",
+            "view_mode": "form",
+            "res_id": self.id,
+            "target": "current",
+        }

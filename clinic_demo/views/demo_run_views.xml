@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_demo_run_search" model="ir.ui.view">
+        <field name="name">clinic.demo.run.search</field>
+        <field name="model">clinic.demo.run</field>
+        <field name="arch" type="xml">
+            <search string="Demo Dataset Runs">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="profile"/>
+                <field name="anchor_date"/>
+                <field name="state"/>
+                <field name="compatibility_state"/>
+                <field name="validation_status"/>
+                <filter name="ready" string="Ready" domain="[('state','=','ready')]"/>
+                <filter name="active_generation" string="Generating / Validating"
+                        domain="[('state','in',['generating','validating'])]"/>
+                <filter name="failed" string="Failed" domain="[('state','=','failed')]"/>
+                <filter name="compatibility_blocked" string="Compatibility Blocked"
+                        domain="[('compatibility_state','=','blocked')]"/>
+                <filter name="safe_mode" string="Safe Mode On" domain="[('safe_mode','=',True)]"/>
+                <separator/>
+                <filter name="anchor_today" string="Anchor Today"
+                        domain="[('anchor_date','=',context_today().strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_profile" string="Profile" context="{'group_by':'profile'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_anchor_month" string="Anchor Month"
+                            context="{'group_by':'anchor_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_demo_run_list" model="ir.ui.view">
+        <field name="name">clinic.demo.run.list</field>
+        <field name="model">clinic.demo.run</field>
+        <field name="arch" type="xml">
+            <list string="Enterprise Demo Dataset Runs"
+                  decoration-success="state == 'ready'"
+                  decoration-danger="state == 'failed'"
+                  decoration-info="state in ['generating','validating']">
+                <field name="name"/>
+                <field name="company_id" optional="show"/>
+                <field name="profile"/>
+                <field name="anchor_date"/>
+                <field name="safe_mode" optional="show"/>
+                <field name="compatibility_state" optional="show"/>
+                <field name="state"/>
+                <field name="current_phase" optional="show"/>
+                <field name="last_successful_checkpoint_key" optional="hide"/>
+                <field name="created_count" sum="Created" optional="show"/>
+                <field name="reused_count" sum="Reused" optional="show"/>
+                <field name="updated_count" sum="Updated" optional="hide"/>
+                <field name="warning_count" sum="Warnings" optional="show"/>
+                <field name="error_count" sum="Errors" optional="show"/>
+                <field name="validation_status" optional="show"/>
+                <field name="started_at" optional="hide"/>
+                <field name="completed_at" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_demo_run_form" model="ir.ui.view">
+        <field name="name">clinic.demo.run.form</field>
+        <field name="model">clinic.demo.run</field>
+        <field name="arch" type="xml">
+            <form string="ClinicOne Enterprise Demo Control Center">
+                <header>
+                    <button name="action_generate_full_dataset"
+                            string="Generate Full Enterprise Dataset"
+                            type="object"
+                            class="btn-primary"
+                            groups="base.group_system,clinic_demo.group_demo_operator"
+                            invisible="state in ['generating','validating']"/>
+                    <button name="action_generate_current_phase"
+                            string="Generate Current Phase"
+                            type="object"
+                            groups="base.group_system,clinic_demo.group_demo_operator"
+                            invisible="state in ['generating','validating']"/>
+                    <button name="action_continue_generation"
+                            string="Continue Generation"
+                            type="object"
+                            groups="base.group_system,clinic_demo.group_demo_operator"
+                            invisible="state not in ['generating','failed']"/>
+                    <button name="action_validate"
+                            string="Validate"
+                            type="object"
+                            groups="base.group_system,clinic_demo.group_demo_operator"
+                            invisible="state == 'generating'"/>
+                    <button name="action_regenerate_missing"
+                            string="Regenerate Missing"
+                            type="object"
+                            groups="base.group_system,clinic_demo.group_demo_operator"
+                            invisible="state == 'generating'"/>
+                    <button name="action_open_golden_journeys"
+                            string="Open Golden Journeys"
+                            type="object"
+                            groups="base.group_system,clinic_demo.group_demo_viewer"/>
+                    <button name="action_open_logs"
+                            string="Open Logs"
+                            type="object"
+                            groups="base.group_system,clinic_demo.group_demo_viewer"/>
+                    <button name="action_open_reset_wizard"
+                            string="Reset Demo Dataset"
+                            type="object"
+                            class="btn-secondary"
+                            groups="base.group_system,clinic_demo.group_demo_manager"
+                            invisible="state in ['generating','validating']"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,generating,validating,ready,failed"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_references" type="object"
+                                class="oe_stat_button" icon="fa-link">
+                            <field name="reference_count" widget="statinfo" string="Golden Journeys"/>
+                        </button>
+                        <button name="action_open_checkpoints" type="object"
+                                class="oe_stat_button" icon="fa-tasks">
+                            <field name="checkpoint_count" widget="statinfo" string="Checkpoints"/>
+                        </button>
+                        <button name="action_open_logs" type="object"
+                                class="oe_stat_button" icon="fa-list-alt">
+                            <field name="log_count" widget="statinfo" string="Logs"/>
+                        </button>
+                        <button name="action_open_validation_results" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="validation_result_count" widget="statinfo" string="Validation"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Demo Run"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Dataset Configuration">
+                            <field name="company_id" options="{'no_create': True}"/>
+                            <field name="profile"/>
+                            <field name="anchor_date"/>
+                            <field name="currency_id" readonly="1"/>
+                            <field name="timezone"/>
+                            <field name="locale"/>
+                        </group>
+                        <group string="Determinism &amp; Safety">
+                            <field name="deterministic_seed"/>
+                            <field name="safe_mode"/>
+                            <field name="generator_version" readonly="1"/>
+                            <field name="generation_readiness" readonly="1"/>
+                            <field name="executable_generator_count" readonly="1"/>
+                            <field name="scenario_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Execution Status">
+                        <group>
+                            <field name="current_phase" readonly="1"/>
+                            <field name="current_scenario" readonly="1"/>
+                            <field name="last_successful_checkpoint_key" readonly="1"/>
+                            <field name="started_at" readonly="1"/>
+                            <field name="completed_at" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="validation_status" readonly="1"/>
+                            <field name="patch_compatibility_status" readonly="1"/>
+                            <field name="missing_reference_count" readonly="1"/>
+                            <field name="failed_checkpoint_count" readonly="1"/>
+                            <field name="validation_failure_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Compatibility">
+                        <group>
+                            <field name="compatibility_state" readonly="1"/>
+                            <button name="action_refresh_compatibility"
+                                    string="Refresh Compatibility"
+                                    type="object"
+                                    class="btn-secondary"
+                                    context="{'return_compatibility_notification': True}"
+                                    groups="base.group_system,clinic_demo.group_demo_operator"/>
+                        </group>
+                        <group>
+                            <field name="source_fingerprint" readonly="1"/>
+                            <field name="expected_suite_fingerprint" readonly="1"/>
+                            <field name="source_suite_fingerprint" readonly="1"/>
+                            <field name="database_suite_fingerprint" readonly="1"/>
+                        </group>
+                        <field name="compatibility_message" readonly="1" nolabel="1"/>
+                    </group>
+
+                    <group string="Generation Counters" col="6">
+                        <field name="created_count" readonly="1"/>
+                        <field name="reused_count" readonly="1"/>
+                        <field name="updated_count" readonly="1"/>
+                        <field name="skipped_count" readonly="1"/>
+                        <field name="warning_count" readonly="1"/>
+                        <field name="error_count" readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Golden Journeys" name="golden_journeys">
+                            <field name="reference_ids">
+                                <list create="false" edit="false" delete="false"
+                                      decoration-danger="record_status == 'missing'"
+                                      decoration-muted="record_status in ['reset_removed','reset_retained']">
+                                    <field name="demo_key"/>
+                                    <field name="scenario_key" optional="show"/>
+                                    <field name="model_name"/>
+                                    <field name="display_name"/>
+                                    <field name="ownership_kind"/>
+                                    <field name="reset_policy_snapshot"/>
+                                    <field name="record_status"/>
+                                    <button name="action_open_record"
+                                            string="Open"
+                                            type="object"
+                                            icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Checkpoints" name="checkpoints">
+                            <field name="checkpoint_ids">
+                                <list create="false" edit="false" delete="false"
+                                      decoration-success="state == 'done'"
+                                      decoration-danger="state == 'failed'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="checkpoint_key"/>
+                                    <field name="phase_key"/>
+                                    <field name="generator_key"/>
+                                    <field name="scenario_key"/>
+                                    <field name="state"/>
+                                    <field name="attempt_count"/>
+                                    <field name="created_count" optional="show"/>
+                                    <field name="reused_count" optional="show"/>
+                                    <field name="error_count" optional="show"/>
+                                    <button name="action_open_checkpoint"
+                                            string="Details"
+                                            type="object"
+                                            icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Validation" name="validation">
+                            <field name="validation_result_ids">
+                                <list create="false" edit="false" delete="false"
+                                      decoration-success="state == 'pass'"
+                                      decoration-warning="state == 'warning'"
+                                      decoration-danger="state == 'fail'">
+                                    <field name="severity"/>
+                                    <field name="category"/>
+                                    <field name="check_key"/>
+                                    <field name="state"/>
+                                    <field name="message"/>
+                                    <button name="action_open_validation"
+                                            string="Details"
+                                            type="object"
+                                            icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Logs" name="logs">
+                            <field name="log_ids">
+                                <list create="false" edit="false" delete="false"
+                                      decoration-warning="level == 'warning'"
+                                      decoration-danger="level == 'error'">
+                                    <field name="logged_at"/>
+                                    <field name="level"/>
+                                    <field name="phase_key"/>
+                                    <field name="generator_key"/>
+                                    <field name="scenario_key"/>
+                                    <field name="operation"/>
+                                    <field name="demo_key"/>
+                                    <field name="message"/>
+                                    <button name="action_open_log"
+                                            string="Details"
+                                            type="object"
+                                            icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_demo_run" model="ir.actions.act_window">
+        <field name="name">Demo Dataset Control Center</field>
+        <field name="res_model">clinic.demo.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_demo_run_search"/>
+        <field name="context">{'search_default_group_state': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a ClinicOne Enterprise Demo Run
+            </p>
+            <p>
+                Choose the dataset profile, anchor date, deterministic seed and Safe Mode,
+                then validate compatibility before generation.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_demo_dataset"
+              name="Demo Dataset"
+              sequence="95"
+              groups="base.group_system,clinic_demo.group_demo_viewer"/>
+
+    <menuitem id="menu_demo_control_center"
+              name="Control Center"
+              parent="menu_demo_dataset"
+              action="action_clinic_demo_run"
+              sequence="10"
+              groups="base.group_system,clinic_demo.group_demo_viewer"/>
+
+    <menuitem id="menu_demo_golden_journeys"
+              name="Golden Journeys"
+              parent="menu_demo_dataset"
+              action="action_clinic_demo_reference"
+              sequence="20"
+              groups="base.group_system,clinic_demo.group_demo_viewer"/>
+
+    <menuitem id="menu_demo_checkpoints"
+              name="Checkpoints"
+              parent="menu_demo_dataset"
+              action="action_clinic_demo_checkpoint"
+              sequence="30"
+              groups="base.group_system,clinic_demo.group_demo_viewer"/>
+
+    <menuitem id="menu_demo_logs"
+              name="Logs"
+              parent="menu_demo_dataset"
+              action="action_clinic_demo_log"
+              sequence="40"
+              groups="base.group_system,clinic_demo.group_demo_viewer"/>
+
+    <menuitem id="menu_demo_validation"
+              name="Validation"
+              parent="menu_demo_dataset"
+              action="action_clinic_demo_validation"
+              sequence="50"
+              groups="base.group_system,clinic_demo.group_demo_viewer"/>
+</odoo>

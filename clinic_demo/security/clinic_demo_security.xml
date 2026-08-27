@@ -22,7 +22,10 @@
         <field name="name">Demo Dataset Operator</field>
         <field name="privilege_id" ref="clinic_demo.privilege_clinic_demo"/>
         <field name="sequence">20</field>
-        <field name="implied_ids" eval="[Command.link(ref('clinic_demo.group_demo_viewer'))]"/>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_demo.group_demo_viewer')),
+            Command.link(ref('clinic_branch.group_branch_manager'))
+        ]"/>
     </record>
 
     <record id="group_demo_manager" model="res.groups">

@@ -79,6 +79,7 @@ class DemoReferenceService:
         ownership_kind="created",
         reset_policy=None,
         business_reference=None,
+        reset_sequence=100,
     ):
         self._validate_key(demo_key)
         run.ensure_one()
@@ -107,6 +108,7 @@ class DemoReferenceService:
             "display_name": record.display_name,
             "business_reference": business_reference or record.display_name,
             "ownership_kind": ownership_kind,
+            "reset_sequence": int(reset_sequence),
             "reset_policy_snapshot": reset_policy,
             "record_status": "bound",
             "last_checked_at": fields.Datetime.now(),
@@ -126,6 +128,7 @@ class DemoReferenceService:
         scenario_key=None,
         reset_policy=None,
         update_callback=None,
+        reset_sequence=100,
     ):
         """Create once, then resolve/reuse deterministically on every rerun.
 
@@ -172,6 +175,7 @@ class DemoReferenceService:
             scenario_key=scenario_key,
             ownership_kind="created",
             reset_policy=reset_policy,
+            reset_sequence=reset_sequence,
         )
         return record, reference, "created"
 
@@ -183,6 +187,7 @@ class DemoReferenceService:
         generator_key,
         scenario_key=None,
         reset_policy=None,
+        reset_sequence=100,
     ):
         return self.bind(
             run=run,
@@ -192,4 +197,5 @@ class DemoReferenceService:
             scenario_key=scenario_key,
             ownership_kind="reused",
             reset_policy=reset_policy,
+            reset_sequence=reset_sequence,
         )

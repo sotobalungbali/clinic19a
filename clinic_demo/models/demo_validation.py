@@ -49,3 +49,29 @@ class ClinicDemoValidationResult(models.Model):
     expected_value = fields.Text()
     actual_value = fields.Text()
     message = fields.Text(required=True)
+
+
+    def action_open_run(self):
+        """Navigate back to the owning Demo Control Center run."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.run_id.display_name,
+            "res_model": "clinic.demo.run",
+            "view_mode": "form",
+            "res_id": self.run_id.id,
+            "target": "current",
+        }
+
+
+    def action_open_validation(self):
+        """Open this exact service-managed record from an embedded One2many row."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Validation Result",
+            "res_model": "clinic.demo.validation.result",
+            "view_mode": "form",
+            "res_id": self.id,
+            "target": "current",
+        }

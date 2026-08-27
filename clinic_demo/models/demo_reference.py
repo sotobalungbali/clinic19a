@@ -47,6 +47,11 @@ class ClinicDemoReference(models.Model):
         default="created",
         index=True,
     )
+    reset_sequence = fields.Integer(
+        default=100,
+        index=True,
+        help="Higher values reset first. Domain generators may override this to preserve child-first ordering.",
+    )
     reset_policy_snapshot = fields.Selection(
         RESET_POLICY_SELECTION,
         required=True,
@@ -88,6 +93,19 @@ class ClinicDemoReference(models.Model):
         except KeyError:
             return False
         return model.browse(self.res_id).exists()
+
+    def action_refresh_record_status(self):
+        """Refresh registry existence status without altering the business record."""
+        from ..services.reference_service import DemoReferenceService
+
+        service = DemoReferenceService(self.env)
+        for reference in self:
+            record = service._existing_record(reference)
+            reference.write({
+                "record_status": "bound" if record else "missing",
+                "last_checked_at": fields.Datetime.now(),
+            })
+        return True
 
     def action_open_record(self):
         """Open the exact Golden Journey record; never use a fuzzy business search."""

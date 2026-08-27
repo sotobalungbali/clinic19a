@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_demo_reference_search" model="ir.ui.view">
+        <field name="name">clinic.demo.reference.search</field>
+        <field name="model">clinic.demo.reference</field>
+        <field name="arch" type="xml">
+            <search string="Golden Journeys">
+                <field name="demo_key"/>
+                <field name="run_id"/>
+                <field name="generator_key"/>
+                <field name="scenario_key"/>
+                <field name="model_name"/>
+                <field name="business_reference"/>
+                <filter name="missing" string="Missing" domain="[('record_status','=','missing')]"/>
+                <filter name="created" string="Demo-owned" domain="[('ownership_kind','in',['created','updated_demo_owned'])]"/>
+                <filter name="reused" string="Reused" domain="[('ownership_kind','=','reused')]"/>
+                <filter name="retained" string="Retained Evidence" domain="[('record_status','=','reset_retained')]"/>
+                <group>
+                    <filter name="group_run" string="Demo Run" context="{'group_by':'run_id'}"/>
+                    <filter name="group_scenario" string="Scenario" context="{'group_by':'scenario_key'}"/>
+                    <filter name="group_model" string="Model" context="{'group_by':'model_name'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by':'record_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_demo_reference_list" model="ir.ui.view">
+        <field name="name">clinic.demo.reference.list</field>
+        <field name="model">clinic.demo.reference</field>
+        <field name="arch" type="xml">
+            <list string="Golden Journey References" create="false" delete="false"
+                  decoration-danger="record_status == 'missing'"
+                  decoration-muted="record_status in ['reset_removed','reset_retained']">
+                <field name="demo_key"/>
+                <field name="run_id"/>
+                <field name="scenario_key"/>
+                <field name="generator_key" optional="show"/>
+                <field name="model_name"/>
+                <field name="display_name"/>
+                <field name="business_reference" optional="show"/>
+                <field name="ownership_kind"/>
+                <field name="reset_policy_snapshot"/>
+                <field name="reset_sequence" optional="hide"/>
+                <field name="record_status"/>
+                <field name="last_checked_at" optional="hide"/>
+                <button name="action_open_record" string="Open" type="object" icon="fa-external-link"/>
+                <button name="action_refresh_record_status" string="Check" type="object" icon="fa-refresh"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_demo_reference_form" model="ir.ui.view">
+        <field name="name">clinic.demo.reference.form</field>
+        <field name="model">clinic.demo.reference</field>
+        <field name="arch" type="xml">
+            <form string="Golden Journey Reference" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_open_record"
+                            string="Open Business Record"
+                            type="object"
+                            class="btn-primary"/>
+                    <button name="action_refresh_record_status"
+                            string="Refresh Status"
+                            type="object"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="demo_key"/>
+                        <h1><field name="demo_key" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ownership">
+                            <field name="run_id" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="ownership_kind" readonly="1"/>
+                            <field name="reset_policy_snapshot" readonly="1"/>
+                            <field name="reset_sequence" readonly="1"/>
+                            <field name="record_status" readonly="1"/>
+                        </group>
+                        <group string="Business Target">
+                            <field name="model_name" readonly="1"/>
+                            <field name="res_id" readonly="1"/>
+                            <field name="display_name" readonly="1"/>
+                            <field name="business_reference" readonly="1"/>
+                            <field name="generator_key" readonly="1"/>
+                            <field name="scenario_key" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Traceability">
+                        <field name="last_checked_at" readonly="1"/>
+                        <field name="last_reset_at" readonly="1"/>
+                        <field name="note" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_demo_reference" model="ir.actions.act_window">
+        <field name="name">Golden Journeys</field>
+        <field name="res_model">clinic.demo.reference</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_demo_reference_search"/>
+    </record>
+</odoo>

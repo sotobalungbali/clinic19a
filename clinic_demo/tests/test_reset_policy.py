@@ -43,7 +43,9 @@ class TestDemoResetFoundation(TransactionCase):
             RESET_RETAIN_IMMUTABLE,
         )
 
-    def test_created_delete_safe_record_is_removed(self):
+    def test_unknown_live_model_policy_blocks_destructive_reset(self):
+        from odoo.exceptions import ValidationError
+
         partner = self.env["res.partner"].create({"name": "Synthetic Reset Record"})
         reference = DemoReferenceService(self.env).bind(
             self.run,
@@ -52,10 +54,10 @@ class TestDemoResetFoundation(TransactionCase):
             "test.reset",
             reset_policy=RESET_DELETE_SAFE,
         )
-        result = DemoResetService(self.env).reset_reference(reference)
-        self.assertEqual(result["status"], "removed")
-        self.assertFalse(partner.exists())
-        self.assertEqual(reference.record_status, "reset_removed")
+        with self.assertRaises(ValidationError):
+            DemoResetService(self.env).reset_reference(reference)
+        self.assertTrue(partner.exists())
+        self.assertEqual(reference.record_status, "bound")
 
     def test_reused_record_is_retained(self):
         partner = self.env["res.partner"].create({"name": "Existing Reused Record"})

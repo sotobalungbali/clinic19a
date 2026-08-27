@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_demo_validation_search" model="ir.ui.view">
+        <field name="name">clinic.demo.validation.result.search</field>
+        <field name="model">clinic.demo.validation.result</field>
+        <field name="arch" type="xml">
+            <search string="Validation Results">
+                <field name="run_id"/>
+                <field name="check_key"/>
+                <field name="category"/>
+                <field name="severity"/>
+                <field name="state"/>
+                <field name="generator_key"/>
+                <field name="scenario_key"/>
+                <field name="demo_key"/>
+                <filter name="failed" string="Failed" domain="[('state','=','fail')]"/>
+                <filter name="warnings" string="Warnings" domain="[('state','=','warning')]"/>
+                <filter name="critical" string="Critical" domain="[('severity','=','critical')]"/>
+                <group>
+                    <filter name="group_run" string="Demo Run" context="{'group_by':'run_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by':'severity'}"/>
+                    <filter name="group_state" string="Result" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_demo_validation_list" model="ir.ui.view">
+        <field name="name">clinic.demo.validation.result.list</field>
+        <field name="model">clinic.demo.validation.result</field>
+        <field name="arch" type="xml">
+            <list string="Validation Results" create="false" delete="false"
+                  decoration-success="state == 'pass'"
+                  decoration-warning="state == 'warning'"
+                  decoration-danger="state == 'fail'">
+                <field name="run_id"/>
+                <field name="severity"/>
+                <field name="category"/>
+                <field name="check_key"/>
+                <field name="state"/>
+                <field name="generator_key" optional="show"/>
+                <field name="scenario_key" optional="show"/>
+                <field name="demo_key" optional="show"/>
+                <field name="message"/>
+                <button name="action_open_run" string="Run" type="object" icon="fa-arrow-up"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_demo_validation_form" model="ir.ui.view">
+        <field name="name">clinic.demo.validation.result.form</field>
+        <field name="model">clinic.demo.validation.result</field>
+        <field name="arch" type="xml">
+            <form string="Validation Result" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_open_run" string="Open Demo Run" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pass,warning,fail"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="check_key"/>
+                        <h1><field name="check_key" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Validation">
+                            <field name="run_id" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="category" readonly="1"/>
+                            <field name="severity" readonly="1"/>
+                        </group>
+                        <group string="Context">
+                            <field name="generator_key" readonly="1"/>
+                            <field name="scenario_key" readonly="1"/>
+                            <field name="model_name" readonly="1"/>
+                            <field name="demo_key" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Evidence">
+                        <field name="expected_value" readonly="1"/>
+                        <field name="actual_value" readonly="1"/>
+                        <field name="message" readonly="1" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_demo_validation" model="ir.actions.act_window">
+        <field name="name">Validation Results</field>
+        <field name="res_model">clinic.demo.validation.result</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_demo_validation_search"/>
+    </record>
+</odoo>

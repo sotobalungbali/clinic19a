@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_fund_request_search" model="ir.ui.view">
+    <field name="name">clinic.finance.fund.request.search</field><field name="model">clinic.finance.fund.request</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="requested_by_id"/><field name="employee_id"/><field name="category_id"/><field name="finance_account_id"/><field name="branch_id"/>
+      <filter name="mine" string="My Requests" domain="[('requested_by_id','=',uid)]"/><filter name="to_approve" string="To Approve" domain="[('state','=','submitted')]"/><filter name="approved" string="Approved" domain="[('state','=','approved')]"/>
+      <group><filter name="group_type" string="Request Type" context="{'group_by':'request_type'}"/><filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_month" string="Month" context="{'group_by':'request_date:month'}"/></group>
+    </search></field>
+  </record>
+  <record id="view_fund_request_list" model="ir.ui.view">
+    <field name="name">clinic.finance.fund.request.list</field><field name="model">clinic.finance.fund.request</field>
+    <field name="arch" type="xml"><list decoration-info="state == 'submitted'" decoration-success="state == 'disbursed'" decoration-muted="state in ('rejected','cancelled')">
+      <field name="name"/><field name="request_date"/><field name="required_date"/><field name="requested_by_id"/><field name="branch_id"/><field name="request_type"/><field name="category_id"/><field name="requested_amount" sum="Requested"/><field name="approved_amount" sum="Approved"/><field name="finance_account_id" optional="show"/><field name="state" widget="badge"/>
+    </list></field>
+  </record>
+  <record id="view_fund_request_form" model="ir.ui.view">
+    <field name="name">clinic.finance.fund.request.form</field><field name="model">clinic.finance.fund.request</field>
+    <field name="arch" type="xml"><form>
+      <header>
+        <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'"/>
+        <button name="action_approve" type="object" string="Approve" class="btn-primary" groups="clinic_finance.group_clinic_finance_approver" invisible="state != 'submitted'"/>
+        <button name="action_reject" type="object" string="Reject" groups="clinic_finance.group_clinic_finance_approver" invisible="state != 'submitted'"/>
+        <button name="action_create_disbursement" type="object" string="Create Disbursement" class="btn-primary" groups="clinic_finance.group_clinic_finance_cashier" invisible="state != 'approved' or transaction_id"/>
+        <button name="action_cancel" type="object" string="Cancel" invisible="state in ('disbursed','cancelled')"/>
+        <button name="action_reset_to_draft" type="object" string="Reset to Draft" groups="clinic_finance.group_clinic_finance_manager" invisible="state in ('draft','disbursed')"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,disbursed"/>
+      </header><sheet>
+        <div class="oe_button_box" name="button_box"><button name="action_open_transaction" type="object" class="oe_stat_button" icon="fa-money" invisible="not transaction_id"><div class="o_stat_info"><span class="o_stat_text">Disbursement</span></div></button></div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <group>
+          <group string="Request"><field name="request_date" readonly="state != 'draft'"/><field name="required_date" readonly="state != 'draft'"/><field name="request_type" readonly="state != 'draft'"/><field name="requested_by_id" readonly="state != 'draft'"/><field name="employee_id" readonly="state != 'draft'"/><field name="category_id" readonly="state != 'draft'"/><field name="requested_amount" readonly="state != 'draft'"/></group>
+          <group string="Approval &amp; Disbursement"><field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/><field name="branch_id" readonly="state != 'draft'"/><field name="finance_account_id" readonly="state not in ('draft','submitted')"/><field name="approved_amount" readonly="state not in ('submitted','approved')"/><field name="approved_by_id" readonly="1"/><field name="approved_at" readonly="1"/><field name="transaction_id" readonly="1"/></group>
+        </group>
+        <notebook><page string="Purpose"><field name="purpose"/></page><page string="Approval Note"><field name="approver_note"/></page><page string="Audit"><group><field name="submitted_at" readonly="1"/><field name="rejected_by_id" readonly="1"/><field name="rejected_at" readonly="1"/><field name="transaction_state" readonly="1"/></group></page></notebook>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+  <record id="action_fund_request" model="ir.actions.act_window">
+    <field name="name">Fund Requests</field><field name="res_model">clinic.finance.fund.request</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_fund_request_search"/>
+  </record>
+</odoo>

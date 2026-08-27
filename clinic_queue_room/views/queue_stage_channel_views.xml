@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Queue Stage -->
+    <record id="view_clinic_queue_stage_search" model="ir.ui.view">
+        <field name="name">clinic.queue.stage.search</field>
+        <field name="model">clinic.queue.stage</field>
+        <field name="arch" type="xml">
+            <search string="Search Queue Stages">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="queue_type"/>
+                <field name="company_id"/>
+                <filter name="filter_active" string="Active" domain="[('active','=',True)]"/>
+                <filter name="filter_default" string="Default" domain="[('is_default','=',True)]"/>
+                <group>
+                    <filter name="group_queue_type" string="Queue Type" context="{'group_by':'queue_type'}"/>
+                    <filter name="group_state" string="Mapped State" context="{'group_by':'mapped_state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_queue_stage_list" model="ir.ui.view">
+        <field name="name">clinic.queue.stage.list</field>
+        <field name="model">clinic.queue.stage</field>
+        <field name="arch" type="xml">
+            <list string="Queue Stages" decoration-success="mapped_state == 'done'" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="queue_type"/>
+                <field name="mapped_state"/>
+                <field name="is_default"/>
+                <field name="wip_limit"/>
+                <field name="active_queue_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_queue_stage_form" model="ir.ui.view">
+        <field name="name">clinic.queue.stage.form</field>
+        <field name="model">clinic.queue.stage</field>
+        <field name="arch" type="xml">
+            <form string="Queue Stage">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <field name="code"/>
+                    </div>
+                    <group>
+                        <group string="Operational Mapping">
+                            <field name="queue_type"/>
+                            <field name="mapped_state"/>
+                            <field name="sequence"/>
+                            <field name="is_default"/>
+                            <field name="fold"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Governance">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="wip_limit"/>
+                            <field name="active_queue_count" readonly="1"/>
+                            <field name="is_wip_exceeded" readonly="1"/>
+                            <field name="room_type_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Requirements">
+                            <group>
+                                <group>
+                                    <field name="require_room"/>
+                                    <field name="require_doctor"/>
+                                    <field name="require_treatment"/>
+                                </group>
+                                <group>
+                                    <field name="lock_patient_change"/>
+                                    <field name="lock_room_change_when_started"/>
+                                    <field name="auto_assign_room"/>
+                                    <field name="auto_assign_doctor"/>
+                                    <field name="auto_create_procedure_session"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="SLA &amp; Escalation">
+                            <group>
+                                <group>
+                                    <field name="sla_target_wait_min"/>
+                                    <field name="sla_target_service_min"/>
+                                    <field name="activity_type_id"/>
+                                </group>
+                                <group>
+                                    <field name="escalate_group_ids" widget="many2many_tags"/>
+                                    <field name="escalate_user_ids" widget="many2many_tags"/>
+                                    <field name="mail_template_id"/>
+                                    <field name="mail_template_exit_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Automation">
+                            <group>
+                                <field name="server_action_id"/>
+                                <field name="server_action_exit_id"/>
+                                <field name="next_stage_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_queue_stage" model="ir.actions.act_window">
+        <field name="name">Queue Stages</field>
+        <field name="res_model">clinic.queue.stage</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Queue Channel -->
+    <record id="view_clinic_queue_channel_search" model="ir.ui.view">
+        <field name="name">clinic.queue.channel.search</field>
+        <field name="model">clinic.queue.channel</field>
+        <field name="arch" type="xml">
+            <search string="Search Queue Channels">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <filter name="filter_active" string="Active" domain="[('active','=',True)]"/>
+                <filter name="filter_default" string="Default" domain="[('is_default','=',True)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_queue_channel_list" model="ir.ui.view">
+        <field name="name">clinic.queue.channel.list</field>
+        <field name="model">clinic.queue.channel</field>
+        <field name="arch" type="xml">
+            <list string="Queue Channels" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="is_default"/>
+                <field name="queue_waiting_count"/>
+                <field name="queue_in_progress_count"/>
+                <field name="avg_service_time_min"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_queue_channel_form" model="ir.ui.view">
+        <field name="name">clinic.queue.channel.form</field>
+        <field name="model">clinic.queue.channel</field>
+        <field name="arch" type="xml">
+            <form string="Queue Channel">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_queues" type="object" class="oe_stat_button" icon="fa-list">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value"><field name="queue_waiting_count"/></span>
+                                <span class="o_stat_text">Waiting Queues</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1><field name="code"/></div>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="is_default"/>
+                            <field name="avg_service_time_min"/>
+                            <field name="service_calendar_id"/>
+                            <field name="surcharge_product_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                            <field name="queue_waiting_count" readonly="1"/>
+                            <field name="queue_in_progress_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Intake Channels">
+                            <group>
+                                <field name="allow_walkin"/>
+                                <field name="allow_booking"/>
+                                <field name="allow_portal"/>
+                                <field name="allow_kiosk"/>
+                                <field name="allow_phone"/>
+                            </group>
+                        </page>
+                        <page string="Allowed Stages">
+                            <field name="allowed_stage_ids" widget="many2many_tags"/>
+                        </page>
+                        <page string="Description"><field name="description"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_queue_channel" model="ir.actions.act_window">
+        <field name="name">Queue Channels</field>
+        <field name="res_model">clinic.queue.channel</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

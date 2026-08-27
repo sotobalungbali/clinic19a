@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo noupdate="1">
+  <record id="cron_membership_expire_contracts" model="ir.cron">
+    <field name="name">Membership: Expire Contracts</field>
+    <field name="model_id" ref="model_membership_contract"/>
+    <field name="state">code</field>
+    <field name="code">model.cron_expire_contracts()</field>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <field name="active">True</field>
+  </record>
+  <record id="cron_membership_expire_vouchers" model="ir.cron">
+    <field name="name">Membership: Expire Vouchers</field>
+    <field name="model_id" ref="model_membership_voucher"/>
+    <field name="state">code</field>
+    <field name="code">model.cron_expire_vouchers()</field>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <field name="active">True</field>
+  </record>
+  <record id="cron_membership_expire_points" model="ir.cron">
+    <field name="name">Membership: Expire Loyalty Points</field>
+    <field name="model_id" ref="model_membership_point_tx"/>
+    <field name="state">code</field>
+    <field name="code">model.cron_expire_earned_points()</field>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <field name="active">True</field>
+  </record>
+  <record id="cron_membership_events" model="ir.cron">
+    <field name="name">Membership: Process Integration Events</field>
+    <field name="model_id" ref="model_membership_integration_event"/>
+    <field name="state">code</field>
+    <field name="code">model.cron_process_pending_events()</field>
+    <field name="interval_number">1</field>
+    <field name="interval_type">hours</field>
+    <field name="active">True</field>
+  </record>
+</odoo>
+

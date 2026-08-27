@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_package_usage_search" model="ir.ui.view">
+        <field name="name">clinic.package.usage.search</field>
+        <field name="model">clinic.package.usage</field>
+        <field name="arch" type="xml">
+            <search string="Search Redemptions">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="package_id"/>
+                <field name="allocation_id"/>
+                <field name="doctor_id"/>
+                <field name="booking_id"/>
+                <field name="emar_order_id"/>
+                <field name="emar_schedule_id"/>
+                <field name="emar_administration_id"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="emar_linked" string="eMAR Linked" domain="['|','|',('emar_order_id','!=',False),('emar_schedule_id','!=',False),('emar_administration_id','!=',False)]"/>
+                <separator/>
+                <filter name="group_date" string="Date" context="{'group_by':'redeem_date'}"/>
+                <filter name="group_package" string="Package" context="{'group_by':'package_id'}"/>
+                <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                <filter name="group_emar_order" string="eMAR Order" context="{'group_by':'emar_order_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_package_usage_list" model="ir.ui.view">
+        <field name="name">clinic.package.usage.list</field>
+        <field name="model">clinic.package.usage</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'confirmed'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="redeem_datetime"/>
+                <field name="patient_id"/>
+                <field name="package_id"/>
+                <field name="allocation_line_id"/>
+                <field name="doctor_id" optional="show"/>
+                <field name="qty_used" sum="Units"/>
+                <field name="credit_used" sum="Credit"/>
+                <field name="booking_id" optional="show"/>
+                <field name="emar_order_id" optional="hide"/>
+                <field name="emar_administration_id" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_package_usage_form" model="ir.ui.view">
+        <field name="name">clinic.package.usage.form</field>
+        <field name="model">clinic.package.usage</field>
+        <field name="arch" type="xml">
+            <form string="Package Redemption">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm Redemption" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state != 'confirmed'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state != 'cancelled'" groups="clinic_package.group_clinic_package_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_booking" type="object" class="oe_stat_button" icon="fa-calendar" invisible="not booking_id">
+                            <span class="o_stat_text">Booking</span>
+                        </button>
+                        <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not invoice_id">
+                            <span class="o_stat_text">Invoice</span>
+                        </button>
+                        <button name="action_view_emar_prescription" type="object" class="oe_stat_button" icon="fa-file-text" invisible="not emar_prescription_id">
+                            <span class="o_stat_text">Prescription</span>
+                        </button>
+                        <button name="action_view_emar_order" type="object" class="oe_stat_button" icon="fa-medkit" invisible="not emar_order_id">
+                            <span class="o_stat_text">eMAR Order</span>
+                        </button>
+                        <button name="action_view_emar_schedule" type="object" class="oe_stat_button" icon="fa-clock-o" invisible="not emar_schedule_id">
+                            <span class="o_stat_text">eMAR Schedule</span>
+                        </button>
+                        <button name="action_view_emar_administration" type="object" class="oe_stat_button" icon="fa-check-square-o" invisible="not emar_administration_id">
+                            <span class="o_stat_text">Administration</span>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Package">
+                            <field name="allocation_id" readonly="state != 'draft'"/>
+                            <field name="allocation_line_id" domain="[('allocation_id','=',allocation_id)]" readonly="state != 'draft'"/>
+                            <field name="package_id" readonly="1"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                        </group>
+                        <group string="Redemption">
+                            <field name="redeem_datetime" readonly="state != 'draft'"/>
+                            <field name="line_type" readonly="1"/>
+                            <field name="qty_used" invisible="line_type == 'credit'" readonly="state != 'draft'"/>
+                            <field name="credit_used" invisible="line_type != 'credit'" readonly="state != 'draft'"/>
+                            <field name="uom_id" readonly="1" invisible="line_type == 'credit'"/>
+                            <field name="doctor_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Clinical &amp; Scheduling">
+                            <group>
+                                <field name="booking_id" readonly="state != 'draft'"/>
+                                <field name="care_plan_line_id" readonly="state != 'draft'"/>
+                                <field name="care_plan_id" readonly="1"/>
+                                <field name="visit_id" readonly="state != 'draft'"/>
+                                <field name="room_id" readonly="state != 'draft'"/>
+                                <field name="device_id" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+
+                        <page string="eMAR Traceability" name="emar_traceability">
+                            <group>
+                                <group string="Medication Workflow">
+                                    <field name="emar_order_id"
+                                           domain="[('patient_id','=',patient_id)]"
+                                           readonly="state != 'draft'"/>
+                                    <field name="emar_schedule_id"
+                                           domain="[('patient_id','=',patient_id),('order_id','=',emar_order_id)]"
+                                           readonly="state != 'draft'"/>
+                                    <field name="emar_administration_id"
+                                           domain="[('patient_id','=',patient_id),('schedule_id','=',emar_schedule_id)]"
+                                           readonly="state != 'draft'"/>
+                                </group>
+                                <group string="Derived Clinical Context">
+                                    <field name="emar_prescription_id" readonly="1"/>
+                                    <button name="action_view_emar_administration"
+                                            type="object"
+                                            string="Open Medication Administration"
+                                            icon="fa-external-link"
+                                            class="btn btn-secondary"
+                                            invisible="not emar_administration_id"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info" role="alert">
+                                Package redemption remains the entitlement ledger. eMAR remains the clinical medication owner.
+                                This tab links the two records for end-to-end traceability without transferring clinical ownership.
+                            </div>
+                        </page>
+
+                        <page string="Commercial Links">
+                            <group>
+                                <field name="sale_order_id"/>
+                                <field name="invoice_id"/>
+                            </group>
+                        </page>
+
+                        <page string="Notes">
+                            <field name="note"/>
+                            <field name="internal_note" groups="clinic_package.group_clinic_package_manager"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_package_usage" model="ir.actions.act_window">
+        <field name="name">Package Redemptions</field>
+        <field name="res_model">clinic.package.usage</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_package_usage_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,456 @@
+--- a/clinic_doctor/__manifest__.py
++++ b/clinic_doctor/__manifest__.py
+@@ -4,7 +4,7 @@
+     "name": "ClinicOne Doctor Management & Scheduling",
+     "summary": "Doctors, specialties, availability, and appointments. Integrates with ClinicOne suite.",
+ "description": """
+-ClinicOne — Doctor Management & Scheduling (Odoo 18 CE)
++ClinicOne — Doctor Management & Scheduling (Odoo 19 CE)
+ 
+ OVERVIEW
+ This module centralizes doctor profiles and streamlines end-to-end scheduling in medical aesthetics clinics. It covers professional identity, specialties, working hours, templated schedule rules, materialized availability slots, leaves/exceptions, and a complete appointment lifecycle. The module is lightweight by design and integrates with the broader ClinicOne suite without creating circular dependencies.
+@@ -94,6 +94,8 @@
+         "resource", 
+         "portal",
+         "hr",
++        "account",  # required by active clinic.appointment.invoice_id -> account.move
++        "sale",     # required by active clinic.appointment.sale_order_id -> sale.order
+         # ClinicOne base
+         "clinic_base", 
+         "clinic_audit", ## is_doctor create di sini DONE 19
+--- a/clinic_doctor/models/doctor.py
++++ b/clinic_doctor/models/doctor.py
+@@ -246,7 +246,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Patients"),
+             "res_model": "clinic.patient",
+-            "view_mode": "tree,form,kanban",
++            "view_mode": "list,form,kanban",
+             "domain": [("id", "in", self.patient_ids.ids)],
+             "target": "current",
+         }
+@@ -254,11 +254,25 @@
+     def action_view_primary_patients(self):
+         """Open patients for whom this doctor is the primary doctor."""
+         self.ensure_one()
++        Patient = self.env["clinic.patient"]
++        if "primary_doctor_id" not in Patient._fields:
++            return {
++                "type": "ir.actions.client",
++                "tag": "display_notification",
++                "params": {
++                    "title": _("Primary Doctor Link Not Available"),
++                    "message": _(
++                        "The installed Clinic Patient model does not provide "
++                        "the optional primary_doctor_id field."
++                    ),
++                    "sticky": False,
++                },
++            }
+         return {
+             "type": "ir.actions.act_window",
+             "name": _("Primary Patients"),
+             "res_model": "clinic.patient",
+-            "view_mode": "tree,form,kanban",
++            "view_mode": "list,form,kanban",
+             "domain": [("primary_doctor_id", "=", self.id)],
+             "target": "current",
+         }
+@@ -320,7 +334,7 @@
+     #         "type": "ir.actions.act_window",
+     #         "name": _("Queue Tokens"),
+     #         "res_model": "clinic.queue.token",
+-    #         "view_mode": "tree,form,kanban",
++    #         "view_mode": "list,form,kanban",
+     #         "domain": domain,
+     #         "target": "current",
+     #         "context": {"search_default_doctor_id": self.id},
+@@ -338,7 +352,7 @@
+     #         "type": "ir.actions.act_window",
+     #         "name": _("Waiting Tokens"),
+     #         "res_model": "clinic.queue.token",
+-    #         "view_mode": "tree,form,kanban",
++    #         "view_mode": "list,form,kanban",
+     #         "domain": domain,
+     #         "target": "current",
+     #     }
+@@ -355,7 +369,7 @@
+     #         "type": "ir.actions.act_window",
+     #         "name": _("In-service Tokens"),
+     #         "res_model": "clinic.queue.token",
+-    #         "view_mode": "tree,form,kanban",
++    #         "view_mode": "list,form,kanban",
+     #         "domain": domain,
+     #         "target": "current",
+     #     }
+@@ -370,12 +384,14 @@
+              "but preserves historical data."
+     )
+ 
+-    _sql_constraints = [
+-        ("license_company_uniq", "unique(license_no, company_id)",
+-         "License number must be unique per company."),
+-        ("partner_company_uniq", "unique(partner_id, company_id)",
+-         "A doctor for the same contact already exists in this company."),
+-    ]
++    _license_company_uniq = models.Constraint(
++        "UNIQUE (license_no, company_id)",
++        "License number must be unique per company.",
++    )
++    _partner_company_uniq = models.Constraint(
++        "UNIQUE (partner_id, company_id)",
++        "A doctor for the same contact already exists in this company.",
++    )
+ 
+     # -------------------------------------------------------------------------
+     # COMPUTES
+@@ -568,7 +584,7 @@
+     #         "type": "ir.actions.act_window",
+     #         "name": _("Appointments"),
+     #         "res_model": "clinic.appointment",
+-    #         "view_mode": "calendar,tree,form,pivot,graph",
++    #         "view_mode": "calendar,list,form,pivot,graph",
+     #         "domain": [("doctor_id", "=", self.id)],
+     #         "context": {
+     #             "default_doctor_id": self.id,
+@@ -583,7 +599,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Schedule Rules"),
+             "res_model": "clinic.schedule.rule",
+-            "view_mode": "tree,form,calendar",
++            "view_mode": "list,form,calendar",
+             "domain": [("doctor_id", "=", self.id)],
+             "context": {"default_doctor_id": self.id},
+             "target": "current",
+@@ -596,7 +612,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Availability"),
+             "res_model": "clinic.availability.slot",
+-            "view_mode": "calendar,tree,form",
++            "view_mode": "calendar,list,form",
+             "domain": [("doctor_id", "=", self.id)],
+             "context": {"default_doctor_id": self.id},
+             "target": "current",
+@@ -612,7 +628,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Next Availability"),
+             "res_model": "clinic.availability.slot",
+-            "view_mode": "calendar,tree,form",
++            "view_mode": "calendar,list,form",
+             "domain": domain,
+             "target": "current",
+         }
+@@ -624,7 +640,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Leaves"),
+             "res_model": "clinic.doctor.leave",
+-            "view_mode": "tree,form,calendar",
++            "view_mode": "list,form,calendar",
+             "domain": [("doctor_id", "=", self.id)],
+             "context": {"default_doctor_id": self.id},
+             "target": "current",
+@@ -648,7 +664,7 @@
+     #         "type": "ir.actions.act_window",
+     #         "name": _("Treatment Sessions"),
+     #         "res_model": model_name,
+-    #         "view_mode": "tree,form,kanban,pivot,graph",
++    #         "view_mode": "list,form,kanban,pivot,graph",
+     #         "domain": [("doctor_id", "=", self.id)],
+     #         "target": "current",
+     #     }
+@@ -681,21 +697,24 @@
+     # -------------------------------------------------------------------------
+     # DISPLAY
+     # -------------------------------------------------------------------------
+-    def name_get(self):
+-        res = []
++    @api.depends("name", "license_no")
++    def _compute_display_name(self):
++        """Preserve ClinicOne doctor labels through the Odoo 19 display-name API."""
+         for rec in self:
+             display = rec.name or _("Unnamed")
+             if rec.license_no:
+                 display = f"{display} [{rec.license_no}]"
+-            res.append((rec.id, display))
+-        return res
++            rec.display_name = display
++
++    def name_get(self):
++        """Compatibility wrapper for existing ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=80):
+-        """Improve search by license number and partner name."""
+-        args = args or []
+-        domain = []
++    def name_search(self, name="", domain=None, operator="ilike", limit=80):
++        """Improve search by license number and partner name (Odoo 19 signature)."""
++        domain = list(domain or [])
+         if name:
+-            domain = ["|", ("license_no", operator, name), ("name", operator, name)]
+-        records = self.search(domain + args, limit=limit)
+-        return records.name_get()
++            domain = ["|", ("license_no", operator, name), ("name", operator, name)] + domain
++        records = self.search(domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in records.sudo()]
+--- a/clinic_doctor/models/specialty.py
++++ b/clinic_doctor/models/specialty.py
+@@ -135,12 +135,14 @@
+     # -------------------------------------------------------------------------
+     # SQL CONSTRAINTS
+     # -------------------------------------------------------------------------
+-    _sql_constraints = [
+-        ("code_company_uniq", "unique(code, company_id)",
+-         "Specialty code must be unique per company."),
+-        ("name_company_uniq", "unique(name, company_id)",
+-         "Specialty name must be unique per company."),
+-    ]
++    _code_company_uniq = models.Constraint(
++        "UNIQUE (code, company_id)",
++        "Specialty code must be unique per company.",
++    )
++    _name_company_uniq = models.Constraint(
++        "UNIQUE (name, company_id)",
++        "Specialty name must be unique per company.",
++    )
+ 
+     # -------------------------------------------------------------------------
+     # COMPUTES
+@@ -177,24 +179,26 @@
+     # -------------------------------------------------------------------------
+     # SEARCH UX
+     # -------------------------------------------------------------------------
+-    @api.model
+-    def name_get(self):
+-        res = []
++    @api.depends("complete_name", "name", "code")
++    def _compute_display_name(self):
++        """Preserve hierarchical specialty labels through the Odoo 19 display-name API."""
+         for rec in self:
+             label = rec.complete_name or rec.name or _("Unnamed")
+             if rec.code:
+                 label = f"{label} [{rec.code}]"
+-            res.append((rec.id, label))
+-        return res
++            rec.display_name = label
++
++    def name_get(self):
++        """Compatibility wrapper for existing ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=100):
+-        args = args or []
+-        domain = []
++    def name_search(self, name="", domain=None, operator="ilike", limit=100):
++        domain = list(domain or [])
+         if name:
+-            domain = ["|", ("code", operator, name), ("complete_name", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++            domain = ["|", ("code", operator, name), ("complete_name", operator, name)] + domain
++        recs = self.search(domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+ 
+     # -------------------------------------------------------------------------
+     # ACTIONS (NAVIGATION HELPERS)
+@@ -202,12 +206,17 @@
+     def action_view_doctors(self):
+         """Open doctors (employees) associated with this specialty."""
+         self.ensure_one()
++        # Use the relation owned by this model.  Do not require optional
++        # hr.employee extension fields from another ClinicOne addon.
++        context = {}
++        if "is_doctor" in self.env["hr.employee"]._fields:
++            context["default_is_doctor"] = True
+         return {
+             "type": "ir.actions.act_window",
+             "name": _("Doctors"),
+             "res_model": "hr.employee",
+-            "view_mode": "tree,form,kanban,pivot,graph",
+-            "domain": [("specialty_ids", "in", [self.id]), ("is_doctor", "=", True)],
+-            "context": {"default_is_doctor": True},
++            "view_mode": "list,form,kanban,pivot,graph",
++            "domain": [("id", "in", self.employee_ids.ids)],
++            "context": context,
+             "target": "current",
+         }
+--- a/clinic_doctor/models/schedule_rule.py
++++ b/clinic_doctor/models/schedule_rule.py
+@@ -643,7 +643,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Availability"),
+             "res_model": "clinic.availability.slot",
+-            "view_mode": "calendar,tree,form",
++            "view_mode": "calendar,list,form",
+             "domain": domain,
+             "target": "current",
+         }
+--- a/clinic_doctor/models/availability.py
++++ b/clinic_doctor/models/availability.py
+@@ -194,12 +194,14 @@
+     # -------------------------------------------------------------------------
+     # SQL CONSTRAINTS
+     # -------------------------------------------------------------------------
+-    _sql_constraints = [
+-        ("check_start_end", "CHECK(start < end)", "End time must be greater than Start time."),
+-        ("uniq_doctor_window_company_room",
+-         "unique(doctor_id, company_id, start, end, room_id)",
+-         "A duplicate slot exists for the same doctor, room, and time window."),
+-    ]
++    _check_start_end = models.Constraint(
++        "CHECK (start < end)",
++        "End time must be greater than Start time.",
++    )
++    _uniq_doctor_window_company_room = models.Constraint(
++        "UNIQUE (doctor_id, company_id, start, end, room_id)",
++        "A duplicate slot exists for the same doctor, room, and time window.",
++    )
+ 
+     # -------------------------------------------------------------------------
+     # BASIC CONSTRAINTS & ONCHANGES
+--- a/clinic_doctor/models/leave.py
++++ b/clinic_doctor/models/leave.py
+@@ -194,13 +194,16 @@
+     # -------------------------------------------------------------------------
+     # DISPLAY
+     # -------------------------------------------------------------------------
++    @api.depends("name", "reason", "doctor_id")
++    def _compute_display_name(self):
++        """Preserve ClinicOne leave labels through the Odoo 19 display-name API."""
++        for rec in self:
++            label = rec.name or dict(LEAVE_REASON).get(rec.reason, "Leave")
++            rec.display_name = f"{label} — {rec.doctor_id.display_name}" if rec.doctor_id else label
++
+     def name_get(self):
+-        res = []
+-        for rec in self:
+-            label = rec.name or dict(LEAVE_REASON).get(rec.reason, "Leave")
+-            label = f"{label} — {rec.doctor_id.display_name}" if rec.doctor_id else label
+-            res.append((rec.id, label))
+-        return res
++        """Compatibility wrapper for existing ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+ 
+     # -------------------------------------------------------------------------
+     # HELPERS — DOMAINS & LOOKUPS
+--- a/clinic_doctor/models/appointment.py
++++ b/clinic_doctor/models/appointment.py
+@@ -118,12 +118,12 @@
+         tracking=True,
+         help="Patient contact for this appointment."
+     )
+-    # patient_id = fields.Many2one(
+-    #     "clinic.patient",
+-    #     ondelete="set null",
+-    #     index=True,
+-    #     help="Linked patient if Clinic Patient module is installed."
+-    # )
++    patient_id = fields.Many2one(
++        "clinic.patient",
++        ondelete="set null",
++        index=True,
++        help="Linked ClinicOne patient for this appointment."
++    )
+     slot_id = fields.Many2one(
+         "clinic.availability.slot",
+         ondelete="set null",
+@@ -210,9 +210,10 @@
+     # -------------------------------------------------------------------------
+     # CONSTRAINTS
+     # -------------------------------------------------------------------------
+-    _sql_constraints = [
+-        ("check_start_end", "CHECK(start < end)", "End time must be greater than start time."),
+-    ]
++    _check_start_end = models.Constraint(
++        "CHECK (start < end)",
++        "End time must be greater than start time.",
++    )
+ 
+     # -------------------------------------------------------------------------
+     # COMPUTES
+@@ -593,9 +594,13 @@
+           - Award membership points
+         """
+         for rec in self:
+-            # Close treatment session (if model/field exists)
+-            if rec.treatment_session_id and "state" in rec.treatment_session_id._fields:
+-                rec.treatment_session_id.sudo().write({"state": "done"})
++            # Close a treatment session only when a downstream addon actually
++            # provides the optional field.  The base doctor addon must not
++            # dereference an absent optional integration field.
++            if "treatment_session_id" in rec._fields:
++                treatment_session = rec["treatment_session_id"]
++                if treatment_session and "state" in treatment_session._fields:
++                    treatment_session.sudo().write({"state": "done"})
+             # Auto-invoice (demo behavior) if billing is present and no invoice yet
+             if not rec.invoice_id and "account.move" in self.env:
+                 Param = self.env["ir.config_parameter"].sudo()
+@@ -676,24 +681,26 @@
+     # -------------------------------------------------------------------------
+     # DISPLAY
+     # -------------------------------------------------------------------------
+-    def name_get(self):
+-        res = []
++    @api.depends("name", "doctor_id", "partner_id", "start")
++    def _compute_display_name(self):
++        """Preserve ClinicOne appointment labels through the Odoo 19 display-name API."""
+         for rec in self:
+             doc = rec.doctor_id.display_name if rec.doctor_id else _("Doctor")
+             pat = rec.partner_id.display_name if rec.partner_id else _("Patient")
+             when = fields.Datetime.to_string(rec.start) if rec.start else "?"
+-            label = f"{rec.name or '/'} — {doc} × {pat} — {when}"
+-            res.append((rec.id, label))
+-        return res
++            rec.display_name = f"{rec.name or '/'} — {doc} × {pat} — {when}"
++
++    def name_get(self):
++        """Compatibility wrapper for existing ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=80):
+-        args = args or []
+-        domain = []
++    def name_search(self, name="", domain=None, operator="ilike", limit=80):
++        domain = list(domain or [])
+         if name:
+-            domain = ["|", ("name", operator, name), ("reason", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++            domain = ["|", ("name", operator, name), ("reason", operator, name)] + domain
++        recs = self.search(domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+ 
+     # dari patient_link.py \\\///
+     @api.onchange("partner_id")
+--- a/clinic_doctor/models/res_partner_inherit.py
++++ b/clinic_doctor/models/res_partner_inherit.py
+@@ -252,7 +252,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Doctor Records"),
+             "res_model": "clinic.doctor",
+-            "view_mode": "tree,form,kanban",
++            "view_mode": "list,form,kanban",
+             "domain": [("partner_id", "=", self.id)],
+             "target": "current",
+             "context": {
+@@ -324,7 +324,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Appointments"),
+             "res_model": "clinic.appointment",
+-            "view_mode": "calendar,tree,form,pivot,graph",
++            "view_mode": "calendar,list,form,pivot,graph",
+             "domain": [("doctor_id", "=", doc.id)],
+             "target": "current",
+         }
+@@ -360,7 +360,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Availability"),
+             "res_model": "clinic.availability.slot",
+-            "view_mode": "calendar,tree,form",
++            "view_mode": "calendar,list,form",
+             "domain": domain,
+             "target": "current",
+         }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_report_metric_search" model="ir.ui.view">
+        <field name="name">clinic.report.metric.search</field>
+        <field name="model">clinic.report.metric</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="run_id"/>
+                <field name="definition_id"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="metric_type"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <group>
+                    <filter name="group_run" string="Report Run" context="{'group_by':'run_id'}"/>
+                    <filter name="group_definition" string="Report" context="{'group_by':'definition_id'}"/>
+                    <filter name="group_type" string="Metric Type" context="{'group_by':'metric_type'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_report_metric_list" model="ir.ui.view">
+        <field name="name">clinic.report.metric.list</field>
+        <field name="model">clinic.report.metric</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="run_id"/>
+                <field name="definition_id"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="metric_type" widget="badge"/>
+                <field name="value"/>
+                <field name="display_value"/>
+                <field name="branch_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_run" type="object" string="Open Run" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_report_metric_form" model="ir.ui.view">
+        <field name="name">clinic.report.metric.form</field>
+        <field name="model">clinic.report.metric</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Metric">
+                            <field name="run_id"/>
+                            <field name="definition_id"/>
+                            <field name="code"/>
+                            <field name="metric_type"/>
+                            <field name="value"/>
+                            <field name="display_value"/>
+                            <field name="note"/>
+                        </group>
+                        <group string="Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2">
+                        <button name="action_open_run" type="object" string="Open Report Run" class="btn-secondary"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_report_metric_pivot" model="ir.ui.view">
+        <field name="name">clinic.report.metric.pivot</field>
+        <field name="model">clinic.report.metric</field>
+        <field name="arch" type="xml">
+            <pivot string="Report Metric Analysis">
+                <field name="definition_id" type="row"/>
+                <field name="metric_type" type="col"/>
+                <field name="value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_report_metric_graph" model="ir.ui.view">
+        <field name="name">clinic.report.metric.graph</field>
+        <field name="model">clinic.report.metric</field>
+        <field name="arch" type="xml">
+            <graph string="Report Metrics" type="bar">
+                <field name="definition_id"/>
+                <field name="value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_report_metric" model="ir.actions.act_window">
+        <field name="name">Report Metrics</field>
+        <field name="res_model">clinic.report.metric</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_report_metric_search"/>
+    </record>
+</odoo>

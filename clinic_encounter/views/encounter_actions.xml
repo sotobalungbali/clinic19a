@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="action_clinic_adverse_event" model="ir.actions.act_window">
+    <field name="name">Adverse Event / Near Miss</field>
+    <field name="res_model">clinic.adverse.event</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Adverse Event / Near Miss records.</p></field>
+  </record>
+
+  <record id="action_clinic_ae_action" model="ir.actions.act_window">
+    <field name="name">Adverse Event Action (CAPA)</field>
+    <field name="res_model">clinic.ae.action</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Adverse Event Action (CAPA) records.</p></field>
+  </record>
+
+  <record id="action_clinic_ae_category" model="ir.actions.act_window">
+    <field name="name">Adverse Event Category</field>
+    <field name="res_model">clinic.ae.category</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Adverse Event Category records.</p></field>
+  </record>
+
+  <record id="action_clinic_ae_factor" model="ir.actions.act_window">
+    <field name="name">Adverse Event Contributing Factor</field>
+    <field name="res_model">clinic.ae.factor</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Adverse Event Contributing Factor records.</p></field>
+  </record>
+
+  <record id="action_clinic_ae_followup" model="ir.actions.act_window">
+    <field name="name">Adverse Event Follow-up / Note</field>
+    <field name="res_model">clinic.ae.followup</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Adverse Event Follow-up / Note records.</p></field>
+  </record>
+
+  <record id="action_clinic_ae_type" model="ir.actions.act_window">
+    <field name="name">Adverse Event Type</field>
+    <field name="res_model">clinic.ae.type</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Adverse Event Type records.</p></field>
+  </record>
+
+  <record id="action_clinic_anesthesia_airway" model="ir.actions.act_window">
+    <field name="name">Anesthesia Airway Event</field>
+    <field name="res_model">clinic.anesthesia.airway</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Anesthesia Airway Event records.</p></field>
+  </record>
+
+  <record id="action_clinic_anesthesia_case" model="ir.actions.act_window">
+    <field name="name">Anesthesia Case</field>
+    <field name="res_model">clinic.anesthesia.case</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Anesthesia Case records.</p></field>
+  </record>
+
+  <record id="action_clinic_anesthesia_event" model="ir.actions.act_window">
+    <field name="name">Anesthesia Intraop Event/Note</field>
+    <field name="res_model">clinic.anesthesia.event</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Anesthesia Intraop Event/Note records.</p></field>
+  </record>
+
+  <record id="action_clinic_anesthesia_fluid" model="ir.actions.act_window">
+    <field name="name">Anesthesia Fluid In/Out</field>
+    <field name="res_model">clinic.anesthesia.fluid</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Anesthesia Fluid In/Out records.</p></field>
+  </record>
+
+  <record id="action_clinic_anesthesia_medication" model="ir.actions.act_window">
+    <field name="name">Anesthesia Medication Line</field>
+    <field name="res_model">clinic.anesthesia.medication</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Anesthesia Medication Line records.</p></field>
+  </record>
+
+  <record id="action_clinic_anesthesia_vital" model="ir.actions.act_window">
+    <field name="name">Anesthesia Vital Sign</field>
+    <field name="res_model">clinic.anesthesia.vital</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Anesthesia Vital Sign records.</p></field>
+  </record>
+
+  <record id="action_clinic_audit_log" model="ir.actions.act_window">
+    <field name="name">ClinicOne Audit Log</field>
+    <field name="res_model">clinic.audit.log</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review ClinicOne Audit Log records.</p></field>
+  </record>
+
+  <record id="action_clinic_checklist" model="ir.actions.act_window">
+    <field name="name">Checklist</field>
+    <field name="res_model">clinic.checklist</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Checklist records.</p></field>
+  </record>
+
+  <record id="action_clinic_checklist_item" model="ir.actions.act_window">
+    <field name="name">Checklist Item</field>
+    <field name="res_model">clinic.checklist.item</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Checklist Item records.</p></field>
+  </record>
+
+  <record id="action_clinic_checklist_template" model="ir.actions.act_window">
+    <field name="name">Checklist Template</field>
+    <field name="res_model">clinic.checklist.template</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Checklist Template records.</p></field>
+  </record>
+
+  <record id="action_clinic_checklist_template_item" model="ir.actions.act_window">
+    <field name="name">Checklist Template Item</field>
+    <field name="res_model">clinic.checklist.template.item</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Checklist Template Item records.</p></field>
+  </record>
+
+  <record id="action_clinic_checklist_template_item_option" model="ir.actions.act_window">
+    <field name="name">Checklist Template Item Option</field>
+    <field name="res_model">clinic.checklist.template.item.option</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Checklist Template Item Option records.</p></field>
+  </record>
+
+  <record id="action_clinic_consent_document" model="ir.actions.act_window">
+    <field name="name">Consent Document</field>
+    <field name="res_model">clinic.consent.document</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Consent Document records.</p></field>
+  </record>
+
+  <record id="action_clinic_consent_risk" model="ir.actions.act_window">
+    <field name="name">Consent Risk/Disclosure (Document Line)</field>
+    <field name="res_model">clinic.consent.risk</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Consent Risk/Disclosure (Document Line) records.</p></field>
+  </record>
+
+  <record id="action_clinic_consent_risk_template" model="ir.actions.act_window">
+    <field name="name">Consent Risk/Disclosure (Template)</field>
+    <field name="res_model">clinic.consent.risk.template</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Consent Risk/Disclosure (Template) records.</p></field>
+  </record>
+
+  <record id="action_clinic_consent_template" model="ir.actions.act_window">
+    <field name="name">clinic.consent.template</field>
+    <field name="res_model">clinic.consent.template</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review clinic.consent.template records.</p></field>
+  </record>
+
+  <record id="action_clinic_diagnosis" model="ir.actions.act_window">
+    <field name="name">Clinical Diagnosis</field>
+    <field name="res_model">clinic.diagnosis</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Clinical Diagnosis records.</p></field>
+  </record>
+
+  <record id="action_clinic_diagnosis_category" model="ir.actions.act_window">
+    <field name="name">Diagnosis Category</field>
+    <field name="res_model">clinic.diagnosis.category</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Diagnosis Category records.</p></field>
+  </record>
+
+  <record id="action_clinic_encounter" model="ir.actions.act_window">
+    <field name="name">Clinic Encounter</field>
+    <field name="res_model">clinic.encounter</field>
+    <field name="view_mode">list,calendar,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Clinic Encounter records.</p></field>
+  </record>
+
+  <record id="action_clinic_encounter_procedure" model="ir.actions.act_window">
+    <field name="name">Encounter Procedure Plan</field>
+    <field name="res_model">clinic.encounter.procedure</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Encounter Procedure Plan records.</p></field>
+  </record>
+
+  <record id="action_clinic_encounter_stage" model="ir.actions.act_window">
+    <field name="name">Encounter Stage</field>
+    <field name="res_model">clinic.encounter.stage</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Encounter Stage records.</p></field>
+  </record>
+
+  <record id="action_clinic_execution_log" model="ir.actions.act_window">
+    <field name="name">Procedure Session Execution Log</field>
+    <field name="res_model">clinic.execution.log</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Procedure Session Execution Log records.</p></field>
+  </record>
+
+  <record id="action_clinic_procedure_catalog" model="ir.actions.act_window">
+    <field name="name">Procedure Catalog</field>
+    <field name="res_model">clinic.procedure.catalog</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Procedure Catalog records.</p></field>
+  </record>
+
+  <record id="action_clinic_procedure_category" model="ir.actions.act_window">
+    <field name="name">Procedure Category</field>
+    <field name="res_model">clinic.procedure.category</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Procedure Category records.</p></field>
+  </record>
+
+  <record id="action_clinic_procedure_consumable" model="ir.actions.act_window">
+    <field name="name">Procedure Consumable</field>
+    <field name="res_model">clinic.procedure.consumable</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Procedure Consumable records.</p></field>
+  </record>
+
+  <record id="action_clinic_procedure_session" model="ir.actions.act_window">
+    <field name="name">Procedure Session</field>
+    <field name="res_model">clinic.procedure.session</field>
+    <field name="view_mode">list,calendar,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Procedure Session records.</p></field>
+  </record>
+
+  <record id="action_clinic_procedure_step" model="ir.actions.act_window">
+    <field name="name">Procedure Step (Template)</field>
+    <field name="res_model">clinic.procedure.step</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Procedure Step (Template) records.</p></field>
+  </record>
+
+  <record id="action_clinic_procedure_step_checklist" model="ir.actions.act_window">
+    <field name="name">Procedure Step Checklist (Template)</field>
+    <field name="res_model">clinic.procedure.step.checklist</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Procedure Step Checklist (Template) records.</p></field>
+  </record>
+
+  <record id="action_clinic_procedure_tag" model="ir.actions.act_window">
+    <field name="name">Procedure Tag</field>
+    <field name="res_model">clinic.procedure.tag</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Procedure Tag records.</p></field>
+  </record>
+
+  <record id="action_clinic_result_document" model="ir.actions.act_window">
+    <field name="name">Clinical Result Document</field>
+    <field name="res_model">clinic.result.document</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Clinical Result Document records.</p></field>
+  </record>
+
+  <record id="action_clinic_result_group" model="ir.actions.act_window">
+    <field name="name">Result Parameter Group</field>
+    <field name="res_model">clinic.result.group</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Result Parameter Group records.</p></field>
+  </record>
+
+  <record id="action_clinic_result_value" model="ir.actions.act_window">
+    <field name="name">Clinical Result Value</field>
+    <field name="res_model">clinic.result.value</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review Clinical Result Value records.</p></field>
+  </record>
+
+  <record id="action_clinic_soap_note" model="ir.actions.act_window">
+    <field name="name">SOAP Note</field>
+    <field name="res_model">clinic.soap.note</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review SOAP Note records.</p></field>
+  </record>
+
+  <record id="action_clinic_soap_tag" model="ir.actions.act_window">
+    <field name="name">SOAP Tag</field>
+    <field name="res_model">clinic.soap.tag</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review SOAP Tag records.</p></field>
+  </record>
+
+  <record id="action_clinic_soap_template" model="ir.actions.act_window">
+    <field name="name">SOAP Template</field>
+    <field name="res_model">clinic.soap.template</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create or review SOAP Template records.</p></field>
+  </record>
+
+</odoo>

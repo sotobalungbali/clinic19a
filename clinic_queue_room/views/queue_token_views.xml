@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_queue_token_search" model="ir.ui.view">
+        <field name="name">clinic.queue.token.search</field>
+        <field name="model">clinic.queue.token</field>
+        <field name="arch" type="xml">
+            <search string="Search Queue Tokens">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="room_id"/>
+                <field name="token_date"/>
+                <field name="state"/>
+                <filter name="filter_today" string="Today" domain="[('token_date','=',context_today())]"/>
+                <filter name="filter_open" string="Open" domain="[('state','in',['draft','issued','called','skipped'])]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_series" string="Series" context="{'group_by':'series'}"/>
+                    <filter name="group_type" string="Queue Type" context="{'group_by':'queue_type'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by':'token_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_queue_token_list" model="ir.ui.view">
+        <field name="name">clinic.queue.token.list</field>
+        <field name="model">clinic.queue.token</field>
+        <field name="arch" type="xml">
+            <list string="Queue Tokens"
+                  decoration-info="state == 'called'"
+                  decoration-success="state == 'served'"
+                  decoration-muted="state in ('cancelled','expired')">
+                <field name="code"/>
+                <field name="token_date"/>
+                <field name="series"/>
+                <field name="token_number"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="room_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_queue_token_form" model="ir.ui.view">
+        <field name="name">clinic.queue.token.form</field>
+        <field name="model">clinic.queue.token</field>
+        <field name="arch" type="xml">
+            <form string="Queue Token">
+                <header>
+                    <button name="action_issue" type="object" string="Issue" class="btn-primary"
+                            invisible="state not in ('draft','cancelled','expired')"/>
+                    <button name="action_call" type="object" string="Call" class="btn-primary"
+                            invisible="state not in ('issued','skipped')"/>
+                    <button name="action_skip" type="object" string="Skip" invisible="state != 'called'"/>
+                    <button name="action_serve" type="object" string="Serve" class="btn-primary"
+                            invisible="state != 'called'"/>
+                    <button name="action_create_queue" type="object" string="Create / Open Queue"
+                            invisible="state in ('cancelled','expired')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('served','cancelled')"/>
+                    <button name="action_expire" type="object" string="Expire"
+                            invisible="state in ('served','cancelled','expired')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,issued,called,skipped,served,cancelled,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_create_queue" type="object" class="oe_stat_button"
+                                icon="fa-list" invisible="not queue_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Queue</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="code"/>
+                        <h1><field name="code" readonly="1"/></h1>
+                        <field name="name" readonly="1"/>
+                    </div>
+                    <group>
+                        <group string="Token">
+                            <field name="token_date"/>
+                            <field name="series"/>
+                            <field name="token_number" readonly="1"/>
+                            <field name="queue_type"/>
+                            <field name="priority"/>
+                            <field name="channel"/>
+                        </group>
+                        <group string="Patient &amp; Routing">
+                            <field name="patient_id"/>
+                            <field name="appointment_id"/>
+                            <field name="treatment_id"/>
+                            <field name="doctor_id"/>
+                            <field name="room_type_id"/>
+                            <field name="room_id"/>
+                            <field name="stage_id"/>
+                            <field name="queue_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lifecycle">
+                            <group>
+                                <group>
+                                    <field name="issued_at"/>
+                                    <field name="called_at"/>
+                                    <field name="served_at"/>
+                                </group>
+                                <group>
+                                    <field name="cancelled_at"/>
+                                    <field name="expired_at"/>
+                                    <field name="called_by_id"/>
+                                    <field name="served_by_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Display &amp; Printing">
+                            <group>
+                                <field name="display_channel"/>
+                                <field name="kiosk_ref"/>
+                                <field name="position_in_series" readonly="1"/>
+                                <field name="printed"/>
+                                <field name="print_count" readonly="1"/>
+                                <field name="last_printed_at" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Notes"><field name="notes"/></page>
+                    </notebook>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_queue_token" model="ir.actions.act_window">
+        <field name="name">Queue Tokens</field>
+        <field name="res_model">clinic.queue.token</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,1106 @@
+<odoo>
+    <record id="view_clinical_imaging_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.search</field>
+        <field name="model">clinical.imaging</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="device_id"/>
+                <field name="imaging_type_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="priority"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_device_id" string="Imaging Device" context="{'group_by':'device_id'}"/>
+                    <filter name="group_imaging_type_id" string="Imaging Type" context="{'group_by':'imaging_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.list</field>
+        <field name="model">clinical.imaging</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="device_id"/>
+                <field name="imaging_type_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.form</field>
+        <field name="model">clinical.imaging</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging">
+            <header>
+                <button name="action_request" type="object" string="Request" class="oe_highlight"/>
+                <button name="action_schedule" type="object" string="Schedule"/>
+                <button name="action_start" type="object" string="Start"/>
+                <button name="action_complete" type="object" string="Complete"/>
+                <button name="action_review" type="object" string="Review"/>
+                <button name="action_cancel" type="object" string="Cancel"/>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_studies" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Studies</span></div>
+                    </button>
+                    <button name="action_open_results" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Results</span></div>
+                    </button>
+                    <button name="action_open_findings" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Findings</span></div>
+                    </button>
+                    <button name="action_open_invoice" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Invoice</span></div>
+                    </button>
+                    <button name="action_open_appointment" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Appointment</span></div>
+                    </button>
+                    <button name="action_open_encounter" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Encounter</span></div>
+                    </button>
+                    <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Attachments</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="technician_id"/>
+                            <field name="appointment_id"/>
+                            <field name="encounter_id"/>
+                            <field name="treatment_id"/>
+                            <field name="procedure_session_id"/>
+                            <field name="prescription_order_id"/>
+                            <field name="consent_id"/>
+                            <field name="imaging_type_id"/>
+                            <field name="device_id"/>
+                            <field name="product_id"/>
+                            <field name="priority"/>
+                            <field name="currency_id"/>
+                            <field name="invoice_id"/>
+                            <field name="latest_result_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="dicom_study_uid"/>
+                                <field name="dicom_accession_number"/>
+                                <field name="request_datetime"/>
+                                <field name="scheduled_datetime"/>
+                                <field name="performed_datetime"/>
+                                <field name="reviewed_datetime"/>
+                                <field name="expected_done_datetime"/>
+                                <field name="duration_minutes"/>
+                                <field name="is_overdue"/>
+                                <field name="main_filename"/>
+                                <field name="attachment_count"/>
+                                <field name="quantity"/>
+                            </group>
+                            <group>
+                                <field name="price_unit"/>
+                                <field name="price_subtotal"/>
+                                <field name="is_billable"/>
+                                <field name="billing_state"/>
+                                <field name="portal_published"/>
+                                <field name="privacy_level"/>
+                                <field name="study_count"/>
+                                <field name="device_downtime_count"/>
+                                <field name="device_calibration_count"/>
+                                <field name="finding_count"/>
+                                <field name="result_count"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="study_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="clinical_indication"/>
+                            <field name="notes"/>
+                            <field name="findings_summary"/>
+                            <field name="recommendations"/>
+                            <field name="main_file"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_study_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.study.search</field>
+        <field name="model">clinical.imaging.study</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="device_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="modality"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_modality" string="Modality" context="{'group_by':'modality'}"/>
+                    <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_device_id" string="Imaging Device" context="{'group_by':'device_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_study_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.study.list</field>
+        <field name="model">clinical.imaging.study</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="device_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="modality"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_study_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.study.form</field>
+        <field name="model">clinical.imaging.study</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Study">
+            <header>
+                <button name="action_mark_acquired" type="object" string="Mark Acquired" class="oe_highlight"/>
+                <button name="action_verify" type="object" string="Verify"/>
+                <button name="action_archive" type="object" string="Archive"/>
+                <button name="action_cancel" type="object" string="Cancel"/>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_series" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Series</span></div>
+                    </button>
+                    <button name="action_open_images" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Images</span></div>
+                    </button>
+                    <button name="action_open_findings" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Findings</span></div>
+                    </button>
+                    <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Attachments</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="imaging_id"/>
+                            <field name="patient_id"/>
+                            <field name="appointment_id"/>
+                            <field name="encounter_id"/>
+                            <field name="treatment_id"/>
+                            <field name="procedure_session_id"/>
+                            <field name="modality"/>
+                            <field name="referring_doctor_id"/>
+                            <field name="reading_radiologist_id"/>
+                            <field name="contrast_agent_product_id"/>
+                            <field name="sedation_agent_product_id"/>
+                            <field name="device_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="study_datetime"/>
+                                <field name="study_description"/>
+                                <field name="body_part"/>
+                                <field name="laterality"/>
+                                <field name="contrast_used"/>
+                                <field name="contrast_volume_ml"/>
+                                <field name="sedation_used"/>
+                                <field name="manufacturer"/>
+                                <field name="station_name"/>
+                            </group>
+                            <group>
+                                <field name="dicom_study_uid"/>
+                                <field name="dicom_accession_number"/>
+                                <field name="series_count"/>
+                                <field name="image_count"/>
+                                <field name="dicom_bundle_filename"/>
+                                <field name="attachment_count"/>
+                                <field name="pacs_status"/>
+                                <field name="pacs_viewer_url"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="series_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="primary_preview"/>
+                            <field name="dicom_bundle"/>
+                            <field name="pacs_message_last"/>
+                            <field name="notes"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.search</field>
+        <field name="model">clinical.imaging.series</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="study_id"/>
+                <field name="device_id"/>
+                <field name="modality"/>
+                <field name="state"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_modality" string="Modality" context="{'group_by':'modality'}"/>
+                    <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_device_id" string="Imaging Device" context="{'group_by':'device_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.list</field>
+        <field name="model">clinical.imaging.series</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="study_id"/>
+                <field name="device_id"/>
+                <field name="modality"/>
+                <field name="state"/>
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.form</field>
+        <field name="model">clinical.imaging.series</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Series">
+            <header>
+                <button name="action_mark_acquired" type="object" string="Mark Acquired" class="oe_highlight"/>
+                <button name="action_mark_processed" type="object" string="Mark Processed"/>
+                <button name="action_archive" type="object" string="Archive"/>
+                <button name="action_cancel" type="object" string="Cancel"/>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_images" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Images</span></div>
+                    </button>
+                    <button name="action_open_findings" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Findings</span></div>
+                    </button>
+                    <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Attachments</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="study_id"/>
+                            <field name="imaging_id"/>
+                            <field name="patient_id"/>
+                            <field name="modality"/>
+                            <field name="protocol_step_id"/>
+                            <field name="device_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="series_datetime"/>
+                                <field name="series_description"/>
+                                <field name="sequence_name"/>
+                                <field name="body_part"/>
+                                <field name="laterality"/>
+                                <field name="plane"/>
+                                <field name="patient_position"/>
+                                <field name="contrast_phase"/>
+                                <field name="manufacturer"/>
+                                <field name="station_name"/>
+                                <field name="slice_thickness_mm"/>
+                                <field name="spacing_mm"/>
+                                <field name="matrix"/>
+                                <field name="fov_mm"/>
+                                <field name="kvp"/>
+                                <field name="ma"/>
+                                <field name="exposure_time_ms"/>
+                                <field name="ctdi_vol_mgy"/>
+                                <field name="dlp_mgy_cm"/>
+                                <field name="dap_gy_cm2"/>
+                            </group>
+                            <group>
+                                <field name="fluoro_time_min"/>
+                                <field name="tr_ms"/>
+                                <field name="te_ms"/>
+                                <field name="ti_ms"/>
+                                <field name="flip_angle_deg"/>
+                                <field name="bandwidth_hz"/>
+                                <field name="field_strength_t"/>
+                                <field name="probe"/>
+                                <field name="frequency_mhz"/>
+                                <field name="radiotracer"/>
+                                <field name="tracer_dose_mbq"/>
+                                <field name="dicom_series_uid"/>
+                                <field name="series_number"/>
+                                <field name="instance_count"/>
+                                <field name="key_image_filename"/>
+                                <field name="attachment_count"/>
+                                <field name="pacs_status"/>
+                                <field name="pacs_viewer_url"/>
+                                <field name="quality_score"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="image_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="key_image"/>
+                            <field name="pacs_message_last"/>
+                            <field name="quality_notes"/>
+                            <field name="notes"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.search</field>
+        <field name="model">clinical.imaging.image</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="study_id"/>
+                <field name="series_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.list</field>
+        <field name="model">clinical.imaging.image</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="study_id"/>
+                <field name="series_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.form</field>
+        <field name="model">clinical.imaging.image</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Image">
+            <header>
+                <button name="action_mark_acquired" type="object" string="Mark Acquired" class="oe_highlight"/>
+                <button name="action_mark_processed" type="object" string="Mark Processed"/>
+                <button name="action_set_as_key" type="object" string="Set Key Image"/>
+                <button name="action_archive" type="object" string="Archive"/>
+                <button name="action_cancel" type="object" string="Cancel"/>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_add_to_result" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Add to Result</span></div>
+                    </button>
+                    <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Attachments</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="series_id"/>
+                            <field name="study_id"/>
+                            <field name="imaging_id"/>
+                            <field name="patient_id"/>
+                            <field name="appointment_id"/>
+                            <field name="encounter_id"/>
+                            <field name="treatment_id"/>
+                            <field name="procedure_session_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="dicom_instance_uid"/>
+                                <field name="dicom_sop_class_uid"/>
+                                <field name="instance_number"/>
+                                <field name="frame_count"/>
+                                <field name="acquisition_datetime"/>
+                                <field name="rows"/>
+                                <field name="columns"/>
+                                <field name="pixel_spacing_mm"/>
+                                <field name="slice_thickness_mm"/>
+                                <field name="slice_location_mm"/>
+                                <field name="image_position_patient"/>
+                                <field name="image_orientation_patient"/>
+                                <field name="photometric_interpretation"/>
+                                <field name="bits_allocated"/>
+                                <field name="bits_stored"/>
+                                <field name="high_bit"/>
+                                <field name="rescale_intercept"/>
+                            </group>
+                            <group>
+                                <field name="rescale_slope"/>
+                                <field name="window_center"/>
+                                <field name="window_width"/>
+                                <field name="resolution"/>
+                                <field name="file_thumbnail_filename"/>
+                                <field name="file_image_filename"/>
+                                <field name="file_dicom_filename"/>
+                                <field name="attachment_count"/>
+                                <field name="is_key"/>
+                                <field name="quality_score"/>
+                                <field name="tag_count"/>
+                                <field name="annotation_count"/>
+                                <field name="portal_published"/>
+                                <field name="privacy_level"/>
+                                <field name="pacs_status"/>
+                                <field name="pacs_viewer_url"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="tag_ids"/>
+                            <field name="annotation_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="file_thumbnail"/>
+                            <field name="file_image"/>
+                            <field name="file_dicom"/>
+                            <field name="quality_notes"/>
+                            <field name="notes"/>
+                            <field name="pacs_message_last"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.search</field>
+        <field name="model">clinical.imaging.finding</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="study_id"/>
+                <field name="series_id"/>
+                <field name="encounter_id"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_category" string="Diagnostic Category" context="{'group_by':'category'}"/>
+                    <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.list</field>
+        <field name="model">clinical.imaging.finding</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="study_id"/>
+                <field name="series_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.form</field>
+        <field name="model">clinical.imaging.finding</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Finding">
+            <header>
+                <button name="action_submit_review" type="object" string="Submit Review" class="oe_highlight"/>
+                <button name="action_approve" type="object" string="Approve"/>
+                <button name="action_reject" type="object" string="Reject"/>
+                <button name="action_resolve" type="object" string="Resolve"/>
+                <button name="action_archive" type="object" string="Archive"/>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_add_to_result" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Add to Result</span></div>
+                    </button>
+                    <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Attachments</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="display_name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="imaging_id"/>
+                            <field name="study_id"/>
+                            <field name="series_id"/>
+                            <field name="patient_id"/>
+                            <field name="appointment_id"/>
+                            <field name="encounter_id"/>
+                            <field name="treatment_id"/>
+                            <field name="procedure_session_id"/>
+                            <field name="category"/>
+                            <field name="author_doctor_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="result_count"/>
+                                <field name="birads"/>
+                                <field name="lirads"/>
+                                <field name="pirads"/>
+                                <field name="lungrads"/>
+                                <field name="severity"/>
+                                <field name="trend"/>
+                                <field name="body_region"/>
+                                <field name="organ"/>
+                                <field name="organ_segment"/>
+                                <field name="side"/>
+                                <field name="location_notes"/>
+                                <field name="long_axis_mm"/>
+                            </group>
+                            <group>
+                                <field name="short_axis_mm"/>
+                                <field name="volume_mm3"/>
+                                <field name="density_hu"/>
+                                <field name="suv_max"/>
+                                <field name="suv_mean"/>
+                                <field name="measure_count"/>
+                                <field name="code_system"/>
+                                <field name="code_desc"/>
+                                <field name="attachment_count"/>
+                                <field name="portal_published"/>
+                                <field name="privacy_level"/>
+                                <field name="created_datetime"/>
+                                <field name="verified_datetime"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="image_ids"/>
+                            <field name="annotation_ids"/>
+                            <field name="result_ids"/>
+                            <field name="tags_ids"/>
+                            <field name="measure_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_request_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.request.search</field>
+        <field name="model">clinical.imaging.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_request_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.request.list</field>
+        <field name="model">clinical.imaging.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_request_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.request.form</field>
+        <field name="model">clinical.imaging.request</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Request">
+            <header>
+                <button name="action_submit" type="object" string="Submit" class="oe_highlight"/>
+                <button name="action_approve" type="object" string="Approve"/>
+                <button name="action_set_in_progress" type="object" string="Start"/>
+                <button name="action_create_imaging" type="object" string="Create Imaging"/>
+                <button name="action_mark_done" type="object" string="Mark Done"/>
+                <button name="action_reject" type="object" string="Reject"/>
+                <button name="action_cancel" type="object" string="Cancel"/>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_created_imaging" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Created Imaging</span></div>
+                    </button>
+                    <button name="action_open_invoice" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Invoice</span></div>
+                    </button>
+                    <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Attachments</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="patient_id"/>
+                            <field name="ordering_doctor_id"/>
+                            <field name="responsible_doctor_id"/>
+                            <field name="technician_id"/>
+                            <field name="appointment_id"/>
+                            <field name="encounter_id"/>
+                            <field name="treatment_id"/>
+                            <field name="procedure_session_id"/>
+                            <field name="prescription_order_id"/>
+                            <field name="consent_id"/>
+                            <field name="priority"/>
+                            <field name="currency_id"/>
+                            <field name="fiscal_position_id"/>
+                            <field name="invoice_id"/>
+                            <field name="plan_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="request_datetime"/>
+                                <field name="desired_datetime"/>
+                                <field name="expiry_date"/>
+                                <field name="line_count"/>
+                                <field name="created_imaging_count"/>
+                                <field name="amount_untaxed"/>
+                                <field name="amount_tax"/>
+                                <field name="amount_total"/>
+                            </group>
+                            <group>
+                                <field name="is_billable"/>
+                                <field name="billing_state"/>
+                                <field name="portal_published"/>
+                                <field name="attachment_count"/>
+                                <field name="is_overdue"/>
+                                <field name="consent_required"/>
+                                <field name="consent_ok"/>
+                                <field name="consent_scope_needed"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="line_ids"/>
+                            <field name="created_imaging_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="clinical_indication"/>
+                            <field name="notes"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.search</field>
+        <field name="model">clinical.imaging.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.list</field>
+        <field name="model">clinical.imaging.result</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_id"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.form</field>
+        <field name="model">clinical.imaging.result</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Result">
+            <header>
+                <button name="action_set_preliminary" type="object" string="Preliminary" class="oe_highlight"/>
+                <button name="action_finalize_and_sign" type="object" string="Finalize &amp; Sign"/>
+                <button name="action_amend" type="object" string="Amend"/>
+                <button name="action_cancel" type="object" string="Cancel"/>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_findings" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Findings</span></div>
+                    </button>
+                    <button name="action_open_key_images" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Key Images</span></div>
+                    </button>
+                    <button name="action_print_report" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Print Report</span></div>
+                    </button>
+                    <button name="action_send_result_email" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Send Result</span></div>
+                    </button>
+                    <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Attachments</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="imaging_id"/>
+                            <field name="patient_id"/>
+                            <field name="appointment_id"/>
+                            <field name="encounter_id"/>
+                            <field name="treatment_id"/>
+                            <field name="procedure_session_id"/>
+                            <field name="prescription_order_id"/>
+                            <field name="consent_id"/>
+                            <field name="author_doctor_id"/>
+                            <field name="co_signer_id"/>
+                            <field name="report_template_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="signed_datetime"/>
+                                <field name="amended_datetime"/>
+                                <field name="version"/>
+                                <field name="result_datetime"/>
+                                <field name="finding_count"/>
+                                <field name="key_image_count"/>
+                            </group>
+                            <group>
+                                <field name="quality_score"/>
+                                <field name="report_filename"/>
+                                <field name="dicom_bundle_filename"/>
+                                <field name="attachment_count"/>
+                                <field name="portal_published"/>
+                                <field name="privacy_level"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="finding_ids"/>
+                            <field name="key_image_ids"/>
+                            <field name="dose_line_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="technique"/>
+                            <field name="comparison"/>
+                            <field name="findings"/>
+                            <field name="impression"/>
+                            <field name="recommendations"/>
+                            <field name="quality_notes"/>
+                            <field name="report_file"/>
+                            <field name="dicom_bundle"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_imaging_plan_search" model="ir.ui.view">
+        <field name="name">clinic.treatment.imaging.plan.search</field>
+        <field name="model">clinic.treatment.imaging.plan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="request_id"/>
+                <field name="result_id"/>
+                <field name="device_id"/>
+                <field name="imaging_type_id"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_modality" string="Modality" context="{'group_by':'modality'}"/>
+                    <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_device_id" string="Preferred Device" context="{'group_by':'device_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_imaging_plan_list" model="ir.ui.view">
+        <field name="name">clinic.treatment.imaging.plan.list</field>
+        <field name="model">clinic.treatment.imaging.plan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="imaging_id"/>
+                <field name="request_id"/>
+                <field name="result_id"/>
+                <field name="device_id"/>
+                <field name="imaging_type_id"/>
+                <field name="encounter_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_imaging_plan_form" model="ir.ui.view">
+        <field name="name">clinic.treatment.imaging.plan.form</field>
+        <field name="model">clinic.treatment.imaging.plan</field>
+        <field name="arch" type="xml">
+        <form string="Treatment Imaging Plan">
+            <header>
+                <button name="action_mark_requested" type="object" string="Requested" class="oe_highlight"/>
+                <button name="action_mark_in_progress" type="object" string="Mark In Progress"/>
+                <button name="action_mark_done" type="object" string="Mark Done"/>
+                <button name="action_cancel" type="object" string="Cancel"/>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_request" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Request</span></div>
+                    </button>
+                    <button name="action_open_imaging" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Imaging</span></div>
+                    </button>
+                    <button name="action_open_result" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Result</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="treatment_id"/>
+                            <field name="patient_id"/>
+                            <field name="appointment_id"/>
+                            <field name="encounter_id"/>
+                            <field name="requesting_doctor_id"/>
+                            <field name="imaging_type_id"/>
+                            <field name="modality"/>
+                            <field name="modality_id"/>
+                            <field name="device_id"/>
+                            <field name="priority"/>
+                            <field name="request_id"/>
+                            <field name="imaging_id"/>
+                            <field name="result_id"/>
+                            <field name="created_by_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="planned_datetime"/>
+                            </group>
+                            <group>
+                                <field name="created_datetime"/>
+                                <field name="last_transition"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="request_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="indication"/>
+                            <field name="instructions"/>
+                            <field name="notes"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+</odoo>

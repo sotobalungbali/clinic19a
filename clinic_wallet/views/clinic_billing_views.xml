@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_billing_invoice_wallet" model="ir.ui.view">
+        <field name="name">clinic.billing.invoice.form.wallet</field>
+        <field name="model">clinic.billing.invoice</field>
+        <field name="inherit_id" ref="clinic_billing.view_clinic_billing_invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_wallet_transactions" type="object" class="oe_stat_button" icon="fa-credit-card" invisible="not wallet_transaction_count">
+                    <field name="wallet_transaction_count" widget="statinfo" string="Wallet Tx"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="before">
+                <button name="action_wallet_reserve_now" type="object" string="Reserve Wallet" groups="clinic_wallet.group_wallet_accountant" invisible="not use_wallet or state not in ('draft','confirmed')"/>
+                <button name="action_wallet_release_now" type="object" string="Release Wallet" groups="clinic_wallet.group_wallet_accountant" invisible="not wallet_reserved or state not in ('draft','confirmed')"/>
+            </xpath>
+            <xpath expr="//page[@name='billing_lines']" position="after">
+                <page string="Wallet Settlement" name="wallet_settlement">
+                    <group>
+                        <group string="Settlement Instruction">
+                            <field name="use_wallet" readonly="state not in ('draft','confirmed')"/>
+                            <field name="wallet_amount" readonly="not use_wallet or state not in ('draft','confirmed')"/>
+                            <field name="wallet_reserved" readonly="1"/>
+                            <field name="wallet_info" readonly="1"/>
+                        </group>
+                        <group string="Controls">
+                            <button name="action_wallet_reserve_now" type="object" string="Reserve Funds" class="btn-primary" groups="clinic_wallet.group_wallet_accountant" invisible="not use_wallet or state not in ('draft','confirmed')"/>
+                            <button name="action_wallet_release_now" type="object" string="Release Reservation" class="btn-secondary" groups="clinic_wallet.group_wallet_accountant" invisible="not wallet_reserved"/>
+                            <button name="action_open_wallet_transactions" type="object" string="Open Wallet Transactions" class="btn-link" invisible="not wallet_transaction_count"/>
+                        </group>
+                    </group>
+                    <field name="wallet_tx_ids" readonly="1">
+                        <list create="0" delete="0">
+                            <field name="date"/>
+                            <field name="name"/>
+                            <field name="transaction_type"/>
+                            <field name="state" widget="badge"/>
+                            <field name="amount"/>
+                            <field name="reference"/>
+                            <field name="move_id"/>
+                            <button name="action_open_self" type="object" icon="fa-external-link" title="Open Wallet Transaction"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_move_wallet" model="ir.ui.view">
+        <field name="name">account.move.form.clinic.wallet</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_wallet_transactions" type="object" class="oe_stat_button" icon="fa-credit-card" invisible="not wallet_transaction_count or move_type not in ('out_invoice','out_refund')">
+                    <field name="wallet_transaction_count" widget="statinfo" string="Wallet Tx"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+
+

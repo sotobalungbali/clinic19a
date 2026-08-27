@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Approver UI -->
+    <record id="view_wallet_approver_search" model="ir.ui.view">
+        <field name="name">clinic.wallet.portal.approver.search</field>
+        <field name="model">clinic.wallet.portal.mgr.approver</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+                <filter name="filter_active" string="Active" domain="[('active','=',True)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_wallet_approver_list" model="ir.ui.view">
+        <field name="name">clinic.wallet.portal.approver.list</field>
+        <field name="model">clinic.wallet.portal.mgr.approver</field>
+        <field name="arch" type="xml">
+            <list string="Wallet Approvers" editable="bottom" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_wallet_approver_form" model="ir.ui.view">
+        <field name="name">clinic.wallet.portal.approver.form</field>
+        <field name="model">clinic.wallet.portal.mgr.approver</field>
+        <field name="arch" type="xml">
+            <form string="Wallet Approver">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_wallet_approvers" model="ir.actions.act_window">
+        <field name="name">Approval Matrix</field>
+        <field name="res_model">clinic.wallet.portal.mgr.approver</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_wallet_approver_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+    </record>
+
+    <!-- Top-up/refund request UI -->
+    <record id="view_wallet_request_search" model="ir.ui.view">
+        <field name="name">clinic.wallet.portal.request.search</field>
+        <field name="model">clinic.wallet.portal.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="wallet_id"/>
+                <field name="requested_by_user_id"/>
+                <field name="company_id"/>
+                <filter name="filter_to_approve" string="To Approve" domain="[('state','=','submitted')]"/>
+                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="filter_approved" string="Approved" domain="[('state','=','approved')]"/>
+                <filter name="filter_rejected" string="Rejected" domain="[('state','=','rejected')]"/>
+                <filter name="filter_topup" string="Top-Up" domain="[('request_type','=','topup')]"/>
+                <filter name="filter_refund" string="Refund" domain="[('request_type','=','refund')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by':'request_type'}"/>
+                    <filter name="group_partner" string="Patient / Customer" context="{'group_by':'partner_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_month" string="Request Month" context="{'group_by':'create_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_wallet_request_list" model="ir.ui.view">
+        <field name="name">clinic.wallet.portal.request.list</field>
+        <field name="model">clinic.wallet.portal.request</field>
+        <field name="arch" type="xml">
+            <list string="Wallet Requests" decoration-warning="state == 'submitted'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'" decoration-muted="state in ('done','canceled')">
+                <field name="name"/>
+                <field name="request_type"/>
+                <field name="partner_id"/>
+                <field name="wallet_id" optional="show"/>
+                <field name="amount" sum="Requested Amount"/>
+                <field name="state" widget="badge"/>
+                <field name="requested_by_user_id" optional="show"/>
+                <field name="submitted_on" optional="show"/>
+                <field name="approved_by" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_wallet_request_form" model="ir.ui.view">
+        <field name="name">clinic.wallet.portal.request.form</field>
+        <field name="model">clinic.wallet.portal.request</field>
+        <field name="arch" type="xml">
+            <form string="Wallet Request">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" groups="clinic_wallet.group_wallet_manager" invisible="state != 'submitted'"/>
+                    <button name="action_reject" type="object" string="Reject" groups="clinic_wallet.group_wallet_manager" invisible="state != 'submitted'"/>
+                    <button name="action_set_done" type="object" string="Mark Done" groups="clinic_wallet.group_wallet_manager" invisible="state not in ('approved','rejected')"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state not in ('draft','submitted','rejected')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected,done,canceled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_wallet" type="object" class="oe_stat_button" icon="fa-credit-card" string="Wallet"/>
+                        <button name="action_view_transaction" type="object" class="oe_stat_button" icon="fa-exchange" string="Transaction" invisible="not transaction_id"/>
+                        <button name="action_view_move" type="object" class="oe_stat_button" icon="fa-book" string="Journal Entry" invisible="not move_id"/>
+                    </div>
+                    <widget name="web_ribbon" title="TO APPROVE" bg_color="text-bg-warning" invisible="state != 'submitted'"/>
+                    <widget name="web_ribbon" title="APPROVED" bg_color="text-bg-success" invisible="state != 'approved'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Request">
+                            <field name="request_type" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="state != 'draft'" options="{'no_create_edit': True}"/>
+                            <field name="wallet_id" readonly="state != 'draft'" options="{'no_create_edit': True}"/>
+                            <field name="amount" readonly="state != 'draft'"/>
+                            <field name="wallet_balance_snapshot" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Accounting &amp; Origin">
+                            <field name="requested_by_user_id" readonly="1"/>
+                            <field name="journal_id" readonly="state not in ('draft','submitted')" groups="clinic_wallet.group_wallet_accountant"/>
+                            <field name="auto_post_move" readonly="state not in ('draft','submitted')" groups="clinic_wallet.group_wallet_manager"/>
+                            <field name="transaction_id" readonly="1"/>
+                            <field name="move_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Evidence &amp; Notes">
+                            <field name="note" readonly="state not in ('draft','submitted')" placeholder="Reason for request, bank transfer reference, or operational note..."/>
+                            <field name="attachment_ids" widget="many2many_binary" readonly="state not in ('draft','submitted')"/>
+                        </page>
+                        <page string="Approval Audit">
+                            <group>
+                                <group string="Submission">
+                                    <field name="submitted_by" readonly="1"/>
+                                    <field name="submitted_on" readonly="1"/>
+                                </group>
+                                <group string="Decision">
+                                    <field name="approved_by" readonly="1"/>
+                                    <field name="approved_on" readonly="1"/>
+                                    <field name="rejected_by" readonly="1"/>
+                                    <field name="rejected_on" readonly="1"/>
+                                    <field name="done_by" readonly="1"/>
+                                    <field name="done_on" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_wallet_requests" model="ir.actions.act_window">
+        <field name="name">Top-Up / Refund Requests</field>
+        <field name="res_model">clinic.wallet.portal.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_wallet_request_search"/>
+    </record>
+    <record id="action_wallet_requests_to_approve" model="ir.actions.act_window">
+        <field name="name">Requests to Approve</field>
+        <field name="res_model">clinic.wallet.portal.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_wallet_request_search"/>
+        <field name="domain">[('state','=','submitted')]</field>
+    </record>
+</odoo>
+
+
+

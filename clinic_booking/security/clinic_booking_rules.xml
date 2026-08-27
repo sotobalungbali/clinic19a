@@ -1,0 +1,146 @@
+<odoo>
+  <record id="rule_booking_tag_company" model="ir.rule">
+    <field name="name">booking.tag multi-company</field>
+    <field name="model_id" ref="model_booking_tag"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_channel_company" model="ir.rule">
+    <field name="name">booking.channel multi-company</field>
+    <field name="model_id" ref="model_booking_channel"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_policy_company" model="ir.rule">
+    <field name="name">booking.policy multi-company</field>
+    <field name="model_id" ref="model_booking_policy"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_policy_exception_company" model="ir.rule">
+    <field name="name">booking.policy.exception multi-company</field>
+    <field name="model_id" ref="model_booking_policy_exception"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_room_tag_company" model="ir.rule">
+    <field name="name">booking.room.tag multi-company</field>
+    <field name="model_id" ref="model_booking_room_tag"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_room_company" model="ir.rule">
+    <field name="name">booking.room multi-company</field>
+    <field name="model_id" ref="model_booking_room"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_room_schedule_company" model="ir.rule">
+    <field name="name">booking.room.schedule multi-company</field>
+    <field name="model_id" ref="model_booking_room_schedule"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_room_blackout_company" model="ir.rule">
+    <field name="name">booking.room.blackout multi-company</field>
+    <field name="model_id" ref="model_booking_room_blackout"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_resource_tag_company" model="ir.rule">
+    <field name="name">booking.resource.tag multi-company</field>
+    <field name="model_id" ref="model_booking_resource_tag"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_resource_company" model="ir.rule">
+    <field name="name">booking.resource multi-company</field>
+    <field name="model_id" ref="model_booking_resource"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_resource_schedule_company" model="ir.rule">
+    <field name="name">booking.resource.schedule multi-company</field>
+    <field name="model_id" ref="model_booking_resource_schedule"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_resource_blackout_company" model="ir.rule">
+    <field name="name">booking.resource.blackout multi-company</field>
+    <field name="model_id" ref="model_booking_resource_blackout"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_slot_company" model="ir.rule">
+    <field name="name">booking.slot multi-company</field>
+    <field name="model_id" ref="model_booking_slot"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_slot_exception_company" model="ir.rule">
+    <field name="name">booking.slot.exception multi-company</field>
+    <field name="model_id" ref="model_booking_slot_exception"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_recurring_rule_company" model="ir.rule">
+    <field name="name">booking.recurring.rule multi-company</field>
+    <field name="model_id" ref="model_booking_recurring_rule"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_recurring_weekday_company" model="ir.rule">
+    <field name="name">booking.recurring.weekday multi-company</field>
+    <field name="model_id" ref="model_booking_recurring_weekday"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_recurring_monthday_company" model="ir.rule">
+    <field name="name">booking.recurring.monthday multi-company</field>
+    <field name="model_id" ref="model_booking_recurring_monthday"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_recurring_byweekday_company" model="ir.rule">
+    <field name="name">booking.recurring.byweekday multi-company</field>
+    <field name="model_id" ref="model_booking_recurring_byweekday"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_recurring_exdate_company" model="ir.rule">
+    <field name="name">booking.recurring.exdate multi-company</field>
+    <field name="model_id" ref="model_booking_recurring_exdate"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_booking_company" model="ir.rule">
+    <field name="name">booking.booking multi-company</field>
+    <field name="model_id" ref="model_booking_booking"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_line_company" model="ir.rule">
+    <field name="name">booking.line multi-company</field>
+    <field name="model_id" ref="model_booking_line"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_feedback_link_company" model="ir.rule">
+    <field name="name">booking.feedback.link multi-company</field>
+    <field name="model_id" ref="model_booking_feedback_link"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_doctor_schedule_company" model="ir.rule">
+    <field name="name">booking.doctor.schedule multi-company</field>
+    <field name="model_id" ref="model_booking_doctor_schedule"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_booking_doctor_blackout_company" model="ir.rule">
+    <field name="name">booking.doctor.blackout multi-company</field>
+    <field name="model_id" ref="model_booking_doctor_blackout"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+</odoo>

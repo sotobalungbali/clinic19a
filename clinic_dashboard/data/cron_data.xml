@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_refresh_due_dashboards" model="ir.cron">
+        <field name="name">Clinic Dashboard: Refresh Due Boards</field>
+        <field name="model_id" ref="model_clinic_dashboard_board"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_refresh_due_boards()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_archive_dashboard_snapshots" model="ir.cron">
+        <field name="name">Clinic Dashboard: Archive Old Snapshots</field>
+        <field name="model_id" ref="model_clinic_dashboard_snapshot"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_archive_old_snapshots()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

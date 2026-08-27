@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_telemedicine_settings" model="ir.actions.act_window">
+        <field name="name">Telemedicine Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_telemedicine_secure_messaging', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_telemedicine" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.telemedicine</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Telemedicine"
+                     name="clinic_telemedicine_secure_messaging"
+                     groups="clinic_telemedicine_secure_messaging.group_telemedicine_manager">
+                    <block title="Teleconsultation">
+                        <setting string="Default Meeting Provisioning"
+                                 help="Manual HTTPS URL works without an external provider. Provider Extension Hook is reserved for a future integration provider.">
+                            <field name="clinic_telemedicine_provider_mode"/>
+                        </setting>
+                        <setting string="Patient Join Window"
+                                 help="Controls how early and how long after the scheduled end a patient may use the secure Join route.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="clinic_telemedicine_early_join_minutes" class="col-lg-4 o_light_label"/>
+                                    <field name="clinic_telemedicine_early_join_minutes"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="clinic_telemedicine_late_join_minutes" class="col-lg-4 o_light_label"/>
+                                    <field name="clinic_telemedicine_late_join_minutes"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Require Signed Telemedicine Consent"
+                                 help="When enabled, a linked clinic.consent.form must be Signed before a Session becomes Ready.">
+                            <field name="clinic_telemedicine_require_signed_consent"/>
+                        </setting>
+                        <setting string="Auto-create Secure Thread"
+                                 help="Create one secure conversation when a Telemedicine Session is scheduled.">
+                            <field name="clinic_telemedicine_auto_create_thread"/>
+                        </setting>
+                    </block>
+
+                    <block title="Secure Messaging &amp; File Sharing">
+                        <setting string="Allow Patient-Initiated Threads"
+                                 help="Lets an explicitly authorized patient start a secure conversation with a Telemedicine-enabled Doctor.">
+                            <field name="clinic_telemedicine_allow_patient_new_threads"/>
+                        </setting>
+                        <setting string="Maximum Open Patient Threads"
+                                 help="Safety ceiling for standalone patient-initiated open conversations.">
+                            <field name="clinic_telemedicine_max_open_threads"/>
+                        </setting>
+                        <setting string="Maximum Message Characters">
+                            <field name="clinic_telemedicine_max_message_chars"/>
+                        </setting>
+                        <setting string="Maximum Secure File Size"
+                                 help="File sharing accepts PDF, JPEG and PNG only.">
+                            <field name="clinic_telemedicine_max_file_mb"/>
+                            <span class="ms-2">MB</span>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

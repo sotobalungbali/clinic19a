@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Standalone operational queues avoid fragile inheritance of custom upstream views. -->
+
+    <record id="view_postcare_encounter_search" model="ir.ui.view">
+        <field name="name">clinic.encounter.search.postcare</field>
+        <field name="model">clinic.encounter</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="company_id"/>
+                <filter name="done" string="Completed Encounters" domain="[('state','=','done')]"/>
+                <filter name="without_postcare" string="No Post-Care Plan" domain="[('state','=','done'),('postcare_plan_ids','=',False)]"/>
+                <group>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_treatment" string="Treatment" context="{'group_by':'treatment_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_encounter_list" model="ir.ui.view">
+        <field name="name">clinic.encounter.list.postcare</field>
+        <field name="model">clinic.encounter</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="postcare_open_escalation_count &gt; 0">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="date_end"/>
+                <field name="postcare_plan_count"/>
+                <field name="postcare_open_escalation_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_create_postcare_plan" type="object" string="Create Post-Care" icon="fa-plus"
+                        groups="clinic_post_care_followup.group_postcare_coordinator"
+                        invisible="state != 'done' or postcare_plan_count &gt; 0"/>
+                <button name="action_open_postcare_plans" type="object" string="Open Post-Care" icon="fa-external-link"
+                        invisible="postcare_plan_count == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_postcare_completed_encounters" model="ir.actions.act_window">
+        <field name="name">Completed Encounters</field>
+        <field name="res_model">clinic.encounter</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','=','done')]</field>
+        <field name="search_view_id" ref="view_postcare_encounter_search"/>
+    </record>
+
+    <record id="view_postcare_booking_search" model="ir.ui.view">
+        <field name="name">booking.booking.search.postcare</field>
+        <field name="model">booking.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="company_id"/>
+                <filter name="done" string="Completed Bookings" domain="[('state','=','done')]"/>
+                <filter name="without_postcare" string="No Post-Care Plan" domain="[('state','=','done'),('postcare_plan_ids','=',False)]"/>
+                <group>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_treatment" string="Treatment" context="{'group_by':'treatment_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_booking_list" model="ir.ui.view">
+        <field name="name">booking.booking.list.postcare</field>
+        <field name="model">booking.booking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="end_datetime"/>
+                <field name="postcare_plan_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_create_postcare_plan" type="object" string="Create Post-Care" icon="fa-plus"
+                        groups="clinic_post_care_followup.group_postcare_coordinator"
+                        invisible="state != 'done' or postcare_plan_count &gt; 0"/>
+                <button name="action_open_postcare_plans" type="object" string="Open Post-Care" icon="fa-external-link"
+                        invisible="postcare_plan_count == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_postcare_completed_bookings" model="ir.actions.act_window">
+        <field name="name">Completed Bookings</field>
+        <field name="res_model">booking.booking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','=','done')]</field>
+        <field name="search_view_id" ref="view_postcare_booking_search"/>
+    </record>
+
+    <record id="view_postcare_patient_search" model="ir.ui.view">
+        <field name="name">clinic.patient.search.postcare</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_code"/>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="company_id"/>
+                <filter name="open_postcare" string="Open Post-Care" domain="[('postcare_plan_ids.state','in',('draft','active','escalated'))]"/>
+                <filter name="escalation" string="Open Escalation" domain="[('postcare_plan_ids.state','=','escalated')]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_patient_list" model="ir.ui.view">
+        <field name="name">clinic.patient.list.postcare</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="postcare_open_escalation_count &gt; 0">
+                <field name="patient_code"/>
+                <field name="name"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="postcare_plan_count"/>
+                <field name="postcare_open_plan_count"/>
+                <field name="postcare_open_escalation_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_postcare_plans" type="object" string="Post-Care Plans" icon="fa-heartbeat"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_postcare_patients" model="ir.actions.act_window">
+        <field name="name">Post-Care Patients</field>
+        <field name="res_model">clinic.patient</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_postcare_patient_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ecommerce_fulfillment_search" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.fulfillment.search</field>
+        <field name="model">clinic.ecommerce.fulfillment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="catalog_item_id"/>
+                <field name="offering_type"/>
+                <field name="fulfillment_type"/>
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="branch_id"/>
+                <field name="company_id"/>
+                <filter name="waiting" string="Waiting Input" domain="[('state','=','waiting_input')]"/>
+                <filter name="ready" string="Ready" domain="[('state','=','ready')]"/>
+                <filter name="exceptions" string="Exceptions" domain="[('state','in',('error','reversal_required'))]"/>
+                <filter name="done" string="Done" domain="[('state','=','done')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_type" string="Offering Type" context="{'group_by':'offering_type'}"/>
+                    <filter name="group_fulfillment" string="Fulfillment" context="{'group_by':'fulfillment_type'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_month" string="Request Month" context="{'group_by':'requested_at:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_ecommerce_fulfillment_list" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.fulfillment.list</field>
+        <field name="model">clinic.ecommerce.fulfillment</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'done'" decoration-danger="state in ('error','reversal_required')" decoration-warning="state == 'waiting_input'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="catalog_item_id"/>
+                <field name="offering_type" widget="badge"/>
+                <field name="fulfillment_type" widget="badge"/>
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="branch_id"/>
+                <field name="preferred_date" optional="hide"/>
+                <field name="attempt_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_evaluate_readiness" type="object" string="Evaluate" icon="fa-check-square-o" groups="clinic_ecommerce.group_ecommerce_operator" invisible="state in ('done','reversal_required','cancelled')"/>
+                <button name="action_process" type="object" string="Process" icon="fa-play" groups="clinic_ecommerce.group_ecommerce_operator" invisible="state != 'ready'"/>
+                <button name="action_retry" type="object" string="Retry" icon="fa-refresh" groups="clinic_ecommerce.group_ecommerce_operator" invisible="state not in ('error','waiting_input')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecommerce_fulfillment_form" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.fulfillment.form</field>
+        <field name="model">clinic.ecommerce.fulfillment</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0">
+                <header>
+                    <button name="action_evaluate_readiness" type="object" string="Evaluate Readiness" class="btn-primary"
+                            groups="clinic_ecommerce.group_ecommerce_operator" invisible="state in ('done','reversal_required','cancelled')"/>
+                    <button name="action_process" type="object" string="Process Handoff" class="btn-primary"
+                            groups="clinic_ecommerce.group_ecommerce_operator" invisible="state != 'ready'"/>
+                    <button name="action_retry" type="object" string="Retry"
+                            groups="clinic_ecommerce.group_ecommerce_operator" invisible="state not in ('error','waiting_input')"/>
+                    <button name="action_cancel" type="object" string="Cancel / Review Reversal"
+                            groups="clinic_ecommerce.group_ecommerce_operator" invisible="state in ('reversal_required','cancelled')"/>
+                    <button name="action_mark_reversal_resolved" type="object" string="Mark Reversal Resolved"
+                            groups="clinic_ecommerce.group_ecommerce_manager" invisible="state != 'reversal_required'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,waiting_input,ready,processing,done,error,reversal_required,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sale_order" type="object" class="oe_stat_button" icon="fa-shopping-cart">
+                            <div class="o_stat_info"><span class="o_stat_text">Sales Order</span></div>
+                        </button>
+                        <button name="action_open_catalog_item" type="object" class="oe_stat_button" icon="fa-globe">
+                            <div class="o_stat_info"><span class="o_stat_text">Catalog Item</span></div>
+                        </button>
+                        <button name="action_open_booking" type="object" class="oe_stat_button" icon="fa-calendar" invisible="not booking_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Booking</span></div>
+                        </button>
+                        <button name="action_open_package_allocation" type="object" class="oe_stat_button" icon="fa-gift" invisible="not package_allocation_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Package</span></div>
+                        </button>
+                        <button name="action_open_membership_contract" type="object" class="oe_stat_button" icon="fa-id-card-o" invisible="not membership_contract_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Membership</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+
+                    <div class="alert alert-danger" role="alert" invisible="state not in ('error','reversal_required')">
+                        This fulfillment requires operator/manager attention. Source artifacts are never auto-reversed.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="state != 'waiting_input'">
+                        Additional patient, terms, branch, or exact scheduling input is required before processing.
+                    </div>
+
+                    <group>
+                        <group string="Sale Provenance">
+                            <field name="sale_order_id" readonly="1"/>
+                            <field name="sale_order_line_id" readonly="1"/>
+                            <field name="catalog_item_id" readonly="1"/>
+                            <field name="offering_type" readonly="1"/>
+                            <field name="fulfillment_type" readonly="1"/>
+                            <field name="website_id" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Patient &amp; Branch">
+                            <field name="partner_id" readonly="1"/>
+                            <field name="patient_id" readonly="state in ('processing','done','reversal_required','cancelled')"/>
+                            <field name="branch_id" readonly="state in ('processing','done','reversal_required','cancelled')"/>
+                            <field name="terms_accepted_at" readonly="1"/>
+                            <field name="preferred_date" readonly="state in ('processing','done','reversal_required','cancelled')"/>
+                            <field name="preferred_time_window" readonly="state in ('processing','done','reversal_required','cancelled')"/>
+                        </group>
+                    </group>
+
+                    <group string="Treatment Scheduling" invisible="fulfillment_type != 'booking'">
+                        <field name="booking_start_datetime" readonly="state in ('processing','done','reversal_required','cancelled')"/>
+                        <field name="booking_doctor_id" readonly="state in ('processing','done','reversal_required','cancelled')"/>
+                        <field name="booking_room_id" readonly="state in ('processing','done','reversal_required','cancelled')"/>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_process" type="object" string="Process Now" class="btn btn-primary"
+                                groups="clinic_ecommerce.group_ecommerce_operator" invisible="state != 'ready'"/>
+                        <button name="action_open_sale_order" type="object" string="Review Sales Order" class="btn btn-secondary"/>
+                        <button name="action_open_catalog_item" type="object" string="Review Catalog Policy" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Customer Request">
+                            <field name="customer_notes" readonly="state in ('done','reversal_required','cancelled')"/>
+                        </page>
+                        <page string="Fulfillment Result">
+                            <group>
+                                <field name="booking_id" readonly="1"/>
+                                <field name="package_allocation_id" readonly="1"/>
+                                <field name="membership_contract_id" readonly="1"/>
+                                <field name="outcome_note" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Processing Audit">
+                            <group>
+                                <field name="requested_at" readonly="1"/>
+                                <field name="last_attempt_at" readonly="1"/>
+                                <field name="last_attempt_by_id" readonly="1"/>
+                                <field name="attempt_count" readonly="1"/>
+                                <field name="processed_at" readonly="1"/>
+                                <field name="processed_by_id" readonly="1"/>
+                            </group>
+                            <field name="error_message" readonly="1"/>
+                            <field name="internal_note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ecommerce_fulfillment_pivot" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.fulfillment.pivot</field>
+        <field name="model">clinic.ecommerce.fulfillment</field>
+        <field name="arch" type="xml">
+            <pivot string="Clinic eCommerce Fulfillment Analysis">
+                <field name="offering_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="branch_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_ecommerce_fulfillment_graph" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.fulfillment.graph</field>
+        <field name="model">clinic.ecommerce.fulfillment</field>
+        <field name="arch" type="xml">
+            <graph string="Clinic eCommerce Fulfillment" type="bar">
+                <field name="offering_type"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_ecommerce_fulfillment" model="ir.actions.act_window">
+        <field name="name">Fulfillment Queue</field>
+        <field name="res_model">clinic.ecommerce.fulfillment</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_ecommerce_fulfillment_search"/>
+    </record>
+</odoo>

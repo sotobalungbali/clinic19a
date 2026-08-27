@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_api_provider_search" model="ir.ui.view"><field name="name">clinic.api.provider.search</field><field name="model">clinic.api.provider</field><field name="arch" type="xml"><search string="Providers">
+        <field name="name"/><field name="code"/><field name="provider_type"/><field name="company_id"/><field name="branch_id"/>
+        <filter name="active_state" string="Active" domain="[('state','=','active')]"/><filter name="branch_specific" string="Branch Specific" domain="[('branch_id','!=',False)]"/><separator/><filter name="group_type" string="Type" context="{'group_by':'provider_type'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+    </search></field></record>
+    <record id="view_api_provider_list" model="ir.ui.view"><field name="name">clinic.api.provider.list</field><field name="model">clinic.api.provider</field><field name="arch" type="xml"><list string="Integration Providers" default_order="company_id,provider_type,sequence,name" decoration-muted="state == 'suspended'" multi_edit="1">
+        <field name="sequence" widget="handle"/><field name="name"/><field name="code"/><field name="provider_type"/><field name="company_id" groups="base.group_multi_company"/><field name="branch_id" optional="show"/><field name="credential_configured" optional="show"/><field name="inbound_token_configured" optional="show"/><field name="state" widget="badge"/>
+    </list></field></record>
+    <record id="view_api_provider_form" model="ir.ui.view"><field name="name">clinic.api.provider.form</field><field name="model">clinic.api.provider</field><field name="arch" type="xml"><form string="Integration Provider">
+        <header>
+            <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'" groups="clinic_integration_api.group_api_manager"/>
+            <button name="action_suspend" type="object" string="Suspend" invisible="state != 'active'" groups="clinic_integration_api.group_api_manager"/>
+            <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state == 'draft'" groups="clinic_integration_api.group_api_manager"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,active,suspended"/>
+        </header>
+        <sheet>
+            <div class="oe_button_box" name="button_box">
+                <button name="action_view_subscriptions" type="object" class="oe_stat_button" icon="fa-rss"><field name="subscription_count" widget="statinfo" string="Subscriptions"/></button>
+                <button name="action_view_deliveries" type="object" class="oe_stat_button" icon="fa-paper-plane"><field name="delivery_count" widget="statinfo" string="Deliveries"/></button>
+            </div>
+            <div class="oe_title"><label for="name"/><h1><field name="name"/></h1><div><field name="code" class="oe_inline"/></div></div>
+            <group><group string="Provider Scope"><field name="provider_type"/><field name="company_id" groups="base.group_multi_company"/><field name="branch_id"/><field name="service_user_id"/><field name="active"/></group><group string="Endpoint"><field name="base_url"/><field name="outbound_path"/><field name="meeting_path"/><field name="timeout_seconds"/><field name="allow_private_network" groups="clinic_integration_api.group_api_manager"/></group></group>
+            <group string="Credential &amp; Webhook Governance"><group><field name="auth_mode"/><field name="auth_header" invisible="auth_mode != 'header'"/><field name="credential_configured" readonly="1"/><button name="action_open_credential_wizard" type="object" string="Set / Rotate Outbound Credential" class="btn-secondary" groups="clinic_integration_api.group_api_manager"/><button name="action_validate_endpoint" type="object" string="Validate Endpoint" groups="clinic_integration_api.group_api_manager"/></group><group><field name="webhook_key" readonly="1"/><field name="inbound_token_configured" readonly="1"/><button name="action_rotate_inbound_token" type="object" string="Rotate Inbound Token" class="btn-secondary" groups="clinic_integration_api.group_api_manager"/><field name="last_test_at" readonly="1"/><field name="last_test_status" readonly="1"/></group></group>
+            <notebook><page string="Subscriptions"><field name="subscription_ids" readonly="1"><list create="0" delete="0"><field name="name"/><field name="endpoint_path"/><field name="event_type_ids" widget="many2many_tags"/><field name="state" widget="badge"/><button name="action_view_deliveries" type="object" string="Deliveries" icon="fa-history"/></list></field></page><page string="Notes"><field name="notes"/></page></notebook>
+        </sheet><chatter/>
+    </form></field></record>
+    <record id="action_api_providers" model="ir.actions.act_window"><field name="name">Providers</field><field name="res_model">clinic.api.provider</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_api_provider_search"/></record>
+</odoo>

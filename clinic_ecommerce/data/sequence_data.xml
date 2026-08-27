@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_ecommerce_catalog_item" model="ir.sequence">
+        <field name="name">Clinic eCommerce Catalog Item</field>
+        <field name="code">clinic.ecommerce.catalog.item</field>
+        <field name="prefix">ECOM/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_ecommerce_fulfillment" model="ir.sequence">
+        <field name="name">Clinic eCommerce Fulfillment</field>
+        <field name="code">clinic.ecommerce.fulfillment</field>
+        <field name="prefix">FUL/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

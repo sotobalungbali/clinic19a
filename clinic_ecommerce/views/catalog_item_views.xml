@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ecommerce_catalog_item_search" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.catalog.item.search</field>
+        <field name="model">clinic.ecommerce.catalog.item</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="source_display_name"/>
+                <field name="offering_type"/>
+                <field name="fulfillment_type"/>
+                <field name="website_id"/>
+                <field name="company_id"/>
+                <field name="default_branch_id"/>
+                <filter name="published" string="Published" domain="[('state','=','published')]"/>
+                <filter name="review" string="In Review" domain="[('state','=','review')]"/>
+                <filter name="patient_required" string="Patient Required" domain="[('requires_patient','=',True)]"/>
+                <filter name="schedule_required" string="Schedule Required" domain="[('requires_schedule','=',True)]"/>
+                <group>
+                    <filter name="group_type" string="Offering Type" context="{'group_by':'offering_type'}"/>
+                    <filter name="group_fulfillment" string="Fulfillment" context="{'group_by':'fulfillment_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_website" string="Website" context="{'group_by':'website_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_ecommerce_catalog_item_list" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.catalog.item.list</field>
+        <field name="model">clinic.ecommerce.catalog.item</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'published'" decoration-muted="state == 'archived'" decoration-warning="state == 'review'">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="offering_type" widget="badge"/>
+                <field name="source_display_name"/>
+                <field name="sale_product_id"/>
+                <field name="website_id"/>
+                <field name="default_branch_id" optional="hide"/>
+                <field name="fulfillment_type" widget="badge"/>
+                <field name="requires_patient" optional="hide"/>
+                <field name="requires_schedule" optional="hide"/>
+                <field name="sale_order_count"/>
+                <field name="fulfillment_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_website" type="object" string="Shop" icon="fa-globe" invisible="state != 'published'"/>
+                <button name="action_view_fulfillments" type="object" string="Fulfillments" icon="fa-tasks"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecommerce_catalog_item_form" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.catalog.item.form</field>
+        <field name="model">clinic.ecommerce.catalog.item</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_review" type="object" string="Submit for Review" class="btn-primary"
+                            groups="clinic_ecommerce.group_ecommerce_manager" invisible="state != 'draft'"/>
+                    <button name="action_publish" type="object" string="Publish" class="btn-primary"
+                            groups="clinic_ecommerce.group_ecommerce_manager" invisible="state not in ('draft','review')"/>
+                    <button name="action_unpublish" type="object" string="Unpublish"
+                            groups="clinic_ecommerce.group_ecommerce_manager" invisible="state != 'published'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_ecommerce.group_ecommerce_manager" invisible="state == 'archived'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_ecommerce.group_ecommerce_manager" invisible="state not in ('review','archived')"/>
+                    <button name="action_open_website" type="object" string="Open Clinic Shop" invisible="state != 'published'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,review,published,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_source" type="object" class="oe_stat_button" icon="fa-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Clinic Source</span></div>
+                        </button>
+                        <button name="action_open_product" type="object" class="oe_stat_button" icon="fa-cube">
+                            <div class="o_stat_info"><span class="o_stat_text">Sale Product</span></div>
+                        </button>
+                        <button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart">
+                            <field name="sale_order_count" widget="statinfo" string="Orders"/>
+                        </button>
+                        <button name="action_view_fulfillments" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="fulfillment_count" widget="statinfo" string="Fulfillments"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline" readonly="1"/></div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert" invisible="state != 'published'">
+                        Published means available in the governed Clinic Shop. Native Odoo /shop publication is a separate explicit option.
+                    </div>
+
+                    <group>
+                        <group string="Catalog Identity">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="website_id"/>
+                            <field name="default_branch_id"/>
+                            <field name="offering_type"/>
+                            <field name="fulfillment_type"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Clinic Source">
+                            <field name="treatment_id" invisible="offering_type != 'treatment'"/>
+                            <field name="treatment_bundle_id" invisible="offering_type != 'treatment_bundle'"/>
+                            <field name="package_id" invisible="offering_type != 'package'"/>
+                            <field name="membership_plan_id" invisible="offering_type != 'membership'"/>
+                            <field name="generic_product_id" invisible="offering_type != 'product'"/>
+                            <field name="source_display_name" readonly="1"/>
+                            <field name="sale_product_id" readonly="1"/>
+                            <field name="publish_native_product"/>
+                        </group>
+                    </group>
+
+                    <group string="Purchase Guardrails">
+                        <group>
+                            <field name="requires_login"/>
+                            <field name="requires_patient"/>
+                            <field name="requires_branch"/>
+                            <field name="requires_schedule"/>
+                            <field name="terms_required"/>
+                        </group>
+                        <group>
+                            <field name="single_quantity_only"/>
+                            <field name="min_quantity" readonly="single_quantity_only"/>
+                            <field name="max_quantity" readonly="single_quantity_only"/>
+                            <field name="website_url" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_website" type="object" string="Preview Clinic Shop Page" class="btn btn-primary" invisible="state != 'published'"/>
+                        <button name="action_open_source" type="object" string="Open Clinic Source" class="btn btn-secondary"/>
+                        <button name="action_open_product" type="object" string="Open Sale Product" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Website Content">
+                            <group>
+                                <field name="image_1920" widget="image" class="oe_avatar"/>
+                                <field name="public_summary"/>
+                            </group>
+                            <field name="public_description"/>
+                            <field name="customer_disclaimer"/>
+                        </page>
+                        <page string="Fulfillment History">
+                            <field name="fulfillment_ids" readonly="1">
+                                <list decoration-danger="state in ('error','reversal_required')" decoration-success="state == 'done'">
+                                    <field name="name"/>
+                                    <field name="sale_order_id"/>
+                                    <field name="patient_id"/>
+                                    <field name="branch_id"/>
+                                    <field name="fulfillment_type" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="processed_at"/>
+                                    <button name="action_open_sale_order" type="object" string="Order" icon="fa-shopping-cart"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ecommerce_catalog_item" model="ir.actions.act_window">
+        <field name="name">Clinic Online Catalog</field>
+        <field name="res_model">clinic.ecommerce.catalog.item</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ecommerce_catalog_item_search"/>
+    </record>
+</odoo>

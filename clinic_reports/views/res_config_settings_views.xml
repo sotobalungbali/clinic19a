@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_reports_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Reports Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_reports', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_reports" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.reports</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Reports"
+                     name="clinic_reports"
+                     groups="clinic_reports.group_reports_manager">
+                    <block title="Report Generation Defaults">
+                        <setting string="Default Report Window">
+                            <field name="clinic_reports_default_window_days"/>
+                        </setting>
+                        <setting string="Default Detail Limit">
+                            <field name="clinic_reports_default_detail_limit"/>
+                        </setting>
+                    </block>
+
+                    <block title="Scheduled Report Governance">
+                        <setting string="Auto-Finalize Successful Scheduled Reports">
+                            <field name="clinic_reports_auto_finalize_scheduled"/>
+                        </setting>
+                        <setting string="Retention Guidance"
+                                 help="Finalized snapshots are never auto-deleted by addon 28.">
+                            <field name="clinic_reports_retention_days"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

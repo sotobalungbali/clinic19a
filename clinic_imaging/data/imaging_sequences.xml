@@ -1,0 +1,32 @@
+<odoo noupdate="1">
+    <record id="seq_clinical_imaging" model="ir.sequence">
+        <field name="name">Clinical Imaging</field><field name="code">clinical.imaging</field><field name="prefix">IMG/%(year)s/</field><field name="padding">5</field>
+    </record>
+    <record id="seq_clinical_imaging_request" model="ir.sequence">
+        <field name="name">Clinical Imaging Request</field><field name="code">clinical.imaging.request</field><field name="prefix">IMR/%(year)s/</field><field name="padding">5</field>
+    </record>
+    <record id="seq_clinical_imaging_study" model="ir.sequence">
+        <field name="name">Clinical Imaging Study</field><field name="code">clinical.imaging.study</field><field name="prefix">STD/%(year)s/</field><field name="padding">5</field>
+    </record>
+    <record id="seq_clinical_imaging_series" model="ir.sequence">
+        <field name="name">Clinical Imaging Series</field><field name="code">clinical.imaging.series</field><field name="prefix">SER/%(year)s/</field><field name="padding">5</field>
+    </record>
+    <record id="seq_clinical_imaging_image" model="ir.sequence">
+        <field name="name">Clinical Imaging Image</field><field name="code">clinical.imaging.image</field><field name="prefix">IIM/%(year)s/</field><field name="padding">6</field>
+    </record>
+    <record id="seq_clinical_imaging_finding" model="ir.sequence">
+        <field name="name">Clinical Imaging Finding</field><field name="code">clinical.imaging.finding</field><field name="prefix">FND/%(year)s/</field><field name="padding">5</field>
+    </record>
+    <record id="seq_clinical_imaging_result" model="ir.sequence">
+        <field name="name">Clinical Imaging Result</field><field name="code">clinical.imaging.result</field><field name="prefix">RES/%(year)s/</field><field name="padding">5</field>
+    </record>
+    <record id="seq_clinical_imaging_encounter_screening" model="ir.sequence">
+        <field name="name">Imaging Encounter Screening</field><field name="code">clinical.imaging.encounter.screening</field><field name="prefix">SCR/%(year)s/</field><field name="padding">5</field>
+    </record>
+    <record id="seq_clinical_imaging_encounter_note" model="ir.sequence">
+        <field name="name">Imaging Encounter Note</field><field name="code">clinical.imaging.encounter.note</field><field name="prefix">IEN/%(year)s/</field><field name="padding">5</field>
+    </record>
+    <record id="seq_clinic_treatment_imaging_plan" model="ir.sequence">
+        <field name="name">Treatment Imaging Plan</field><field name="code">clinic.treatment.imaging.plan</field><field name="prefix">TIP/%(year)s/</field><field name="padding">5</field>
+    </record>
+</odoo>

@@ -1,0 +1,49 @@
+.o_clinic_dashboard {
+    background: var(--o-view-background-color, #f7f8fa);
+}
+
+.o_clinic_dashboard_toolbar {
+    z-index: 3;
+    background: var(--o-view-background-color, #ffffff);
+    border-bottom: 1px solid var(--border-color, #dee2e6);
+}
+
+.o_clinic_dashboard_loading {
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--body-color, #495057);
+}
+
+.o_clinic_dashboard_card {
+    border-width: 1px;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.35rem rgba(0, 0, 0, 0.06);
+}
+
+.o_clinic_dashboard_card--normal {
+    border-left: 0.35rem solid var(--bs-success);
+}
+
+.o_clinic_dashboard_card--warning {
+    border-left: 0.35rem solid var(--bs-warning);
+}
+
+.o_clinic_dashboard_card--critical {
+    border-left: 0.35rem solid var(--bs-danger);
+}
+
+.o_clinic_dashboard_card--nodata {
+    border-left: 0.35rem solid var(--bs-secondary);
+}
+
+.o_clinic_dashboard_card_title {
+    font-weight: 600;
+}
+
+.o_clinic_dashboard_value {
+    font-size: clamp(1.6rem, 2.4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+}

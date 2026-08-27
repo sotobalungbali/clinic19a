@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dashboard_board_search" model="ir.ui.view">
+        <field name="name">clinic.dashboard.board.search</field>
+        <field name="model">clinic.dashboard.board</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="dashboard_type"/>
+                <field name="company_id"/>
+                <field name="default_branch_id"/>
+                <filter name="active_board" string="Active" domain="[('state','=','active')]"/>
+                <filter name="auto_refresh" string="Automatic Refresh" domain="[('auto_refresh','=',True)]"/>
+                <group>
+                    <filter name="group_type" string="Dashboard Type" context="{'group_by':'dashboard_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_dashboard_board_list" model="ir.ui.view">
+        <field name="name">clinic.dashboard.board.list</field>
+        <field name="model">clinic.dashboard.board</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="dashboard_type" widget="badge"/>
+                <field name="default_period"/>
+                <field name="widget_count"/>
+                <field name="snapshot_count"/>
+                <field name="auto_generate_missing_reports"/>
+                <field name="auto_refresh"/>
+                <field name="next_refresh_at"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_live_dashboard" type="object" string="Open" icon="fa-dashboard"
+                        invisible="state != 'active'"/>
+                <button name="action_refresh" type="object" string="Refresh" icon="fa-refresh"
+                        groups="clinic_dashboard.group_dashboard_analyst"
+                        invisible="state != 'active'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dashboard_board_form" model="ir.ui.view">
+        <field name="name">clinic.dashboard.board.form</field>
+        <field name="model">clinic.dashboard.board</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="clinic_dashboard.group_dashboard_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_refresh" type="object" string="Refresh Snapshot" class="btn-primary"
+                            groups="clinic_dashboard.group_dashboard_analyst"
+                            invisible="state != 'active'"/>
+                    <button name="action_open_live_dashboard" type="object" string="Open Live Dashboard"
+                            invisible="state != 'active'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_dashboard.group_dashboard_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_dashboard.group_dashboard_manager"
+                            invisible="state != 'archived'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_widgets" type="object" class="oe_stat_button" icon="fa-th-large">
+                            <field name="widget_count" widget="statinfo" string="Widgets"/>
+                        </button>
+                        <button name="action_view_snapshots" type="object" class="oe_stat_button" icon="fa-camera">
+                            <field name="snapshot_count" widget="statinfo" string="Snapshots"/>
+                        </button>
+                        <button name="action_view_report_runs" type="object" class="oe_stat_button" icon="fa-line-chart">
+                            <div class="o_stat_info"><span class="o_stat_text">Report Runs</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert" invisible="state != 'active'">
+                        Dashboard values are snapshots of normalized metrics owned by Clinic Reports.
+                        Transactional source records remain authoritative.
+                    </div>
+
+                    <group>
+                        <group string="Dashboard Identity">
+                            <field name="dashboard_type"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="default_branch_id"/>
+                            <field name="default_period"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Refresh Governance">
+                            <field name="auto_generate_missing_reports"/>
+                            <field name="auto_refresh"/>
+                            <field name="refresh_interval_hours" invisible="not auto_refresh"/>
+                            <field name="owner_user_id" invisible="not auto_refresh"/>
+                            <field name="next_refresh_at" invisible="not auto_refresh"/>
+                            <field name="latest_snapshot_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_live_dashboard" type="object" string="Open Interactive Dashboard" class="btn btn-primary"
+                                invisible="state != 'active'"/>
+                        <button name="action_refresh" type="object" string="Refresh Default Scope" class="btn btn-secondary"
+                                groups="clinic_dashboard.group_dashboard_analyst"
+                                invisible="state != 'active'"/>
+                        <button name="action_view_snapshots" type="object" string="Review Snapshot History" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="KPI Widgets">
+                            <field name="widget_ids" context="{'default_board_id': id}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="definition_id"/>
+                                    <field name="metric_code"/>
+                                    <field name="display_style"/>
+                                    <field name="direction"/>
+                                    <field name="has_target"/>
+                                    <field name="target_value" invisible="not has_target"/>
+                                    <field name="active"/>
+                                    <button name="action_open_definition" type="object" string="Report" icon="fa-book"/>
+                                    <button name="action_open_latest_report" type="object" string="Latest Run" icon="fa-external-link"/>
+                                    <button name="action_open_latest_metric" type="object" string="Metric" icon="fa-line-chart"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Business Purpose">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dashboard_board" model="ir.actions.act_window">
+        <field name="name">Dashboard Boards</field>
+        <field name="res_model">clinic.dashboard.board</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_dashboard_board_search"/>
+    </record>
+</odoo>

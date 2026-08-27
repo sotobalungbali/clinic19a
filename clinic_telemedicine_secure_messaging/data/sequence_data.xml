@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_telemedicine_session" model="ir.sequence">
+        <field name="name">Clinic Telemedicine Session</field>
+        <field name="code">clinic.telemedicine.session</field>
+        <field name="prefix">TEL/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_telemedicine_thread" model="ir.sequence">
+        <field name="name">Clinic Secure Telemedicine Thread</field>
+        <field name="code">clinic.telemedicine.thread</field>
+        <field name="prefix">TMSG/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>
+

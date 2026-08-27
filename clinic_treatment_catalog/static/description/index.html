@@ -1,0 +1,258 @@
+<!--
+ClinicOne — Treatment Catalog & Pricing
+File: static/description/index.html
+Odoo 18 CE | License: AGPL-3.0
+
+NOTE:
+- README.rst di root memuat dokumentasi lengkap; file ini untuk tampilan deskripsi di Apps UI.
+- Hindari <blockquote> demi konsistensi proyek ClinicOne.
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="ClinicOne Treatment Catalog & Pricing" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Treatment Catalog &amp; Pricing</h1>
+      <h2 class="oe_slogan">Catalog • Variants • Pricelists • Membership • Surcharge • Insurance • eCommerce</h2>
+      <p>
+        Pondasi penetapan harga enterprise untuk klinik kecantikan di <b>Odoo 18 Community Edition</b>.
+        Kelola <b>katalog treatment</b> sebagai service product, <b>variant/therapist level</b>,
+        atur <b>pricelist</b> (membership tier, packages/bundles, promos/seasonal),
+        dukung <b>surcharge</b> (level terapis, room/equipment, prime time),
+        serta <b>insurance coverage &amp; co‑pay</b> dengan integrasi penuh ke Booking → Encounter/Procedure → Billing
+        dan <b>eCommerce</b>.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Pricelist Bridge</span>
+        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Audit Log</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Overview</h3>
+      <p>
+        Modul ini menyatukan <b>aturan harga klinik</b> dalam sub‑sistem terstruktur:
+        <i>Treatment Catalog</i>, <i>Variant/Therapist Level</i>, <i>Pricing Rules</i>,
+        <i>Surcharge</i>, dan <i>Insurance Coverage</i>. Semua harga berjalan di atas
+        <b>Odoo Pricelist</b> melalui <b>Clinic Pricelist Bridge</b>, sehingga tetap kompatibel dengan
+        mekanisme standar Odoo, namun kaya konteks klinik (channel, membership, promo tag, waktu).
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li><b>Treatment Catalog</b> (service product) dengan gambar, deskripsi, durasi, kategori</li>
+        <li><b>Variants</b> (level terapis, teknik, dosis) dan delta harga</li>
+        <li><b>Pricelist Extensions</b>: scope ke treatment/variant, membership tiers, promo tags, channel</li>
+        <li><b>Membership Pricing</b>: fixed price / % / fixed discount + stacking rules &amp; exclusivity</li>
+        <li><b>Surcharge Engine</b>: therapist level, room/equipment khusus, prime time</li>
+        <li><b>Insurance Engine</b>: eligibility, deductible, coverage %, co‑pay, authorization</li>
+        <li><b>Package/Bundle</b>: entitlement, redemption, consumption log</li>
+        <li><b>eCommerce Integration</b>: web price (tanpa surcharge/insurance), package entitlement policy</li>
+        <li><b>Audit</b>: event terstruktur untuk pricing/surcharge/insurance/billing</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>clinic.treatment.catalog</b> — master treatment (service)</li>
+        <li><b>clinic.treatment.variant</b> — turunan treatment (level, teknik)</li>
+        <li><b>clinic.pricing.rule</b> — promo/seasonal/coupon rules</li>
+        <li><b>clinic.surcharge.rule</b> — room/equipment/prime time/therapist</li>
+        <li><b>clinic.insurance.rule</b> — coverage/co‑pay/deductible/authorization</li>
+        <li><b>clinic.package.*</b> — package/bundle &amp; entitlements</li>
+        <li><b>product.pricelist (extension)</b> — ClinicOne scope &amp; helper</li>
+        <li><b>clinic.pricelist.bridge</b> — jembatan ke algoritma Odoo Pricelist</li>
+        <li><b>clinic.membership.benefit.rule</b> — benefit harga per tier</li>
+        <li><b>clinic.audit.event</b> — audit log terpusat</li>
+      </ul>
+      <p style="margin-top:6px;">Semua model mengikuti konvensi Odoo 18 CE dan kompatibel multi‑company.</p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Holistic Integrations (ClinicOne)</h3>
+      <p>
+        Terintegrasi mulus dengan: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking,
+        clinic_billing, clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_room_device,
+        clinic_ecommerce, clinic_membership, clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet,
+        clinic_package, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit</i> dan lainnya dalam proyek ClinicOne.
+      </p>
+      <p style="font-size:12px;color:#666;">
+        Integrasi <i>soft‑coupled</i> melalui relasi opsional, hooks, dan bridges sehingga modul dapat dipasang/ditingkatkan
+        secara independen tanpa mematahkan alur lain.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Pricing Engine</h3>
+      <ul>
+        <li>Base price dari <b>Odoo Pricelist</b> via <i>Clinic Pricelist Bridge</i></li>
+        <li>Context‑aware: channel (booking/eCommerce/back‑office), promo tags, waktu</li>
+        <li>Guardrail <b>minimum price</b> per treatment/variant</li>
+        <li>Non‑intrusive: tidak mengubah algoritma inti Odoo</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Membership</h3>
+      <ul>
+        <li>Benefit rule per <b>tier</b>: fixed price, % discount, nominal discount</li>
+        <li>Window tanggal, min qty, channel, promo tags</li>
+        <li><b>Stacking</b> &amp; <b>exclusivity</b> antar rule membership</li>
+        <li>Log penerapan untuk pelacakan &amp; audit</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Surcharge &amp; Insurance</h3>
+      <ul>
+        <li>Surcharge: therapist level, room/equipment, prime time</li>
+        <li>Insurance: eligibility, deductible, coverage, <b>co‑pay</b>, authorization</li>
+        <li>Estimasi di Booking, real cost di Encounter</li>
+        <li>Transparansi via catatan komponen biaya</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>End‑to‑End Flow</h3>
+      <ol>
+        <li><b>Booking</b>: estimasi biaya (pricelist + membership + promo) → surcharge/insurance (preview)</li>
+        <li><b>Encounter/Procedure</b>: hitung biaya riil + redeem package</li>
+        <li><b>Billing</b>: invoice pasien (co‑pay) + opsional invoice insurer</li>
+        <li><b>eCommerce</b>: web price (tanpa surcharge/insurance) + entitlement paket</li>
+        <li><b>Audit</b>: event pricing/surcharge/insurance/invoice terdokumentasi</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Screenshot grid (gunakan gambar Anda sendiri: s1.png..s6.png di folder yang sama) -->
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Screenshots</h3>
+    </div>
+    <div class="oe_span4"><img src="s1.png" alt="Treatment Catalog" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s2.png" alt="Variant &amp; Therapist Level" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s3.png" alt="Pricelist Extensions" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s4.png" alt="Membership Benefit Rules" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s5.png" alt="Surcharge &amp; Insurance" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s6.png" alt="Billing &amp; Audit" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Tambahkan addon ke <i>addons_path</i> Odoo.</li>
+        <li>Update Apps list, cari <b>ClinicOne — Treatment Catalog &amp; Pricing</b>.</li>
+        <li>Install; dependensi inti (product, account, website_sale) akan terdeteksi.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Definisikan <b>pricelist</b> dan aktifkan <i>ClinicOne Integration</i></li>
+        <li>Set <b>membership tiers</b> &amp; benefit rules</li>
+        <li>Atur <b>surcharge presets</b> &amp; <b>insurance plans</b></li>
+        <li>Mapping <b>service product</b> untuk treatment &amp; package</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: Pricing Manager, Front Desk, Billing Manager</li>
+        <li>Record Rules: scope perusahaan &amp; pembatasan edit</li>
+        <li>Audit trail untuk event penting</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Demo &amp; Testing</h3>
+      <ul>
+        <li>Demo data: treatments, variants, packages, pricelists, membership tiers</li>
+        <li>Unit tests: pricing rules, membership stacking, booking→encounter→billing</li>
+        <li>UAT: eCommerce price → SO confirm → entitlement → invoice</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Performance Notes</h3>
+      <ul>
+        <li>Index: treatment/variant, channel, tier, promo tags, validity period</li>
+        <li>Gunakan <i>read_group</i> untuk laporan agregat</li>
+        <li>Cron pembersihan log audit untuk menjaga ukuran database</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>API &amp; Bridges</h3>
+      <ul>
+        <li><i>clinic.pricelist.bridge</i> — helper harga berbasis pricelist</li>
+        <li><i>clinic.membership.pricing.engine</i> — membership benefit</li>
+        <li><i>clinic.surcharge.engine</i> — perhitungan surcharge</li>
+        <li><i>clinic.insurance.engine</i> — coverage &amp; co‑pay</li>
+        <li><i>clinic.billing.integration</i> — pembuatan invoice</li>
+        <li><i>controllers/website_treatment_controller.py</i> — web endpoints (opsional)</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Upgrade &amp; Migration</h3>
+      <ul>
+        <li>Modul ini menggantikan <b>clinic_treatment</b> &amp; <b>clinic_treatment_catalog_pricing</b></li>
+        <li>Konvensi penamaan: <b>clinic.treatment.*</b>, <b>clinic.*.engine</b>, <b>clinic.*.integration</b></li>
+        <li>Script migrasi: <i>migration/18.0.1.0.0/pre‑ &amp; post‑migration.py</i></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distribusi di bawah lisensi <b>AGPL‑3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        Laporkan isu &amp; ajukan peningkatan melalui alur kontribusi ClinicOne.
+        Sertakan test, ikuti style code, dan dokumentasikan dampak migrasi.
+      </p>
+    </div>
+  </div>
+</section>
+

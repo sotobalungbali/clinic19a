@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_incident_search" model="ir.ui.view">
+        <field name="name">clinic.incident.search</field>
+        <field name="model">clinic.incident</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="involved_staff_ids"/>
+                <field name="category_id"/>
+                <field name="incident_type"/>
+                <field name="severity"/>
+                <field name="classification"/>
+                <field name="case_owner_id"/>
+                <field name="branch_id"/>
+                <field name="company_id"/>
+
+                <filter name="active_cases" string="Active Cases"
+                        domain="[('state','not in',('closed','cancelled'))]"/>
+                <filter name="serious" string="Serious"
+                        domain="[('is_serious','=',True)]"/>
+                <filter name="regulatory_review" string="Regulatory Review"
+                        domain="[('needs_regulatory_review','=',True)]"/>
+                <filter name="open_capa" string="Open CAPA"
+                        domain="[('open_action_count','&gt;',0)]"/>
+                <filter name="reported" string="Reported" domain="[('state','=','reported')]"/>
+                <filter name="triage" string="Triage" domain="[('state','=','triage')]"/>
+                <filter name="investigation" string="Investigation" domain="[('state','=','investigation')]"/>
+                <filter name="action_plan" string="Action Plan" domain="[('state','=','action_plan')]"/>
+                <filter name="verification" string="Verification" domain="[('state','=','verification')]"/>
+                <filter name="closed" string="Closed" domain="[('state','=','closed')]"/>
+                <filter name="occurred" string="Occurred" date="occurred_at"/>
+
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_type" string="Incident Type" context="{'group_by':'incident_type'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by':'category_id'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by':'severity'}"/>
+                    <filter name="group_classification" string="Classification" context="{'group_by':'classification'}"/>
+                    <filter name="group_owner" string="Case Owner" context="{'group_by':'case_owner_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_month" string="Occurred Month" context="{'group_by':'occurred_at:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_incident_list" model="ir.ui.view">
+        <field name="name">clinic.incident.list</field>
+        <field name="model">clinic.incident</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="severity == 'critical' or classification == 'sentinel'"
+                  decoration-warning="severity == 'high' or open_action_count &gt; 0"
+                  decoration-success="state == 'closed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="occurred_at"/>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="patient_id"/>
+                <field name="category_id"/>
+                <field name="incident_type" widget="badge"/>
+                <field name="classification" widget="badge"/>
+                <field name="severity" widget="badge"/>
+                <field name="case_owner_id"/>
+                <field name="investigation_count"/>
+                <field name="open_action_count"/>
+                <field name="needs_regulatory_review"/>
+                <field name="branch_id"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_investigations" type="object" string="Investigations" icon="fa-search"/>
+                <button name="action_open_actions" type="object" string="CAPA" icon="fa-tasks"/>
+                <button name="action_print_case_summary" type="object" string="PDF" icon="fa-file-pdf-o"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_incident_regulatory_list" model="ir.ui.view">
+        <field name="name">clinic.incident.regulatory.list</field>
+        <field name="model">clinic.incident</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="regulatory_required and not regulator_reported_at"
+                  decoration-success="regulator_reported_at">
+                <field name="occurred_at"/>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="patient_id"/>
+                <field name="category_id"/>
+                <field name="severity" widget="badge"/>
+                <field name="classification" widget="badge"/>
+                <field name="reportability_reviewed"/>
+                <field name="regulatory_required"/>
+                <field name="regulator_body"/>
+                <field name="regulator_reference"/>
+                <field name="regulator_reported_at"/>
+                <field name="case_owner_id"/>
+                <field name="branch_id"/>
+                <field name="state" widget="badge"/>
+                <button name="action_review_reportability" type="object" string="Review" icon="fa-search"
+                        groups="clinic_incident_event.group_incident_investigator"
+                        invisible="reportability_reviewed or state in ('closed','cancelled')"/>
+                <button name="action_mark_regulator_reported" type="object" string="Record Report" icon="fa-check"
+                        groups="clinic_incident_event.group_incident_manager"
+                        invisible="not regulatory_required or regulator_reported_at or state in ('draft','cancelled')"/>
+                <button name="action_print_case_summary" type="object" string="PDF" icon="fa-file-pdf-o"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_incident_kanban" model="ir.ui.view">
+        <field name="name">clinic.incident.kanban</field>
+        <field name="model">clinic.incident</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="patient_id"/>
+                <field name="category_id"/>
+                <field name="severity"/>
+                <field name="classification"/>
+                <field name="case_owner_id"/>
+                <field name="occurred_at"/>
+                <field name="open_action_count"/>
+                <field name="needs_regulatory_review"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div>
+                                    <strong><field name="name"/></strong>
+                                    <div class="fw-semibold"><field name="title"/></div>
+                                </div>
+                                <field name="severity" widget="badge"/>
+                            </div>
+                            <div class="small text-muted mt-2" t-if="patient_id">
+                                <i class="fa fa-user me-1"/>
+                                <field name="patient_id"/>
+                            </div>
+                            <div class="small text-muted">
+                                <i class="fa fa-calendar me-1"/>
+                                <field name="occurred_at"/>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap mt-3">
+                                <field name="classification" widget="badge"/>
+                                <span t-if="open_action_count" class="badge text-bg-warning">
+                                    Open CAPA <field name="open_action_count"/>
+                                </span>
+                                <span t-if="needs_regulatory_review" class="badge text-bg-danger">
+                                    Regulatory Review
+                                </span>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button name="action_open_investigations" type="object"
+                                        class="btn btn-secondary btn-sm">Investigation</button>
+                                <button name="action_open_actions" type="object"
+                                        class="btn btn-primary btn-sm">CAPA</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_incident_pivot" model="ir.ui.view">
+        <field name="name">clinic.incident.pivot</field>
+        <field name="model">clinic.incident</field>
+        <field name="arch" type="xml">
+            <pivot string="Incident Analysis">
+                <field name="occurred_at" type="row" interval="month"/>
+                <field name="category_id" type="row"/>
+                <field name="severity" type="col"/>
+                <field name="id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_incident_graph" model="ir.ui.view">
+        <field name="name">clinic.incident.graph</field>
+        <field name="model">clinic.incident</field>
+        <field name="arch" type="xml">
+            <graph string="Incident Trend" type="bar">
+                <field name="occurred_at" interval="month"/>
+                <field name="severity"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_incident_form" model="ir.ui.view">
+        <field name="name">clinic.incident.form</field>
+        <field name="model">clinic.incident</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_report" type="object" string="Report Incident" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_reporter"
+                            invisible="state != 'draft'"/>
+                    <button name="action_start_triage" type="object" string="Start Triage" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state != 'reported'"/>
+                    <button name="action_review_reportability" type="object" string="Review Reportability"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state not in ('reported','triage','investigation','action_plan') or reportability_reviewed"/>
+                    <button name="action_start_investigation" type="object" string="Start Investigation" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state != 'triage'"/>
+                    <button name="action_move_to_action_plan" type="object" string="Move to Action Plan" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state != 'investigation'"/>
+                    <button name="action_move_to_verification" type="object" string="Start Verification" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state != 'action_plan'"/>
+                    <button name="action_mark_regulator_reported" type="object" string="Record Regulator Report"
+                            groups="clinic_incident_event.group_incident_manager"
+                            invisible="not regulatory_required or regulator_reported_at or state in ('draft','cancelled')"/>
+                    <button name="action_close" type="object" string="Close Incident" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_manager"
+                            invisible="state != 'verification'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_incident_event.group_incident_manager"
+                            invisible="state in ('closed','cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,reported,triage,investigation,action_plan,verification,closed,cancelled"/>
+                </header>
+
+                <sheet>
+                    <field name="allowed_branch_ids" invisible="1"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_patient" type="object" class="oe_stat_button" icon="fa-user"
+                                invisible="not patient_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient</span></div>
+                        </button>
+                        <button name="action_open_encounter" type="object" class="oe_stat_button" icon="fa-stethoscope"
+                                invisible="not encounter_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Encounter</span></div>
+                        </button>
+                        <button name="action_open_adverse_event" type="object" class="oe_stat_button" icon="fa-exclamation-triangle"
+                                invisible="not adverse_event_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Adverse Event</span></div>
+                        </button>
+                        <button name="action_open_booking" type="object" class="oe_stat_button" icon="fa-calendar"
+                                invisible="not booking_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Booking</span></div>
+                        </button>
+                        <button name="action_open_queue" type="object" class="oe_stat_button" icon="fa-users"
+                                invisible="not queue_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Queue</span></div>
+                        </button>
+                        <button name="action_open_emar_administration" type="object" class="oe_stat_button" icon="fa-medkit"
+                                invisible="not emar_administration_id">
+                            <div class="o_stat_info"><span class="o_stat_text">eMAR</span></div>
+                        </button>
+                        <button name="action_open_telemedicine_session" type="object" class="oe_stat_button" icon="fa-video-camera"
+                                invisible="not telemedicine_session_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Telemedicine</span></div>
+                        </button>
+                        <button name="action_open_secure_thread" type="object" class="oe_stat_button" icon="fa-comments"
+                                invisible="not telemedicine_thread_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Secure Thread</span></div>
+                        </button>
+                        <button name="action_open_feedback_escalation" type="object" class="oe_stat_button" icon="fa-commenting"
+                                invisible="not feedback_escalation_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Feedback</span></div>
+                        </button>
+                        <button name="action_open_investigations" type="object" class="oe_stat_button" icon="fa-search">
+                            <field name="investigation_count" widget="statinfo" string="Investigations"/>
+                        </button>
+                        <button name="action_open_actions" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="action_count" widget="statinfo" string="CAPA"/>
+                        </button>
+                        <button name="action_open_timeline" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="timeline_count" widget="statinfo" string="Timeline"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1><field name="title" readonly="state in ('closed','cancelled')"/></h1>
+                        <div class="text-muted"><field name="name"/></div>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not is_serious">
+                        Serious Incident: prioritize safety, containment, investigation and required escalation.
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not needs_regulatory_review">
+                        Regulatory reportability review is required. This addon records evidence only and does not claim external transmission.
+                    </div>
+
+                    <div class="alert alert-info" role="alert"
+                         invisible="not adverse_event_id">
+                        The linked clinical Adverse Event remains owned by clinic_encounter. Incident CAPA does not replace Adverse Event CAPA.
+                    </div>
+
+                    <group>
+                        <group string="Incident Identity">
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state not in ('draft','reported')"/>
+                            <field name="branch_id" readonly="state not in ('draft','reported')"/>
+                            <field name="category_id" readonly="state in ('closed','cancelled')"/>
+                            <field name="incident_type" readonly="state in ('closed','cancelled')"/>
+                            <field name="classification" readonly="state in ('closed','cancelled')"/>
+                            <field name="severity" readonly="state in ('closed','cancelled')"/>
+                            <field name="harm_level" readonly="state in ('closed','cancelled')"/>
+                            <field name="recurrence_risk" readonly="state in ('closed','cancelled')"/>
+                        </group>
+
+                        <group string="Timing &amp; Ownership">
+                            <field name="occurred_at" readonly="state not in ('draft','reported')"/>
+                            <field name="detected_at" readonly="state in ('closed','cancelled')"/>
+                            <field name="reported_at" readonly="1"/>
+                            <field name="reported_by_user_id" readonly="1"/>
+                            <field name="reported_by_staff_id" readonly="state in ('closed','cancelled')"/>
+                            <field name="case_owner_id" readonly="state in ('closed','cancelled')"/>
+                            <field name="reviewer_id" readonly="state in ('closed','cancelled')"/>
+                            <field name="is_overdue" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Patient / Clinical Context">
+                            <field name="patient_id" readonly="state not in ('draft','reported')"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="doctor_id" readonly="state in ('closed','cancelled')"/>
+                            <field name="involved_staff_ids" widget="many2many_tags"
+                                   readonly="state in ('closed','cancelled')"/>
+                            <field name="room_id" readonly="state in ('closed','cancelled')"/>
+                        </group>
+                        <group string="Response Targets">
+                            <field name="triage_due_at" readonly="1"/>
+                            <field name="investigation_due_at" readonly="1"/>
+                            <field name="action_plan_due_at" readonly="1"/>
+                            <field name="investigation_count" readonly="1"/>
+                            <field name="completed_investigation_count" readonly="1"/>
+                            <field name="action_count" readonly="1"/>
+                            <field name="open_action_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Narrative &amp; Immediate Response">
+                        <field name="description" readonly="state in ('closed','cancelled')"/>
+                        <field name="immediate_action" readonly="state in ('closed','cancelled')"/>
+                        <field name="patient_impact" readonly="state in ('closed','cancelled')"/>
+                        <field name="reporter_note" readonly="state in ('closed','cancelled')"/>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap my-3">
+                        <button name="action_open_investigations" type="object"
+                                string="Open / Add Investigation" class="btn btn-primary"
+                                groups="clinic_incident_event.group_incident_investigator"
+                                invisible="state in ('draft','reported','closed','cancelled')"/>
+                        <button name="action_open_actions" type="object"
+                                string="Open / Add CAPA" class="btn btn-primary"
+                                groups="clinic_incident_event.group_incident_investigator"
+                                invisible="state in ('draft','reported','triage','closed','cancelled')"/>
+                        <button name="action_open_timeline" type="object"
+                                string="Review Compliance Timeline" class="btn btn-secondary"/>
+                        <button name="action_print_case_summary" type="object"
+                                string="Print Case Summary" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Source Provenance">
+                            <div class="alert alert-info" role="alert">
+                                Source records remain owned by their original ClinicOne addons. Linking a source does not change its lifecycle.
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="encounter_id" readonly="state not in ('draft','reported')"/>
+                                    <field name="adverse_event_id" readonly="state not in ('draft','reported')"/>
+                                    <field name="booking_id" readonly="state not in ('draft','reported')"/>
+                                    <field name="queue_id" readonly="state not in ('draft','reported')"/>
+                                </group>
+                                <group>
+                                    <field name="emar_administration_id" readonly="state not in ('draft','reported')"/>
+                                    <field name="telemedicine_session_id" readonly="state not in ('draft','reported')"/>
+                                    <field name="telemedicine_thread_id" readonly="state not in ('draft','reported')"/>
+                                    <field name="feedback_escalation_id" readonly="state not in ('draft','reported')"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Investigation">
+                            <field name="root_cause_summary" readonly="1"/>
+                            <field name="investigation_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="name"/>
+                                    <field name="methodology" widget="badge"/>
+                                    <field name="lead_user_id"/>
+                                    <field name="started_at"/>
+                                    <field name="completed_at"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_start" type="object" string="Start" icon="fa-play"
+                                            groups="clinic_incident_event.group_incident_investigator"
+                                            invisible="state != 'draft'"/>
+                                    <button name="action_complete" type="object" string="Complete" icon="fa-check"
+                                            groups="clinic_incident_event.group_incident_investigator"
+                                            invisible="state not in ('draft','in_progress')"/>
+                                    <button name="action_open_incident" type="object" string="Incident" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="CAPA">
+                            <field name="action_ids" readonly="1">
+                                <list create="0" edit="0" delete="0"
+                                      decoration-danger="is_overdue"
+                                      decoration-success="state == 'verified'"
+                                      decoration-muted="state == 'cancelled'">
+                                    <field name="name"/>
+                                    <field name="action_type" widget="badge"/>
+                                    <field name="owner_user_id"/>
+                                    <field name="owner_staff_id"/>
+                                    <field name="due_at"/>
+                                    <field name="is_overdue"/>
+                                    <field name="effectiveness_result" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_start" type="object" string="Start" icon="fa-play"
+                                            groups="clinic_incident_event.group_incident_investigator"
+                                            invisible="state != 'planned'"/>
+                                    <button name="action_mark_done" type="object" string="Done" icon="fa-check"
+                                            groups="clinic_incident_event.group_incident_investigator"
+                                            invisible="state not in ('planned','in_progress')"/>
+                                    <button name="action_verify_effective" type="object" string="Verify" icon="fa-check-circle"
+                                            groups="clinic_incident_event.group_incident_manager"
+                                            invisible="state != 'done'"/>
+                                    <button name="action_open_incident" type="object" string="Incident" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Regulatory">
+                            <group>
+                                <group>
+                                    <field name="regulatory_required" readonly="state in ('closed','cancelled')"/>
+                                    <field name="reportability_reviewed" readonly="1"/>
+                                    <field name="needs_regulatory_review" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="regulator_body" readonly="state in ('closed','cancelled')"/>
+                                    <field name="regulator_reference" readonly="state in ('closed','cancelled')"/>
+                                    <field name="regulator_reported_at" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Resolution">
+                            <field name="resolution_summary" readonly="state in ('closed','cancelled')"/>
+                            <group>
+                                <field name="closed_at" readonly="1"/>
+                                <field name="closed_by_id" readonly="1"/>
+                                <field name="cancellation_reason"
+                                       readonly="state in ('closed','cancelled')"
+                                       placeholder="Required before cancelling the Incident..."/>
+                            </group>
+                        </page>
+
+                        <page string="Timeline">
+                            <field name="timeline_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="event_at"/>
+                                    <field name="event_type" widget="badge"/>
+                                    <field name="title"/>
+                                    <field name="user_id"/>
+                                    <field name="from_state"/>
+                                    <field name="to_state"/>
+                                    <button name="action_open_incident" type="object" string="Incident" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_incident_regulatory" model="ir.actions.act_window">
+        <field name="name">Regulatory Review Queue</field>
+        <field name="res_model">clinic.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_incident_regulatory_list"/>
+        <field name="search_view_id" ref="view_incident_search"/>
+        <field name="domain">[('needs_regulatory_review','=',True)]</field>
+    </record>
+
+    <record id="action_incident" model="ir.actions.act_window">
+        <field name="name">Incident Cases</field>
+        <field name="res_model">clinic.incident</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_incident_search"/>
+    </record>
+</odoo>

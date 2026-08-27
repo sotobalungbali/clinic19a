@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Local root is always installable. post_init_hook reparents it under ClinicOne when available. -->
+    <menuitem id="menu_consent_legal_root"
+              name="Consent &amp; Legal"
+              sequence="45"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_consent_legal_operations"
+              name="Operations"
+              parent="menu_consent_legal_root"
+              sequence="10"/>
+    <menuitem id="menu_consent_legal_configuration"
+              name="Configuration"
+              parent="menu_consent_legal_root"
+              sequence="80"/>
+
+    <menuitem id="menu_consent_forms"
+              name="Consent Forms"
+              parent="menu_consent_legal_operations"
+              action="action_clinic_consent_form"
+              sequence="10"/>
+    <menuitem id="menu_consent_signatures"
+              name="Signature Ledger"
+              parent="menu_consent_legal_operations"
+              action="action_clinic_consent_signature"
+              sequence="20"/>
+    <menuitem id="menu_consent_attachments"
+              name="Legal Attachments"
+              parent="menu_consent_legal_operations"
+              action="action_clinic_consent_attachment"
+              sequence="30"/>
+
+    <menuitem id="menu_consent_templates"
+              name="Consent Templates"
+              parent="menu_consent_legal_configuration"
+              action="action_clinic_consent_template_legal"
+              sequence="10"/>
+</odoo>

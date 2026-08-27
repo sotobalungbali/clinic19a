@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_clinic_billing_discount_rule_search" model="ir.ui.view">
+        <field name="name">clinic.billing.discount.rule.search</field>
+        <field name="model">clinic.billing.discount.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="active"/>
+                <field name="scope"/>
+                <field name="method"/>
+                <field name="percent"/>
+                <field name="amount"/>
+                <field name="base_type"/>
+                <field name="doctor_partner_id"/>
+                <group><filter string="Company" context="{'group_by':'company_id'}" name="group_company_id"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_discount_rule_list" model="ir.ui.view">
+        <field name="name">clinic.billing.discount.rule.list</field>
+        <field name="model">clinic.billing.discount.rule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" optional="show"/>
+                <field name="active" optional="show"/>
+                <field name="scope" optional="show"/>
+                <field name="method" optional="show"/>
+                <field name="percent" optional="show"/>
+                <field name="amount" optional="show"/>
+                <field name="base_type" optional="show"/>
+                <field name="doctor_partner_id" optional="show"/>
+                <field name="product_id" optional="hide"/>
+                <field name="product_category_id" optional="hide"/>
+                <field name="line_type" optional="hide"/>
+                <field name="branch_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_discount_rule_form" model="ir.ui.view">
+        <field name="name">clinic.billing.discount.rule.form</field>
+        <field name="model">clinic.billing.discount.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                            <field name="scope"/>
+                            <field name="method"/>
+                            <field name="percent"/>
+                            <field name="amount"/>
+                            <field name="base_type"/>
+                            <field name="doctor_partner_id"/>
+                            <field name="product_id"/>
+                            <field name="product_category_id"/>
+                            <field name="line_type"/>
+                            <field name="branch_id"/>
+                            <field name="requires_membership"/>
+                            <field name="membership_level_key"/>
+                            <field name="min_qty"/>
+                        </group>
+                        <group>
+                            <field name="min_subtotal"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="stackable"/>
+                            <field name="exclusive"/>
+                            <field name="max_discount_per_line"/>
+                            <field name="max_discount_per_invoice"/>
+                            <field name="requires_code"/>
+                            <field name="code"/>
+                            <field name="usage_limit_global"/>
+                            <field name="usage_limit_per_patient"/>
+                            <field name="priority"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_discount_rule" model="ir.actions.act_window">
+        <field name="name">Rule</field>
+        <field name="res_model">clinic.billing.discount.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_discount_rule_search"/>
+    </record>
+
+    <record id="view_clinic_billing_discount_redemption_search" model="ir.ui.view">
+        <field name="name">clinic.billing.discount.redemption.search</field>
+        <field name="model">clinic.billing.discount.redemption</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="rule_id"/>
+                <field name="invoice_id"/>
+                <field name="patient_id"/>
+                <field name="amount"/>
+                <field name="code_used"/>
+                <field name="date"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_discount_redemption_list" model="ir.ui.view">
+        <field name="name">clinic.billing.discount.redemption.list</field>
+        <field name="model">clinic.billing.discount.redemption</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="rule_id" optional="show"/>
+                <field name="invoice_id" optional="show"/>
+                <field name="patient_id" optional="show"/>
+                <field name="amount" optional="show"/>
+                <field name="currency_id" optional="show"/>
+                <field name="code_used" optional="show"/>
+                <field name="date" optional="show"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_discount_redemption_form" model="ir.ui.view">
+        <field name="name">clinic.billing.discount.redemption.form</field>
+        <field name="model">clinic.billing.discount.redemption</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="rule_id"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="rule_id"/>
+                            <field name="invoice_id"/>
+                            <field name="patient_id"/>
+                            <field name="amount"/>
+                        </group>
+                        <group>
+                            <field name="currency_id"/>
+                            <field name="code_used"/>
+                            <field name="date"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_discount_redemption" model="ir.actions.act_window">
+        <field name="name">Redemption</field>
+        <field name="res_model">clinic.billing.discount.redemption</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_discount_redemption_search"/>
+    </record>
+</odoo>

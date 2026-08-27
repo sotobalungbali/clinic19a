@@ -1,0 +1,40 @@
+.o_clinic_telemedicine_portal {
+    .o_clinic_secure_thread_card {
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .o_clinic_secure_thread_card:hover {
+        transform: translateY(-1px);
+    }
+
+    .o_clinic_secure_message_stream {
+        max-height: 65vh;
+        overflow-y: auto;
+        background: var(--o-view-background-color, #fff);
+    }
+
+    .o_clinic_secure_message {
+        max-width: 82%;
+        padding: 0.85rem 1rem;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 0.85rem;
+        margin-bottom: 1rem;
+        white-space: normal;
+    }
+
+    .o_clinic_secure_message_body {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .o_patient_message {
+        margin-left: auto;
+        background: rgba(0, 123, 255, 0.05);
+    }
+
+    .o_clinic_message {
+        margin-right: auto;
+        background: rgba(0, 0, 0, 0.025);
+    }
+}
+

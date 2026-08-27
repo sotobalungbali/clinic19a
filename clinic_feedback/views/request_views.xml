@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_feedback_request_search" model="ir.ui.view">
+        <field name="name">clinic.feedback.request.search</field>
+        <field name="model">clinic.feedback.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="survey_id"/>
+                <field name="doctor_id"/>
+                <field name="staff_id"/>
+                <field name="booking_id"/>
+                <field name="encounter_id"/>
+                <field name="postcare_plan_id"/>
+                <field name="company_id"/>
+                <filter name="open_request" string="Open" domain="[('state','in',('draft','ready','sent','opened'))]"/>
+                <filter name="ready" string="Ready" domain="[('state','=','ready')]"/>
+                <filter name="sent" string="Sent / Opened" domain="[('state','in',('sent','opened'))]"/>
+                <filter name="submitted" string="Submitted" domain="[('state','=','submitted')]"/>
+                <filter name="expired" string="Expired" domain="[('is_expired','=',True)]"/>
+                <group>
+                    <filter name="group_source" string="Source" context="{'group_by':'source_type'}"/>
+                    <filter name="group_survey" string="Survey" context="{'group_by':'survey_id'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_staff" string="Staff" context="{'group_by':'staff_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_request_list" model="ir.ui.view">
+        <field name="name">clinic.feedback.request.list</field>
+        <field name="model">clinic.feedback.request</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state in ('sent','opened')" decoration-success="state == 'submitted'" decoration-muted="state in ('expired','revoked')">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="survey_id"/>
+                <field name="source_type" widget="badge"/>
+                <field name="doctor_id"/>
+                <field name="staff_id"/>
+                <field name="request_date"/>
+                <field name="expires_at"/>
+                <field name="reminder_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_send" type="object" string="Send" icon="fa-envelope"
+                        groups="clinic_feedback.group_feedback_coordinator"
+                        invisible="state not in ('draft','ready','sent','opened')"/>
+                <button name="action_send_reminder" type="object" string="Reminder" icon="fa-bell"
+                        groups="clinic_feedback.group_feedback_coordinator"
+                        invisible="state not in ('sent','opened')"/>
+                <button name="action_open_public" type="object" string="Public Link" icon="fa-external-link"
+                        invisible="state in ('expired','revoked')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_feedback_request_form" model="ir.ui.view">
+        <field name="name">clinic.feedback.request.form</field>
+        <field name="model">clinic.feedback.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_prepare" type="object" string="Prepare" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_coordinator"
+                            invisible="state != 'draft'"/>
+                    <button name="action_send" type="object" string="Send Invitation" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_coordinator"
+                            invisible="state not in ('ready','sent','opened')"/>
+                    <button name="action_send_reminder" type="object" string="Send Reminder"
+                            groups="clinic_feedback.group_feedback_coordinator"
+                            invisible="state not in ('sent','opened')"/>
+                    <button name="action_open_public" type="object" string="Open Public Form"
+                            invisible="state in ('expired','revoked')"/>
+                    <button name="action_revoke" type="object" string="Revoke"
+                            groups="clinic_feedback.group_feedback_manager"
+                            invisible="state in ('submitted','expired','revoked')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,sent,opened,submitted,expired,revoked"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_public" type="object" class="oe_stat_button" icon="fa-link"
+                                invisible="state in ('expired','revoked')">
+                            <div class="o_stat_info"><span class="o_stat_text">Public Survey</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-success" role="alert" invisible="state != 'submitted'">
+                        Patient Feedback has been submitted for this request.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="state not in ('expired','revoked')">
+                        This public Feedback link is no longer available.
+                    </div>
+
+                    <group>
+                        <group string="Invitation">
+                            <field name="survey_id" readonly="state not in ('draft','ready')"/>
+                            <field name="patient_id" readonly="state not in ('draft','ready')"/>
+                            <field name="patient_card_id" readonly="1"/>
+                            <field name="doctor_id"/>
+                            <field name="staff_id"/>
+                            <field name="treatment_id"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state not in ('draft','ready')"/>
+                            <field name="branch_id" readonly="state not in ('draft','ready')"/>
+                        </group>
+                        <group string="Lifecycle">
+                            <field name="request_date" readonly="state not in ('draft','ready')"/>
+                            <field name="expiry_days" readonly="state not in ('draft','ready')"/>
+                            <field name="expires_at" readonly="1"/>
+                            <field name="sent_at" readonly="1"/>
+                            <field name="opened_at" readonly="1"/>
+                            <field name="submitted_at" readonly="1"/>
+                            <field name="reminder_count" readonly="1"/>
+                            <field name="last_reminder_at" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_public" type="object" string="Preview / Open Public Survey" class="btn btn-secondary"
+                                invisible="state in ('expired','revoked')"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Source Context">
+                            <group>
+                                <field name="source_type"/>
+                                <field name="booking_id" invisible="source_type != 'booking'"/>
+                                <field name="queue_id" invisible="source_type != 'queue'"/>
+                                <field name="encounter_id" invisible="source_type != 'encounter'"/>
+                                <field name="postcare_plan_id" invisible="source_type != 'postcare'"/>
+                            </group>
+                        </page>
+                        <page string="Public Access">
+                            <group>
+                                <field name="access_token" readonly="1"/>
+                                <field name="access_path" readonly="1"/>
+                                <field name="access_url" readonly="1" widget="url"/>
+                                <field name="last_mail_id" readonly="1"/>
+                                <field name="feedback_id" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Internal Note">
+                            <field name="internal_note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_feedback_request" model="ir.actions.act_window">
+        <field name="name">Feedback Requests</field>
+        <field name="res_model">clinic.feedback.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_request_search"/>
+        <field name="context">{'search_default_open_request': 1}</field>
+    </record>
+</odoo>

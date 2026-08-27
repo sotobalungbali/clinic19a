@@ -1,0 +1,1623 @@
+{
+  "project": "ClinicOne",
+  "addon": "clinic_encounter",
+  "platform": "Odoo 19 CE",
+  "baseline_status": "FUNCTIONALLY_FINISHED",
+  "backup_exclusion": "Ignore filenames beginning with digit 0",
+  "authoritative_baseline": {
+    "source": "User attachment clinic19a(20260814-031232).md",
+    "active_import_modules": [
+      "models",
+      "mixin_audit",
+      "encounter_stage",
+      "encounter",
+      "encounter_integration",
+      "soap_note",
+      "diagnosis",
+      "procedure_catalog",
+      "procedure_step",
+      "encounter_procedure",
+      "procedure_session",
+      "execution_log",
+      "result_document",
+      "consent",
+      "anesthesia",
+      "adverse_event",
+      "checklist"
+    ],
+    "manifest_dependencies": [
+      "base",
+      "mail",
+      "portal",
+      "product",
+      "uom",
+      "account",
+      "clinic_base",
+      "clinic_branch",
+      "clinic_staff",
+      "clinic_room_device",
+      "clinic_treatment_catalog",
+      "clinic_patient",
+      "clinic_doctor",
+      "clinic_queue_room",
+      "clinic_inventory",
+      "clinic_booking",
+      "clinic_triage_vitals",
+      "clinic_consent_legal"
+    ],
+    "active_model_count_including_extensions_and_abstract": 43,
+    "active_field_declaration_count": 819
+  },
+  "preservation_rule": "Preserve existing business models, fields, workflows and methods except explicit Odoo 19 compatibility replacements and documented ownership reconciliation.",
+  "allowed_changes": [
+    "Migrate legacy _sql_constraints to models.Constraint.",
+    "Replace legacy name_get naming with _compute_display_name while preserving labels.",
+    "Migrate name_search args=None to domain=None.",
+    "Migrate Python tree view terminology to list.",
+    "Repair dead Odoo 19 XML-ID/API references.",
+    "Add enterprise Search/List/Form/Calendar views, actions, menus, reports, mail template, wizards, security, docs and guardrail.",
+    "Add direct stock and web dependencies required by active stock/report contracts.",
+    "Add local root menu and defensive post-init reparenting rather than hard sibling presentation XML-ID references.",
+    "Reconcile clinic.consent.template as same-name extension of canonical upstream model without redefining upstream canonical fields."
+  ],
+  "forbidden_changes": [
+    "Remove or simplify a business model/field/workflow merely to pass validation.",
+    "Activate models/xxx_clinic_encounter.py.",
+    "Move model ownership to another addon during this hardening.",
+    "Edit frozen sibling addons.",
+    "Introduce account.analytic.tag.",
+    "Create hard manifest-loaded sibling presentation XML-ID dependencies.",
+    "Allow Codex more than 3 focused attempts per blocker/root-cause class."
+  ],
+  "documented_reconciliations": {
+    "clinic.consent.template": {
+      "decision": "MERGE_WITHOUT_LOSS / EXTEND_CANONICAL_OWNER",
+      "canonical_owner": "clinic_treatment_catalog + legal governance extension clinic_consent_legal",
+      "encounter_role": "Adds only encounter execution metadata and actions.",
+      "canonical_fields_not_redeclared": [
+        "name",
+        "active",
+        "category",
+        "company_id",
+        "sequence",
+        "title",
+        "treatment_id",
+        "validity_days"
+      ]
+    },
+    "clinic.audit.log": {
+      "decision": "KEEP_CURRENT_OWNER_FOR_NOW",
+      "future_owner": "clinic_audit",
+      "note": "Do not move or merge during clinic_encounter hardening; reconcile when addon #38 is reached."
+    }
+  },
+  "approved_method_replacements": {
+    "name_get": "_compute_display_name"
+  },
+  "approved_dependency_additions": [
+    "web",
+    "stock"
+  ],
+  "current_verified_status": {
+    "source_static": "PASS after guardrail",
+    "target_pc_runtime": "PENDING"
+  },
+  "baseline_model_contract": {
+    "clinic.adverse.event": {
+      "fields": [
+        "action_ids",
+        "active",
+        "anesthesia_case_id",
+        "attachment_ids",
+        "category_id",
+        "causality",
+        "classification",
+        "color",
+        "company_id",
+        "currency_id",
+        "date_closed",
+        "date_detected",
+        "date_occurred",
+        "date_reported",
+        "description",
+        "device_lot",
+        "device_product_id",
+        "diagnosis_id",
+        "doctor_id",
+        "drug_product_id",
+        "encounter_id",
+        "factor_ids",
+        "followup_ids",
+        "harm_scale",
+        "immediate_action",
+        "is_serious",
+        "medication_line_note",
+        "name",
+        "needs_reporting",
+        "note_internal",
+        "outcome",
+        "partner_id",
+        "patient_id",
+        "patient_impact",
+        "procedure_id",
+        "recurrence_risk",
+        "regulator_body",
+        "regulator_reference",
+        "reported_by_id",
+        "reporter_role",
+        "resolution_summary",
+        "result_id",
+        "reviewer_id",
+        "room_id",
+        "session_id",
+        "severity",
+        "state",
+        "tag_ids",
+        "to_regulator",
+        "treatment_id",
+        "type_id",
+        "witness_partner_ids"
+      ],
+      "methods": [
+        "_check_company_consistency",
+        "_check_dates",
+        "_compute_flags",
+        "_onchange_session",
+        "_onchange_type",
+        "action_cancel",
+        "action_close",
+        "action_mark_reported",
+        "action_open_anesthesia",
+        "action_open_encounter",
+        "action_open_result",
+        "action_open_session",
+        "action_submit_review",
+        "create",
+        "name_get",
+        "name_search",
+        "write"
+      ],
+      "sources": [
+        "adverse_event.py"
+      ]
+    },
+    "clinic.ae.action": {
+      "fields": [
+        "ae_id",
+        "attachment_ids",
+        "company_id",
+        "date_done",
+        "deadline",
+        "done",
+        "effectiveness_note",
+        "name",
+        "owner_id",
+        "type"
+      ],
+      "methods": [
+        "_onchange_done"
+      ],
+      "sources": [
+        "adverse_event.py"
+      ]
+    },
+    "clinic.ae.category": {
+      "fields": [
+        "active",
+        "code",
+        "company_id",
+        "description",
+        "name",
+        "sequence"
+      ],
+      "methods": [],
+      "sources": [
+        "adverse_event.py"
+      ]
+    },
+    "clinic.ae.factor": {
+      "fields": [
+        "active",
+        "code",
+        "company_id",
+        "description",
+        "group",
+        "name",
+        "sequence"
+      ],
+      "methods": [],
+      "sources": [
+        "adverse_event.py"
+      ]
+    },
+    "clinic.ae.followup": {
+      "fields": [
+        "ae_id",
+        "attachment_ids",
+        "company_id",
+        "date_note",
+        "note",
+        "user_id"
+      ],
+      "methods": [],
+      "sources": [
+        "adverse_event.py"
+      ]
+    },
+    "clinic.ae.type": {
+      "fields": [
+        "active",
+        "category_id",
+        "code",
+        "company_id",
+        "description",
+        "name",
+        "sequence"
+      ],
+      "methods": [],
+      "sources": [
+        "adverse_event.py"
+      ]
+    },
+    "clinic.anesthesia.airway": {
+      "fields": [
+        "attempts",
+        "case_id",
+        "company_id",
+        "confirmation",
+        "device",
+        "device_size",
+        "event",
+        "grade",
+        "note",
+        "success",
+        "time_event"
+      ],
+      "methods": [],
+      "sources": [
+        "anesthesia.py"
+      ]
+    },
+    "clinic.anesthesia.case": {
+      "fields": [
+        "active",
+        "airway_device",
+        "airway_device_size",
+        "airway_difficult_predicted",
+        "airway_findings",
+        "airway_ids",
+        "aldrete_activity",
+        "aldrete_circulation",
+        "aldrete_color",
+        "aldrete_consciousness",
+        "aldrete_respiration",
+        "aldrete_total",
+        "allergies",
+        "anesthesia_duration_min",
+        "anesthesia_type",
+        "anesthetist_id",
+        "asa_class",
+        "asa_emergency",
+        "base_units",
+        "billing_policy",
+        "color",
+        "company_id",
+        "consent_ok",
+        "consent_required",
+        "currency_id",
+        "date_end",
+        "date_start",
+        "diagnosis_id",
+        "doctor_id",
+        "encounter_id",
+        "event_ids",
+        "fasting_since",
+        "fluid_ids",
+        "intraop_complication",
+        "intraop_complication_note",
+        "intubation_attempts",
+        "intubation_success",
+        "invoice_count",
+        "invoice_line_ids",
+        "laryngoscopy_grade",
+        "mallampati",
+        "medication_ids",
+        "mouth_opening_cm",
+        "name",
+        "nausea_vomiting",
+        "neck_mobility",
+        "net_fluid_balance_ml",
+        "note_internal",
+        "pain_scale",
+        "partner_id",
+        "patient_id",
+        "performer_user_id",
+        "planned_end",
+        "planned_start",
+        "postop_complication",
+        "postop_complication_note",
+        "preop_checklist_ok",
+        "preop_notes",
+        "procedure_id",
+        "product_case_id",
+        "product_time_id",
+        "rass_score",
+        "ready_for_discharge",
+        "room_id",
+        "session_id",
+        "state",
+        "tag_ids",
+        "technique_notes",
+        "thyromental_distance_cm",
+        "time_unit_minutes",
+        "total_blood_loss_ml",
+        "total_fluid_in_ml",
+        "total_fluid_out_ml",
+        "total_urine_ml",
+        "vital_ids"
+      ],
+      "methods": [
+        "_check_actual_window",
+        "_check_company_consistency",
+        "_check_planned_window",
+        "_compute_aldrete",
+        "_compute_consent_ok",
+        "_compute_consent_required",
+        "_compute_duration",
+        "_compute_fluid_totals",
+        "_compute_invoice_count",
+        "_income_account_from_product",
+        "_map_taxes",
+        "_onchange_session",
+        "_preflight_start",
+        "action_cancel",
+        "action_done",
+        "action_generate_result_document",
+        "action_open_billing",
+        "action_pause",
+        "action_prepare_invoice_line_vals",
+        "action_resume",
+        "action_start",
+        "create",
+        "name_get",
+        "name_search"
+      ],
+      "sources": [
+        "anesthesia.py"
+      ]
+    },
+    "clinic.anesthesia.event": {
+      "fields": [
+        "case_id",
+        "category",
+        "company_id",
+        "critical",
+        "description",
+        "time_event"
+      ],
+      "methods": [],
+      "sources": [
+        "anesthesia.py"
+      ]
+    },
+    "clinic.anesthesia.fluid": {
+      "fields": [
+        "case_id",
+        "company_id",
+        "direction",
+        "is_blood_loss",
+        "is_urine",
+        "product_id",
+        "remark",
+        "time_move",
+        "volume_ml"
+      ],
+      "methods": [],
+      "sources": [
+        "anesthesia.py"
+      ]
+    },
+    "clinic.anesthesia.medication": {
+      "fields": [
+        "case_id",
+        "company_id",
+        "dose",
+        "dose_uom",
+        "product_id",
+        "remark",
+        "route",
+        "time_admin"
+      ],
+      "methods": [
+        "_onchange_product"
+      ],
+      "sources": [
+        "anesthesia.py"
+      ]
+    },
+    "clinic.anesthesia.vital": {
+      "fields": [
+        "agent",
+        "agent_et",
+        "case_id",
+        "company_id",
+        "dbp",
+        "etco2",
+        "fio2",
+        "hr",
+        "map",
+        "note",
+        "rr",
+        "sbp",
+        "spo2",
+        "temp",
+        "time_point"
+      ],
+      "methods": [],
+      "sources": [
+        "anesthesia.py"
+      ]
+    },
+    "clinic.audit.log": {
+      "fields": [
+        "active",
+        "category",
+        "changes_json",
+        "client_ip",
+        "color",
+        "company_id",
+        "currency_id",
+        "date_event",
+        "field_name",
+        "name",
+        "new_value_text",
+        "note",
+        "old_value_text",
+        "reason_code",
+        "ref",
+        "ref_display_name",
+        "ref_model",
+        "ref_res_id",
+        "role",
+        "summary",
+        "user_agent",
+        "user_id"
+      ],
+      "methods": [
+        "_compute_ref",
+        "_compute_ref_display",
+        "_referenceable_models",
+        "create"
+      ],
+      "sources": [
+        "mixin_audit.py"
+      ]
+    },
+    "clinic.audit.mixin": {
+      "fields": [
+        "audit_log_count"
+      ],
+      "methods": [
+        "_audit_base_vals",
+        "_audit_create_log",
+        "_audit_excluded_fields",
+        "_audit_fmt_value",
+        "_audit_included_fields",
+        "_audit_is_enabled",
+        "_audit_pack_changes",
+        "_audit_stage_fields",
+        "_audit_state_fields",
+        "_audit_user_role",
+        "_compute_audit_log_count",
+        "_safe_str",
+        "action_view_audit_logs",
+        "audit_log_attachment",
+        "audit_log_comment",
+        "audit_log_custom",
+        "audit_log_stage_transition",
+        "audit_log_state_transition",
+        "create",
+        "write"
+      ],
+      "sources": [
+        "mixin_audit.py"
+      ]
+    },
+    "clinic.checklist": {
+      "fields": [
+        "active",
+        "adverse_event_id",
+        "anesthesia_case_id",
+        "color",
+        "company_id",
+        "completed_required",
+        "consent_id",
+        "currency_id",
+        "date_done",
+        "date_start",
+        "encounter_id",
+        "line_ids",
+        "min_required",
+        "name",
+        "note_internal",
+        "partner_id",
+        "pass_threshold_percent",
+        "passed",
+        "patient_id",
+        "percent_complete",
+        "procedure_id",
+        "require_all_required",
+        "require_signature_to_complete",
+        "required_ok",
+        "result_id",
+        "scope",
+        "score_max",
+        "score_percent",
+        "score_total",
+        "session_id",
+        "signature",
+        "signature_note",
+        "signed_by",
+        "started_by_id",
+        "state",
+        "tag_ids",
+        "template_id",
+        "title",
+        "total_required",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_company_consistency",
+        "_compute_progress",
+        "_compute_score",
+        "_default_item_score_max",
+        "_instantiate_from_template",
+        "_onchange_template",
+        "_validate_completion",
+        "action_cancel",
+        "action_done",
+        "action_open_encounter",
+        "action_open_session",
+        "action_start",
+        "create",
+        "is_compliant_for_session",
+        "write"
+      ],
+      "sources": [
+        "checklist.py"
+      ]
+    },
+    "clinic.checklist.item": {
+      "fields": [
+        "allow_na",
+        "answer_type",
+        "answered",
+        "checklist_id",
+        "color",
+        "company_id",
+        "description",
+        "guidance",
+        "is_na",
+        "is_passed",
+        "max_value",
+        "min_value",
+        "name",
+        "regex",
+        "required",
+        "score_max",
+        "score_value",
+        "sequence",
+        "template_item_id",
+        "value_attachment_ids",
+        "value_bool",
+        "value_date",
+        "value_datetime",
+        "value_number",
+        "value_select_id",
+        "value_signature",
+        "value_text",
+        "weight"
+      ],
+      "methods": [
+        "_compute_answered_and_score"
+      ],
+      "sources": [
+        "checklist.py"
+      ]
+    },
+    "clinic.checklist.template": {
+      "fields": [
+        "active",
+        "code",
+        "color",
+        "company_id",
+        "description",
+        "encounter_stage_ids",
+        "item_count",
+        "item_ids",
+        "language",
+        "min_required",
+        "name",
+        "pass_threshold_percent",
+        "procedure_category_ids",
+        "require_all_required",
+        "require_signature_to_complete",
+        "scope",
+        "sequence",
+        "tag_ids"
+      ],
+      "methods": [
+        "_compute_item_count",
+        "action_open_instances",
+        "prepare_instance_vals"
+      ],
+      "sources": [
+        "checklist.py"
+      ]
+    },
+    "clinic.checklist.template.item": {
+      "fields": [
+        "allow_na",
+        "answer_type",
+        "code",
+        "color",
+        "company_id",
+        "description",
+        "guidance",
+        "max_value",
+        "min_value",
+        "name",
+        "option_ids",
+        "regex",
+        "required",
+        "sequence",
+        "template_id",
+        "weight"
+      ],
+      "methods": [],
+      "sources": [
+        "checklist.py"
+      ]
+    },
+    "clinic.checklist.template.item.option": {
+      "fields": [
+        "code",
+        "company_id",
+        "is_pass",
+        "item_id",
+        "name",
+        "note",
+        "score",
+        "sequence"
+      ],
+      "methods": [],
+      "sources": [
+        "checklist.py"
+      ]
+    },
+    "clinic.consent.document": {
+      "fields": [
+        "active",
+        "attachment_ids",
+        "body_html",
+        "color",
+        "company_id",
+        "date_expiry",
+        "date_signed",
+        "diagnosis_id",
+        "doctor_id",
+        "encounter_id",
+        "footer_html",
+        "guardian_name",
+        "guardian_relation",
+        "invoice_line_ids",
+        "is_expired",
+        "is_guardian",
+        "is_valid",
+        "language",
+        "name",
+        "note_internal",
+        "partner_id",
+        "patient_id",
+        "procedure_ids",
+        "risk_line_ids",
+        "session_id",
+        "sign_by_patient",
+        "signature",
+        "signature_guardian",
+        "signature_ip",
+        "signature_note",
+        "signer_document_no",
+        "signer_name",
+        "signer_partner_id",
+        "state",
+        "summary",
+        "tag_ids",
+        "template_id",
+        "title",
+        "treatment_id",
+        "validity_days",
+        "witness1_name",
+        "witness1_signature",
+        "witness2_name",
+        "witness2_signature"
+      ],
+      "methods": [
+        "_check_company_consistency",
+        "_check_signature_presence",
+        "_clone_risk_from_template",
+        "_compute_expiry",
+        "_compute_is_expired",
+        "_compute_is_valid",
+        "_compute_summary",
+        "_get_report_base_filename",
+        "_onchange_session",
+        "_onchange_template",
+        "_render_template_body",
+        "_update_encounter_consent_flag",
+        "action_cancel",
+        "action_mark_expired",
+        "action_print_report",
+        "action_revoke",
+        "action_set_draft",
+        "action_sign",
+        "covers_procedure",
+        "create",
+        "is_currently_valid",
+        "write"
+      ],
+      "sources": [
+        "consent.py"
+      ]
+    },
+    "clinic.consent.risk": {
+      "fields": [
+        "acknowledged",
+        "color",
+        "company_id",
+        "consent_id",
+        "description",
+        "name",
+        "note",
+        "required",
+        "sequence",
+        "treatment_id"
+      ],
+      "methods": [],
+      "sources": [
+        "consent.py"
+      ]
+    },
+    "clinic.consent.risk.template": {
+      "fields": [
+        "active",
+        "company_id",
+        "description",
+        "name",
+        "required",
+        "sequence",
+        "treatment_id"
+      ],
+      "methods": [],
+      "sources": [
+        "consent.py"
+      ]
+    },
+    "clinic.consent.template": {
+      "fields": [
+        "active",
+        "body_html",
+        "category",
+        "company_id",
+        "footer_html",
+        "language",
+        "name",
+        "note_internal",
+        "procedure_ids",
+        "require_guardian_if_minor",
+        "require_witness",
+        "risk_item_ids",
+        "sequence",
+        "title",
+        "treatment_id",
+        "validity_days"
+      ],
+      "methods": [
+        "action_preview_variables"
+      ],
+      "sources": [
+        "consent.py"
+      ]
+    },
+    "clinic.diagnosis": {
+      "fields": [
+        "body_site",
+        "category_id",
+        "certainty",
+        "chronicity",
+        "code",
+        "code_system",
+        "color",
+        "company_id",
+        "date_diagnosed",
+        "date_onset",
+        "date_resolved",
+        "description",
+        "display_code",
+        "doctor_id",
+        "duration_days",
+        "encounter_id",
+        "invoice_count",
+        "is_active",
+        "is_primary",
+        "laterality",
+        "name",
+        "note",
+        "partner_id",
+        "patient_id",
+        "priority",
+        "related_procedure_count",
+        "session_count",
+        "severity",
+        "soap_note_ids",
+        "source",
+        "status",
+        "suggested_procedure_ids",
+        "type"
+      ],
+      "methods": [
+        "_check_certainty_dates",
+        "_check_company_consistency",
+        "_check_dates",
+        "_check_single_primary_per_encounter",
+        "_compute_counters",
+        "_compute_display_code",
+        "_compute_duration_days",
+        "_compute_invoice_count",
+        "_compute_is_active",
+        "_compute_is_primary",
+        "_inverse_is_primary",
+        "action_mark_resolved",
+        "action_open_encounter",
+        "action_open_invoices",
+        "action_open_procedures",
+        "action_open_sessions",
+        "action_plan_procedure_quick",
+        "action_reopen",
+        "action_set_primary",
+        "create",
+        "name_get",
+        "name_search",
+        "write"
+      ],
+      "sources": [
+        "diagnosis.py"
+      ]
+    },
+    "clinic.diagnosis.category": {
+      "fields": [
+        "active",
+        "company_id",
+        "description",
+        "name",
+        "sequence"
+      ],
+      "methods": [],
+      "sources": [
+        "diagnosis.py"
+      ]
+    },
+    "clinic.encounter": {
+      "fields": [
+        "active",
+        "actual_duration",
+        "ae_count",
+        "ae_ids",
+        "amount_invoiced",
+        "amount_tax",
+        "amount_to_invoice",
+        "amount_total",
+        "amount_untaxed",
+        "appointment_id",
+        "checklist_count",
+        "checklist_ids",
+        "color",
+        "company_id",
+        "consent_count",
+        "consent_ids",
+        "consent_ok",
+        "currency_id",
+        "date_end",
+        "date_planned_end",
+        "date_planned_start",
+        "date_start",
+        "diagnosis_note",
+        "doctor_id",
+        "internal_note",
+        "invoice_count",
+        "name",
+        "partner_id",
+        "patient_id",
+        "planned_duration",
+        "priority",
+        "procedure_count",
+        "procedure_line_ids",
+        "result_count",
+        "result_ids",
+        "session_count",
+        "session_ids",
+        "stage_id",
+        "state",
+        "treatment_id",
+        "user_id",
+        "vital_ids"
+      ],
+      "methods": [
+        "_check_actual_dates",
+        "_check_open_encounter_uniqueness",
+        "_check_planned_dates",
+        "_compute_actual_duration",
+        "_compute_ae_count",
+        "_compute_amounts",
+        "_compute_billing_progress",
+        "_compute_checklist_count",
+        "_compute_consent_count",
+        "_compute_counts",
+        "_compute_result_count",
+        "_compute_state",
+        "_ensure_can_edit",
+        "_get_stage_by_state",
+        "_onchange_appointment",
+        "_onchange_patient",
+        "_recompute_consent_ok",
+        "action_cancel",
+        "action_done",
+        "action_open_adverse_events",
+        "action_open_billing",
+        "action_open_checklists",
+        "action_open_consents",
+        "action_open_procedures",
+        "action_open_results",
+        "action_open_sessions",
+        "action_set_to_draft",
+        "action_start",
+        "create",
+        "estimate_end_from_planned",
+        "name_get",
+        "name_search",
+        "push_activity_followup",
+        "write"
+      ],
+      "sources": [
+        "encounter.py"
+      ]
+    },
+    "clinic.encounter.procedure": {
+      "fields": [
+        "active",
+        "billing_policy",
+        "color",
+        "company_id",
+        "currency_id",
+        "diagnosis_id",
+        "discount",
+        "doctor_id",
+        "done_session_count",
+        "encounter_id",
+        "internal_note",
+        "invoice_line_ids",
+        "name",
+        "notes",
+        "partner_id",
+        "patient_id",
+        "performer_doctor_id",
+        "performer_user_id",
+        "planned_duration",
+        "planned_sessions",
+        "price_subtotal",
+        "price_tax",
+        "price_total",
+        "price_unit",
+        "priority",
+        "procedure_id",
+        "product_id",
+        "quantity",
+        "room_id",
+        "sequence",
+        "session_count",
+        "session_ids",
+        "state",
+        "tax_ids",
+        "treatment_id",
+        "uom_id"
+      ],
+      "methods": [
+        "_check_company_consistency",
+        "_check_uom_category",
+        "_compute_amount",
+        "_compute_session_count",
+        "_compute_session_done_count",
+        "_get_default_description",
+        "_onchange_procedure_id",
+        "_onchange_product_id",
+        "_prepare_session_vals",
+        "_prepare_single_invoice_line",
+        "action_cancel",
+        "action_done",
+        "action_generate_sessions",
+        "action_open_billing",
+        "action_open_sessions",
+        "action_plan",
+        "action_prepare_invoice_line_vals",
+        "action_start",
+        "action_view_invoices",
+        "create",
+        "name_get",
+        "name_search",
+        "unlink",
+        "write"
+      ],
+      "sources": [
+        "encounter_procedure.py"
+      ]
+    },
+    "clinic.encounter.stage": {
+      "fields": [
+        "action_server_id",
+        "active",
+        "activity_summary",
+        "activity_type_id",
+        "allow_edit",
+        "allowed_group_ids",
+        "color",
+        "company_id",
+        "description",
+        "fold",
+        "is_closed",
+        "name",
+        "require_consent",
+        "require_procedures",
+        "sequence",
+        "state"
+      ],
+      "methods": [
+        "_check_require_consent_consistency",
+        "_compute_is_closed",
+        "_onchange_state",
+        "apply_to_encounters",
+        "check_business_requirements",
+        "check_user_can_enter",
+        "name_get",
+        "stage_for_state",
+        "trigger_on_enter",
+        "unlink"
+      ],
+      "sources": [
+        "encounter_stage.py"
+      ]
+    },
+    "clinic.execution.log": {
+      "fields": [
+        "active",
+        "attachment_ids",
+        "color",
+        "company_id",
+        "cumulative_runtime_minutes",
+        "currency_id",
+        "date_event",
+        "delta_minutes_from_prev",
+        "doctor_id",
+        "encounter_id",
+        "event_type",
+        "is_timer_event",
+        "message",
+        "name",
+        "patient_id",
+        "payload",
+        "performer_role",
+        "performer_user_id",
+        "procedure_id",
+        "room_id",
+        "session_id",
+        "state_after",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_company_consistency",
+        "_check_date_sequence",
+        "_compute_deltas",
+        "_compute_flags",
+        "action_open_encounter",
+        "action_open_session",
+        "create",
+        "log_for_session",
+        "name_get",
+        "name_search"
+      ],
+      "sources": [
+        "execution_log.py"
+      ]
+    },
+    "clinic.patient.vital": {
+      "fields": [
+        "encounter_id"
+      ],
+      "methods": [],
+      "sources": [
+        "encounter_integration.py"
+      ]
+    },
+    "clinic.procedure.catalog": {
+      "fields": [
+        "active",
+        "billing_policy",
+        "category_id",
+        "code",
+        "color",
+        "company_id",
+        "consumable_ids",
+        "currency_id",
+        "default_duration_min",
+        "default_sessions",
+        "display_name",
+        "instructions_post",
+        "instructions_pre",
+        "list_price",
+        "name",
+        "note",
+        "plan_count",
+        "product_id",
+        "require_checklist",
+        "require_consent",
+        "risks",
+        "sequence",
+        "session_count",
+        "standard_price",
+        "step_ids",
+        "tag_ids",
+        "tax_ids",
+        "uom_id"
+      ],
+      "methods": [
+        "_check_uom_category",
+        "_compute_display_name",
+        "_compute_usage_counters",
+        "_onchange_product_id",
+        "action_open_related_plans",
+        "action_open_related_sessions",
+        "action_quick_plan_for_encounter",
+        "create",
+        "name_get",
+        "name_search",
+        "prepare_plan_vals",
+        "write"
+      ],
+      "sources": [
+        "procedure_catalog.py"
+      ]
+    },
+    "clinic.procedure.category": {
+      "fields": [
+        "active",
+        "child_ids",
+        "code",
+        "company_id",
+        "description",
+        "name",
+        "parent_id",
+        "sequence"
+      ],
+      "methods": [],
+      "sources": [
+        "procedure_catalog.py"
+      ]
+    },
+    "clinic.procedure.consumable": {
+      "fields": [
+        "active",
+        "auto_issue",
+        "color",
+        "company_id",
+        "notes",
+        "procedure_id",
+        "product_id",
+        "quantity",
+        "required",
+        "sequence",
+        "uom_id"
+      ],
+      "methods": [
+        "_check_uom_category",
+        "_onchange_product_id"
+      ],
+      "sources": [
+        "procedure_catalog.py"
+      ]
+    },
+    "clinic.procedure.session": {
+      "fields": [
+        "active",
+        "actual_duration",
+        "adverse_event_note",
+        "ae_count",
+        "ae_ids",
+        "billing_policy",
+        "checklist_compliant",
+        "checklist_count",
+        "checklist_ids",
+        "color",
+        "company_id",
+        "consent_valid",
+        "currency_id",
+        "date_end",
+        "date_start",
+        "diagnosis_id",
+        "discount",
+        "encounter_id",
+        "encounter_procedure_id",
+        "internal_note",
+        "invoice_count",
+        "invoice_line_ids",
+        "name",
+        "performer_doctor_id",
+        "performer_user_id",
+        "planned_duration",
+        "planned_end",
+        "planned_start",
+        "price_subtotal",
+        "price_tax",
+        "price_total",
+        "price_unit",
+        "price_unit_effective",
+        "priority",
+        "procedure_id",
+        "product_id",
+        "quantity",
+        "require_checklist",
+        "require_consent",
+        "result_count",
+        "result_ids",
+        "result_text",
+        "room_id",
+        "sequence",
+        "state",
+        "stock_move_count",
+        "stock_move_ids",
+        "tax_ids",
+        "treatment_id",
+        "uom_id"
+      ],
+      "methods": [
+        "_check_actual_window",
+        "_check_company_consistency",
+        "_check_planned_window",
+        "_compute_actual_duration",
+        "_compute_ae_count",
+        "_compute_amount",
+        "_compute_checklist_compliant",
+        "_compute_checklist_count",
+        "_compute_consent_valid_for_session",
+        "_compute_effective_price",
+        "_compute_invoice_count",
+        "_compute_requirements",
+        "_compute_result_count",
+        "_compute_stock_move_count",
+        "_default_invoice_line_description",
+        "_log_event",
+        "_onchange_plan_line",
+        "_onchange_procedure",
+        "_onchange_product",
+        "_preflight_start_checks",
+        "action_cancel",
+        "action_create_checklist_from_template",
+        "action_create_quick_result",
+        "action_done",
+        "action_issue_consumables",
+        "action_open_adverse_events",
+        "action_open_billing",
+        "action_open_checklists",
+        "action_open_encounter",
+        "action_open_plan_line",
+        "action_open_results",
+        "action_open_stock_moves",
+        "action_pause",
+        "action_prepare_invoice_line_vals",
+        "action_resume",
+        "action_start",
+        "create",
+        "log_note",
+        "name_get"
+      ],
+      "sources": [
+        "procedure_session.py"
+      ]
+    },
+    "clinic.procedure.step": {
+      "fields": [
+        "active",
+        "checklist_ids",
+        "code",
+        "color",
+        "company_id",
+        "currency_id",
+        "dependency_ids",
+        "description",
+        "duration_min",
+        "expected_result",
+        "instructions",
+        "is_critical",
+        "mandatory",
+        "name",
+        "notes",
+        "plan_count",
+        "procedure_id",
+        "qc_checkpoint",
+        "required_equipment",
+        "required_ppe",
+        "risk_level",
+        "sequence",
+        "session_count",
+        "tag_ids",
+        "use_timer"
+      ],
+      "methods": [
+        "_check_dependency_cycle",
+        "_compute_usage_counters",
+        "_onchange_procedure_id",
+        "action_open_procedure",
+        "action_open_related_plans",
+        "action_open_related_sessions",
+        "create",
+        "name_get",
+        "name_search",
+        "prepare_session_step_checklist_vals",
+        "prepare_session_step_vals"
+      ],
+      "sources": [
+        "procedure_step.py"
+      ]
+    },
+    "clinic.procedure.step.checklist": {
+      "fields": [
+        "active",
+        "color",
+        "company_id",
+        "instruction",
+        "is_required",
+        "name",
+        "sequence",
+        "step_id"
+      ],
+      "methods": [],
+      "sources": [
+        "procedure_step.py"
+      ]
+    },
+    "clinic.procedure.tag": {
+      "fields": [
+        "active",
+        "color",
+        "description",
+        "name"
+      ],
+      "methods": [],
+      "sources": [
+        "procedure_catalog.py"
+      ]
+    },
+    "clinic.result.document": {
+      "fields": [
+        "abnormal_count",
+        "active",
+        "attachment_ids",
+        "collected_by_id",
+        "color",
+        "company_id",
+        "critical_count",
+        "currency_id",
+        "date_analyzed",
+        "date_collected",
+        "date_released",
+        "date_validated",
+        "diagnosis_id",
+        "doctor_id",
+        "encounter_id",
+        "invoice_count",
+        "invoice_line_ids",
+        "is_locked",
+        "line_ids",
+        "name",
+        "note_internal",
+        "partner_id",
+        "patient_id",
+        "priority",
+        "procedure_id",
+        "released_by_id",
+        "session_id",
+        "specimen_id",
+        "specimen_type",
+        "state",
+        "summary",
+        "tag_ids",
+        "title",
+        "treatment_id",
+        "validated_by_id"
+      ],
+      "methods": [
+        "_check_company_consistency",
+        "_check_date_consistency",
+        "_compute_flags_counter",
+        "_compute_invoice_count",
+        "_compute_is_locked",
+        "_get_report_base_filename",
+        "_onchange_session",
+        "action_cancel",
+        "action_open_encounter",
+        "action_open_session",
+        "action_print_report",
+        "action_release",
+        "action_set_draft",
+        "action_validate",
+        "action_view_invoices",
+        "add_value",
+        "create",
+        "unlink",
+        "write"
+      ],
+      "sources": [
+        "result_document.py"
+      ]
+    },
+    "clinic.result.group": {
+      "fields": [
+        "active",
+        "collapsed",
+        "company_id",
+        "description",
+        "name",
+        "sequence"
+      ],
+      "methods": [],
+      "sources": [
+        "result_document.py"
+      ]
+    },
+    "clinic.result.value": {
+      "fields": [
+        "code",
+        "color",
+        "company_id",
+        "device",
+        "display_value",
+        "flag",
+        "group_id",
+        "is_abnormal",
+        "is_critical",
+        "method",
+        "name",
+        "notes",
+        "patient_id",
+        "ref_high",
+        "ref_low",
+        "ref_text",
+        "result_id",
+        "sequence",
+        "unit",
+        "uom_id",
+        "value_bool",
+        "value_number",
+        "value_text",
+        "value_type"
+      ],
+      "methods": [
+        "_check_number_presence",
+        "_compute_display_value",
+        "_compute_flags",
+        "mark_abnormal"
+      ],
+      "sources": [
+        "result_document.py"
+      ]
+    },
+    "clinic.soap.note": {
+      "fields": [
+        "active",
+        "assessment",
+        "assessment_diagnosis_ids",
+        "assessment_free_dx",
+        "chief_complaint",
+        "company_id",
+        "date_note",
+        "doctor_id",
+        "encounter_id",
+        "invoice_count",
+        "is_amendment",
+        "is_locked",
+        "name",
+        "objective",
+        "pain_scale",
+        "partner_id",
+        "patient_id",
+        "plan",
+        "previous_id",
+        "priority",
+        "state",
+        "subjective",
+        "summary",
+        "tag_ids",
+        "template_id",
+        "treatment_id",
+        "user_id",
+        "version"
+      ],
+      "methods": [
+        "_check_company_consistency",
+        "_check_locked_edit",
+        "_compute_invoice_count",
+        "_compute_is_locked",
+        "_compute_summary",
+        "_get_related_invoices",
+        "_onchange_template_id",
+        "action_apply_template",
+        "action_cancel",
+        "action_duplicate_as_amendment",
+        "action_finalize",
+        "action_open_encounter",
+        "action_open_related_invoices",
+        "action_set_draft",
+        "create",
+        "name_get",
+        "name_search",
+        "write"
+      ],
+      "sources": [
+        "soap_note.py"
+      ]
+    },
+    "clinic.soap.tag": {
+      "fields": [
+        "active",
+        "color",
+        "description",
+        "name"
+      ],
+      "methods": [],
+      "sources": [
+        "soap_note.py"
+      ]
+    },
+    "clinic.soap.template": {
+      "fields": [
+        "active",
+        "assessment_tmpl",
+        "company_id",
+        "default_priority",
+        "name",
+        "objective_tmpl",
+        "plan_tmpl",
+        "sequence",
+        "subjective_tmpl",
+        "tag_ids"
+      ],
+      "methods": [],
+      "sources": [
+        "soap_note.py"
+      ]
+    }
+  },
+  "canonical_upstream_field_allowance": {
+    "clinic.consent.template": [
+      "name",
+      "active",
+      "category",
+      "company_id",
+      "sequence",
+      "title",
+      "treatment_id",
+      "validity_days"
+    ]
+  },
+  "method_replacement_allowance": {
+    "name_get": "_compute_display_name"
+  }
+}

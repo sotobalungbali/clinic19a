@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_referral" model="ir.sequence">
+        <field name="name">Clinic Referral</field>
+        <field name="code">clinic.referral</field>
+        <field name="prefix">REF/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_referral_program" model="ir.sequence">
+        <field name="name">Clinic Referral Program</field>
+        <field name="code">clinic.referral.program</field>
+        <field name="prefix">RPG/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_referral_source" model="ir.sequence">
+        <field name="name">Clinic Referral Source</field>
+        <field name="code">clinic.referral.source</field>
+        <field name="prefix">RSC/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

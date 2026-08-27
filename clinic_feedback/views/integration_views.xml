@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Standalone source queues intentionally avoid fragile custom inherited-view XML IDs. -->
+
+    <record id="view_feedback_encounter_search" model="ir.ui.view">
+        <field name="name">clinic.encounter.search.feedback</field>
+        <field name="model">clinic.encounter</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="company_id"/>
+                <filter name="done" string="Completed" domain="[('state','=','done')]"/>
+                <filter name="no_request" string="No Feedback Request" domain="[('state','=','done'),('feedback_request_ids','=',False)]"/>
+                <group>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_encounter_list" model="ir.ui.view">
+        <field name="name">clinic.encounter.list.feedback</field>
+        <field name="model">clinic.encounter</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="date_end"/>
+                <field name="feedback_request_count"/>
+                <field name="feedback_response_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_create_feedback_request" type="object" string="Create Request" icon="fa-plus"
+                        groups="clinic_feedback.group_feedback_coordinator"
+                        invisible="state != 'done'"/>
+                <button name="action_open_feedback_requests" type="object" string="Requests" icon="fa-paper-plane"
+                        invisible="feedback_request_count == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_feedback_completed_encounters" model="ir.actions.act_window">
+        <field name="name">Completed Encounters</field>
+        <field name="res_model">clinic.encounter</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','=','done')]</field>
+        <field name="search_view_id" ref="view_feedback_encounter_search"/>
+    </record>
+
+    <record id="view_feedback_postcare_search" model="ir.ui.view">
+        <field name="name">clinic.postcare.plan.search.feedback</field>
+        <field name="model">clinic.postcare.plan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="responsible_staff_id"/>
+                <field name="company_id"/>
+                <filter name="completed" string="Completed / Closed" domain="[('state','in',('completed','closed'))]"/>
+                <filter name="no_request" string="No Feedback Request" domain="[('state','in',('completed','closed')),('feedback_request_ids','=',False)]"/>
+                <group>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_staff" string="Post-Care Staff" context="{'group_by':'responsible_staff_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_postcare_list" model="ir.ui.view">
+        <field name="name">clinic.postcare.plan.list.feedback</field>
+        <field name="model">clinic.postcare.plan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="responsible_staff_id"/>
+                <field name="completed_at"/>
+                <field name="feedback_request_count"/>
+                <field name="feedback_response_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_create_feedback_request" type="object" string="Create Request" icon="fa-plus"
+                        groups="clinic_feedback.group_feedback_coordinator"
+                        invisible="state not in ('completed','closed')"/>
+                <button name="action_open_feedback_requests" type="object" string="Requests" icon="fa-paper-plane"
+                        invisible="feedback_request_count == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_feedback_completed_postcare" model="ir.actions.act_window">
+        <field name="name">Completed Post-Care</field>
+        <field name="res_model">clinic.postcare.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','in',('completed','closed'))]</field>
+        <field name="search_view_id" ref="view_feedback_postcare_search"/>
+    </record>
+
+    <record id="view_feedback_booking_search" model="ir.ui.view">
+        <field name="name">booking.booking.search.feedback</field>
+        <field name="model">booking.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="company_id"/>
+                <filter name="done" string="Completed" domain="[('state','=','done')]"/>
+                <filter name="no_request" string="No Canonical Request" domain="[('state','=','done'),('clinic_feedback_request_ids','=',False)]"/>
+                <group>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_booking_list" model="ir.ui.view">
+        <field name="name">booking.booking.list.feedback</field>
+        <field name="model">booking.booking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="end_datetime"/>
+                <field name="clinic_feedback_request_count"/>
+                <field name="clinic_feedback_response_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_create_clinic_feedback_request" type="object" string="Create Request" icon="fa-plus"
+                        groups="clinic_feedback.group_feedback_coordinator"
+                        invisible="state != 'done'"/>
+                <button name="action_open_clinic_feedback_requests" type="object" string="Requests" icon="fa-paper-plane"
+                        invisible="clinic_feedback_request_count == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_feedback_completed_bookings" model="ir.actions.act_window">
+        <field name="name">Completed Bookings</field>
+        <field name="res_model">booking.booking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','=','done')]</field>
+        <field name="search_view_id" ref="view_feedback_booking_search"/>
+    </record>
+
+    <record id="view_feedback_queue_search" model="ir.ui.view">
+        <field name="name">clinic.queue.search.feedback</field>
+        <field name="model">clinic.queue</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="treatment_id"/>
+                <field name="company_id"/>
+                <filter name="done" string="Done" domain="[('state','=','done')]"/>
+                <filter name="with_request" string="Has Feedback Request" domain="[('feedback_request_id','!=',False)]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_queue_list" model="ir.ui.view">
+        <field name="name">clinic.queue.list.feedback</field>
+        <field name="model">clinic.queue</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="treatment_id"/>
+                <field name="end_time"/>
+                <field name="feedback_request_id"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_feedback_request" type="object" string="Feedback Request" icon="fa-external-link"
+                        invisible="not feedback_request_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_feedback_queue_visits" model="ir.actions.act_window">
+        <field name="name">Queue Feedback Context</field>
+        <field name="res_model">clinic.queue</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_queue_search"/>
+    </record>
+
+    <record id="view_feedback_patient_search" model="ir.ui.view">
+        <field name="name">clinic.patient.search.feedback</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_code"/>
+                <field name="name"/>
+                <field name="company_id"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_patient_list" model="ir.ui.view">
+        <field name="name">clinic.patient.list.feedback</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="clinic_feedback_open_escalation_count &gt; 0">
+                <field name="patient_code"/>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="clinic_feedback_count"/>
+                <field name="clinic_feedback_avg_rating"/>
+                <field name="clinic_feedback_open_escalation_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_clinic_feedback" type="object" string="Feedback" icon="fa-star"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_feedback_patients" model="ir.actions.act_window">
+        <field name="name">Patient Satisfaction</field>
+        <field name="res_model">clinic.patient</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_patient_search"/>
+    </record>
+
+    <record id="view_feedback_doctor_search" model="ir.ui.view">
+        <field name="name">clinic.doctor.search.feedback</field>
+        <field name="model">clinic.doctor</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="company_id"/>
+                <filter name="rating_enabled" string="Rating Enabled" domain="[('rating_enabled','=',True)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_doctor_list" model="ir.ui.view">
+        <field name="name">clinic.doctor.list.feedback</field>
+        <field name="model">clinic.doctor</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="rating_enabled"/>
+                <field name="clinic_feedback_count"/>
+                <field name="clinic_feedback_avg_rating"/>
+                <field name="clinic_feedback_nps"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_clinic_feedback" type="object" string="Feedback" icon="fa-star"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_feedback_doctors" model="ir.actions.act_window">
+        <field name="name">Doctor Satisfaction</field>
+        <field name="res_model">clinic.doctor</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_doctor_search"/>
+    </record>
+
+    <record id="view_feedback_staff_search" model="ir.ui.view">
+        <field name="name">clinic.staff.search.feedback</field>
+        <field name="model">clinic.staff</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <filter name="active" string="Active" domain="[('is_active','=',True)]"/>
+                <group>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_staff_list" model="ir.ui.view">
+        <field name="name">clinic.staff.list.feedback</field>
+        <field name="model">clinic.staff</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="clinic_feedback_count"/>
+                <field name="clinic_feedback_avg_rating"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_clinic_feedback" type="object" string="Feedback" icon="fa-star"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_feedback_staff" model="ir.actions.act_window">
+        <field name="name">Staff Satisfaction</field>
+        <field name="res_model">clinic.staff</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_staff_search"/>
+    </record>
+
+    <record id="view_legacy_booking_feedback_search" model="ir.ui.view">
+        <field name="name">booking.feedback.link.search.clinic.feedback</field>
+        <field name="model">booking.feedback.link</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="feedback_survey_id"/>
+                <field name="company_id"/>
+                <filter name="submitted" string="Submitted" domain="[('state','=','submitted')]"/>
+                <filter name="not_synced" string="Not Canonicalized" domain="[('state','=','submitted'),('clinic_feedback_id','=',False)]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_legacy_booking_feedback_list" model="ir.ui.view">
+        <field name="name">booking.feedback.link.list.clinic.feedback</field>
+        <field name="model">booking.feedback.link</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'submitted'">
+                <field name="name"/>
+                <field name="booking_id"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="rating_value"/>
+                <field name="would_recommend"/>
+                <field name="feedback_survey_id"/>
+                <field name="clinic_feedback_id"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_clinic_feedback" type="object" string="Canonical" icon="fa-external-link"
+                        invisible="not clinic_feedback_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_legacy_booking_feedback" model="ir.actions.act_window">
+        <field name="name">Booking Feedback Links</field>
+        <field name="res_model">booking.feedback.link</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_legacy_booking_feedback_search"/>
+    </record>
+</odoo>

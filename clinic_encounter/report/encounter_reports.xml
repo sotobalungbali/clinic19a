@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="action_report_consent_document" model="ir.actions.report">
+    <field name="name">Consent Document</field>
+    <field name="model">clinic.consent.document</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">clinic_encounter.report_consent_document</field>
+    <field name="report_file">clinic_encounter.report_consent_document</field>
+    <field name="print_report_name">'Consent - %s' % (object.name or '')</field>
+    <field name="binding_model_id" ref="model_clinic_consent_document"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_result_document" model="ir.actions.report">
+    <field name="name">Clinical Result Document</field>
+    <field name="model">clinic.result.document</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">clinic_encounter.report_result_document</field>
+    <field name="report_file">clinic_encounter.report_result_document</field>
+    <field name="print_report_name">'Clinical Result - %s' % (object.name or '')</field>
+    <field name="binding_model_id" ref="model_clinic_result_document"/>
+    <field name="binding_type">report</field>
+  </record>
+</odoo>

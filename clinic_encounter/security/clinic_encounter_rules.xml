@@ -1,0 +1,230 @@
+<odoo>
+  <record id="rule_clinic_adverse_event_company" model="ir.rule">
+    <field name="name">clinic.adverse.event: company isolation</field>
+    <field name="model_id" ref="model_clinic_adverse_event"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_ae_action_company" model="ir.rule">
+    <field name="name">clinic.ae.action: company isolation</field>
+    <field name="model_id" ref="model_clinic_ae_action"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_ae_category_company" model="ir.rule">
+    <field name="name">clinic.ae.category: company isolation</field>
+    <field name="model_id" ref="model_clinic_ae_category"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_ae_factor_company" model="ir.rule">
+    <field name="name">clinic.ae.factor: company isolation</field>
+    <field name="model_id" ref="model_clinic_ae_factor"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_ae_followup_company" model="ir.rule">
+    <field name="name">clinic.ae.followup: company isolation</field>
+    <field name="model_id" ref="model_clinic_ae_followup"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_ae_type_company" model="ir.rule">
+    <field name="name">clinic.ae.type: company isolation</field>
+    <field name="model_id" ref="model_clinic_ae_type"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_anesthesia_airway_company" model="ir.rule">
+    <field name="name">clinic.anesthesia.airway: company isolation</field>
+    <field name="model_id" ref="model_clinic_anesthesia_airway"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_anesthesia_case_company" model="ir.rule">
+    <field name="name">clinic.anesthesia.case: company isolation</field>
+    <field name="model_id" ref="model_clinic_anesthesia_case"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_anesthesia_event_company" model="ir.rule">
+    <field name="name">clinic.anesthesia.event: company isolation</field>
+    <field name="model_id" ref="model_clinic_anesthesia_event"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_anesthesia_fluid_company" model="ir.rule">
+    <field name="name">clinic.anesthesia.fluid: company isolation</field>
+    <field name="model_id" ref="model_clinic_anesthesia_fluid"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_anesthesia_medication_company" model="ir.rule">
+    <field name="name">clinic.anesthesia.medication: company isolation</field>
+    <field name="model_id" ref="model_clinic_anesthesia_medication"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_anesthesia_vital_company" model="ir.rule">
+    <field name="name">clinic.anesthesia.vital: company isolation</field>
+    <field name="model_id" ref="model_clinic_anesthesia_vital"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_audit_log_company" model="ir.rule">
+    <field name="name">clinic.audit.log: company isolation</field>
+    <field name="model_id" ref="model_clinic_audit_log"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_checklist_company" model="ir.rule">
+    <field name="name">clinic.checklist: company isolation</field>
+    <field name="model_id" ref="model_clinic_checklist"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_checklist_item_company" model="ir.rule">
+    <field name="name">clinic.checklist.item: company isolation</field>
+    <field name="model_id" ref="model_clinic_checklist_item"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_checklist_template_company" model="ir.rule">
+    <field name="name">clinic.checklist.template: company isolation</field>
+    <field name="model_id" ref="model_clinic_checklist_template"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_checklist_template_item_company" model="ir.rule">
+    <field name="name">clinic.checklist.template.item: company isolation</field>
+    <field name="model_id" ref="model_clinic_checklist_template_item"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_checklist_template_item_option_company" model="ir.rule">
+    <field name="name">clinic.checklist.template.item.option: company isolation</field>
+    <field name="model_id" ref="model_clinic_checklist_template_item_option"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_consent_document_company" model="ir.rule">
+    <field name="name">clinic.consent.document: company isolation</field>
+    <field name="model_id" ref="model_clinic_consent_document"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_consent_risk_company" model="ir.rule">
+    <field name="name">clinic.consent.risk: company isolation</field>
+    <field name="model_id" ref="model_clinic_consent_risk"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_consent_risk_template_company" model="ir.rule">
+    <field name="name">clinic.consent.risk.template: company isolation</field>
+    <field name="model_id" ref="model_clinic_consent_risk_template"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_diagnosis_company" model="ir.rule">
+    <field name="name">clinic.diagnosis: company isolation</field>
+    <field name="model_id" ref="model_clinic_diagnosis"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_diagnosis_category_company" model="ir.rule">
+    <field name="name">clinic.diagnosis.category: company isolation</field>
+    <field name="model_id" ref="model_clinic_diagnosis_category"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_encounter_company" model="ir.rule">
+    <field name="name">clinic.encounter: company isolation</field>
+    <field name="model_id" ref="model_clinic_encounter"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_encounter_procedure_company" model="ir.rule">
+    <field name="name">clinic.encounter.procedure: company isolation</field>
+    <field name="model_id" ref="model_clinic_encounter_procedure"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_encounter_stage_company" model="ir.rule">
+    <field name="name">clinic.encounter.stage: company isolation</field>
+    <field name="model_id" ref="model_clinic_encounter_stage"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_execution_log_company" model="ir.rule">
+    <field name="name">clinic.execution.log: company isolation</field>
+    <field name="model_id" ref="model_clinic_execution_log"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_procedure_catalog_company" model="ir.rule">
+    <field name="name">clinic.procedure.catalog: company isolation</field>
+    <field name="model_id" ref="model_clinic_procedure_catalog"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_procedure_category_company" model="ir.rule">
+    <field name="name">clinic.procedure.category: company isolation</field>
+    <field name="model_id" ref="model_clinic_procedure_category"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_procedure_consumable_company" model="ir.rule">
+    <field name="name">clinic.procedure.consumable: company isolation</field>
+    <field name="model_id" ref="model_clinic_procedure_consumable"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_procedure_session_company" model="ir.rule">
+    <field name="name">clinic.procedure.session: company isolation</field>
+    <field name="model_id" ref="model_clinic_procedure_session"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_procedure_step_company" model="ir.rule">
+    <field name="name">clinic.procedure.step: company isolation</field>
+    <field name="model_id" ref="model_clinic_procedure_step"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_procedure_step_checklist_company" model="ir.rule">
+    <field name="name">clinic.procedure.step.checklist: company isolation</field>
+    <field name="model_id" ref="model_clinic_procedure_step_checklist"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_result_document_company" model="ir.rule">
+    <field name="name">clinic.result.document: company isolation</field>
+    <field name="model_id" ref="model_clinic_result_document"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_result_group_company" model="ir.rule">
+    <field name="name">clinic.result.group: company isolation</field>
+    <field name="model_id" ref="model_clinic_result_group"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_result_value_company" model="ir.rule">
+    <field name="name">clinic.result.value: company isolation</field>
+    <field name="model_id" ref="model_clinic_result_value"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_soap_note_company" model="ir.rule">
+    <field name="name">clinic.soap.note: company isolation</field>
+    <field name="model_id" ref="model_clinic_soap_note"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_clinic_soap_template_company" model="ir.rule">
+    <field name="name">clinic.soap.template: company isolation</field>
+    <field name="model_id" ref="model_clinic_soap_template"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+</odoo>

@@ -1,0 +1,1979 @@
+{
+  "project": "ClinicOne",
+  "addon": "clinic_imaging",
+  "platform": "Odoo 19 Community Edition",
+  "authoritative_baseline": "User-uploaded ClinicOne source dump 2026-08-14; clinic_imaging non-backup source",
+  "preservation_rule": "Preserve finished business model/field/workflow surface; technical Odoo 19 compatibility migrations are allowed; files beginning with 0 are backup and excluded.",
+  "dependencies": [
+    "base",
+    "mail",
+    "contacts",
+    "hr",
+    "account",
+    "product",
+    "stock",
+    "sale",
+    "portal",
+    "website",
+    "uom",
+    "analytic",
+    "clinic_base",
+    "clinic_audit",
+    "clinic_branch",
+    "clinic_staff",
+    "clinic_room_device",
+    "clinic_treatment_catalog",
+    "clinic_patient",
+    "clinic_doctor",
+    "clinic_queue_room",
+    "clinic_inventory",
+    "clinic_booking",
+    "clinic_triage_vitals",
+    "clinic_consent_legal",
+    "clinic_encounter",
+    "clinic_emar"
+  ],
+  "active_imports": [
+    "clinical_imaging_type",
+    "clinical_imaging_device",
+    "clinical_imaging",
+    "clinical_imaging_study",
+    "clinical_imaging_series",
+    "clinical_imaging_image",
+    "clinical_imaging_finding",
+    "clinical_imaging_report",
+    "clinical_imaging_request",
+    "clinical_imaging_result",
+    "clinical_imaging_kpi",
+    "res_partner_inherit",
+    "hr_employee_inherit",
+    "treatment_inherit",
+    "encounter_inherit",
+    "prescription_order_inherit",
+    "consent_inherit",
+    "account_move_inherit"
+  ],
+  "baseline_models": {
+    "account.move": {
+      "fields": [
+        "appointment_id",
+        "doctor_id",
+        "encounter_id",
+        "imaging_amount_tax",
+        "imaging_amount_total",
+        "imaging_amount_untaxed",
+        "imaging_id",
+        "imaging_line_count",
+        "imaging_request_id",
+        "imaging_result_id",
+        "imaging_type_id",
+        "is_imaging_invoice",
+        "modality",
+        "prescription_order_id",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_patient_consistency",
+        "_compute_imaging_flags_amounts",
+        "_onchange_imaging_links",
+        "_post",
+        "action_open_imaging",
+        "action_open_imaging_request",
+        "action_open_imaging_result",
+        "name_get"
+      ],
+      "owner_files": [
+        "account_move_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    },
+    "account.move.line": {
+      "fields": [
+        "doctor_id",
+        "imaging_id",
+        "imaging_request_id",
+        "imaging_result_id",
+        "imaging_type_id",
+        "is_imaging_line",
+        "modality",
+        "patient_id"
+      ],
+      "methods": [
+        "_check_line_patient_matches_move",
+        "_onchange_line_imaging_links",
+        "_onchange_product_set_imaging_flag",
+        "name_get"
+      ],
+      "owner_files": [
+        "account_move_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    },
+    "clinic.consent.form": {
+      "fields": [
+        "answer_ids",
+        "appointment_id",
+        "consent_patient_id",
+        "device_id",
+        "doctor_employee_id",
+        "doctor_signature",
+        "doctor_signed_datetime",
+        "encounter_id",
+        "imaging_body_html",
+        "imaging_id",
+        "imaging_request_id",
+        "imaging_result_id",
+        "imaging_scope",
+        "imaging_template_id",
+        "imaging_type_id",
+        "is_expired",
+        "is_revoked",
+        "modality",
+        "patient_signature",
+        "patient_signed_by_partner_id",
+        "patient_signed_by_user_id",
+        "patient_signed_datetime",
+        "patient_signed_ip",
+        "prescription_order_id",
+        "required_answer_pending",
+        "revoked_by_user_id",
+        "revoked_datetime",
+        "revoked_reason",
+        "staff_employee_id",
+        "staff_signature",
+        "staff_signed_datetime",
+        "treatment_id",
+        "validity_days",
+        "validity_from",
+        "validity_to"
+      ],
+      "methods": [
+        "_check_patient_consistency",
+        "_check_ready_to_sign",
+        "_check_validity_dates",
+        "_compute_consent_patient",
+        "_compute_required_pending",
+        "_compute_validity",
+        "action_apply_imaging_template",
+        "action_revoke",
+        "action_sign_doctor",
+        "action_sign_patient",
+        "action_sign_staff",
+        "is_fully_valid",
+        "name_get",
+        "unlink",
+        "write"
+      ],
+      "owner_files": [
+        "consent_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    },
+    "clinic.emar.medication.line": {
+      "fields": [
+        "contrast_agent_type",
+        "contrast_concentration",
+        "contrast_volume_ml",
+        "is_contrast_agent",
+        "is_hydration_fluid",
+        "is_imaging_device",
+        "is_sedation_med",
+        "preferred_device_id"
+      ],
+      "methods": [
+        "_onchange_line_contrast"
+      ],
+      "owner_files": [
+        "prescription_order_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    },
+    "clinic.emar.order": {
+      "fields": [
+        "appointment_id",
+        "consent_id",
+        "contrast_premed_required",
+        "contrast_type",
+        "doctor_id",
+        "encounter_id",
+        "has_imaging_pending",
+        "hydration_plan",
+        "hydration_required",
+        "imaging_count",
+        "imaging_indication",
+        "imaging_instructions",
+        "imaging_key_image_count",
+        "imaging_priority",
+        "imaging_request_count",
+        "imaging_request_ids",
+        "imaging_result_count",
+        "imaging_type_id",
+        "patient_id",
+        "portal_share_imaging",
+        "premed_protocol_id",
+        "sedation_plan",
+        "sedation_required",
+        "sedation_supervised_by_id",
+        "treatment_id"
+      ],
+      "methods": [
+        "_action_window",
+        "_check_sedation_supervision",
+        "_compute_imaging_counts",
+        "_compute_pending",
+        "_onchange_premed_required",
+        "action_new_imaging_request",
+        "action_open_imaging_records",
+        "action_open_imaging_requests",
+        "action_open_imaging_results"
+      ],
+      "owner_files": [
+        "prescription_order_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    },
+    "clinic.encounter": {
+      "fields": [
+        "has_imaging_pending",
+        "imaging_count",
+        "imaging_finding_count",
+        "imaging_ids",
+        "imaging_image_count",
+        "imaging_key_image_count",
+        "imaging_note_ids",
+        "imaging_request_count",
+        "imaging_request_ids",
+        "imaging_result_count",
+        "imaging_screening_id",
+        "imaging_series_count",
+        "imaging_study_count",
+        "last_imaging_datetime",
+        "last_result_datetime"
+      ],
+      "methods": [
+        "_action_window",
+        "_compute_imaging_kpis",
+        "_compute_last_dates",
+        "_compute_pending_status",
+        "action_new_imaging_request",
+        "action_open_imaging_findings",
+        "action_open_imaging_images",
+        "action_open_imaging_records",
+        "action_open_imaging_requests",
+        "action_open_imaging_results",
+        "action_open_imaging_screening",
+        "action_open_imaging_series",
+        "action_open_imaging_studies"
+      ],
+      "owner_files": [
+        "encounter_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    },
+    "clinic.treatment": {
+      "fields": [
+        "has_imaging_pending",
+        "imaging_count",
+        "imaging_finding_count",
+        "imaging_ids",
+        "imaging_key_image_count",
+        "imaging_plan_ids",
+        "imaging_request_count",
+        "imaging_request_ids",
+        "imaging_result_count",
+        "last_imaging_datetime",
+        "last_result_datetime"
+      ],
+      "methods": [
+        "_action_window",
+        "_compute_imaging_counts",
+        "_compute_imaging_status",
+        "_compute_last_dates",
+        "action_generate_requests_from_plans",
+        "action_new_imaging_request",
+        "action_open_imaging_findings",
+        "action_open_imaging_plans",
+        "action_open_imaging_records",
+        "action_open_imaging_requests",
+        "action_open_imaging_results"
+      ],
+      "owner_files": [
+        "treatment_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    },
+    "clinic.treatment.imaging.plan": {
+      "fields": [
+        "active",
+        "appointment_id",
+        "company_id",
+        "created_by_id",
+        "created_datetime",
+        "device_id",
+        "encounter_id",
+        "imaging_id",
+        "imaging_type_id",
+        "indication",
+        "instructions",
+        "last_transition",
+        "modality",
+        "modality_id",
+        "name",
+        "notes",
+        "patient_id",
+        "planned_datetime",
+        "priority",
+        "request_id",
+        "request_ids",
+        "requesting_doctor_id",
+        "result_id",
+        "sequence",
+        "state",
+        "treatment_id"
+      ],
+      "methods": [
+        "_action_create_request_from_plan",
+        "_check_planned_datetime",
+        "_compute_links",
+        "_onchange_imaging_type",
+        "action_cancel",
+        "action_create_request",
+        "action_generate_request",
+        "action_mark_done",
+        "action_mark_in_progress",
+        "action_mark_requested",
+        "action_open_imaging",
+        "action_open_request",
+        "action_open_result",
+        "copy",
+        "create",
+        "name_get",
+        "write"
+      ],
+      "owner_files": [
+        "treatment_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging": {
+      "fields": [
+        "active",
+        "appointment_id",
+        "attachment_count",
+        "billing_state",
+        "clinical_indication",
+        "company_id",
+        "consent_id",
+        "currency_id",
+        "device_calibration_count",
+        "device_downtime_count",
+        "device_id",
+        "dicom_accession_number",
+        "dicom_study_uid",
+        "doctor_id",
+        "duration_minutes",
+        "encounter_id",
+        "expected_done_datetime",
+        "finding_count",
+        "findings_summary",
+        "imaging_type_id",
+        "invoice_id",
+        "is_billable",
+        "is_overdue",
+        "latest_result_id",
+        "main_file",
+        "main_filename",
+        "name",
+        "notes",
+        "patient_id",
+        "performed_datetime",
+        "portal_published",
+        "prescription_order_id",
+        "price_subtotal",
+        "price_unit",
+        "priority",
+        "privacy_level",
+        "procedure_session_id",
+        "product_id",
+        "quantity",
+        "recommendations",
+        "request_datetime",
+        "result_count",
+        "reviewed_datetime",
+        "scheduled_datetime",
+        "state",
+        "study_count",
+        "study_ids",
+        "technician_id",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_invoice_when_billable",
+        "_check_performed_after_scheduled",
+        "_check_review_after_perform",
+        "_compute_attachment_count",
+        "_compute_billing_state",
+        "_compute_device_log_counts",
+        "_compute_finding_count",
+        "_compute_is_overdue",
+        "_compute_latest_result",
+        "_compute_price_subtotal",
+        "_compute_result_stats",
+        "_compute_study_count",
+        "_get_invoice_description",
+        "_get_invoice_partner",
+        "_onchange_appointment_id",
+        "_onchange_imaging_type_id",
+        "_onchange_product_id_set_price",
+        "_onchange_schedule_duration",
+        "_prepare_invoice_line_vals",
+        "_prepare_invoice_vals",
+        "action_cancel",
+        "action_complete",
+        "action_create_invoice",
+        "action_create_study",
+        "action_open_appointment",
+        "action_open_device_calibration",
+        "action_open_device_downtime",
+        "action_open_encounter",
+        "action_open_findings",
+        "action_open_invoice",
+        "action_open_results",
+        "action_open_studies",
+        "action_request",
+        "action_review",
+        "action_schedule",
+        "action_start",
+        "action_toggle_portal",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "name_get",
+        "unlink",
+        "write"
+      ],
+      "owner_files": [
+        "clinical_imaging.py",
+        "clinical_imaging_finding.py",
+        "clinical_imaging_result.py",
+        "clinical_imaging_study.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.consent.answer": {
+      "fields": [
+        "answer_boolean",
+        "answer_selection",
+        "answer_text",
+        "code",
+        "company_id",
+        "consent_id",
+        "critical",
+        "qtype",
+        "question_id",
+        "required",
+        "selection_options",
+        "sequence",
+        "template_id",
+        "text"
+      ],
+      "methods": [
+        "_is_answer_filled",
+        "_is_value_filled"
+      ],
+      "owner_files": [
+        "consent_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.consent.template": {
+      "fields": [
+        "active",
+        "body_html",
+        "code",
+        "company_id",
+        "default_validity_days",
+        "disclaimer",
+        "imaging_type_ids",
+        "modality",
+        "name",
+        "question_ids",
+        "require_doctor_signature",
+        "require_patient_signature",
+        "require_staff_signature",
+        "scope",
+        "sequence"
+      ],
+      "methods": [
+        "_check_code_upper"
+      ],
+      "owner_files": [
+        "consent_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.consent.template.question": {
+      "fields": [
+        "code",
+        "company_id",
+        "critical",
+        "default_boolean",
+        "default_selection",
+        "default_text",
+        "qtype",
+        "required",
+        "selection_options",
+        "sequence",
+        "template_id",
+        "text"
+      ],
+      "methods": [],
+      "owner_files": [
+        "consent_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.device": {
+      "fields": [
+        "active",
+        "ae_title",
+        "bore_diameter_cm",
+        "calendar_id",
+        "code",
+        "company_id",
+        "department_id",
+        "dicom_port",
+        "dicom_supported",
+        "dicom_tls",
+        "downtime_hours_total",
+        "firmware_version",
+        "imaging_count",
+        "install_date",
+        "ip_address",
+        "last_maintenance_date",
+        "last_qc_date",
+        "location",
+        "maintenance_interval_days",
+        "manufacturer",
+        "max_patient_weight_kg",
+        "modality",
+        "model_name",
+        "name",
+        "next_maintenance_date",
+        "next_qc_date",
+        "qc_interval_days",
+        "qc_status",
+        "retired_date",
+        "room_id",
+        "serial_number",
+        "software_version",
+        "status",
+        "status_note",
+        "supports_contrast",
+        "throughput_per_hour",
+        "udi_di",
+        "uptime_ratio_30d",
+        "vendor_contact_id",
+        "warranty_expiry_date"
+      ],
+      "methods": [
+        "_check_ae_title",
+        "_check_ip_format",
+        "_check_port_range",
+        "_check_retired_archival",
+        "_check_unique_serial",
+        "_compute_downtime_stats",
+        "_compute_imaging_stats",
+        "_compute_next_maintenance",
+        "_compute_next_qc",
+        "_compute_qc_status",
+        "_onchange_ae_title_normalize",
+        "_onchange_maintenance_dates",
+        "action_open_calibration",
+        "action_open_connectivity",
+        "action_open_downtime",
+        "action_open_imaging",
+        "action_retire",
+        "action_set_down",
+        "action_set_maintenance",
+        "action_set_operational",
+        "name_get"
+      ],
+      "owner_files": [
+        "clinical_imaging.py",
+        "clinical_imaging_device.py",
+        "clinical_imaging_study.py"
+      ],
+      "explicit_name_declarations": 2
+    },
+    "clinical.imaging.device.calibration": {
+      "fields": [
+        "attachment",
+        "attachment_filename",
+        "company_id",
+        "date",
+        "device_id",
+        "findings",
+        "next_due_date",
+        "passed",
+        "performed_by",
+        "reference_measure",
+        "type"
+      ],
+      "methods": [
+        "_check_next_due_after_date"
+      ],
+      "owner_files": [
+        "clinical_imaging_device.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.device.connectivity": {
+      "fields": [
+        "ae_title",
+        "company_id",
+        "description",
+        "device_id",
+        "host",
+        "is_default",
+        "port",
+        "role",
+        "use_tls"
+      ],
+      "methods": [
+        "_check_ae_title",
+        "_check_port_range"
+      ],
+      "owner_files": [
+        "clinical_imaging_device.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.device.downtime": {
+      "fields": [
+        "attachment_count",
+        "company_id",
+        "description",
+        "device_id",
+        "duration_hours",
+        "end_datetime",
+        "reason",
+        "reported_by",
+        "severity",
+        "start_datetime",
+        "state",
+        "ticket_ref"
+      ],
+      "methods": [
+        "_check_end_after_start",
+        "_compute_attachment_count",
+        "_compute_duration_hours",
+        "_duration_hours_window",
+        "action_close",
+        "action_view_attachments"
+      ],
+      "owner_files": [
+        "clinical_imaging_device.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.encounter.note": {
+      "fields": [
+        "active",
+        "attachment_count",
+        "author_employee_id",
+        "author_user_id",
+        "company_id",
+        "content",
+        "encounter_id",
+        "name",
+        "note_type",
+        "patient_id",
+        "pinned"
+      ],
+      "methods": [
+        "_compute_attachment_count",
+        "_compute_author_employee",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "name_get"
+      ],
+      "owner_files": [
+        "encounter_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.encounter.screening": {
+      "fields": [
+        "active",
+        "appointment_id",
+        "attachment_count",
+        "bmi",
+        "company_id",
+        "consent_id",
+        "contrast_allergy",
+        "diastolic_bp",
+        "egfr_date",
+        "egfr_method",
+        "egfr_value",
+        "encounter_id",
+        "fasting_hours",
+        "has_cochlear_implant",
+        "has_metal_implants",
+        "has_pacemaker",
+        "heart_rate_bpm",
+        "height_cm",
+        "implant_description",
+        "iv_access",
+        "lmp_date",
+        "name",
+        "notes",
+        "patient_id",
+        "performed_by_id",
+        "performed_datetime",
+        "pregnancy_status",
+        "pregnancy_test_done",
+        "pregnancy_test_result",
+        "premed_given",
+        "premed_protocol",
+        "premed_required",
+        "renal_risk",
+        "sedation_notes",
+        "sedation_plan",
+        "spo2_percent",
+        "state",
+        "systolic_bp",
+        "temperature_c",
+        "treatment_id",
+        "verified_by_id",
+        "verified_datetime",
+        "weight_kg"
+      ],
+      "methods": [
+        "_check_ranges",
+        "_compute_attachment_count",
+        "_compute_bmi",
+        "_compute_patient_from_encounter",
+        "_compute_renal_risk",
+        "_onchange_contrast_allergy",
+        "action_cancel",
+        "action_verify",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "name_get"
+      ],
+      "owner_files": [
+        "encounter_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.finding": {
+      "fields": [
+        "active",
+        "annotation_ids",
+        "appointment_id",
+        "attachment_count",
+        "author_doctor_id",
+        "birads",
+        "body_region",
+        "category",
+        "code",
+        "code_desc",
+        "code_system",
+        "company_id",
+        "created_datetime",
+        "density_hu",
+        "description",
+        "display_name",
+        "encounter_id",
+        "image_ids",
+        "imaging_id",
+        "lirads",
+        "location_notes",
+        "long_axis_mm",
+        "lungrads",
+        "measure_count",
+        "measure_ids",
+        "name",
+        "organ",
+        "organ_segment",
+        "patient_id",
+        "pirads",
+        "portal_published",
+        "privacy_level",
+        "procedure_session_id",
+        "result_count",
+        "result_ids",
+        "series_id",
+        "severity",
+        "short_axis_mm",
+        "side",
+        "state",
+        "study_id",
+        "suv_max",
+        "suv_mean",
+        "tags_ids",
+        "treatment_id",
+        "trend",
+        "verified_datetime",
+        "volume_mm3"
+      ],
+      "methods": [
+        "_check_non_negative_metrics",
+        "_compute_attachment_count",
+        "_compute_counts",
+        "_onchange_series_id",
+        "_onchange_study_id",
+        "action_add_to_result",
+        "action_approve",
+        "action_archive",
+        "action_reject",
+        "action_resolve",
+        "action_submit_review",
+        "action_toggle_portal",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "name_get",
+        "unlink"
+      ],
+      "owner_files": [
+        "clinical_imaging_finding.py",
+        "clinical_imaging_kpi.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.finding.measure": {
+      "fields": [
+        "company_id",
+        "finding_id",
+        "method",
+        "name",
+        "note",
+        "related_annotation_id",
+        "related_image_id",
+        "sequence",
+        "unit",
+        "value"
+      ],
+      "methods": [
+        "_check_value_not_nan"
+      ],
+      "owner_files": [
+        "clinical_imaging_finding.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.finding.tag": {
+      "fields": [
+        "active",
+        "color",
+        "company_id",
+        "description",
+        "name"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_finding.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.image": {
+      "fields": [
+        "acquisition_datetime",
+        "active",
+        "annotation_count",
+        "annotation_ids",
+        "appointment_id",
+        "attachment_count",
+        "bits_allocated",
+        "bits_stored",
+        "columns",
+        "company_id",
+        "dicom_instance_uid",
+        "dicom_sop_class_uid",
+        "encounter_id",
+        "file_dicom",
+        "file_dicom_filename",
+        "file_image",
+        "file_image_filename",
+        "file_thumbnail",
+        "file_thumbnail_filename",
+        "frame_count",
+        "high_bit",
+        "image_orientation_patient",
+        "image_position_patient",
+        "imaging_id",
+        "instance_number",
+        "is_key",
+        "name",
+        "notes",
+        "pacs_message_last",
+        "pacs_status",
+        "pacs_viewer_url",
+        "patient_id",
+        "photometric_interpretation",
+        "pixel_spacing_mm",
+        "portal_published",
+        "privacy_level",
+        "procedure_session_id",
+        "quality_notes",
+        "quality_score",
+        "rescale_intercept",
+        "rescale_slope",
+        "resolution",
+        "rows",
+        "series_id",
+        "slice_location_mm",
+        "slice_thickness_mm",
+        "state",
+        "study_id",
+        "tag_count",
+        "tag_ids",
+        "treatment_id",
+        "window_center",
+        "window_width"
+      ],
+      "methods": [
+        "_check_bits_relations",
+        "_check_dicom_instance_uid_format",
+        "_check_non_negative_numeric",
+        "_check_window_width_positive",
+        "_compute_annotation_count",
+        "_compute_attachment_count",
+        "_compute_resolution",
+        "_compute_tag_count",
+        "_onchange_series_defaults",
+        "action_add_to_result",
+        "action_archive",
+        "action_cancel",
+        "action_mark_acquired",
+        "action_mark_pacs_error",
+        "action_mark_processed",
+        "action_mark_received",
+        "action_mark_sent",
+        "action_send_to_pacs",
+        "action_set_as_key",
+        "action_toggle_portal",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "name_get",
+        "unlink"
+      ],
+      "owner_files": [
+        "clinical_imaging_image.py",
+        "clinical_imaging_kpi.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.image.annotation": {
+      "fields": [
+        "color",
+        "comment",
+        "company_id",
+        "coord_space",
+        "created_datetime",
+        "finding_id",
+        "geometry_json",
+        "image_id",
+        "last_modified",
+        "measurement_value",
+        "result_id",
+        "sequence",
+        "type",
+        "unit"
+      ],
+      "methods": [
+        "_check_geometry_json",
+        "_check_measurement_non_negative_when_length_area",
+        "action_open_image",
+        "write"
+      ],
+      "owner_files": [
+        "clinical_imaging_image.py",
+        "clinical_imaging_kpi.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.image.tag": {
+      "fields": [
+        "active",
+        "color",
+        "company_id",
+        "description",
+        "name"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_image.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.kpi.device.line": {
+      "fields": [
+        "company_id",
+        "device_id",
+        "downtime_h",
+        "modality",
+        "qc_status",
+        "snapshot_id",
+        "study_count",
+        "utilization_ratio"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_kpi.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.kpi.modality.line": {
+      "fields": [
+        "company_id",
+        "modality",
+        "result_final_count",
+        "snapshot_id",
+        "study_count",
+        "tat_acq_to_sign_avg_h"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_kpi.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.kpi.radiologist.line": {
+      "fields": [
+        "company_id",
+        "radiologist_id",
+        "result_signed",
+        "snapshot_id",
+        "tat_acq_to_sign_avg_h"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_kpi.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.kpi.snapshot": {
+      "fields": [
+        "active",
+        "avg_ctdi_vol_mgy",
+        "avg_days_to_invoice",
+        "avg_dlp_mgy_cm",
+        "backlog_open_requests",
+        "backlog_pending_reports",
+        "company_id",
+        "currency_id",
+        "date_end",
+        "date_start",
+        "device_count",
+        "device_downtime_h",
+        "device_line_ids",
+        "device_qc_due",
+        "device_qc_overdue",
+        "device_uptime_ratio",
+        "image_count",
+        "imaging_count",
+        "invoice_amount_total",
+        "invoice_count",
+        "modality_line_ids",
+        "name",
+        "notes",
+        "period",
+        "radiologist_line_ids",
+        "request_cancelled",
+        "request_count",
+        "result_created",
+        "result_final",
+        "series_count",
+        "study_count",
+        "tat_acq_to_sign_avg_h",
+        "tat_order_to_acq_avg_h",
+        "tat_total_order_to_sign_avg_h",
+        "total_dap_gy_cm2",
+        "total_fluoro_time_min"
+      ],
+      "methods": [
+        "_action_window",
+        "_build_device_lines",
+        "_build_modality_lines",
+        "_build_radiologist_lines",
+        "_check_dates",
+        "_compute_acquisition_volume",
+        "_compute_all_metrics",
+        "_compute_billing_metrics",
+        "_compute_device_metrics",
+        "_compute_dose_metrics",
+        "_compute_requests",
+        "_compute_results_and_tat",
+        "_make_display_name",
+        "action_open_device_downtime",
+        "action_open_results_finalized",
+        "action_open_series",
+        "action_open_studies",
+        "action_recompute",
+        "create",
+        "write"
+      ],
+      "owner_files": [
+        "clinical_imaging_kpi.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.modality.tag": {
+      "fields": [
+        "active",
+        "code",
+        "company_id",
+        "description",
+        "name",
+        "sequence"
+      ],
+      "methods": [],
+      "owner_files": [
+        "hr_employee_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.premed.protocol": {
+      "fields": [
+        "active",
+        "allergy_type",
+        "code",
+        "company_id",
+        "name",
+        "precautions",
+        "reference",
+        "regimen",
+        "sequence"
+      ],
+      "methods": [],
+      "owner_files": [
+        "prescription_order_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.protocol": {
+      "fields": [
+        "company_id",
+        "expected_duration_minutes",
+        "imaging_type_id",
+        "instruction",
+        "note",
+        "requires_contrast",
+        "requires_sedation",
+        "sequence",
+        "title"
+      ],
+      "methods": [
+        "_check_step_duration_non_negative"
+      ],
+      "owner_files": [
+        "clinical_imaging_type.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.report.template": {
+      "fields": [
+        "active",
+        "asset_ids",
+        "body_html",
+        "code",
+        "company_id",
+        "default_language",
+        "footer_html",
+        "header_html",
+        "imaging_type_ids",
+        "include_findings",
+        "include_key_images",
+        "include_measurements",
+        "is_default_company",
+        "locked",
+        "modality",
+        "name",
+        "notes",
+        "paperformat_id",
+        "section_count",
+        "section_ids",
+        "sequence",
+        "show_author_signature",
+        "show_cosigner_signature",
+        "variable_count",
+        "variable_ids",
+        "version"
+      ],
+      "methods": [
+        "_build_base_context",
+        "_check_code_upper",
+        "_compute_counts",
+        "_ctx_get",
+        "_eval_variables",
+        "_render_sections",
+        "_replace_placeholders",
+        "action_preview_with_result",
+        "copy",
+        "render_html_from_template",
+        "write"
+      ],
+      "owner_files": [
+        "clinical_imaging_report.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.report.template.asset": {
+      "fields": [
+        "active",
+        "company_id",
+        "css",
+        "name",
+        "sequence",
+        "template_id"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_report.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.report.template.section": {
+      "fields": [
+        "active",
+        "body_html",
+        "code",
+        "company_id",
+        "condition_expr",
+        "sequence",
+        "template_id",
+        "title"
+      ],
+      "methods": [
+        "_check_condition_expr"
+      ],
+      "owner_files": [
+        "clinical_imaging_report.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.report.template.variable": {
+      "fields": [
+        "active",
+        "code",
+        "company_id",
+        "description",
+        "expr",
+        "sequence",
+        "template_id"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_report.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.request": {
+      "fields": [
+        "active",
+        "amount_tax",
+        "amount_total",
+        "amount_untaxed",
+        "appointment_id",
+        "attachment_count",
+        "billing_state",
+        "clinical_indication",
+        "company_id",
+        "consent_id",
+        "consent_ok",
+        "consent_required",
+        "consent_scope_needed",
+        "created_imaging_count",
+        "created_imaging_ids",
+        "currency_id",
+        "desired_datetime",
+        "encounter_id",
+        "expiry_date",
+        "fiscal_position_id",
+        "invoice_id",
+        "is_billable",
+        "is_overdue",
+        "line_count",
+        "line_ids",
+        "name",
+        "notes",
+        "ordering_doctor_id",
+        "patient_id",
+        "plan_id",
+        "portal_published",
+        "prescription_order_id",
+        "priority",
+        "procedure_session_id",
+        "request_datetime",
+        "responsible_doctor_id",
+        "state",
+        "technician_id",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_expiry_not_before_request",
+        "_check_has_lines",
+        "_compute_amounts",
+        "_compute_attachment_count",
+        "_compute_billing_state",
+        "_compute_consent_flags",
+        "_compute_counts",
+        "_compute_is_overdue",
+        "_get_invoice_partner",
+        "_onchange_appointment_id",
+        "_onchange_consent_id",
+        "_onchange_patient_id",
+        "_prepare_invoice_vals",
+        "action_approve",
+        "action_cancel",
+        "action_create_imaging",
+        "action_create_invoice",
+        "action_mark_done",
+        "action_open_created_imaging",
+        "action_open_invoice",
+        "action_reject",
+        "action_set_in_progress",
+        "action_submit",
+        "action_toggle_portal",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "name_get",
+        "unlink",
+        "write"
+      ],
+      "owner_files": [
+        "clinical_imaging_request.py",
+        "consent_inherit.py",
+        "prescription_order_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.request.line": {
+      "fields": [
+        "company_id",
+        "currency_id",
+        "device_id",
+        "duration_minutes",
+        "imaging_count",
+        "imaging_ids",
+        "imaging_type_id",
+        "notes",
+        "price_subtotal",
+        "price_tax",
+        "price_total",
+        "price_unit",
+        "priority",
+        "product_id",
+        "quantity",
+        "request_id",
+        "sequence",
+        "tax_ids"
+      ],
+      "methods": [
+        "_check_quantity_positive",
+        "_compute_amounts",
+        "_compute_imaging_count",
+        "_onchange_imaging_type_id",
+        "_onchange_product_id_set_price_and_taxes",
+        "_prepare_invoice_line_vals",
+        "action_open_imaging"
+      ],
+      "owner_files": [
+        "clinical_imaging_request.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.result": {
+      "fields": [
+        "active",
+        "amended_datetime",
+        "appointment_id",
+        "attachment_count",
+        "author_doctor_id",
+        "co_signer_id",
+        "company_id",
+        "comparison",
+        "consent_id",
+        "dicom_bundle",
+        "dicom_bundle_filename",
+        "dose_line_ids",
+        "encounter_id",
+        "finding_count",
+        "finding_ids",
+        "findings",
+        "imaging_id",
+        "impression",
+        "key_image_count",
+        "key_image_ids",
+        "name",
+        "patient_id",
+        "portal_published",
+        "prescription_order_id",
+        "privacy_level",
+        "procedure_session_id",
+        "quality_notes",
+        "quality_score",
+        "recommendations",
+        "report_file",
+        "report_filename",
+        "report_template_id",
+        "result_datetime",
+        "signed_datetime",
+        "state",
+        "technique",
+        "treatment_id",
+        "version"
+      ],
+      "methods": [
+        "_check_patient_matches_imaging",
+        "_check_quality_score_range",
+        "_check_required_on_finalize",
+        "_compute_attachment_count",
+        "_compute_consent_id",
+        "_compute_finding_count",
+        "_compute_key_image_count",
+        "_compute_prescription_from_context",
+        "_get_default_report_template",
+        "_onchange_imaging_id_defaults",
+        "_onchange_imaging_set_default_template",
+        "action_add_existing_finding",
+        "action_amend",
+        "action_cancel",
+        "action_finalize_and_sign",
+        "action_open_findings",
+        "action_open_key_images",
+        "action_preview_current_template",
+        "action_print_report",
+        "action_send_result_email",
+        "action_set_preliminary",
+        "action_toggle_portal",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "get_rendered_html",
+        "name_get",
+        "write"
+      ],
+      "owner_files": [
+        "clinical_imaging_kpi.py",
+        "clinical_imaging_result.py",
+        "consent_inherit.py",
+        "prescription_order_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.result.dose": {
+      "fields": [
+        "metric",
+        "note",
+        "result_id",
+        "sequence",
+        "series_ref",
+        "unit",
+        "value"
+      ],
+      "methods": [
+        "_check_value_non_negative"
+      ],
+      "owner_files": [
+        "clinical_imaging_result.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.result.measure": {
+      "fields": [
+        "method",
+        "name",
+        "note",
+        "region",
+        "result_id",
+        "sequence",
+        "unit",
+        "value"
+      ],
+      "methods": [
+        "_check_value_not_nan"
+      ],
+      "owner_files": [
+        "clinical_imaging_result.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.series": {
+      "fields": [
+        "active",
+        "attachment_count",
+        "bandwidth_hz",
+        "body_part",
+        "company_id",
+        "contrast_phase",
+        "ctdi_vol_mgy",
+        "dap_gy_cm2",
+        "device_id",
+        "dicom_series_uid",
+        "dlp_mgy_cm",
+        "exposure_time_ms",
+        "field_strength_t",
+        "flip_angle_deg",
+        "fluoro_time_min",
+        "fov_mm",
+        "frequency_mhz",
+        "image_ids",
+        "imaging_id",
+        "instance_count",
+        "key_image",
+        "key_image_filename",
+        "kvp",
+        "laterality",
+        "ma",
+        "manufacturer",
+        "matrix",
+        "modality",
+        "name",
+        "notes",
+        "pacs_message_last",
+        "pacs_status",
+        "pacs_viewer_url",
+        "patient_id",
+        "patient_position",
+        "plane",
+        "probe",
+        "protocol_step_id",
+        "quality_notes",
+        "quality_score",
+        "radiotracer",
+        "sequence_name",
+        "series_datetime",
+        "series_description",
+        "series_number",
+        "slice_thickness_mm",
+        "spacing_mm",
+        "state",
+        "station_name",
+        "study_id",
+        "te_ms",
+        "ti_ms",
+        "tr_ms",
+        "tracer_dose_mbq"
+      ],
+      "methods": [
+        "_check_device_modality",
+        "_check_dicom_series_uid_format",
+        "_check_non_negative_params",
+        "_check_quality_score",
+        "_compute_attachment_count",
+        "_compute_counts",
+        "_onchange_device",
+        "_onchange_study_defaults",
+        "action_archive",
+        "action_cancel",
+        "action_create_image",
+        "action_mark_acquired",
+        "action_mark_pacs_error",
+        "action_mark_processed",
+        "action_mark_received",
+        "action_mark_sent",
+        "action_open_findings",
+        "action_open_images",
+        "action_send_to_pacs",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "name_get",
+        "unlink"
+      ],
+      "owner_files": [
+        "clinical_imaging_finding.py",
+        "clinical_imaging_image.py",
+        "clinical_imaging_series.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.series.dose": {
+      "fields": [
+        "company_id",
+        "metric",
+        "note",
+        "sequence",
+        "series_id",
+        "unit",
+        "value"
+      ],
+      "methods": [
+        "_check_value_non_negative"
+      ],
+      "owner_files": [
+        "clinical_imaging_series.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.series.param": {
+      "fields": [
+        "company_id",
+        "key",
+        "note",
+        "sequence",
+        "series_id",
+        "unit",
+        "value"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_series.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.staff.credential": {
+      "fields": [
+        "attachment_id",
+        "company_id",
+        "credential_type",
+        "days_to_expiry",
+        "employee_id",
+        "expiry_date",
+        "issue_date",
+        "issuer",
+        "name",
+        "notes",
+        "number",
+        "status",
+        "verified"
+      ],
+      "methods": [
+        "_check_issue_expiry",
+        "_compute_status"
+      ],
+      "owner_files": [
+        "hr_employee_inherit.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.study": {
+      "fields": [
+        "active",
+        "appointment_id",
+        "attachment_count",
+        "body_part",
+        "company_id",
+        "contrast_agent_product_id",
+        "contrast_used",
+        "contrast_volume_ml",
+        "device_id",
+        "dicom_accession_number",
+        "dicom_bundle",
+        "dicom_bundle_filename",
+        "dicom_study_uid",
+        "encounter_id",
+        "image_count",
+        "imaging_id",
+        "laterality",
+        "manufacturer",
+        "modality",
+        "name",
+        "notes",
+        "pacs_message_last",
+        "pacs_status",
+        "pacs_viewer_url",
+        "patient_id",
+        "primary_preview",
+        "procedure_session_id",
+        "reading_radiologist_id",
+        "referring_doctor_id",
+        "sedation_agent_product_id",
+        "sedation_used",
+        "series_count",
+        "series_ids",
+        "state",
+        "station_name",
+        "study_datetime",
+        "study_description",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_device_modality_match",
+        "_check_dicom_uid_format",
+        "_check_verify_requirements",
+        "_compute_attachment_count",
+        "_compute_counts",
+        "_onchange_device_id",
+        "_onchange_imaging_id_defaults",
+        "action_archive",
+        "action_cancel",
+        "action_create_series",
+        "action_mark_acquired",
+        "action_mark_pacs_error",
+        "action_mark_received",
+        "action_mark_sent",
+        "action_open_findings",
+        "action_open_images",
+        "action_open_series",
+        "action_send_to_pacs",
+        "action_verify",
+        "action_view_attachments",
+        "copy",
+        "create",
+        "unlink"
+      ],
+      "owner_files": [
+        "clinical_imaging_finding.py",
+        "clinical_imaging_series.py",
+        "clinical_imaging_study.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.study.note": {
+      "fields": [
+        "author_id",
+        "company_id",
+        "note",
+        "study_id",
+        "tag"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_study.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.type": {
+      "fields": [
+        "active",
+        "category",
+        "code",
+        "company_id",
+        "consent_note",
+        "contra_count",
+        "contrast_agent_product_id",
+        "contrast_dose_mg_per_kg",
+        "contrast_required",
+        "creatinine_max_value",
+        "currency_id",
+        "default_device_id",
+        "default_duration_minutes",
+        "default_price_unit",
+        "default_product_id",
+        "default_tax_ids",
+        "description",
+        "device_count",
+        "device_ids",
+        "fasting_hours",
+        "is_billable",
+        "modality",
+        "name",
+        "prep_count",
+        "protocol_step_count",
+        "report_template_id",
+        "require_consent",
+        "require_creatinine_check",
+        "require_pregnancy_check",
+        "safety_risk",
+        "sedation_required",
+        "sequence",
+        "tag_ids"
+      ],
+      "methods": [
+        "_check_code_upper",
+        "_check_contrast_dose_positive",
+        "_check_creatinine_threshold",
+        "_check_device_modality",
+        "_check_fasting_non_negative",
+        "_compute_counts",
+        "_onchange_default_product_id",
+        "_onchange_device_modality_guard",
+        "action_open_devices",
+        "name_get"
+      ],
+      "owner_files": [
+        "clinical_imaging.py",
+        "clinical_imaging_type.py"
+      ],
+      "explicit_name_declarations": 2
+    },
+    "clinical.imaging.type.contra": {
+      "fields": [
+        "company_id",
+        "guidance",
+        "imaging_type_id",
+        "name",
+        "require_doctor_approval",
+        "require_lab_check",
+        "severity"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_type.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.type.prep": {
+      "fields": [
+        "company_id",
+        "imaging_type_id",
+        "instruction",
+        "min_hours_before",
+        "note",
+        "responsible",
+        "sequence",
+        "title"
+      ],
+      "methods": [
+        "_check_min_hours_before_non_negative"
+      ],
+      "owner_files": [
+        "clinical_imaging_type.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "clinical.imaging.type.tag": {
+      "fields": [
+        "active",
+        "color",
+        "company_id",
+        "description",
+        "name"
+      ],
+      "methods": [],
+      "owner_files": [
+        "clinical_imaging_type.py"
+      ],
+      "explicit_name_declarations": 1
+    },
+    "hr.employee": {
+      "fields": [
+        "avg_tat_acq_to_sign_30d",
+        "can_sign_imaging_result",
+        "co_signer_id",
+        "credential_count",
+        "credential_due",
+        "credential_expired",
+        "credential_ids",
+        "default_report_template_id",
+        "device_ids",
+        "imaging_active",
+        "is_imaging_nurse",
+        "is_physicist",
+        "is_radiologist",
+        "is_sonographer",
+        "is_technologist",
+        "max_daily_workload",
+        "modality_tag_ids",
+        "pending_results_assigned",
+        "preferred_location",
+        "provider_identifier",
+        "result_signed_30d",
+        "sign_pin",
+        "sign_policy",
+        "signature_image",
+        "signature_text",
+        "studies_acquired_30d",
+        "todays_worklist",
+        "worklist_assignment"
+      ],
+      "methods": [
+        "_action_window",
+        "_compute_counts",
+        "_compute_imaging_counters",
+        "_onchange_is_radiologist",
+        "action_open_authorized_devices",
+        "action_open_credentials",
+        "action_open_my_results_pending",
+        "action_open_my_results_signed_30d",
+        "action_open_my_studies_acquired_30d",
+        "action_open_today_worklist"
+      ],
+      "owner_files": [
+        "hr_employee_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    },
+    "res.partner": {
+      "fields": [
+        "asa_class",
+        "bmi",
+        "contrast_allergy",
+        "contrast_allergy_notes",
+        "contrast_allergy_severity",
+        "contrast_premed_protocol",
+        "contrast_premed_required",
+        "dicom_patient_id",
+        "egfr_date",
+        "egfr_method",
+        "egfr_value",
+        "has_cochlear_implant",
+        "has_metal_implants",
+        "has_pacemaker",
+        "height_cm",
+        "imaging_count",
+        "imaging_finding_count",
+        "imaging_image_count",
+        "imaging_portal_opt_out",
+        "imaging_request_count",
+        "imaging_result_count",
+        "imaging_series_count",
+        "imaging_study_count",
+        "implant_description",
+        "last_menstruation_date",
+        "metformin_instructions",
+        "metformin_use",
+        "pacs_patient_id",
+        "pregnancy_status",
+        "primary_doctor_id",
+        "renal_risk",
+        "sedation_contraindications",
+        "share_images_on_portal",
+        "weight_kg"
+      ],
+      "methods": [
+        "_check_anthro_non_negative",
+        "_check_egfr_range",
+        "_compute_bmi",
+        "_compute_imaging_counts",
+        "_compute_renal_risk",
+        "_onchange_contrast_allergy",
+        "action_new_imaging_request",
+        "action_open_imaging",
+        "action_open_imaging_findings",
+        "action_open_imaging_images",
+        "action_open_imaging_requests",
+        "action_open_imaging_results",
+        "action_open_imaging_series",
+        "action_open_imaging_studies"
+      ],
+      "owner_files": [
+        "res_partner_inherit.py"
+      ],
+      "explicit_name_declarations": 0
+    }
+  },
+  "allowed_technical_method_replacements": {
+    "name_get": "_compute_display_name"
+  },
+  "dormant_files": [
+    "models/models.py",
+    "models/xxx_clinic_imaging.py"
+  ],
+  "hard_gates": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15
+  ]
+}

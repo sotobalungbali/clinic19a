@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_analytics_user" model="res.groups">
+        <field name="name">Clinic Analytics User</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_analytics_analyst" model="res.groups">
+        <field name="name">Clinic Analytics Analyst</field>
+        <field name="implied_ids" eval="[(4, ref('clinic_analytics.group_analytics_user'))]"/>
+    </record>
+
+    <record id="group_analytics_manager" model="res.groups">
+        <field name="name">Clinic Analytics Manager</field>
+        <field name="implied_ids" eval="[(4, ref('clinic_analytics.group_analytics_analyst'))]"/>
+    </record>
+
+    <!--
+        Regular analytics users are branch-scoped. Company-wide aggregates
+        (branch_id = False) are deliberately excluded and remain Manager-only.
+    -->
+    <record id="rule_analytics_snapshot_branch" model="ir.rule">
+        <field name="name">Analytics Snapshots: allowed branches</field>
+        <field name="model_id" ref="model_clinic_analytics_snapshot"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_analytics_snapshot_manager" model="ir.rule">
+        <field name="name">Analytics Snapshots Manager: companies</field>
+        <field name="model_id" ref="model_clinic_analytics_snapshot"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="rule_analytics_snapshot_line_branch" model="ir.rule">
+        <field name="name">Analytics Snapshot Lines: allowed branches</field>
+        <field name="model_id" ref="model_clinic_analytics_snapshot_line"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_analytics_snapshot_line_manager" model="ir.rule">
+        <field name="name">Analytics Snapshot Lines Manager: companies</field>
+        <field name="model_id" ref="model_clinic_analytics_snapshot_line"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="rule_analytics_forecast_branch" model="ir.rule">
+        <field name="name">Analytics Forecasts: allowed branches</field>
+        <field name="model_id" ref="model_clinic_analytics_forecast"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_analytics_forecast_manager" model="ir.rule">
+        <field name="name">Analytics Forecasts Manager: companies</field>
+        <field name="model_id" ref="model_clinic_analytics_forecast"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="rule_analytics_forecast_point_branch" model="ir.rule">
+        <field name="name">Analytics Forecast Points: allowed branches</field>
+        <field name="model_id" ref="model_clinic_analytics_forecast_point"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_analytics_forecast_point_manager" model="ir.rule">
+        <field name="name">Analytics Forecast Points Manager: companies</field>
+        <field name="model_id" ref="model_clinic_analytics_forecast_point"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="rule_analytics_cohort_branch" model="ir.rule">
+        <field name="name">Analytics Cohorts: allowed branches</field>
+        <field name="model_id" ref="model_clinic_analytics_cohort"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_analytics_cohort_manager" model="ir.rule">
+        <field name="name">Analytics Cohorts Manager: companies</field>
+        <field name="model_id" ref="model_clinic_analytics_cohort"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="rule_analytics_insight_branch" model="ir.rule">
+        <field name="name">Analytics Insights: allowed branches</field>
+        <field name="model_id" ref="model_clinic_analytics_insight"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_analytics_insight_manager" model="ir.rule">
+        <field name="name">Analytics Insights Manager: companies</field>
+        <field name="model_id" ref="model_clinic_analytics_insight"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="rule_analytics_schedule_branch" model="ir.rule">
+        <field name="name">Analytics Schedules: allowed branches</field>
+        <field name="model_id" ref="model_clinic_analytics_schedule"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_analytics_schedule_manager" model="ir.rule">
+        <field name="name">Analytics Schedules Manager: companies</field>
+        <field name="model_id" ref="model_clinic_analytics_schedule"/>
+        <field name="groups" eval="[(4, ref('clinic_analytics.group_analytics_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+</odoo>

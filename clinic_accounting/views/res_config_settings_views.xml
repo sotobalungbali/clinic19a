@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_clinic_accounting_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Accounting Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_accounting', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_clinic_accounting" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.accounting</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Accounting" name="clinic_accounting"
+                     groups="clinic_accounting.group_clinic_accounting_manager">
+                    <block title="Ledger &amp; Adjustments"
+                           help="Configure the default reporting ledger and governed manual adjustment journal.">
+                        <setting string="Default Clinic Accounting Ledger">
+                            <field name="clinic_accounting_default_ledger_id" options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Accounting Adjustment Journal">
+                            <field name="clinic_accounting_adjustment_journal_id" options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Adjustment Approval Threshold"
+                                 help="Adjustments at or above this amount require an Accounting Approver. Zero auto-approves after submit.">
+                            <field name="clinic_accounting_adjustment_approval_threshold"/>
+                        </setting>
+                    </block>
+
+                    <block title="Period Close"
+                           help="Clinic Accounting preflight runs before Odoo's native fiscal lock date is advanced.">
+                        <setting string="Block Close on Unreconciled Receivables">
+                            <field name="clinic_accounting_close_require_reconciled_receivable"/>
+                        </setting>
+                        <setting string="Block Close on Unreconciled Payables">
+                            <field name="clinic_accounting_close_require_reconciled_payable"/>
+                        </setting>
+                    </block>
+
+                    <block title="Automated Statements">
+                        <setting string="Prior-Month Trial Balance"
+                                 help="On the first day of a month, generate the prior month's Trial Balance snapshot automatically.">
+                            <field name="clinic_accounting_auto_monthly_trial_balance"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

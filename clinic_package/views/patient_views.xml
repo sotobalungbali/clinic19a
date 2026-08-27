@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Patient form integration is intentionally not hard-loaded here.
+        See models/package_view_bridge.py and data/optional_view_bridge.xml.
+        This file remains as an explicit architectural marker for maintainers.
+    -->
+</odoo>

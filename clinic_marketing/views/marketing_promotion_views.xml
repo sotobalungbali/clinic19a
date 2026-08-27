@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_marketing_promotion_search" model="ir.ui.view">
+        <field name="name">clinic.marketing.promotion.search</field>
+        <field name="model">clinic.marketing.promotion</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="promotion_type"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <filter name="active_state" string="Active" domain="[('state','=','active')]"/>
+                <filter name="expired" string="Expired" domain="[('state','=','expired')]"/>
+                <group>
+                    <filter name="group_type" string="Promotion Type" context="{'group_by':'promotion_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_marketing_promotion_list" model="ir.ui.view">
+        <field name="name">clinic.marketing.promotion.list</field>
+        <field name="model">clinic.marketing.promotion</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'"
+                  decoration-warning="state == 'expired'"
+                  decoration-muted="state == 'archived'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="promotion_type" widget="badge"/>
+                <field name="source_display_name"/>
+                <field name="branch_id"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="campaign_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_source" type="object" string="Source" icon="fa-external-link"
+                        invisible="promotion_type == 'information'"/>
+                <button name="action_open_campaigns" type="object" string="Campaigns" icon="fa-bullhorn"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_marketing_promotion_form" model="ir.ui.view">
+        <field name="name">clinic.marketing.promotion.form</field>
+        <field name="model">clinic.marketing.promotion</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="clinic_marketing.group_marketing_coordinator"
+                            invisible="state != 'draft'"/>
+                    <button name="action_expire" type="object" string="Expire"
+                            groups="clinic_marketing.group_marketing_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_marketing.group_marketing_manager"
+                            invisible="state == 'archived'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_marketing.group_marketing_manager"
+                            invisible="state not in ('expired','archived')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expired,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_source" type="object" class="oe_stat_button" icon="fa-external-link"
+                                invisible="promotion_type == 'information'">
+                            <div class="o_stat_info"><span class="o_stat_text">Owner Source</span></div>
+                        </button>
+                        <button name="action_open_campaigns" type="object" class="oe_stat_button" icon="fa-bullhorn">
+                            <field name="campaign_count" widget="statinfo" string="Campaigns"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        Marketing Promotion is a presentation/CTA wrapper only.
+                        Pricing, vouchers, package rules and storefront offerings remain owned by their source addons.
+                    </div>
+
+                    <group>
+                        <group string="Promotion Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="promotion_type"/>
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Commercial Owner Source">
+                            <field name="billing_voucher_program_id" invisible="promotion_type != 'billing_voucher'"/>
+                            <field name="package_voucher_batch_id" invisible="promotion_type != 'package_voucher'"/>
+                            <field name="treatment_pricelist_item_id" invisible="promotion_type != 'treatment_price'"/>
+                            <field name="ecommerce_item_id" invisible="promotion_type != 'ecommerce'"/>
+                            <field name="source_display_name" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Patient-Facing Promotion">
+                        <field name="headline"/>
+                        <field name="summary"/>
+                        <field name="cta_label"/>
+                        <field name="landing_url"/>
+                        <field name="image_1920" widget="image"/>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_source" type="object" string="Open Owner Source" class="btn btn-primary"
+                                invisible="promotion_type == 'information'"/>
+                        <button name="action_open_campaigns" type="object" string="Open Campaigns" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Terms">
+                            <field name="terms_html"/>
+                        </page>
+                        <page string="Campaigns">
+                            <field name="campaign_ids">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="segment_id"/>
+                                    <field name="planned_at"/>
+                                    <field name="included_count"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_recipients" type="object" string="Audience" icon="fa-users"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_marketing_promotion" model="ir.actions.act_window">
+        <field name="name">Promotions</field>
+        <field name="res_model">clinic.marketing.promotion</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_marketing_promotion_search"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+</odoo>
+

@@ -1,0 +1,289 @@
+<odoo>
+    <record id="rule_clinical_imaging_type_tag_company" model="ir.rule">
+        <field name="name">Clinical Imaging Type Tag: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_type_tag"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_type_company" model="ir.rule">
+        <field name="name">Clinical Imaging Type: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_type"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_protocol_company" model="ir.rule">
+        <field name="name">Clinical Imaging Protocol: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_protocol"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_type_prep_company" model="ir.rule">
+        <field name="name">Clinical Imaging Type Preparation: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_type_prep"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_type_contra_company" model="ir.rule">
+        <field name="name">Clinical Imaging Type Contraindication: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_type_contra"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_device_company" model="ir.rule">
+        <field name="name">Clinical Imaging Device: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_device"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_device_downtime_company" model="ir.rule">
+        <field name="name">Imaging Device Downtime: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_device_downtime"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_device_calibration_company" model="ir.rule">
+        <field name="name">Imaging Device Calibration / QC: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_device_calibration"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_device_connectivity_company" model="ir.rule">
+        <field name="name">Imaging Device Connectivity: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_device_connectivity"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_company" model="ir.rule">
+        <field name="name">Clinical Imaging: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_study_company" model="ir.rule">
+        <field name="name">Clinical Imaging Study: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_study"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_study_note_company" model="ir.rule">
+        <field name="name">Clinical Imaging Study Note: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_study_note"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_series_company" model="ir.rule">
+        <field name="name">Clinical Imaging Series: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_series"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_series_param_company" model="ir.rule">
+        <field name="name">Imaging Series Parameter: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_series_param"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_series_dose_company" model="ir.rule">
+        <field name="name">Imaging Series Dose/Exposure: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_series_dose"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_image_tag_company" model="ir.rule">
+        <field name="name">Clinical Imaging Image Tag: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_image_tag"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_image_company" model="ir.rule">
+        <field name="name">Clinical Imaging Image: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_image"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_image_annotation_company" model="ir.rule">
+        <field name="name">Clinical Imaging Image Annotation: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_image_annotation"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_finding_tag_company" model="ir.rule">
+        <field name="name">Clinical Imaging Finding Tag: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_finding_tag"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_finding_company" model="ir.rule">
+        <field name="name">Clinical Imaging Finding: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_finding"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_finding_measure_company" model="ir.rule">
+        <field name="name">Clinical Imaging Finding Measurement: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_finding_measure"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_report_template_company" model="ir.rule">
+        <field name="name">Clinical Imaging Report Template: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_report_template"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_report_template_section_company" model="ir.rule">
+        <field name="name">Imaging Report Template Section: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_report_template_section"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_report_template_variable_company" model="ir.rule">
+        <field name="name">Imaging Report Template Variable: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_report_template_variable"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_report_template_asset_company" model="ir.rule">
+        <field name="name">Imaging Report Template Asset: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_report_template_asset"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_request_company" model="ir.rule">
+        <field name="name">Clinical Imaging Request: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_request"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_request_line_company" model="ir.rule">
+        <field name="name">Clinical Imaging Request Line: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_request_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_result_company" model="ir.rule">
+        <field name="name">Clinical Imaging Result: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_result"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_kpi_snapshot_company" model="ir.rule">
+        <field name="name">Clinical Imaging KPI Snapshot: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_kpi_snapshot"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_kpi_modality_line_company" model="ir.rule">
+        <field name="name">Imaging KPI Modality Line: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_kpi_modality_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_kpi_device_line_company" model="ir.rule">
+        <field name="name">Imaging KPI Device Line: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_kpi_device_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_kpi_radiologist_line_company" model="ir.rule">
+        <field name="name">Imaging KPI Radiologist Line: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_kpi_radiologist_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_modality_tag_company" model="ir.rule">
+        <field name="name">Imaging Modality Tag: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_modality_tag"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_staff_credential_company" model="ir.rule">
+        <field name="name">Imaging Staff Credential: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_staff_credential"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_treatment_imaging_plan_company" model="ir.rule">
+        <field name="name">Treatment Imaging Plan: multi-company</field>
+        <field name="model_id" ref="model_clinic_treatment_imaging_plan"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_encounter_screening_company" model="ir.rule">
+        <field name="name">Encounter Imaging Screening: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_encounter_screening"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_encounter_note_company" model="ir.rule">
+        <field name="name">Encounter Imaging Note: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_encounter_note"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_premed_protocol_company" model="ir.rule">
+        <field name="name">Imaging Contrast Premedication Protocol: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_premed_protocol"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_consent_template_company" model="ir.rule">
+        <field name="name">Imaging Consent Template: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_consent_template"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_consent_template_question_company" model="ir.rule">
+        <field name="name">Imaging Consent Template Question: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_consent_template_question"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinical_imaging_consent_answer_company" model="ir.rule">
+        <field name="name">Imaging Consent Answer: multi-company</field>
+        <field name="model_id" ref="model_clinical_imaging_consent_answer"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+</odoo>

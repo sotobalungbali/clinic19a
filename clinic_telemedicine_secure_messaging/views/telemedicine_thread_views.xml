@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_telemedicine_thread_search" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.thread.search</field>
+        <field name="model">clinic.telemedicine.thread</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="handler_id"/>
+                <field name="session_id"/>
+                <field name="branch_id"/>
+                <field name="company_id"/>
+                <filter name="open" string="Open" domain="[('state','=','open')]"/>
+                <filter name="attention" string="Attention Required" domain="[('attention_required','=',True)]"/>
+                <filter name="clinic_unread" string="Clinic Unread" domain="[('clinic_unread_count','>',0)]"/>
+                <filter name="urgent" string="Urgent" domain="[('priority','=','urgent')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_priority" string="Priority" context="{'group_by':'priority'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_handler" string="Handler" context="{'group_by':'handler_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_thread_list" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.thread.list</field>
+        <field name="model">clinic.telemedicine.thread</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="attention_required or priority == 'urgent'"
+                  decoration-warning="clinic_unread_count > 0"
+                  decoration-muted="state in ('closed','archived')">
+                <field name="last_message_at"/>
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="handler_id"/>
+                <field name="priority" widget="badge"/>
+                <field name="message_count"/>
+                <field name="attachment_count"/>
+                <field name="clinic_unread_count"/>
+                <field name="first_response_minutes"/>
+                <field name="state" widget="badge"/>
+                <field name="branch_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_mark_clinic_read" type="object" string="Mark Read" icon="fa-check"
+                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                        invisible="clinic_unread_count == 0"/>
+                <button name="action_open_messages" type="object" string="Messages" icon="fa-comments"/>
+                <button name="action_open_attachments" type="object" string="Files" icon="fa-paperclip"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_thread_kanban" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.thread.kanban</field>
+        <field name="model">clinic.telemedicine.thread</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="handler_id"/>
+                <field name="priority"/>
+                <field name="message_count"/>
+                <field name="attachment_count"/>
+                <field name="clinic_unread_count"/>
+                <field name="attention_required"/>
+                <field name="last_message_at"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between gap-2">
+                                <div>
+                                    <strong><field name="subject"/></strong>
+                                    <div class="text-muted"><field name="patient_id"/></div>
+                                </div>
+                                <field name="priority" widget="badge"/>
+                            </div>
+                            <div class="small mt-2">
+                                <i class="fa fa-user-md me-1"/>
+                                <field name="doctor_id"/>
+                            </div>
+                            <div class="small text-muted" t-if="handler_id">
+                                Handler: <field name="handler_id"/>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap mt-3">
+                                <span class="badge text-bg-secondary">Messages <field name="message_count"/></span>
+                                <span class="badge text-bg-secondary">Files <field name="attachment_count"/></span>
+                                <span t-if="clinic_unread_count" class="badge text-bg-warning">Unread <field name="clinic_unread_count"/></span>
+                                <span t-if="attention_required" class="badge text-bg-danger">Attention</span>
+                            </div>
+                            <div class="small text-muted mt-2"><field name="last_message_at"/></div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button name="action_open_messages" type="object" class="btn btn-primary btn-sm">Messages</button>
+                                <button name="action_mark_clinic_read" type="object" class="btn btn-secondary btn-sm"
+                                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                                        invisible="clinic_unread_count == 0">Mark Read</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_thread_form" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.thread.form</field>
+        <field name="model">clinic.telemedicine.thread</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_assign_to_me" type="object" string="Assign to Me" class="btn-primary"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state != 'open'"/>
+                    <button name="action_mark_clinic_read" type="object" string="Mark Patient Messages Read"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="clinic_unread_count == 0"/>
+                    <button name="action_close" type="object" string="Close"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state != 'open'"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state != 'closed'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_manager"
+                            invisible="state == 'archived'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,closed,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_patient" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient</span></div>
+                        </button>
+                        <button name="action_open_doctor" type="object" class="oe_stat_button" icon="fa-user-md">
+                            <div class="o_stat_info"><span class="o_stat_text">Doctor</span></div>
+                        </button>
+                        <button name="action_open_session" type="object" class="oe_stat_button" icon="fa-video-camera"
+                                invisible="not session_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Session</span></div>
+                        </button>
+                        <button name="action_open_messages" type="object" class="oe_stat_button" icon="fa-comments">
+                            <field name="message_count" widget="statinfo" string="Messages"/>
+                        </button>
+                        <button name="action_open_attachments" type="object" class="oe_stat_button" icon="fa-paperclip">
+                            <field name="attachment_count" widget="statinfo" string="Files"/>
+                        </button>
+                        <button name="action_open_portal" type="object" class="oe_stat_button" icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient Portal</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="subject"/>
+                        <h1><field name="subject"/></h1>
+                        <div class="text-muted"><field name="name"/></div>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="priority != 'urgent' and not attention_required">
+                        This conversation is flagged for urgent operational attention.
+                        Secure Messaging is not an emergency service and does not replace emergency-care procedures or the future Incident module.
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        Message text and shared files stay inside this dedicated secure-messaging model.
+                        They are not copied into generic chatter or email notifications.
+                    </div>
+
+                    <group>
+                        <group string="Conversation Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="session_id"/>
+                            <field name="patient_id"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="doctor_id"/>
+                            <field name="handler_id"/>
+                        </group>
+                        <group string="Operational Controls">
+                            <field name="priority"/>
+                            <field name="attention_required"/>
+                            <field name="patient_can_reply"/>
+                            <field name="patient_can_upload"/>
+                            <field name="first_patient_message_at" readonly="1"/>
+                            <field name="first_response_on" readonly="1"/>
+                            <field name="first_response_minutes" readonly="1"/>
+                            <field name="last_message_at" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap my-3">
+                        <button name="action_open_messages" type="object" string="Open / Send Secure Messages"
+                                class="btn btn-primary"
+                                groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"/>
+                        <button name="action_open_attachments" type="object" string="Open Shared Files"
+                                class="btn btn-secondary"/>
+                        <button name="action_open_portal" type="object" string="Preview Patient Portal"
+                                class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Secure Messages">
+                            <field name="message_ids" readonly="1">
+                                <list create="0" edit="0" delete="0"
+                                      decoration-warning="author_kind == 'patient' and not clinic_read_at">
+                                    <field name="sent_at"/>
+                                    <field name="sender_display_name"/>
+                                    <field name="author_kind" widget="badge"/>
+                                    <field name="body"/>
+                                    <field name="attachment_count"/>
+                                    <field name="patient_read_at"/>
+                                    <field name="clinic_read_at"/>
+                                    <button name="action_open_attachments" type="object" string="Files" icon="fa-paperclip"
+                                            invisible="attachment_count == 0"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Shared Files">
+                            <field name="attachment_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="uploaded_at"/>
+                                    <field name="name"/>
+                                    <field name="mimetype"/>
+                                    <field name="size_bytes"/>
+                                    <field name="uploader_kind" widget="badge"/>
+                                    <field name="sha256" optional="hide"/>
+                                    <button name="action_download" type="object" string="Download" icon="fa-download"/>
+                                    <button name="action_open_message" type="object" string="Message" icon="fa-comment"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Internal Coordination">
+                            <field name="internal_note"/>
+                            <group>
+                                <field name="closed_at" readonly="1"/>
+                                <field name="closed_by_id" readonly="1"/>
+                                <field name="portal_url" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_telemedicine_thread" model="ir.actions.act_window">
+        <field name="name">Secure Messaging</field>
+        <field name="res_model">clinic.telemedicine.thread</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_telemedicine_thread_search"/>
+    </record>
+</odoo>
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Idempotent runtime-safe Billing form integration.
+        Missing XML IDs or incompatible parent layout cannot abort AR install.
+    -->
+    <function model="clinic.ar.invoice"
+              name="_ensure_optional_billing_views"/>
+</odoo>

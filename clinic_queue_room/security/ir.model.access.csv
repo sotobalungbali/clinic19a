@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clinic_queue_stage_user,Clinic Queue Stage,model_clinic_queue_stage,base.group_user,1,1,1,1
+access_clinic_queue_token_user,Clinic Queue Token,model_clinic_queue_token,base.group_user,1,1,1,1
+access_clinic_queue_user,Clinic Queue,model_clinic_queue,base.group_user,1,1,1,1
+access_clinic_room_assignment_user,Clinic Room Assignment,model_clinic_room_assignment,base.group_user,1,1,1,1
+access_clinic_queue_event_user,Clinic Queue Event,model_clinic_queue_event,base.group_user,1,1,1,1
+access_clinic_queue_channel_user,Clinic Queue Channel,model_clinic_queue_channel,base.group_user,1,1,1,1
+access_clinic_queue_visit_user,Clinic Queue Visit,model_clinic_queue_visit,base.group_user,1,1,1,1
+access_clinic_queue_ticket_user,Clinic Queue Ticket,model_clinic_queue_ticket,base.group_user,1,1,1,1

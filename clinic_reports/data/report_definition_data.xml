@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="report_definition_fin_revenue" model="clinic.report.definition">
+        <field name="name">Revenue &amp; Billing Summary</field>
+        <field name="code">FIN-REV</field>
+        <field name="family">financial</field>
+        <field name="report_key">fin_revenue</field>
+        <field name="sequence">10</field>
+        <field name="state">active</field>
+        <field name="description">Posted/paid Clinic Billing invoices; gross, untaxed, tax, collected and residual amounts.</field>
+        <field name="methodology" type="html"><p>Posted/paid Clinic Billing invoices; gross, untaxed, tax, collected and residual amounts.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_fin_receivables" model="clinic.report.definition">
+        <field name="name">Accounts Receivable Aging</field>
+        <field name="code">FIN-AR</field>
+        <field name="family">financial</field>
+        <field name="report_key">fin_receivables</field>
+        <field name="sequence">20</field>
+        <field name="state">active</field>
+        <field name="description">Posted Clinic AR invoices with outstanding amount, overdue exposure and aging buckets.</field>
+        <field name="methodology" type="html"><p>Posted Clinic AR invoices with outstanding amount, overdue exposure and aging buckets.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_fin_payables" model="clinic.report.definition">
+        <field name="name">Accounts Payable Summary</field>
+        <field name="code">FIN-AP</field>
+        <field name="family">financial</field>
+        <field name="report_key">fin_payables</field>
+        <field name="sequence">30</field>
+        <field name="state">active</field>
+        <field name="description">Approved/posted/partial/paid Clinic AP documents with total, paid and residual exposure.</field>
+        <field name="methodology" type="html"><p>Approved/posted/partial/paid Clinic AP documents with total, paid and residual exposure.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_fin_cashflow" model="clinic.report.definition">
+        <field name="name">Finance Cash Flow</field>
+        <field name="code">FIN-CASH</field>
+        <field name="family">financial</field>
+        <field name="report_key">fin_cashflow</field>
+        <field name="sequence">40</field>
+        <field name="state">active</field>
+        <field name="description">Posted Clinic Finance transactions summarized into inflow, outflow and net cash movement.</field>
+        <field name="methodology" type="html"><p>Posted Clinic Finance transactions summarized into inflow, outflow and net cash movement.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_fin_accounting" model="clinic.report.definition">
+        <field name="name">Accounting Activity</field>
+        <field name="code">FIN-ACC</field>
+        <field name="family">financial</field>
+        <field name="report_key">fin_accounting</field>
+        <field name="sequence">50</field>
+        <field name="state">active</field>
+        <field name="description">Posted Odoo accounting journal items summarized by debit, credit and net balance.</field>
+        <field name="methodology" type="html"><p>Posted Odoo accounting journal items summarized by debit, credit and net balance.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_fin_tax" model="clinic.report.definition">
+        <field name="name">Indonesia Tax Reporting</field>
+        <field name="code">FIN-TAX-ID</field>
+        <field name="family">financial</field>
+        <field name="report_key">fin_tax</field>
+        <field name="sequence">60</field>
+        <field name="state">active</field>
+        <field name="description">Generated/locked Clinic Indonesia tax reports overlapping the requested reporting window.</field>
+        <field name="methodology" type="html"><p>Generated/locked Clinic Indonesia tax reports overlapping the requested reporting window.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_fin_insurance" model="clinic.report.definition">
+        <field name="name">Insurance Authorization &amp; Claims</field>
+        <field name="code">FIN-INS</field>
+        <field name="family">financial</field>
+        <field name="report_key">fin_insurance</field>
+        <field name="sequence">70</field>
+        <field name="state">active</field>
+        <field name="description">Insurance authorization requests and claims with requested/approved/payer/patient-responsibility metrics.</field>
+        <field name="methodology" type="html"><p>Insurance authorization requests and claims with requested/approved/payer/patient-responsibility metrics.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_ops_booking" model="clinic.report.definition">
+        <field name="name">Booking Performance</field>
+        <field name="code">OPS-BOOK</field>
+        <field name="family">operational</field>
+        <field name="report_key">ops_booking</field>
+        <field name="sequence">80</field>
+        <field name="state">active</field>
+        <field name="description">Booking volume, completion, cancellation, planned duration and planned booking value.</field>
+        <field name="methodology" type="html"><p>Booking volume, completion, cancellation, planned duration and planned booking value.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_ops_queue" model="clinic.report.definition">
+        <field name="name">Queue Performance</field>
+        <field name="code">OPS-QUEUE</field>
+        <field name="family">operational</field>
+        <field name="report_key">ops_queue</field>
+        <field name="sequence">90</field>
+        <field name="state">active</field>
+        <field name="description">Queue throughput, no-shows, waiting time, service time and wait-SLA breach rate.</field>
+        <field name="methodology" type="html"><p>Queue throughput, no-shows, waiting time, service time and wait-SLA breach rate.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_ops_room" model="clinic.report.definition">
+        <field name="name">Room Utilization</field>
+        <field name="code">OPS-ROOM</field>
+        <field name="family">operational</field>
+        <field name="report_key">ops_room</field>
+        <field name="sequence">100</field>
+        <field name="state">active</field>
+        <field name="description">Clinic room assignments, occupancy minutes, service duration and active/released usage.</field>
+        <field name="methodology" type="html"><p>Clinic room assignments, occupancy minutes, service duration and active/released usage.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_ops_inventory" model="clinic.report.definition">
+        <field name="name">Clinical Inventory Usage</field>
+        <field name="code">OPS-INV</field>
+        <field name="family">operational</field>
+        <field name="report_key">ops_inventory</field>
+        <field name="sequence">110</field>
+        <field name="state">active</field>
+        <field name="description">Completed clinical product-consumption documents, usage lines, quantity and distinct products.</field>
+        <field name="methodology" type="html"><p>Completed clinical product-consumption documents, usage lines, quantity and distinct products.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_ops_membership" model="clinic.report.definition">
+        <field name="name">Membership Activity</field>
+        <field name="code">OPS-MEM</field>
+        <field name="family">operational</field>
+        <field name="report_key">ops_membership</field>
+        <field name="sequence">120</field>
+        <field name="state">active</field>
+        <field name="description">Membership contracts started in the period, contract value, savings and lifecycle distribution.</field>
+        <field name="methodology" type="html"><p>Membership contracts started in the period, contract value, savings and lifecycle distribution.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_ops_wallet" model="clinic.report.definition">
+        <field name="name">Patient Wallet Activity</field>
+        <field name="code">OPS-WALLET</field>
+        <field name="family">operational</field>
+        <field name="report_key">ops_wallet</field>
+        <field name="sequence">130</field>
+        <field name="state">active</field>
+        <field name="description">Posted patient-wallet transactions with gross movement, inflow, outflow and net movement.</field>
+        <field name="methodology" type="html"><p>Posted patient-wallet transactions with gross movement, inflow, outflow and net movement.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_clinical_encounter" model="clinic.report.definition">
+        <field name="name">Clinical Encounter Activity</field>
+        <field name="code">CLN-ENC</field>
+        <field name="family">clinical</field>
+        <field name="report_key">clinical_encounter</field>
+        <field name="sequence">140</field>
+        <field name="state">active</field>
+        <field name="description">Encounter volume, completion, procedure-line volume, duration and clinical value.</field>
+        <field name="methodology" type="html"><p>Encounter volume, completion, procedure-line volume, duration and clinical value.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_clinical_procedure" model="clinic.report.definition">
+        <field name="name">Procedure Performance</field>
+        <field name="code">CLN-PROC</field>
+        <field name="family">clinical</field>
+        <field name="report_key">clinical_procedure</field>
+        <field name="sequence">150</field>
+        <field name="state">active</field>
+        <field name="description">Procedure sessions, completion, duration, value and linked adverse-event count.</field>
+        <field name="methodology" type="html"><p>Procedure sessions, completion, duration, value and linked adverse-event count.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_clinical_triage" model="clinic.report.definition">
+        <field name="name">Triage &amp; Vitals</field>
+        <field name="code">CLN-TRIAGE</field>
+        <field name="family">clinical</field>
+        <field name="report_key">clinical_triage</field>
+        <field name="sequence">160</field>
+        <field name="state">active</field>
+        <field name="description">Triage volume, referral/completion, wait time, duration, SLA and abnormal-vitals signals.</field>
+        <field name="methodology" type="html"><p>Triage volume, referral/completion, wait time, duration, SLA and abnormal-vitals signals.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_clinical_adverse" model="clinic.report.definition">
+        <field name="name">Adverse Event Activity</field>
+        <field name="code">CLN-AE</field>
+        <field name="family">clinical</field>
+        <field name="report_key">clinical_adverse</field>
+        <field name="sequence">170</field>
+        <field name="state">active</field>
+        <field name="description">Clinical adverse events with serious/severe/sentinel and closure metrics.</field>
+        <field name="methodology" type="html"><p>Clinical adverse events with serious/severe/sentinel and closure metrics.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">False</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_clinical_postcare" model="clinic.report.definition">
+        <field name="name">Post-Care Outcomes</field>
+        <field name="code">CLN-POST</field>
+        <field name="family">clinical</field>
+        <field name="report_key">clinical_postcare</field>
+        <field name="sequence">180</field>
+        <field name="state">active</field>
+        <field name="description">Post-care completion, follow-up tasks, overdue tasks, escalations, red flags and progress.</field>
+        <field name="methodology" type="html"><p>Post-care completion, follow-up tasks, overdue tasks, escalations, red flags and progress.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+    <record id="report_definition_clinical_feedback" model="clinic.report.definition">
+        <field name="name">Patient Satisfaction &amp; Feedback</field>
+        <field name="code">CLN-FB</field>
+        <field name="family">clinical</field>
+        <field name="report_key">clinical_feedback</field>
+        <field name="sequence">190</field>
+        <field name="state">active</field>
+        <field name="description">Patient feedback volume, overall satisfaction, true NPS, complaints and escalation-threshold rate.</field>
+        <field name="methodology" type="html"><p>Patient feedback volume, overall satisfaction, true NPS, complaints and escalation-threshold rate.</p><p>Report output is a governed snapshot; source records remain authoritative.</p></field>
+        <field name="default_detail_limit">500</field>
+        <field name="allow_branch_filter">True</field>
+        <field name="include_details_by_default">True</field>
+    </record>
+</odoo>

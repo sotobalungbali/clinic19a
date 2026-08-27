@@ -1,0 +1,1434 @@
+[
+  {
+    "model": "clinic.practitioner",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.assignment",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.availability",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.availability.occurrence",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.kpi.definition",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.kpi",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.kpi.line",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.license.type",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.license",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.presence",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.presence.session",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.presence.break",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.shift.template",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.roster",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.skill",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.skill",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.workload.policy",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.workload",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.staff.workload.line",
+    "owner": "clinic_staff"
+  },
+  {
+    "model": "clinic.appointment",
+    "owner": "clinic_doctor"
+  },
+  {
+    "model": "clinic.availability.slot",
+    "owner": "clinic_doctor"
+  },
+  {
+    "model": "clinic.doctor",
+    "owner": "clinic_doctor"
+  },
+  {
+    "model": "clinic.doctor.leave",
+    "owner": "clinic_doctor"
+  },
+  {
+    "model": "clinic.schedule.rule",
+    "owner": "clinic_doctor"
+  },
+  {
+    "model": "clinic.specialty",
+    "owner": "clinic_doctor"
+  },
+  {
+    "model": "clinic.patient.stage",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient.tag",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.allergen.category",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.allergen",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.allergy.reaction.type",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient.allergy",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient.allergy.reaction",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.condition.category",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.condition",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.condition.code",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient.condition",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient.condition.episode",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient.identifier.type",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient.identifier",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.patient.vital",
+    "owner": "clinic_patient"
+  },
+  {
+    "model": "clinic.consent.template",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.consent.template.item",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.consent.template.version",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.consent.request",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.consent.request.item",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.catalog",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.attribute",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.attribute.value",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.attribute.line",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.bundle",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.bundle.line",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.category",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.pricelist",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.pricelist.item",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.treatment.tag",
+    "owner": "clinic_treatment_catalog"
+  },
+  {
+    "model": "clinic.doctor.allowed.product",
+    "owner": "clinic_inventory"
+  },
+  {
+    "model": "clinic.integration.event.log",
+    "owner": "clinic_inventory"
+  },
+  {
+    "model": "clinic.integration.service",
+    "owner": "clinic_inventory"
+  },
+  {
+    "model": "clinic.inventory.adjustment",
+    "owner": "clinic_inventory"
+  },
+  {
+    "model": "clinic.inventory.adjustment.line",
+    "owner": "clinic_inventory"
+  },
+  {
+    "model": "clinic.patient.product.history",
+    "owner": "clinic_inventory"
+  },
+  {
+    "model": "clinic.treatment.product.usage",
+    "owner": "clinic_inventory"
+  },
+  {
+    "model": "clinic.treatment.product.usage.line",
+    "owner": "clinic_inventory"
+  },
+  {
+    "model": "booking.booking",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.channel",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.feedback.link",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.line",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.policy",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.policy.exception",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.recurring.rule",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.recurring.weekday",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.recurring.monthday",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.recurring.byweekday",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.recurring.exdate",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.resource.tag",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.resource",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.resource.schedule",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.resource.blackout",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.room.tag",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.room",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.room.schedule",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.room.blackout",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.slot",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.slot.exception",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.tag",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.doctor.schedule",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "booking.doctor.blackout",
+    "owner": "clinic_booking"
+  },
+  {
+    "model": "clinic.queue",
+    "owner": "clinic_queue_room"
+  },
+  {
+    "model": "clinic.queue.channel",
+    "owner": "clinic_queue_room"
+  },
+  {
+    "model": "clinic.queue.event",
+    "owner": "clinic_queue_room"
+  },
+  {
+    "model": "clinic.queue.stage",
+    "owner": "clinic_queue_room"
+  },
+  {
+    "model": "clinic.queue.ticket",
+    "owner": "clinic_queue_room"
+  },
+  {
+    "model": "clinic.queue.token",
+    "owner": "clinic_queue_room"
+  },
+  {
+    "model": "clinic.queue.visit",
+    "owner": "clinic_queue_room"
+  },
+  {
+    "model": "clinic.room.assignment",
+    "owner": "clinic_queue_room"
+  },
+  {
+    "model": "clinic.room.device.assignment",
+    "owner": "clinic_room_device"
+  },
+  {
+    "model": "clinic.room.availability",
+    "owner": "clinic_room_device"
+  },
+  {
+    "model": "clinic.device",
+    "owner": "clinic_room_device"
+  },
+  {
+    "model": "clinic.device.category",
+    "owner": "clinic_room_device"
+  },
+  {
+    "model": "clinic.device.movement",
+    "owner": "clinic_room_device"
+  },
+  {
+    "model": "clinic.room",
+    "owner": "clinic_room_device"
+  },
+  {
+    "model": "clinic.room.session",
+    "owner": "clinic_room_device"
+  },
+  {
+    "model": "clinic.room.type",
+    "owner": "clinic_room_device"
+  },
+  {
+    "model": "clinic.triage.level",
+    "owner": "clinic_triage_vitals"
+  },
+  {
+    "model": "clinic.triage.session",
+    "owner": "clinic_triage_vitals"
+  },
+  {
+    "model": "clinic.triage.tag",
+    "owner": "clinic_triage_vitals"
+  },
+  {
+    "model": "clinic.vitals.intake",
+    "owner": "clinic_triage_vitals"
+  },
+  {
+    "model": "clinic.consent.attachment",
+    "owner": "clinic_consent_legal"
+  },
+  {
+    "model": "clinic.consent.form",
+    "owner": "clinic_consent_legal"
+  },
+  {
+    "model": "clinic.consent.signature",
+    "owner": "clinic_consent_legal"
+  },
+  {
+    "model": "clinic.ae.category",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.ae.type",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.ae.factor",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.adverse.event",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.ae.action",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.ae.followup",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.anesthesia.case",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.anesthesia.medication",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.anesthesia.vital",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.anesthesia.fluid",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.anesthesia.airway",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.anesthesia.event",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.checklist.template",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.checklist.template.item",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.checklist.template.item.option",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.checklist",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.checklist.item",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.consent.risk.template",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.consent.document",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.consent.risk",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.diagnosis.category",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.diagnosis",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.encounter",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.encounter.procedure",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.encounter.stage",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.execution.log",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.procedure.tag",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.procedure.category",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.procedure.catalog",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.procedure.consumable",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.procedure.session",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.procedure.step",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.procedure.step.checklist",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.result.group",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.result.document",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.result.value",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.soap.tag",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.soap.template",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.soap.note",
+    "owner": "clinic_encounter"
+  },
+  {
+    "model": "clinic.emar.administration",
+    "owner": "clinic_emar"
+  },
+  {
+    "model": "clinic.emar.alert",
+    "owner": "clinic_emar"
+  },
+  {
+    "model": "clinic.emar.medication.line",
+    "owner": "clinic_emar"
+  },
+  {
+    "model": "clinic.emar.medication.profile",
+    "owner": "clinic_emar"
+  },
+  {
+    "model": "clinic.emar.order",
+    "owner": "clinic_emar"
+  },
+  {
+    "model": "clinic.emar.prescription",
+    "owner": "clinic_emar"
+  },
+  {
+    "model": "clinic.emar.schedule",
+    "owner": "clinic_emar"
+  },
+  {
+    "model": "clinical.imaging",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.device",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.device.downtime",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.device.calibration",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.device.connectivity",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.finding.tag",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.finding",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.finding.measure",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.image.tag",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.image",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.image.annotation",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.kpi.snapshot",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.kpi.modality.line",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.kpi.device.line",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.kpi.radiologist.line",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.report.template",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.report.template.section",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.report.template.variable",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.report.template.asset",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.request",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.request.line",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.result",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.result.dose",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.result.measure",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.series",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.series.param",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.series.dose",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.study",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.study.note",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.type.tag",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.type",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.protocol",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.type.prep",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.type.contra",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.consent.template",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.consent.template.question",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.consent.answer",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.encounter.screening",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.encounter.note",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.modality.tag",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.staff.credential",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinical.imaging.premed.protocol",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinic.treatment.imaging.plan",
+    "owner": "clinic_imaging"
+  },
+  {
+    "model": "clinic.care.plan",
+    "owner": "clinic_care_plan"
+  },
+  {
+    "model": "clinic.care.plan.line",
+    "owner": "clinic_care_plan"
+  },
+  {
+    "model": "clinic.care.protocol",
+    "owner": "clinic_care_plan"
+  },
+  {
+    "model": "clinic.care.protocol.step",
+    "owner": "clinic_care_plan"
+  },
+  {
+    "model": "clinic.package.integration.event",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.tag",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.allocation",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.allocation.line",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.benefit",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.line",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.policy",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.pricing",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.pricing.rule",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.usage",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.voucher",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "clinic.package.voucher.batch",
+    "owner": "clinic_package"
+  },
+  {
+    "model": "membership.integration.event",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "membership.plan.benefit",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "membership.contract",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "membership.contract.benefit",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "membership.hold",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "membership.plan",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "membership.point.tx",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "membership.usage",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "membership.voucher",
+    "owner": "clinic_membership"
+  },
+  {
+    "model": "clinic.billing.commission.rule",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.commission.line",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.commission.settlement",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.discount.rule",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.discount.redemption",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.gateway.tx",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.gateway.event",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.insurance.claim",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.insurance.claim.line",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.invoice",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.line",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.membership.usage",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.payment",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.payment.line",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.voucher.program",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.voucher",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.voucher.redemption",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.billing.integration.event",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.treatment.billing.link",
+    "owner": "clinic_billing"
+  },
+  {
+    "model": "clinic.ar.allocation",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.allocation.line",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.followup.level",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.followup",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.invoice",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.invoice.line",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.payment",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.statement",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.statement.line",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ar.integration.event",
+    "owner": "clinic_ar"
+  },
+  {
+    "model": "clinic.ap.aging",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "clinic.ap.aging.line",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "clinic.ap",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "clinic.ap.line",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "clinic.cashflow",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "clinic.cashflow.bucket",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "clinic.cashflow.detail",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "clinic.cashflow.adjustment",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "clinic.ap.integration.event",
+    "owner": "clinic_ap"
+  },
+  {
+    "model": "account.move",
+    "owner": "clinic_wallet"
+  },
+  {
+    "model": "clinic.wallet.portal.mgr.approver",
+    "owner": "clinic_wallet"
+  },
+  {
+    "model": "clinic.wallet.portal.request",
+    "owner": "clinic_wallet"
+  },
+  {
+    "model": "clinic.wallet",
+    "owner": "clinic_wallet"
+  },
+  {
+    "model": "clinic.wallet.rule",
+    "owner": "clinic_wallet"
+  },
+  {
+    "model": "clinic.wallet.transaction",
+    "owner": "clinic_wallet"
+  },
+  {
+    "model": "clinic.finance.cash.session",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.finance.cash.count.line",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.finance.account",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.finance.category",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.finance.transaction",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.finance.transfer",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.finance.fund.request",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.finance.position",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.finance.position.line",
+    "owner": "clinic_finance"
+  },
+  {
+    "model": "clinic.accounting.adjustment",
+    "owner": "clinic_accounting"
+  },
+  {
+    "model": "clinic.accounting.adjustment.line",
+    "owner": "clinic_accounting"
+  },
+  {
+    "model": "clinic.accounting.close",
+    "owner": "clinic_accounting"
+  },
+  {
+    "model": "clinic.accounting.close.check",
+    "owner": "clinic_accounting"
+  },
+  {
+    "model": "clinic.accounting.ledger",
+    "owner": "clinic_accounting"
+  },
+  {
+    "model": "clinic.accounting.statement",
+    "owner": "clinic_accounting"
+  },
+  {
+    "model": "clinic.accounting.statement.line",
+    "owner": "clinic_accounting"
+  },
+  {
+    "model": "clinic.l10n.id.compliance.run",
+    "owner": "clinic_l10n_id"
+  },
+  {
+    "model": "clinic.l10n.id.compliance.line",
+    "owner": "clinic_l10n_id"
+  },
+  {
+    "model": "clinic.l10n.id.numbering.policy",
+    "owner": "clinic_l10n_id"
+  },
+  {
+    "model": "clinic.l10n.id.tax.profile",
+    "owner": "clinic_l10n_id"
+  },
+  {
+    "model": "clinic.l10n.id.tax.report",
+    "owner": "clinic_l10n_id"
+  },
+  {
+    "model": "clinic.l10n.id.tax.report.line",
+    "owner": "clinic_l10n_id"
+  },
+  {
+    "model": "clinic.insurance.authorization",
+    "owner": "clinic_insurance_authorization"
+  },
+  {
+    "model": "clinic.insurance.authorization.line",
+    "owner": "clinic_insurance_authorization"
+  },
+  {
+    "model": "clinic.insurance.eligibility.check",
+    "owner": "clinic_insurance_authorization"
+  },
+  {
+    "model": "clinic.insurance.plan",
+    "owner": "clinic_insurance_authorization"
+  },
+  {
+    "model": "clinic.insurance.plan.rule",
+    "owner": "clinic_insurance_authorization"
+  },
+  {
+    "model": "clinic.insurance.policy",
+    "owner": "clinic_insurance_authorization"
+  },
+  {
+    "model": "clinic.postcare.checkin",
+    "owner": "clinic_post_care_followup"
+  },
+  {
+    "model": "clinic.postcare.escalation",
+    "owner": "clinic_post_care_followup"
+  },
+  {
+    "model": "clinic.postcare.plan",
+    "owner": "clinic_post_care_followup"
+  },
+  {
+    "model": "clinic.postcare.protocol",
+    "owner": "clinic_post_care_followup"
+  },
+  {
+    "model": "clinic.postcare.protocol.step",
+    "owner": "clinic_post_care_followup"
+  },
+  {
+    "model": "clinic.postcare.task",
+    "owner": "clinic_post_care_followup"
+  },
+  {
+    "model": "clinic.feedback.escalation",
+    "owner": "clinic_feedback"
+  },
+  {
+    "model": "clinic.feedback",
+    "owner": "clinic_feedback"
+  },
+  {
+    "model": "clinic.feedback.answer",
+    "owner": "clinic_feedback"
+  },
+  {
+    "model": "clinic.feedback.request",
+    "owner": "clinic_feedback"
+  },
+  {
+    "model": "clinic.feedback.survey",
+    "owner": "clinic_feedback"
+  },
+  {
+    "model": "clinic.feedback.question",
+    "owner": "clinic_feedback"
+  },
+  {
+    "model": "clinic.report.definition",
+    "owner": "clinic_reports"
+  },
+  {
+    "model": "clinic.report.detail",
+    "owner": "clinic_reports"
+  },
+  {
+    "model": "clinic.report.metric",
+    "owner": "clinic_reports"
+  },
+  {
+    "model": "clinic.report.run",
+    "owner": "clinic_reports"
+  },
+  {
+    "model": "clinic.report.schedule",
+    "owner": "clinic_reports"
+  },
+  {
+    "model": "clinic.dashboard.board",
+    "owner": "clinic_dashboard"
+  },
+  {
+    "model": "clinic.dashboard.snapshot",
+    "owner": "clinic_dashboard"
+  },
+  {
+    "model": "clinic.dashboard.snapshot.line",
+    "owner": "clinic_dashboard"
+  },
+  {
+    "model": "clinic.dashboard.widget",
+    "owner": "clinic_dashboard"
+  },
+  {
+    "model": "clinic.ecommerce.catalog.item",
+    "owner": "clinic_ecommerce"
+  },
+  {
+    "model": "clinic.ecommerce.fulfillment",
+    "owner": "clinic_ecommerce"
+  },
+  {
+    "model": "clinic.portal.profile",
+    "owner": "clinic_portal"
+  },
+  {
+    "model": "clinic.marketing.campaign",
+    "owner": "clinic_marketing"
+  },
+  {
+    "model": "clinic.marketing.message",
+    "owner": "clinic_marketing"
+  },
+  {
+    "model": "clinic.marketing.preference",
+    "owner": "clinic_marketing"
+  },
+  {
+    "model": "clinic.marketing.promotion",
+    "owner": "clinic_marketing"
+  },
+  {
+    "model": "clinic.marketing.recipient",
+    "owner": "clinic_marketing"
+  },
+  {
+    "model": "clinic.marketing.segment",
+    "owner": "clinic_marketing"
+  },
+  {
+    "model": "clinic.telemedicine.attachment",
+    "owner": "clinic_telemedicine_secure_messaging"
+  },
+  {
+    "model": "clinic.telemedicine.message",
+    "owner": "clinic_telemedicine_secure_messaging"
+  },
+  {
+    "model": "clinic.telemedicine.session",
+    "owner": "clinic_telemedicine_secure_messaging"
+  },
+  {
+    "model": "clinic.telemedicine.thread",
+    "owner": "clinic_telemedicine_secure_messaging"
+  },
+  {
+    "model": "clinic.incident.category",
+    "owner": "clinic_incident_event"
+  },
+  {
+    "model": "clinic.incident.action",
+    "owner": "clinic_incident_event"
+  },
+  {
+    "model": "clinic.incident",
+    "owner": "clinic_incident_event"
+  },
+  {
+    "model": "clinic.incident.investigation",
+    "owner": "clinic_incident_event"
+  },
+  {
+    "model": "clinic.incident.timeline",
+    "owner": "clinic_incident_event"
+  },
+  {
+    "model": "clinic.quality.check.line",
+    "owner": "clinic_quality"
+  },
+  {
+    "model": "clinic.quality.check.template",
+    "owner": "clinic_quality"
+  },
+  {
+    "model": "clinic.quality.check.template.line",
+    "owner": "clinic_quality"
+  },
+  {
+    "model": "clinic.quality.check",
+    "owner": "clinic_quality"
+  },
+  {
+    "model": "clinic.quality.schedule",
+    "owner": "clinic_quality"
+  },
+  {
+    "model": "clinic.quality.sop",
+    "owner": "clinic_quality"
+  },
+  {
+    "model": "clinic.quality.sop.acknowledgement",
+    "owner": "clinic_quality"
+  },
+  {
+    "model": "clinic.quality.sop.version",
+    "owner": "clinic_quality"
+  },
+  {
+    "model": "clinic.branch",
+    "owner": "clinic_branch"
+  },
+  {
+    "model": "clinic.branch.location",
+    "owner": "clinic_branch"
+  },
+  {
+    "model": "clinic.api.client",
+    "owner": "clinic_integration_api"
+  },
+  {
+    "model": "clinic.api.webhook.delivery",
+    "owner": "clinic_integration_api"
+  },
+  {
+    "model": "clinic.api.event",
+    "owner": "clinic_integration_api"
+  },
+  {
+    "model": "clinic.api.event.type",
+    "owner": "clinic_integration_api"
+  },
+  {
+    "model": "clinic.api.idempotency",
+    "owner": "clinic_integration_api"
+  },
+  {
+    "model": "clinic.api.provider",
+    "owner": "clinic_integration_api"
+  },
+  {
+    "model": "clinic.api.request.log",
+    "owner": "clinic_integration_api"
+  },
+  {
+    "model": "clinic.api.scope",
+    "owner": "clinic_integration_api"
+  },
+  {
+    "model": "clinic.api.webhook.subscription",
+    "owner": "clinic_integration_api"
+  }
+]

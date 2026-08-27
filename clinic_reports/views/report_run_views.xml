@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_report_run_search" model="ir.ui.view">
+        <field name="name">clinic.report.run.search</field>
+        <field name="model">clinic.report.run</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="definition_id"/>
+                <field name="family"/>
+                <field name="report_key"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="generated_by_id"/>
+                <filter name="ready" string="Ready" domain="[('state','=','ready')]"/>
+                <filter name="finalized" string="Finalized" domain="[('state','=','finalized')]"/>
+                <filter name="failed" string="Failed" domain="[('state','=','failed')]"/>
+                <filter name="financial" string="Financial" domain="[('family','=','financial')]"/>
+                <filter name="operational" string="Operational" domain="[('family','=','operational')]"/>
+                <filter name="clinical" string="Clinical" domain="[('family','=','clinical')]"/>
+                <group>
+                    <filter name="group_definition" string="Report" context="{'group_by':'definition_id'}"/>
+                    <filter name="group_family" string="Family" context="{'group_by':'family'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_month" string="End Month" context="{'group_by':'date_to:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_report_run_list" model="ir.ui.view">
+        <field name="name">clinic.report.run.list</field>
+        <field name="model">clinic.report.run</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'finalized'" decoration-info="state == 'ready'" decoration-danger="state == 'failed'" decoration-muted="state == 'archived'">
+                <field name="name"/>
+                <field name="definition_id"/>
+                <field name="family" widget="badge"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="branch_id"/>
+                <field name="metric_count"/>
+                <field name="detail_count"/>
+                <field name="generated_at"/>
+                <field name="generated_by_id"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_generate" type="object" string="Generate" icon="fa-play"
+                        groups="clinic_reports.group_reports_analyst"
+                        invisible="state not in ('draft','ready','failed')"/>
+                <button name="action_download_csv" type="object" string="CSV" icon="fa-download"
+                        invisible="state not in ('ready','finalized','archived')"/>
+                <button name="action_print_pdf" type="object" string="PDF" icon="fa-file-pdf-o"
+                        invisible="state not in ('ready','finalized','archived')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_report_run_form" model="ir.ui.view">
+        <field name="name">clinic.report.run.form</field>
+        <field name="model">clinic.report.run</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate" type="object" string="Generate" class="btn-primary"
+                            groups="clinic_reports.group_reports_analyst"
+                            invisible="state not in ('draft','ready','failed')"/>
+                    <button name="action_finalize" type="object" string="Finalize Snapshot" class="btn-primary"
+                            groups="clinic_reports.group_reports_manager"
+                            invisible="state != 'ready'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_reports.group_reports_analyst"
+                            invisible="state not in ('ready','failed')"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_reports.group_reports_manager"
+                            invisible="state != 'finalized'"/>
+                    <button name="action_download_csv" type="object" string="Download CSV"
+                            invisible="state not in ('ready','finalized','archived')"/>
+                    <button name="action_print_pdf" type="object" string="Print PDF"
+                            invisible="state not in ('ready','finalized','archived')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generating,ready,failed,finalized,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_metrics" type="object" class="oe_stat_button" icon="fa-line-chart">
+                            <field name="metric_count" widget="statinfo" string="Metrics"/>
+                        </button>
+                        <button name="action_view_details" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="detail_count" widget="statinfo" string="Details"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="state != 'failed'">
+                        Report generation failed. Review the error message before retrying.
+                    </div>
+                    <div class="alert alert-success" role="alert" invisible="state != 'finalized'">
+                        This Report is a finalized immutable snapshot.
+                    </div>
+
+                    <group>
+                        <group string="Report Scope">
+                            <field name="definition_id" readonly="state not in ('draft','failed')"/>
+                            <field name="family" readonly="1"/>
+                            <field name="report_key" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state not in ('draft','failed')"/>
+                            <field name="branch_id" readonly="state not in ('draft','failed')"/>
+                            <field name="date_from" readonly="state not in ('draft','failed')"/>
+                            <field name="date_to" readonly="state not in ('draft','failed')"/>
+                            <field name="schedule_id" readonly="1"/>
+                        </group>
+                        <group string="Output Policy &amp; Audit">
+                            <field name="include_details" readonly="state not in ('draft','failed')"/>
+                            <field name="detail_limit" readonly="state not in ('draft','failed')"/>
+                            <field name="generated_at" readonly="1"/>
+                            <field name="generated_by_id" readonly="1"/>
+                            <field name="finalized_at" readonly="1"/>
+                            <field name="finalized_by_id" readonly="1"/>
+                            <field name="csv_filename" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_view_metrics" type="object" string="Open KPI Metrics" class="btn btn-secondary"/>
+                        <button name="action_view_details" type="object" string="Open Traceable Details" class="btn btn-secondary"/>
+                        <button name="action_download_csv" type="object" string="Export CSV" class="btn btn-secondary"
+                                invisible="state not in ('ready','finalized','archived')"/>
+                    </div>
+
+                    <notebook>
+                        <page string="KPI Metrics">
+                            <field name="metric_ids" readonly="1">
+                                <list>
+                                    <field name="sequence"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="metric_type" widget="badge"/>
+                                    <field name="display_value"/>
+                                    <field name="note"/>
+                                    <button name="action_open_run" type="object" string="Run" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Traceable Details">
+                            <field name="detail_ids" readonly="1">
+                                <list>
+                                    <field name="event_date"/>
+                                    <field name="reference"/>
+                                    <field name="label"/>
+                                    <field name="state_label"/>
+                                    <field name="patient_id"/>
+                                    <field name="doctor_id"/>
+                                    <field name="staff_id"/>
+                                    <field name="amount"/>
+                                    <field name="quantity"/>
+                                    <field name="duration_minutes"/>
+                                    <field name="rating"/>
+                                    <button name="action_open_source" type="object" string="Source" icon="fa-external-link"
+                                            invisible="not source_model or not source_res_id"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Methodology">
+                            <field name="methodology_snapshot" readonly="1"/>
+                        </page>
+
+                        <page string="Generation Error" invisible="state != 'failed'">
+                            <field name="error_message" readonly="1"/>
+                        </page>
+
+                        <page string="Internal Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_report_run" model="ir.actions.act_window">
+        <field name="name">Report Runs</field>
+        <field name="res_model">clinic.report.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_report_run_search"/>
+    </record>
+
+    <record id="action_report_run_financial" model="ir.actions.act_window">
+        <field name="name">Financial Reports</field>
+        <field name="res_model">clinic.report.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('family','=','financial')]</field>
+        <field name="search_view_id" ref="view_report_run_search"/>
+    </record>
+
+    <record id="action_report_run_operational" model="ir.actions.act_window">
+        <field name="name">Operational Reports</field>
+        <field name="res_model">clinic.report.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('family','=','operational')]</field>
+        <field name="search_view_id" ref="view_report_run_search"/>
+    </record>
+
+    <record id="action_report_run_clinical" model="ir.actions.act_window">
+        <field name="name">Clinical Reports</field>
+        <field name="res_model">clinic.report.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('family','=','clinical')]</field>
+        <field name="search_view_id" ref="view_report_run_search"/>
+    </record>
+</odoo>

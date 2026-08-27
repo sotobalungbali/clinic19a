@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_care_protocol_search" model="ir.ui.view">
+        <field name="name">clinic.care.protocol.search</field>
+        <field name="model">clinic.care.protocol</field>
+        <field name="arch" type="xml">
+            <search string="Care Protocols">
+                <field name="name"/>
+                <field name="display_name"/>
+                <field name="owner_doctor_id"/>
+                <field name="treatment_ids"/>
+                <field name="product_ids"/>
+                <filter name="filter_draft" string="Draft" domain="[('version_state','=','draft')]"/>
+                <filter name="filter_review" string="In Review" domain="[('version_state','=','review')]"/>
+                <filter name="filter_published" string="Published" domain="[('version_state','=','published')]"/>
+                <filter name="filter_high_risk" string="High Risk" domain="[('risk_level','=','high')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'version_state'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_risk" string="Risk" context="{'group_by':'risk_level'}"/>
+                    <filter name="group_owner" string="Clinical Owner" context="{'group_by':'owner_doctor_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_protocol_list" model="ir.ui.view">
+        <field name="name">clinic.care.protocol.list</field>
+        <field name="model">clinic.care.protocol</field>
+        <field name="arch" type="xml">
+            <list string="Care Protocols"
+                  decoration-success="version_state == 'published'"
+                  decoration-info="version_state == 'review'"
+                  decoration-muted="version_state == 'deprecated'"
+                  decoration-danger="risk_level == 'high' and version_state != 'deprecated'">
+                <field name="name"/>
+                <field name="display_name"/>
+                <field name="version"/>
+                <field name="version_state" widget="badge"/>
+                <field name="category"/>
+                <field name="risk_level"/>
+                <field name="owner_doctor_id"/>
+                <field name="effective_date"/>
+                <field name="retire_date" optional="show"/>
+                <field name="total_steps"/>
+                <field name="estimated_total_minutes" optional="show"/>
+                <field name="consumable_estimated_amount" sum="Estimated" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_protocol_form" model="ir.ui.view">
+        <field name="name">clinic.care.protocol.form</field>
+        <field name="model">clinic.care.protocol</field>
+        <field name="arch" type="xml">
+            <form string="Care Protocol">
+                <header>
+                    <button name="action_submit_review" type="object" string="Submit for Review"
+                            class="btn-primary" invisible="version_state != 'draft'"/>
+                    <button name="action_publish" type="object" string="Publish"
+                            class="btn-primary" invisible="version_state not in ('draft','review')"/>
+                    <button name="action_deprecate" type="object" string="Deprecate"
+                            invisible="version_state != 'published'"/>
+                    <button name="action_clone_new_draft" type="object" string="New Version"
+                            invisible="version_state not in ('published','deprecated')"/>
+                    <field name="version_state" widget="statusbar"
+                           statusbar_visible="draft,review,published,deprecated"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_plans" type="object" class="oe_stat_button" icon="fa-heartbeat">
+                            <field name="plan_count" widget="statinfo" string="Care Plans"/>
+                        </button>
+                        <button name="action_view_steps" type="object" class="oe_stat_button" icon="fa-list-ol">
+                            <field name="total_steps" widget="statinfo" string="Steps"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="display_name" string="Protocol Title"/>
+                        <h1><field name="display_name" placeholder="e.g. Post-Laser Recovery Protocol"/></h1>
+                        <div>
+                            <field name="name" readonly="1" class="oe_inline"/>
+                            <span> · Version </span>
+                            <field name="version" class="oe_inline"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Clinical Governance">
+                            <field name="owner_doctor_id"/>
+                            <field name="reviewer_ids" widget="many2many_tags"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Classification">
+                            <field name="category"/>
+                            <field name="risk_level"/>
+                            <field name="effective_date"/>
+                            <field name="retire_date"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Operational Estimate">
+                            <field name="estimated_total_minutes" readonly="1"/>
+                            <field name="day_span" readonly="1"/>
+                        </group>
+                        <group string="Consumables">
+                            <field name="consumable_estimated_amount" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <button name="action_create_plan" type="object"
+                                string="Create Care Plan from Protocol"
+                                class="btn btn-primary" icon="fa-plus"
+                                invisible="version_state != 'published'"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Protocol Steps" name="steps">
+                            <field name="step_ids" context="{'default_protocol_id': id}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="risk_level"/>
+                                    <field name="treatment_id" optional="show"/>
+                                    <field name="product_id" optional="show"/>
+                                    <field name="qty" optional="hide"/>
+                                    <field name="duration_minutes"/>
+                                    <field name="expected_day_offset"/>
+                                    <field name="require_consent"/>
+                                    <field name="estimated_subtotal" optional="show"/>
+                                    <button name="action_view_dependents" type="object"
+                                            title="Dependent Steps" icon="fa-sitemap"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Clinical Content" name="clinical_content">
+                            <field name="description"/>
+                            <group string="Preconditions &amp; Contraindications">
+                                <field name="preconditions"/>
+                                <field name="contraindications"/>
+                            </group>
+                            <group string="Patient Education">
+                                <field name="patient_education"/>
+                            </group>
+                        </page>
+
+                        <page string="Treatments &amp; Products" name="treatments_products">
+                            <group>
+                                <field name="treatment_ids" widget="many2many_tags"/>
+                                <field name="product_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+
+                        <page string="Version Governance" name="version_governance">
+                            <field name="change_log"/>
+                        </page>
+
+                        <page string="Evidence" name="evidence">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_care_protocol" model="ir.actions.act_window">
+        <field name="name">Care Protocols</field>
+        <field name="res_model">clinic.care.protocol</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_care_protocol_search"/>
+    </record>
+</odoo>

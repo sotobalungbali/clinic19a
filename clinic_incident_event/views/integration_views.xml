@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Patient navigation intentionally uses Odoo's stable native Contact form.
+        We do NOT inherit a custom clinic_patient form XML ID because source
+        presence does not guarantee that old installed databases contain that
+        external ID.
+    -->
+    <record id="view_partner_form_incident_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.incident.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="patient_id" invisible="1"/>
+                <button name="action_open_clinic_incidents"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-exclamation-triangle"
+                        groups="clinic_incident_event.group_incident_user"
+                        invisible="not patient_id">
+                    <field name="clinic_incident_count"
+                           widget="statinfo"
+                           string="Incidents"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

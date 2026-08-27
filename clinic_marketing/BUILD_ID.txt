@@ -1,0 +1,8 @@
+CLINIC_MARKETING_BUILD_20260821_V19.0.1.0.1
+Project: ClinicOne
+Addon: clinic_marketing
+Official sequence: 32 of 39
+Authoritative failed baseline: clinic_marketing 19.0.1.0.0
+Latest frozen upstream: clinic_portal 19.0.1.0.0
+Repair: import api in campaign_delivery.py for @api.model runtime decorator
+Runtime status: PENDING

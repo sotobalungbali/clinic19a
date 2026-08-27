@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_finance_position_search" model="ir.ui.view">
+    <field name="name">clinic.finance.position.search</field><field name="model">clinic.finance.position</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="as_of_date"/><field name="company_id"/>
+      <filter name="refreshed" string="Refreshed" domain="[('state','=','refreshed')]"/><filter name="locked" string="Locked" domain="[('state','=','locked')]"/>
+      <group><filter name="group_company" string="Company" context="{'group_by':'company_id'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_month" string="Month" context="{'group_by':'as_of_date:month'}"/></group>
+    </search></field>
+  </record>
+  <record id="view_finance_position_list" model="ir.ui.view">
+    <field name="name">clinic.finance.position.list</field><field name="model">clinic.finance.position</field>
+    <field name="arch" type="xml"><list decoration-success="state == 'locked'">
+      <field name="name"/><field name="as_of_date"/><field name="total_liquidity" sum="Liquidity"/><field name="ar_outstanding" sum="AR"/><field name="ap_outstanding" sum="AP"/><field name="wallet_liability" sum="Wallet"/><field name="net_after_payables"/><field name="net_after_wallet"/><field name="forecast_ending_balance" optional="show"/><field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company"/>
+    </list></field>
+  </record>
+  <record id="view_finance_position_form" model="ir.ui.view">
+    <field name="name">clinic.finance.position.form</field><field name="model">clinic.finance.position</field>
+    <field name="arch" type="xml"><form>
+      <header>
+        <button name="action_refresh" type="object" string="Refresh Position" class="btn-primary" invisible="state == 'locked'"/>
+        <button name="action_lock" type="object" string="Lock Position" class="btn-primary" groups="clinic_finance.group_clinic_finance_manager" invisible="state != 'refreshed'"/>
+        <button name="action_print_position" type="object" string="Print PDF" invisible="state == 'draft'"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,refreshed,locked"/>
+      </header><sheet>
+        <div class="oe_button_box" name="button_box">
+          <button name="action_view_liquidity_accounts" type="object" class="oe_stat_button" icon="fa-bank"><field name="total_liquidity" widget="statinfo" string="Liquidity"/></button>
+          <button name="action_view_ar" type="object" class="oe_stat_button" icon="fa-arrow-circle-down"><field name="ar_outstanding" widget="statinfo" string="AR"/></button>
+          <button name="action_view_ap" type="object" class="oe_stat_button" icon="fa-arrow-circle-up"><field name="ap_outstanding" widget="statinfo" string="AP"/></button>
+          <button name="action_view_wallets" type="object" class="oe_stat_button" icon="fa-credit-card"><field name="wallet_liability" widget="statinfo" string="Wallet"/></button>
+          <button name="action_open_cashflow" type="object" class="oe_stat_button" icon="fa-line-chart" invisible="not cashflow_id"><field name="forecast_ending_balance" widget="statinfo" string="Forecast"/></button>
+        </div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <group>
+          <group><field name="as_of_date" readonly="state == 'locked'"/><field name="company_id" groups="base.group_multi_company" readonly="state == 'locked'"/><field name="last_refreshed_at" readonly="1"/><field name="cashflow_id" readonly="1"/></group>
+          <group string="Liquidity Summary"><field name="total_liquidity" readonly="1"/><field name="ar_outstanding" readonly="1"/><field name="ap_outstanding" readonly="1"/><field name="wallet_liability" readonly="1"/><field name="net_after_payables" readonly="1"/><field name="net_after_wallet" readonly="1"/></group>
+        </group>
+        <notebook><page string="Position Breakdown"><field name="line_ids" readonly="1"><list><field name="line_type" widget="badge"/><field name="name"/><field name="finance_account_id"/><field name="record_count"/><field name="amount" sum="Total"/><button name="action_open_source" type="object" string="Open" icon="fa-external-link"/></list></field></page><page string="Notes"><field name="note"/></page></notebook>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+
+  <record id="view_finance_position_line_search" model="ir.ui.view">
+    <field name="name">clinic.finance.position.line.search</field><field name="model">clinic.finance.position.line</field>
+    <field name="arch" type="xml"><search><field name="position_id"/><field name="name"/><field name="line_type"/><field name="finance_account_id"/><group><filter name="group_position" string="Position" context="{'group_by':'position_id'}"/><filter name="group_type" string="Type" context="{'group_by':'line_type'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}"/></group></search></field>
+  </record>
+  <record id="view_finance_position_line_list" model="ir.ui.view">
+    <field name="name">clinic.finance.position.line.list</field><field name="model">clinic.finance.position.line</field>
+    <field name="arch" type="xml"><list><field name="position_id"/><field name="as_of_date"/><field name="line_type" widget="badge"/><field name="name"/><field name="finance_account_id"/><field name="record_count"/><field name="amount" sum="Total"/><field name="company_id" groups="base.group_multi_company"/><button name="action_open_source" type="object" string="Open Source" icon="fa-external-link"/></list></field>
+  </record>
+  <record id="view_finance_position_line_form" model="ir.ui.view">
+    <field name="name">clinic.finance.position.line.form</field><field name="model">clinic.finance.position.line</field>
+    <field name="arch" type="xml"><form><sheet><group><field name="position_id"/><field name="company_id" groups="base.group_multi_company" readonly="1"/><field name="as_of_date" readonly="1"/><field name="line_type"/><field name="name"/><field name="finance_account_id"/><field name="record_count"/><field name="amount"/><field name="note"/></group><div class="d-flex gap-2"><button name="action_open_source" type="object" string="Open Source" class="btn-primary"/><button name="action_open_position" type="object" string="Open Position" class="btn-secondary"/></div></sheet></form></field>
+  </record>
+
+  <record id="view_finance_position_pivot" model="ir.ui.view"><field name="name">clinic.finance.position.pivot</field><field name="model">clinic.finance.position</field><field name="arch" type="xml"><pivot string="Treasury Position Analysis"><field name="as_of_date" type="row" interval="month"/><field name="company_id" type="col"/><field name="total_liquidity" type="measure"/><field name="ar_outstanding" type="measure"/><field name="ap_outstanding" type="measure"/><field name="wallet_liability" type="measure"/></pivot></field></record>
+  <record id="view_finance_position_graph" model="ir.ui.view"><field name="name">clinic.finance.position.graph</field><field name="model">clinic.finance.position</field><field name="arch" type="xml"><graph string="Treasury Position Trend" type="line"><field name="as_of_date" interval="day"/><field name="total_liquidity" type="measure"/><field name="net_after_payables" type="measure"/></graph></field></record>
+
+  <record id="action_finance_position" model="ir.actions.act_window"><field name="name">Treasury Positions</field><field name="res_model">clinic.finance.position</field><field name="view_mode">list,form,pivot,graph</field><field name="search_view_id" ref="view_finance_position_search"/></record>
+  <record id="action_finance_position_line" model="ir.actions.act_window"><field name="name">Treasury Position Lines</field><field name="res_model">clinic.finance.position.line</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_finance_position_line_search"/></record>
+</odoo>

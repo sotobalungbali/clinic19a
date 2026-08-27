@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_triage_session_search" model="ir.ui.view">
+        <field name="name">clinic.triage.session.search</field>
+        <field name="model">clinic.triage.session</field>
+        <field name="arch" type="xml">
+            <search string="Triage Sessions">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="appointment_id"/>
+                <field name="assigned_nurse_id"/>
+                <field name="assigned_doctor_id"/>
+                <field name="triage_level_id"/>
+                <field name="triage_tag_ids"/>
+                <filter name="filter_open" string="Open" domain="[('state', 'in', ['draft', 'in_progress', 'referred'])]"/>
+                <filter name="filter_in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="filter_sla_breached" string="SLA Breached" domain="[('sla_breached', '=', True)]"/>
+                <filter name="filter_abnormal" string="Abnormal Vitals" domain="[('has_abnormal_vitals', '=', True)]"/>
+                <filter name="filter_billable" string="Billable" domain="[('is_billable', '=', True)]"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_level" string="Triage Level" context="{'group_by': 'triage_level_id'}"/>
+                    <filter name="group_nurse" string="Nurse" context="{'group_by': 'assigned_nurse_id'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by': 'assigned_doctor_id'}"/>
+                    <filter name="group_arrival_day" string="Arrival Day" context="{'group_by': 'arrival_datetime:day'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_triage_session_list" model="ir.ui.view">
+        <field name="name">clinic.triage.session.list</field>
+        <field name="model">clinic.triage.session</field>
+        <field name="arch" type="xml">
+            <list string="Triage Sessions"
+                  decoration-danger="sla_breached"
+                  decoration-warning="has_abnormal_vitals and not sla_breached"
+                  decoration-success="state == 'completed'"
+                  decoration-muted="state == 'cancelled'"
+                  default_order="arrival_datetime desc, id desc">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="triage_level_id"/>
+                <field name="priority_score"/>
+                <field name="arrival_datetime"/>
+                <field name="wait_time_minutes"/>
+                <field name="assigned_nurse_id" optional="show"/>
+                <field name="assigned_doctor_id" optional="show"/>
+                <field name="queue_stage_id" optional="hide"/>
+                <field name="recommended_room_type_id" optional="hide"/>
+                <field name="has_abnormal_vitals"/>
+                <field name="sla_breached"/>
+                <field name="state"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_triage_session_calendar" model="ir.ui.view">
+        <field name="name">clinic.triage.session.calendar</field>
+        <field name="model">clinic.triage.session</field>
+        <field name="arch" type="xml">
+            <calendar string="Triage Sessions"
+                      date_start="arrival_datetime"
+                      date_stop="end_datetime"
+                      color="triage_level_id">
+                <field name="patient_id"/>
+                <field name="triage_level_id"/>
+                <field name="assigned_nurse_id"/>
+                <field name="assigned_doctor_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_clinic_triage_session_form" model="ir.ui.view">
+        <field name="name">clinic.triage.session.form</field>
+        <field name="model">clinic.triage.session</field>
+        <field name="arch" type="xml">
+            <form string="Triage Session">
+                <header>
+                    <button name="action_start"
+                            type="object"
+                            string="Start Triage"
+                            class="btn-primary"
+                            invisible="state not in ['draft', 'referred']"/>
+                    <button name="action_complete"
+                            type="object"
+                            string="Complete"
+                            class="btn-primary"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_refer"
+                            type="object"
+                            string="Refer"
+                            invisible="state not in ['draft', 'in_progress']"/>
+                    <button name="action_create_invoice"
+                            type="object"
+                            string="Create Invoice"
+                            invisible="invoice_id or not is_billable"/>
+                    <button name="action_reopen"
+                            type="object"
+                            string="Reopen"
+                            invisible="state not in ['completed', 'cancelled']"/>
+                    <button name="action_cancel"
+                            type="object"
+                            string="Cancel"
+                            invisible="state in ['completed', 'cancelled']"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,in_progress,referred,completed,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_invoice"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o"
+                                invisible="not invoice_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoice</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon"
+                            text="SLA Breached"
+                            bg_color="text-bg-danger"
+                            invisible="not sla_breached"/>
+                    <widget name="web_ribbon"
+                            text="Abnormal Vitals"
+                            bg_color="text-bg-warning"
+                            invisible="not has_abnormal_vitals or sla_breached"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Patient &amp; Assignment">
+                            <field name="patient_id"/>
+                            <field name="appointment_id"/>
+                            <field name="assigned_nurse_id"/>
+                            <field name="assigned_doctor_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Priority &amp; Routing">
+                            <field name="triage_level_id"/>
+                            <field name="triage_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="priority_score" readonly="1"/>
+                            <field name="recommended_room_type_id"/>
+                            <field name="queue_stage_id"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Timing">
+                            <field name="arrival_datetime"/>
+                            <field name="start_datetime"/>
+                            <field name="end_datetime"/>
+                            <field name="wait_time_minutes" readonly="1"/>
+                            <field name="triage_duration_minutes" readonly="1"/>
+                        </group>
+                        <group string="SLA &amp; Billing">
+                            <field name="sla_target_datetime" readonly="1"/>
+                            <field name="sla_breached" readonly="1"/>
+                            <field name="has_abnormal_vitals" readonly="1"/>
+                            <field name="is_billable"/>
+                            <field name="triage_fee" invisible="not is_billable"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="invoice_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Clinical Intake" name="clinical_intake">
+                            <group>
+                                <group>
+                                    <field name="reason_for_visit"/>
+                                    <field name="chief_complaint"/>
+                                </group>
+                                <group>
+                                    <field name="allergies"/>
+                                    <field name="current_medications"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Vital Signs" name="vitals">
+                            <field name="vitals_ids"
+                                   context="{'default_triage_session_id': id}">
+                                <list editable="bottom"
+                                      decoration-danger="is_abnormal">
+                                    <field name="id" column_invisible="True"/>
+                                    <field name="measure_datetime"/>
+                                    <field name="measured_by_id"/>
+                                    <field name="temperature_c"/>
+                                    <field name="heart_rate_bpm"/>
+                                    <field name="respiratory_rate_bpm"/>
+                                    <field name="spo2_percent"/>
+                                    <field name="sbp_mm_hg"/>
+                                    <field name="dbp_mm_hg"/>
+                                    <field name="gcs"/>
+                                    <field name="pain_score"/>
+                                    <field name="is_abnormal"/>
+                                    <button name="action_open_triage_session"
+                                            type="object"
+                                            string="Open Session"
+                                            icon="fa-external-link"
+                                            invisible="not id"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Internal Notes" name="internal_notes">
+                            <field name="internal_notes" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_triage_session" model="ir.actions.act_window">
+        <field name="name">Triage Sessions</field>
+        <field name="res_model">clinic.triage.session</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="search_view_id" ref="view_clinic_triage_session_search"/>
+        <field name="context">{'search_default_filter_open': 1}</field>
+    </record>
+</odoo>

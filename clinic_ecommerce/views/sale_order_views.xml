@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_order_form_clinic_ecommerce" model="ir.ui.view">
+        <field name="name">sale.order.form.clinic.ecommerce</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_clinic_ecommerce_fulfillments"
+                        type="object"
+                        groups="clinic_ecommerce.group_ecommerce_user"
+                        class="oe_stat_button"
+                        icon="fa-shopping-cart"
+                        invisible="clinic_ecommerce_line_count == 0">
+                    <field name="clinic_ecommerce_fulfillment_count"
+                           widget="statinfo"
+                           string="Clinic Fulfillments"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Clinic eCommerce"
+                      name="clinic_ecommerce"
+                      groups="clinic_ecommerce.group_ecommerce_user"
+                      invisible="clinic_ecommerce_line_count == 0">
+                    <div class="alert alert-warning"
+                         role="alert"
+                         invisible="clinic_ecommerce_exception_count == 0">
+                        One or more Clinic eCommerce fulfillments need operator attention.
+                    </div>
+
+                    <group>
+                        <group string="Clinic Online Scope">
+                            <field name="clinic_ecommerce_branch_id"/>
+                            <field name="clinic_ecommerce_patient_id"/>
+                            <field name="clinic_ecommerce_terms_accepted_at" readonly="1"/>
+                            <field name="clinic_ecommerce_processing_state" widget="badge" readonly="1"/>
+                        </group>
+                        <group string="Processing Summary">
+                            <field name="clinic_ecommerce_line_count" readonly="1"/>
+                            <field name="clinic_ecommerce_fulfillment_count" readonly="1"/>
+                            <field name="clinic_ecommerce_exception_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_process_clinic_ecommerce_fulfillments"
+                                type="object"
+                                string="Process Ready Fulfillments"
+                                class="btn btn-primary"
+                                groups="clinic_ecommerce.group_ecommerce_operator"
+                                invisible="state not in ('sale','done')"/>
+                        <button name="action_view_clinic_ecommerce_fulfillments"
+                                type="object"
+                                string="Open Fulfillment Queue"
+                                class="btn btn-secondary"/>
+                    </div>
+
+                    <field name="clinic_ecommerce_fulfillment_ids" readonly="1">
+                        <list decoration-success="state == 'done'"
+                              decoration-warning="state == 'waiting_input'"
+                              decoration-danger="state in ('error','reversal_required')"
+                              decoration-muted="state == 'cancelled'">
+                            <field name="name"/>
+                            <field name="catalog_item_id"/>
+                            <field name="offering_type" widget="badge"/>
+                            <field name="fulfillment_type" widget="badge"/>
+                            <field name="branch_id"/>
+                            <field name="patient_id"/>
+                            <field name="state" widget="badge"/>
+                            <field name="attempt_count"/>
+                            <button name="action_evaluate_readiness"
+                                    type="object"
+                                    string="Evaluate"
+                                    icon="fa-check-square-o"
+                                    groups="clinic_ecommerce.group_ecommerce_operator"
+                                    invisible="state in ('done','reversal_required','cancelled')"/>
+                            <button name="action_process"
+                                    type="object"
+                                    string="Process"
+                                    icon="fa-play"
+                                    groups="clinic_ecommerce.group_ecommerce_operator"
+                                    invisible="state != 'ready'"/>
+                            <button name="action_open_catalog_item"
+                                    type="object"
+                                    string="Catalog"
+                                    icon="fa-book"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_clinic_ecommerce_sales" model="ir.actions.act_window">
+        <field name="name">Clinic Online Sales</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_line.clinic_ecommerce_catalog_item_id','!=',False)]</field>
+        <field name="context">{'search_default_my_orders': 0}</field>
+    </record>
+</odoo>

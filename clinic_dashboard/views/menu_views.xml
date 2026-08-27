@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_dashboard_root"
+              name="Dashboard"
+              sequence="82"
+              groups="clinic_dashboard.group_dashboard_user"/>
+
+    <menuitem id="menu_dashboard_live"
+              name="Interactive Dashboard"
+              parent="menu_dashboard_root"
+              action="action_live_dashboard"
+              sequence="5"/>
+
+    <menuitem id="menu_dashboard_snapshots"
+              name="Snapshot Board"
+              parent="menu_dashboard_root"
+              action="action_dashboard_snapshot"
+              sequence="20"/>
+
+    <menuitem id="menu_dashboard_analysis"
+              name="KPI Analysis"
+              parent="menu_dashboard_root"
+              action="action_dashboard_snapshot_line"
+              sequence="30"/>
+
+    <menuitem id="menu_dashboard_governance"
+              name="Governance"
+              parent="menu_dashboard_root"
+              sequence="90"
+              groups="clinic_dashboard.group_dashboard_manager"/>
+
+    <menuitem id="menu_dashboard_boards"
+              name="Dashboard Boards"
+              parent="menu_dashboard_governance"
+              action="action_dashboard_board"
+              sequence="10"/>
+
+    <menuitem id="menu_dashboard_widgets"
+              name="Dashboard Widgets"
+              parent="menu_dashboard_governance"
+              action="action_dashboard_widget"
+              sequence="20"/>
+
+    <menuitem id="menu_dashboard_settings"
+              name="Settings"
+              parent="menu_dashboard_governance"
+              action="action_dashboard_settings"
+              sequence="90"/>
+</odoo>

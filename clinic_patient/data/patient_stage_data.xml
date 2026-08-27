@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        These records complete the stage flags already consumed by
+        clinic.patient create/write/actions. They do not introduce a new workflow.
+    -->
+    <record id="patient_stage_new" model="clinic.patient.stage">
+        <field name="name">New</field>
+        <field name="sequence">10</field>
+        <field name="is_default_new" eval="True"/>
+    </record>
+    <record id="patient_stage_registered" model="clinic.patient.stage">
+        <field name="name">Registered</field>
+        <field name="sequence">20</field>
+        <field name="is_registered" eval="True"/>
+    </record>
+    <record id="patient_stage_inactive" model="clinic.patient.stage">
+        <field name="name">Inactive</field>
+        <field name="sequence">90</field>
+        <field name="fold" eval="True"/>
+        <field name="is_inactive" eval="True"/>
+    </record>
+    <record id="patient_stage_deceased" model="clinic.patient.stage">
+        <field name="name">Deceased</field>
+        <field name="sequence">100</field>
+        <field name="fold" eval="True"/>
+        <field name="is_deceased" eval="True"/>
+    </record>
+</odoo>

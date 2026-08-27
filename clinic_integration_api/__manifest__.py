@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "ClinicOne - Integration API",
+    "summary": "Governed REST, provider, webhook, idempotency, and integration event layer for ClinicOne.",
+    "version": "19.0.1.0.0",
+    "category": "ClinicOne/Integration",
+    "author": "IG @odoocamp",
+    "website": "https://www.247opensource.com",
+    "license": "AGPL-3",
+    "depends": [
+        "base", "base_setup", "mail", "web", "contacts",
+        "clinic_base", "clinic_branch", "clinic_patient", "clinic_doctor",
+        "clinic_treatment_catalog", "clinic_booking", "clinic_queue_room",
+        "clinic_room_device", "clinic_triage_vitals", "clinic_encounter",
+        "clinic_emar", "clinic_billing", "clinic_ar", "clinic_ap",
+        "clinic_wallet", "clinic_membership", "clinic_package",
+        "clinic_insurance_authorization", "clinic_post_care_followup",
+        "clinic_feedback", "clinic_reports", "clinic_marketing",
+        "clinic_telemedicine_secure_messaging", "clinic_incident_event",
+        "clinic_quality"
+    ],
+    "data": [
+        "security/clinic_integration_api_security.xml",
+        "security/ir.model.access.csv",
+        "data/sequence_data.xml",
+        "data/scope_data.xml",
+        "data/event_type_data.xml",
+        "data/cron_data.xml",
+        "views/api_client_views.xml",
+        "views/api_provider_views.xml",
+        "views/api_event_views.xml",
+        "views/api_subscription_views.xml",
+        "views/api_delivery_views.xml",
+        "views/api_technical_views.xml",
+        "views/wizard_views.xml",
+        "views/menu_views.xml"
+    ],
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+}

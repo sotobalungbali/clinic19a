@@ -1,0 +1,230 @@
+
+<!--
+ClinicOne — Branch & Location Management
+File: static/description/index.html
+Odoo 18 CE | License: AGPL-3.0
+
+NOTE:
+- README.rst di root memuat dokumentasi lengkap; file ini untuk tampilan deskripsi di Apps UI.
+- Hindari <blockquote> demi konsistensi proyek ClinicOne.
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="ClinicOne — Branch & Location Management" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Branch & Location Management</h1>
+      <h2 class="oe_slogan">Multi-Company • Multi-Branch • Multi-Site • Franchise-Ready</h2>
+      <p>
+        Pondasi <b>manajemen cabang & lokasi</b> untuk klinik kecantikan yang bertumbuh, dibangun di atas
+        <b>Odoo 18 Community Edition</b>. Atur <b>clinic.branch</b> (unit bisnis) dan <b>clinic.branch.location</b> (site/ruang),
+        kunci data & proses berdasarkan cabang, serta integrasikan ke Booking → Encounter/Procedure → Inventory → Billing → Reports.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-site</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Portal-aware</span>
+        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Audit Log</span>
+        <span style="display:inline-block;background:#2e7d32;color:#fff;padding:4px 8px;border-radius:6px;">Geo/Timezone</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Overview</h3>
+      <p>
+        <b>clinic_branch</b> menghadirkan struktur <i>enterprise</i> untuk ekspansi cabang, franchise, atau multi-klinik.
+        Setiap cabang memiliki identitas (alamat, timezone, logo), kebijakan (jam operasional, SOP), serta pengaturan
+        default (gudang, jurnal, harga, header/footer dokumen). Akses, filter, dan pelaporan diikat ke cabang untuk
+        kontrol dan akurasi operasional.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li><b>Multi-Company & Multi-Branch</b> dengan pembatasan akses dan visibilitas data.</li>
+        <li><b>Branch Locations</b> (site/ruangan) untuk penjadwalan, resource, & room/equipment mapping.</li>
+        <li><b>Working Branch</b> per user + <i>Branch Switch Wizard</i> untuk perpindahan cepat.</li>
+        <li><b>Default & Policies</b>: warehouse, picking type, journals, sequences, pricelists, taxes.</li>
+        <li><b>Branding</b> per cabang: logo, header/footer QWeb, alamat & kontak.</li>
+        <li><b>Geo</b>: koordinat, timezone, region untuk SLA dan penjadwalan.</li>
+        <li><b>Record Rules</b> ketat berbasis cabang/perusahaan + audit event utama.</li>
+        <li><b>Bridges</b> ke Booking, Patient, Treatment, Billing, Inventory, Portal, Reports.</li>
+        <li><b>Merger</b> tool (opsional): konsolidasi data saat akuisisi/penutupan cabang.</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>clinic.branch</b> — master cabang (identitas, kebijakan, default mapping).</li>
+        <li><b>clinic.branch.location</b> — site/ruangan yang berelasi ke branch.</li>
+        <li><b>mixin.branch</b> — field <code>branch_id</code>, <code>company_id</code>, dan guardrail <i>_check_company</i>.</li>
+        <li><b>res.company (inherit)</b> — default branch & preferensi dokumen.</li>
+        <li><b>res.users (inherit)</b> — working branch + allowed branches.</li>
+        <li><b>stock.warehouse / account.journal (inherit)</b> — pemetaan per cabang.</li>
+        <li><b>QWeb</b> — header/footer cetak menampilkan identitas cabang.</li>
+      </ul>
+      <p style="margin-top:6px;">Semua model mengikuti konvensi Odoo 18 CE dan kompatibel multi-company.</p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Holistic Integrations (ClinicOne)</h3>
+      <p>
+        Terintegrasi mulus dengan: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment,
+        clinic_billing, clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_room_device,
+        clinic_ecommerce, clinic_membership, clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet,
+        clinic_package, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit</i> dan modul lain di proyek ClinicOne.
+      </p>
+      <p style="font-size:12px;color:#666;">
+        Integrasi <i>soft-coupled</i> melalui relasi opsional, hooks, dan bridges sehingga modul bisa dipasang dan
+        ditingkatkan secara independen tanpa mematahkan alur lain.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Operations</h3>
+      <ol>
+        <li><b>Setup Cabang</b>: buat <i>clinic.branch</i>, tentukan warehouse, journals, sequences.</li>
+        <li><b>Setup Lokasi</b>: definisikan <i>clinic.branch.location</i>, room/equipment, jam operasional.</li>
+        <li><b>Assign User</b>: set allowed branches & working branch; gunakan wizard untuk switch.</li>
+        <li><b>Transaksi</b>: Booking/Encounter/Inventory/Billing otomatis terikat ke <i>branch_id</i>.</li>
+        <li><b>Pelaporan</b>: filter & agregasi berdasarkan cabang/perusahaan.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: Branch Manager, Branch User, Branch Readonly.</li>
+        <li>Record Rules: scope cabang + perusahaan; pembatasan edit lintas branch.</li>
+        <li>Audit: event perpindahan working branch, perubahan mapping default.</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Defaults & Mapping</h3>
+      <ul>
+        <li>Warehouse, picking type, routes, & stock locations.</li>
+        <li>Account journals, sequences, taxes, analytic/ cost center.</li>
+        <li>Pricelists, payment methods, website store (opsional).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Screenshot grid (gunakan gambar Anda sendiri: s1.png..s6.png di folder yang sama) -->
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Screenshots</h3>
+    </div>
+    <div class="oe_span4"><img src="s1.png" alt="Master Branch" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s2.png" alt="Branch Locations" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s3.png" alt="User Working Branch" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s4.png" alt="Warehouse & Journals Mapping" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s5.png" alt="Record Rules & Filters" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s6.png" alt="Reports by Branch" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Installation</h3>
+      <ol>
+        <li>Tambahkan addon ke <i>addons_path</i> Odoo.</li>
+        <li>Update Apps list, cari <b>ClinicOne — Branch & Location Management</b>.</li>
+        <li>Install; dependensi inti (base, mail, stock, account) akan terdeteksi.</li>
+      </ol>
+    </div>
+    <div class="oe_span6">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Buat <b>clinic.branch</b> dan tentukan mapping default (warehouse, journals, sequences, taxes).</li>
+        <li>Definisikan <b>clinic.branch.location</b> dan jam operasional.</li>
+        <li>Set <b>allowed branches</b> & <b>working branch</b> untuk setiap user.</li>
+        <li>Aktifkan <b>bridges</b> yang relevan (booking/patient/treatment/billing/inventory/portal/reports).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Demo &amp; Testing</h3>
+      <ul>
+        <li>Demo data: contoh cabang, lokasi, mapping warehouse & journals.</li>
+        <li>Unit tests: record rules, working branch switch, konsistensi <code>branch_id</code> di transaksi.</li>
+        <li>UAT: Booking → Encounter → Billing → Report dengan multi-branch.</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Performance Notes</h3>
+      <ul>
+        <li>Index pada <code>branch_id</code>, <code>company_id</code>, dan tanggal transaksi.</li>
+        <li>Gunakan <i>read_group</i> untuk laporan agregat lintas cabang.</li>
+        <li>Cron pembersihan log audit untuk menjaga ukuran database.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>API &amp; Bridges</h3>
+      <ul>
+        <li><i>models/bridges/bridge_booking.py</i> — Booking & schedule per cabang.</li>
+        <li><i>bridge_patient.py</i> — patient scope & statistik per cabang.</li>
+        <li><i>bridge_treatment.py</i> — offering & katalog treatment per cabang.</li>
+        <li><i>bridge_billing.py</i> — jurnal & sequence invoice per cabang.</li>
+        <li><i>bridge_inventory.py</i> — warehouse & lokasi stok per cabang.</li>
+        <li><i>bridge_reports.py</i> — filter & agregasi laporan per cabang.</li>
+        <li><i>controllers/portal.py</i> — visibilitas data portal berdasarkan cabang (opsional).</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Upgrade &amp; Migration</h3>
+      <ul>
+        <li>Konvensi penamaan: <b>clinic.branch.*</b> & <b>mixin.branch</b>.</li>
+        <li>Compat alias untuk nama lama (bila migrasi dari modul branch terdahulu).</li>
+        <li>Script migrasi: <i>migration/18.0.1.0.0/pre- & post-migration.py</i>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distribusi di bawah lisensi <b>AGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        Laporkan isu & ajukan peningkatan melalui alur kontribusi ClinicOne.
+        Sertakan test, ikuti style code, dan dokumentasikan dampak migrasi.
+      </p>
+    </div>
+  </div>
+</section>
+

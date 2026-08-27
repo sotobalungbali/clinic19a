@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_clinic_insurance_claim_search" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.search</field>
+        <field name="model">clinic.insurance.claim</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="invoice_id"/>
+                <field name="patient_id"/>
+                <field name="insurer_partner_id"/>
+                <field name="policy_number"/>
+                <field name="coverage_percent"/>
+                <field name="deductible_amount"/>
+                <field name="copay_percent"/>
+                <filter name="active_state" string="Active States" domain="[('state','not in',('cancelled','canceled','failed','ignored'))]"/>
+                <group><filter string="Status" context="{'group_by':'state'}" name="group_state"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_insurance_claim_list" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.list</field>
+        <field name="model">clinic.insurance.claim</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('cancelled','canceled','ignored')">
+                <field name="name" optional="show"/>
+                <field name="invoice_id" optional="show"/>
+                <field name="patient_id" optional="show"/>
+                <field name="insurer_partner_id" optional="show"/>
+                <field name="policy_number" optional="show"/>
+                <field name="coverage_percent" optional="show"/>
+                <field name="deductible_amount" optional="show"/>
+                <field name="copay_percent" optional="show"/>
+                <field name="claim_date" optional="hide"/>
+                <field name="state" optional="hide"/>
+                <field name="requested_amount" optional="hide"/>
+                <field name="approved_amount" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_insurance_claim_form" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.form</field>
+        <field name="model">clinic.insurance.claim</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_prepare" type="object" string="Prepare"/>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"/>
+                    <button name="action_reject" type="object" string="Reject"/>
+                    <button name="action_settle" type="object" string="Settle" class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Cancel"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="invoice_id"/>
+                            <field name="patient_id"/>
+                            <field name="insurer_partner_id"/>
+                            <field name="policy_number"/>
+                            <field name="coverage_percent"/>
+                            <field name="deductible_amount"/>
+                            <field name="copay_percent"/>
+                            <field name="claim_date"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="requested_amount"/>
+                            <field name="approved_amount"/>
+                            <field name="insurer_payable_amount"/>
+                            <field name="patient_responsibility_amount"/>
+                            <field name="settlement_journal_id"/>
+                            <field name="settlement_payment_id"/>
+                            <field name="reason_rejected"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_insurance_claim" model="ir.actions.act_window">
+        <field name="name">Claim</field>
+        <field name="res_model">clinic.insurance.claim</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_insurance_claim_search"/>
+    </record>
+
+    <record id="view_clinic_insurance_claim_line_search" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.line.search</field>
+        <field name="model">clinic.insurance.claim.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="claim_id"/>
+                <field name="sequence"/>
+                <field name="billing_line_id"/>
+                <field name="product_id"/>
+                <field name="name"/>
+                <field name="quantity"/>
+                <field name="unit_price"/>
+                <field name="subtotal_excl_tax"/>
+                <filter name="active_state" string="Active States" domain="[('state','not in',('cancelled','canceled','failed','ignored'))]"/>
+                <group><filter string="Status" context="{'group_by':'state'}" name="group_state"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_insurance_claim_line_list" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.line.list</field>
+        <field name="model">clinic.insurance.claim.line</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('cancelled','canceled','ignored')">
+                <field name="claim_id" optional="show"/>
+                <field name="sequence" optional="show"/>
+                <field name="billing_line_id" optional="show"/>
+                <field name="product_id" optional="show"/>
+                <field name="name" optional="show"/>
+                <field name="quantity" optional="show"/>
+                <field name="unit_price" optional="show"/>
+                <field name="subtotal_excl_tax" optional="show"/>
+                <field name="covered_percent" optional="hide"/>
+                <field name="deductible_amount" optional="hide"/>
+                <field name="copay_percent" optional="hide"/>
+                <field name="requested_amount" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_insurance_claim_line_form" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.line.form</field>
+        <field name="model">clinic.insurance.claim.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="claim_id"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="claim_id"/>
+                            <field name="sequence"/>
+                            <field name="billing_line_id"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="subtotal_excl_tax"/>
+                            <field name="covered_percent"/>
+                        </group>
+                        <group>
+                            <field name="deductible_amount"/>
+                            <field name="copay_percent"/>
+                            <field name="requested_amount"/>
+                            <field name="approved_amount"/>
+                            <field name="insurer_payable"/>
+                            <field name="patient_responsibility"/>
+                            <field name="state"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_insurance_claim_line" model="ir.actions.act_window">
+        <field name="name">Line</field>
+        <field name="res_model">clinic.insurance.claim.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_insurance_claim_line_search"/>
+    </record>
+</odoo>

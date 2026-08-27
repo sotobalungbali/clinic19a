@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_patient_vital_search" model="ir.ui.view">
+        <field name="name">clinic.patient.vital.search</field>
+        <field name="model">clinic.patient.vital</field>
+        <field name="arch" type="xml">
+            <search string="Patient Vitals">
+                <field name="patient_id"/>
+                <field name="measured_by"/>
+                <field name="device_name"/>
+                <filter name="high_bp" string="High BP" domain="[('bp_flag', '=', 'high')]"/>
+                <filter name="low_spo2" string="Low SpO₂" domain="[('spo2_flag', '=', 'low')]"/>
+                <filter name="fever" string="Fever" domain="[('temp_flag', '=', 'high')]"/>
+                <separator/>
+                <filter name="group_patient" string="Patient" context="{'group_by': 'patient_id'}"/>
+                <filter name="group_day" string="Measurement Day" context="{'group_by': 'measured_datetime:day'}"/>
+                <filter name="group_user" string="Measured By" context="{'group_by': 'measured_by'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_vital_list" model="ir.ui.view">
+        <field name="name">clinic.patient.vital.list</field>
+        <field name="model">clinic.patient.vital</field>
+        <field name="arch" type="xml">
+            <list string="Patient Vitals"
+                  decoration-success="is_latest"
+                  decoration-danger="bp_flag == 'high' or spo2_flag == 'low' or temp_flag == 'high'">
+                <field name="patient_id"/>
+                <field name="measured_datetime"/>
+                <field name="measured_by"/>
+                <field name="bp_systolic"/>
+                <field name="bp_diastolic"/>
+                <field name="bp_map" optional="hide"/>
+                <field name="heart_rate"/>
+                <field name="respiratory_rate" optional="show"/>
+                <field name="temperature_c"/>
+                <field name="spo2"/>
+                <field name="weight_kg" optional="hide"/>
+                <field name="bmi" optional="hide"/>
+                <field name="blood_glucose_mgdl" optional="hide"/>
+                <field name="is_latest" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_open_patient" type="object"
+                        string="Patient" icon="fa-user"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_vital_form" model="ir.ui.view">
+        <field name="name">clinic.patient.vital.form</field>
+        <field name="model">clinic.patient.vital</field>
+        <field name="arch" type="xml">
+            <form string="Patient Vital">
+                <header>
+                    <button name="action_open_patient" type="object"
+                            string="Open Patient" class="btn-primary"/>
+                    <button name="action_open_attachments" type="object"
+                            string="Attachments" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_attachments" type="object"
+                                class="oe_stat_button" icon="fa-paperclip">
+                            <field name="attachment_count" widget="statinfo" string="Attachments"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" text="Latest" invisible="not is_latest"/>
+                    <div class="oe_title">
+                        <label for="patient_id"/>
+                        <h1><field name="patient_id"/></h1>
+                    </div>
+                    <group>
+                        <group string="Measurement">
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="measured_datetime"/>
+                            <field name="measured_by"/>
+                            <field name="device_type"/>
+                            <field name="device_name"/>
+                            <field name="device_serial"/>
+                        </group>
+                        <group string="Quick Flags">
+                            <field name="bp_flag" readonly="1"/>
+                            <field name="hr_flag" readonly="1"/>
+                            <field name="rr_flag" readonly="1"/>
+                            <field name="temp_flag" readonly="1"/>
+                            <field name="spo2_flag" readonly="1"/>
+                            <field name="glucose_flag" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Core Vitals">
+                            <group>
+                                <group string="Blood Pressure &amp; Circulation">
+                                    <field name="bp_systolic"/>
+                                    <field name="bp_diastolic"/>
+                                    <field name="bp_map" readonly="1"/>
+                                    <field name="heart_rate"/>
+                                </group>
+                                <group string="Respiratory &amp; Temperature">
+                                    <field name="respiratory_rate"/>
+                                    <field name="temperature_c"/>
+                                    <field name="spo2"/>
+                                    <field name="blood_glucose_mgdl"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Anthropometry">
+                            <group>
+                                <group>
+                                    <field name="height_cm"/>
+                                    <field name="weight_kg"/>
+                                    <field name="bmi" readonly="1"/>
+                                    <field name="bsa" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="muac_cm"/>
+                                    <field name="head_circumference_cm"/>
+                                    <field name="pain_scale"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="GCS">
+                            <group>
+                                <field name="gcs_eye"/>
+                                <field name="gcs_verbal"/>
+                                <field name="gcs_motor"/>
+                                <field name="gcs_total" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_patient_vital" model="ir.actions.act_window">
+        <field name="name">Patient Vitals</field>
+        <field name="res_model">clinic.patient.vital</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_patient_vital_search"/>
+    </record>
+</odoo>

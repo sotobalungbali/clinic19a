@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- User-to-patient linkage remains an extension of canonical res.users. -->
+    <record id="view_users_form_clinic_patient" model="ir.ui.view">
+        <field name="name">res.users.form.clinic.patient</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_patient"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-id-card"
+                        string="Patient Card"
+                        invisible="not patient_id"/>
+                <button name="action_open_invoices"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-text-o"
+                        invisible="not patient_id or not invoice_count">
+                    <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                </button>
+                <button name="action_open_patient_attachments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-paperclip"
+                        invisible="not patient_id">
+                    <field name="attachment_count" widget="statinfo" string="Attachments"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="ClinicOne Patient" name="clinicone_patient_user">
+                    <group>
+                        <group string="Patient Link">
+                            <field name="patient_id"/>
+                            <field name="is_patient_user" readonly="1"/>
+                            <field name="patient_company_id" readonly="1"/>
+                            <field name="partner_is_patient" readonly="1"/>
+                            <field name="patient_code" readonly="1"/>
+                            <field name="patient_stage_id" readonly="1"/>
+                            <field name="patient_last_seen" readonly="1"/>
+                        </group>
+                        <group string="Integration Summary">
+                            <field name="booking_count" readonly="1"/>
+                            <field name="encounter_count" readonly="1"/>
+                            <field name="invoice_count" readonly="1"/>
+                            <field name="coverage_count" readonly="1"/>
+                            <field name="wallet_balance" readonly="1"/>
+                            <field name="has_active_consent" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

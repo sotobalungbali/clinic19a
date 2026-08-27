@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_wallet_config_settings" model="ir.actions.act_window">
+        <field name="name">Wallet Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_wallet', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_wallet" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.wallet</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Wallet" name="clinic_wallet" groups="clinic_wallet.group_wallet_manager">
+                    <block title="Accounting" help="Configure liability, journal, clearing, and adjustment accounts used by the patient wallet ledger.">
+                        <setting string="Wallet Liability Account" help="Credited when value is loaded into the patient wallet.">
+                            <field name="account_wallet_liability_id" options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Wallet Journal" help="Default bank/cash/general journal used for wallet accounting movements.">
+                            <field name="wallet_journal_id" options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Adjustment Accounts">
+                            <div class="content-group">
+                                <field name="account_wallet_adjust_in_id" options="{'no_create_edit': True}"/>
+                                <field name="account_wallet_adjust_out_id" options="{'no_create_edit': True}"/>
+                            </div>
+                        </setting>
+                        <setting string="Redeem Clearing Account">
+                            <field name="account_wallet_redeem_clearing_id" options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Post Accounting on Redeem" help="Enable only if Billing is not already responsible for the redeem journal entry.">
+                            <field name="wallet_redeem_post_accounting"/>
+                        </setting>
+                    </block>
+                    <block title="Lifecycle &amp; Notifications">
+                        <setting string="Auto-activate New Wallets">
+                            <field name="wallet_auto_open_on_create"/>
+                        </setting>
+                        <setting string="Default Expiry">
+                            <div class="content-group">
+                                <field name="wallet_default_expiry_months" class="oe_inline"/> months
+                                <field name="wallet_default_expiry_policy"/>
+                            </div>
+                        </setting>
+                        <setting string="Expiry Reminder Window">
+                            <div class="content-group">
+                                <field name="wallet_expiry_notify_days_before" class="oe_inline"/> days before,
+                                <field name="wallet_expiry_notify_days_after" class="oe_inline"/> days after
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+
+

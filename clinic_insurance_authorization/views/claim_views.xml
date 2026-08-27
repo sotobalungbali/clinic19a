@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Standalone enterprise views over Billing-owned claim models.
+         We do not inherit/replace Billing's installed views or model ownership. -->
+
+    <record id="view_insurance_claim_enterprise_search" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.enterprise.search</field>
+        <field name="model">clinic.insurance.claim</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="external_claim_reference"/>
+                <field name="invoice_id"/>
+                <field name="patient_id"/>
+                <field name="policy_id"/>
+                <field name="authorization_id"/>
+                <field name="insurer_partner_id"/>
+                <field name="policy_number"/>
+                <field name="payer_status"/>
+                <filter name="needs_submission" string="Draft / Prepared" domain="[('state','in',('draft','prepared'))]"/>
+                <filter name="payer_review" string="Payer Review" domain="[('payer_status','in',('received','under_review'))]"/>
+                <filter name="approved" string="Approved" domain="[('state','=','approved')]"/>
+                <filter name="denied" string="Denied" domain="[('payer_status','=','denied')]"/>
+                <filter name="settled" string="Settled" domain="[('state','=','settled')]"/>
+                <filter name="policy_attention" string="Policy Attention" domain="[('policy_id','!=',False),('policy_valid','=',False)]"/>
+                <filter name="authorization_attention" string="Authorization Attention" domain="[('authorization_id','!=',False),('authorization_valid','=',False)]"/>
+                <group>
+                    <filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_insurer" string="Insurer" context="{'group_by':'insurer_partner_id'}"/>
+                    <filter name="group_policy" string="Policy" context="{'group_by':'policy_id'}"/>
+                    <filter name="group_payer_state" string="Payer Status" context="{'group_by':'payer_status'}"/>
+                    <filter name="group_state" string="Claim Status" context="{'group_by':'state'}"/>
+                    <filter name="group_month" string="Claim Month" context="{'group_by':'claim_date:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_insurance_claim_enterprise_list" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.enterprise.list</field>
+        <field name="model">clinic.insurance.claim</field>
+        <field name="arch" type="xml">
+            <list decoration-info="payer_status in ('received','under_review')" decoration-success="state in ('approved','settled')" decoration-danger="state == 'rejected' or payer_status == 'denied'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="external_claim_reference"/>
+                <field name="claim_date"/>
+                <field name="patient_id"/>
+                <field name="insurer_partner_id"/>
+                <field name="policy_id"/>
+                <field name="authorization_id"/>
+                <field name="requested_amount" sum="Requested"/>
+                <field name="approved_amount" sum="Approved"/>
+                <field name="insurer_payable_amount" sum="Payer"/>
+                <field name="patient_responsibility_amount" sum="Patient"/>
+                <field name="payer_status" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="policy_valid" optional="hide"/>
+                <field name="authorization_valid" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_insurance_claim_enterprise_form" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.enterprise.form</field>
+        <field name="model">clinic.insurance.claim</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_prepare" type="object" string="Prepare" class="btn-primary"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_coordinator"
+                            invisible="state not in ('draft','prepared')"/>
+                    <button name="action_submit" type="object" string="Submit Claim" class="btn-primary"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_coordinator"
+                            invisible="state not in ('draft','prepared')"/>
+                    <button name="action_mark_under_review" type="object" string="Mark Under Review"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_adjudicator"
+                            invisible="state != 'submitted' or payer_status == 'under_review'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_adjudicator"
+                            invisible="state not in ('submitted','prepared')"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_adjudicator"
+                            invisible="state not in ('submitted','prepared')"/>
+                    <button name="action_settle" type="object" string="Settle" class="btn-primary"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_manager"
+                            invisible="state != 'approved'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_manager"
+                            invisible="state in ('settled','cancelled')"/>
+                    <button name="action_print_insurance_claim" type="object" string="Print Claim Evidence"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,prepared,submitted,approved,rejected,settled,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_policy" type="object" class="oe_stat_button" icon="fa-id-card" invisible="not policy_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Policy</span></div>
+                        </button>
+                        <button name="action_open_authorization" type="object" class="oe_stat_button" icon="fa-check-circle" invisible="not authorization_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Authorization</span></div>
+                        </button>
+                        <button name="action_open_invoice" type="object" class="oe_stat_button" icon="fa-money">
+                            <div class="o_stat_info"><span class="o_stat_text">Billing Invoice</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+
+                    <div class="alert alert-danger" role="alert" invisible="not policy_id or policy_valid">
+                        The linked Insurance Policy is not valid on the Claim date.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not authorization_id or authorization_valid">
+                        The linked Pre-Authorization is not valid on the Claim date.
+                    </div>
+
+                    <group>
+                        <group string="Claim Identity">
+                            <field name="invoice_id"/>
+                            <field name="move_id" readonly="1"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="insurer_partner_id"/>
+                            <field name="policy_id"/>
+                            <field name="authorization_id"/>
+                            <field name="eligibility_check_id"/>
+                            <field name="claim_date"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Payer Adjudication">
+                            <field name="external_claim_reference"/>
+                            <field name="payer_status" widget="badge" readonly="1"/>
+                            <field name="authorization_code" readonly="1"/>
+                            <field name="adjudicated_date" readonly="1"/>
+                            <field name="denial_code"/>
+                            <field name="denial_reason"/>
+                            <field name="reason_rejected"/>
+                            <field name="policy_valid" readonly="1"/>
+                            <field name="authorization_valid" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Claim Lines">
+                            <field name="claim_line_ids">
+                                <list>
+                                    <field name="sequence"/>
+                                    <field name="billing_line_id"/>
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="subtotal_excl_tax"/>
+                                    <field name="authorization_line_id"/>
+                                    <field name="benefit_rule_id"/>
+                                    <field name="covered_percent"/>
+                                    <field name="deductible_amount"/>
+                                    <field name="copay_percent"/>
+                                    <field name="requested_amount" sum="Requested"/>
+                                    <field name="authorized_amount" sum="Authorized"/>
+                                    <field name="approved_amount" sum="Approved"/>
+                                    <field name="insurer_payable" sum="Payer"/>
+                                    <field name="patient_responsibility" sum="Patient"/>
+                                    <field name="authorization_variance" sum="Variance"/>
+                                    <button name="action_open_authorization_line" type="object" string="Authorization Line" icon="fa-external-link" invisible="not authorization_line_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Coverage &amp; Settlement">
+                            <group>
+                                <field name="policy_number"/>
+                                <field name="coverage_percent"/>
+                                <field name="deductible_amount"/>
+                                <field name="copay_percent"/>
+                                <field name="requested_amount" readonly="1"/>
+                                <field name="approved_amount" readonly="1"/>
+                                <field name="insurer_payable_amount" readonly="1"/>
+                                <field name="patient_responsibility_amount" readonly="1"/>
+                                <field name="settlement_journal_id"/>
+                                <field name="settlement_payment_id" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Documents"><field name="document_ids" widget="many2many_binary"/></page>
+                        <page string="Notes"><field name="note"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_insurance_claim_line_enterprise_search" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.line.enterprise.search</field>
+        <field name="model">clinic.insurance.claim.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="claim_id"/>
+                <field name="product_id"/>
+                <field name="billing_line_id"/>
+                <field name="authorization_line_id"/>
+                <field name="benefit_rule_id"/>
+                <filter name="authorized" string="Linked Authorization" domain="[('authorization_line_id','!=',False)]"/>
+                <filter name="positive_variance" string="Above Authorization" domain="[('authorization_variance','&gt;',0)]"/>
+                <group>
+                    <filter name="group_claim" string="Claim" context="{'group_by':'claim_id'}"/>
+                    <filter name="group_product" string="Product" context="{'group_by':'product_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_insurance_claim_line_enterprise_list" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.line.enterprise.list</field>
+        <field name="model">clinic.insurance.claim.line</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="authorization_variance &gt; 0">
+                <field name="claim_id"/>
+                <field name="state" widget="badge"/>
+                <field name="product_id"/>
+                <field name="name"/>
+                <field name="requested_amount" sum="Requested"/>
+                <field name="authorization_line_id"/>
+                <field name="authorized_amount" sum="Authorized"/>
+                <field name="approved_amount" sum="Approved"/>
+                <field name="insurer_payable" sum="Payer"/>
+                <field name="patient_responsibility" sum="Patient"/>
+                <field name="authorization_variance" sum="Variance"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_authorization_line" type="object" string="Authorization" icon="fa-external-link" invisible="not authorization_line_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_insurance_claim_line_enterprise_form" model="ir.ui.view">
+        <field name="name">clinic.insurance.claim.line.enterprise.form</field>
+        <field name="model">clinic.insurance.claim.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <header><field name="state" widget="statusbar"/></header>
+                <sheet>
+                    <group>
+                        <group string="Claim Service">
+                            <field name="claim_id"/>
+                            <field name="billing_line_id"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="subtotal_excl_tax"/>
+                            <field name="requested_amount" readonly="1"/>
+                        </group>
+                        <group string="Authorization / Adjudication">
+                            <field name="authorization_line_id"/>
+                            <field name="benefit_rule_id" readonly="1"/>
+                            <field name="authorized_amount" readonly="1"/>
+                            <field name="authorization_variance" readonly="1"/>
+                            <field name="covered_percent"/>
+                            <field name="deductible_amount"/>
+                            <field name="copay_percent"/>
+                            <field name="approved_amount"/>
+                            <field name="insurer_payable" readonly="1"/>
+                            <field name="patient_responsibility" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <button name="action_open_authorization_line" type="object" string="Open Authorization Service Line" class="btn-secondary" invisible="not authorization_line_id"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_insurance_claim_enterprise" model="ir.actions.act_window">
+        <field name="name">Insurance Claims</field>
+        <field name="res_model">clinic.insurance.claim</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_insurance_claim_enterprise_search"/>
+    </record>
+
+    <record id="action_insurance_claim_line_enterprise" model="ir.actions.act_window">
+        <field name="name">Insurance Claim Lines</field>
+        <field name="res_model">clinic.insurance.claim.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_insurance_claim_line_enterprise_search"/>
+    </record>
+</odoo>
+

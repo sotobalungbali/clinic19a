@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_insurance_policy" model="ir.sequence">
+        <field name="name">Clinic Insurance Policy</field>
+        <field name="code">clinic.insurance.policy</field>
+        <field name="prefix">CIP/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_insurance_eligibility" model="ir.sequence">
+        <field name="name">Clinic Insurance Eligibility</field>
+        <field name="code">clinic.insurance.eligibility.check</field>
+        <field name="prefix">CIE/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_insurance_authorization" model="ir.sequence">
+        <field name="name">Clinic Insurance Authorization</field>
+        <field name="code">clinic.insurance.authorization</field>
+        <field name="prefix">CIA/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>
+

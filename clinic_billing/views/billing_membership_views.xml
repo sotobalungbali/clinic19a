@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_clinic_billing_membership_usage_search" model="ir.ui.view">
+        <field name="name">clinic.billing.membership.usage.search</field>
+        <field name="model">clinic.billing.membership.usage</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="invoice_id"/>
+                <field name="patient_id"/>
+                <field name="membership_reference"/>
+                <field name="wallet_partner_id"/>
+                <field name="amount_planned"/>
+                <field name="amount_reserved"/>
+                <field name="amount_debited"/>
+                <filter name="active_state" string="Active States" domain="[('state','not in',('cancelled','canceled','failed','ignored'))]"/>
+                <group><filter string="Status" context="{'group_by':'state'}" name="group_state"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_membership_usage_list" model="ir.ui.view">
+        <field name="name">clinic.billing.membership.usage.list</field>
+        <field name="model">clinic.billing.membership.usage</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('cancelled','canceled','ignored')">
+                <field name="name" optional="show"/>
+                <field name="invoice_id" optional="show"/>
+                <field name="patient_id" optional="show"/>
+                <field name="membership_reference" optional="show"/>
+                <field name="wallet_partner_id" optional="show"/>
+                <field name="amount_planned" optional="show"/>
+                <field name="amount_reserved" optional="show"/>
+                <field name="amount_debited" optional="show"/>
+                <field name="state" optional="hide"/>
+                <field name="external_wallet_model" optional="hide"/>
+                <field name="external_wallet_id" optional="hide"/>
+                <field name="company_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_membership_usage_form" model="ir.ui.view">
+        <field name="name">clinic.billing.membership.usage.form</field>
+        <field name="model">clinic.billing.membership.usage</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_reserve" type="object" string="Reserve"/>
+                    <button name="action_debit" type="object" string="Debit"/>
+                    <button name="action_release" type="object" string="Release"/>
+                    <button name="action_cancel" type="object" string="Cancel"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="invoice_id"/>
+                            <field name="patient_id"/>
+                            <field name="membership_reference"/>
+                            <field name="wallet_partner_id"/>
+                            <field name="amount_planned"/>
+                            <field name="amount_reserved"/>
+                        </group>
+                        <group>
+                            <field name="amount_debited"/>
+                            <field name="state"/>
+                            <field name="external_wallet_model"/>
+                            <field name="external_wallet_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_membership_usage" model="ir.actions.act_window">
+        <field name="name">Usage</field>
+        <field name="res_model">clinic.billing.membership.usage</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_membership_usage_search"/>
+    </record>
+</odoo>

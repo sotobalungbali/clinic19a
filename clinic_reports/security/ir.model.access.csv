@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_definition_user,Report Definition User,model_clinic_report_definition,clinic_reports.group_reports_user,1,0,0,0
+access_report_definition_manager,Report Definition Manager,model_clinic_report_definition,clinic_reports.group_reports_manager,1,1,1,1
+access_report_run_user,Report Run User,model_clinic_report_run,clinic_reports.group_reports_user,1,0,0,0
+access_report_run_analyst,Report Run Analyst,model_clinic_report_run,clinic_reports.group_reports_analyst,1,1,1,1
+access_report_run_manager,Report Run Manager,model_clinic_report_run,clinic_reports.group_reports_manager,1,1,1,1
+access_report_metric_user,Report Metric User,model_clinic_report_metric,clinic_reports.group_reports_user,1,0,0,0
+access_report_metric_analyst,Report Metric Analyst,model_clinic_report_metric,clinic_reports.group_reports_analyst,1,0,0,0
+access_report_metric_manager,Report Metric Manager,model_clinic_report_metric,clinic_reports.group_reports_manager,1,0,0,0
+access_report_detail_user,Report Detail User,model_clinic_report_detail,clinic_reports.group_reports_user,1,0,0,0
+access_report_detail_analyst,Report Detail Analyst,model_clinic_report_detail,clinic_reports.group_reports_analyst,1,0,0,0
+access_report_detail_manager,Report Detail Manager,model_clinic_report_detail,clinic_reports.group_reports_manager,1,0,0,0
+access_report_schedule_user,Report Schedule User,model_clinic_report_schedule,clinic_reports.group_reports_user,1,0,0,0
+access_report_schedule_manager,Report Schedule Manager,model_clinic_report_schedule,clinic_reports.group_reports_manager,1,1,1,1
+access_report_generate_wizard_analyst,Generate Report Wizard Analyst,model_clinic_report_generate_wizard,clinic_reports.group_reports_analyst,1,1,1,1

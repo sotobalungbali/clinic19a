@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_postcare_checkin_search" model="ir.ui.view">
+        <field name="name">clinic.postcare.checkin.search</field>
+        <field name="model">clinic.postcare.checkin</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="plan_id"/>
+                <field name="task_id"/>
+                <field name="recorded_by_id"/>
+                <field name="company_id"/>
+                <filter name="red_flags" string="Red Flags" domain="[('red_flag','=',True)]"/>
+                <filter name="needs_review" string="Needs Review" domain="[('state','in',('draft','received','escalated'))]"/>
+                <filter name="reviewed" string="Reviewed / Closed" domain="[('state','in',('reviewed','closed'))]"/>
+                <filter name="pain_attention" string="Pain 8+" domain="[('pain_score','&gt;=',8)]"/>
+                <group>
+                    <filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_wellbeing" string="Wellbeing" context="{'group_by':'wellbeing'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_day" string="Response Day" context="{'group_by':'response_at:day'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_checkin_list" model="ir.ui.view">
+        <field name="name">clinic.postcare.checkin.list</field>
+        <field name="model">clinic.postcare.checkin</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="red_flag" decoration-warning="state == 'escalated'" decoration-success="state in ('reviewed','closed')">
+                <field name="name"/>
+                <field name="response_at"/>
+                <field name="patient_id"/>
+                <field name="plan_id"/>
+                <field name="channel"/>
+                <field name="wellbeing" widget="badge"/>
+                <field name="pain_score"/>
+                <field name="fever_reported"/>
+                <field name="unexpected_bleeding"/>
+                <field name="breathing_concern"/>
+                <field name="red_flag"/>
+                <field name="escalation_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_review" type="object" string="Review" icon="fa-stethoscope"
+                        groups="clinic_post_care_followup.group_postcare_clinician"
+                        invisible="state not in ('draft','received')"/>
+                <button name="action_escalate" type="object" string="Escalate" icon="fa-exclamation-triangle"
+                        groups="clinic_post_care_followup.group_postcare_clinician"
+                        invisible="state in ('escalated','closed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_postcare_checkin_form" model="ir.ui.view">
+        <field name="name">clinic.postcare.checkin.form</field>
+        <field name="model">clinic.postcare.checkin</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_received" type="object" string="Mark Received" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_coordinator"
+                            invisible="state != 'draft'"/>
+                    <button name="action_review" type="object" string="Clinical Review" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state not in ('draft','received')"/>
+                    <button name="action_escalate" type="object" string="Escalate"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state in ('escalated','closed')"/>
+                    <button name="action_close" type="object" string="Close"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state not in ('reviewed','escalated')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,received,reviewed,escalated,closed"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_plan" type="object" class="oe_stat_button" icon="fa-heartbeat">
+                            <div class="o_stat_info"><span class="o_stat_text">Post-Care Plan</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="not red_flag">
+                        This response contains a post-care attention signal and requires clinical review.
+                    </div>
+
+                    <group>
+                        <group string="Response Identity">
+                            <field name="plan_id" readonly="state not in ('draft','received')"/>
+                            <field name="task_id" readonly="state not in ('draft','received')"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="response_at" readonly="state not in ('draft','received')"/>
+                            <field name="channel"/>
+                            <field name="recorded_by_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="branch_id" readonly="1"/>
+                        </group>
+                        <group string="Recovery Signals">
+                            <field name="wellbeing"/>
+                            <field name="pain_score"/>
+                            <field name="fever_reported"/>
+                            <field name="unexpected_bleeding"/>
+                            <field name="breathing_concern"/>
+                            <field name="manual_red_flag"/>
+                            <field name="red_flag" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Patient Response">
+                            <group>
+                                <field name="symptom_note"/>
+                                <field name="recovery_note"/>
+                                <field name="medication_note"/>
+                            </group>
+                        </page>
+                        <page string="Clinical Attention">
+                            <field name="red_flag_reason" readonly="1"/>
+                            <field name="escalation_count" readonly="1"/>
+                        </page>
+                        <page string="Evidence / Photos">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_postcare_checkin" model="ir.actions.act_window">
+        <field name="name">Patient Check-ins</field>
+        <field name="res_model">clinic.postcare.checkin</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_postcare_checkin_search"/>
+    </record>
+</odoo>

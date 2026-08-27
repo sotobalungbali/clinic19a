@@ -1,0 +1,28 @@
+<odoo>
+    <menuitem id="menu_clinic_imaging_root" name="Clinical Imaging" sequence="45" groups="base.group_user"/>
+    <menuitem id="menu_clinic_imaging_operations" name="Operations" parent="menu_clinic_imaging_root" sequence="10" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_request" name="Clinical Imaging Request" parent="menu_clinic_imaging_operations" action="action_clinical_imaging_request" sequence="10" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging" name="Clinical Imaging" parent="menu_clinic_imaging_operations" action="action_clinical_imaging" sequence="20" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_study" name="Clinical Imaging Study" parent="menu_clinic_imaging_operations" action="action_clinical_imaging_study" sequence="30" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_series" name="Clinical Imaging Series" parent="menu_clinic_imaging_operations" action="action_clinical_imaging_series" sequence="40" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_image" name="Clinical Imaging Image" parent="menu_clinic_imaging_operations" action="action_clinical_imaging_image" sequence="50" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_finding" name="Clinical Imaging Finding" parent="menu_clinic_imaging_operations" action="action_clinical_imaging_finding" sequence="60" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_result" name="Clinical Imaging Result" parent="menu_clinic_imaging_operations" action="action_clinical_imaging_result" sequence="70" groups="base.group_user"/>
+    <menuitem id="menu_clinic_treatment_imaging_plan" name="Treatment Imaging Plan" parent="menu_clinic_imaging_operations" action="action_clinic_treatment_imaging_plan" sequence="80" groups="base.group_user"/>
+    <menuitem id="menu_clinic_imaging_quality_safety" name="Quality &amp; Safety" parent="menu_clinic_imaging_root" sequence="20" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_encounter_screening" name="Encounter Imaging Screening" parent="menu_clinic_imaging_quality_safety" action="action_clinical_imaging_encounter_screening" sequence="10" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_encounter_note" name="Encounter Imaging Note" parent="menu_clinic_imaging_quality_safety" action="action_clinical_imaging_encounter_note" sequence="20" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_device_downtime" name="Imaging Device Downtime" parent="menu_clinic_imaging_quality_safety" action="action_clinical_imaging_device_downtime" sequence="30" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_device_calibration" name="Imaging Device Calibration / QC" parent="menu_clinic_imaging_quality_safety" action="action_clinical_imaging_device_calibration" sequence="40" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_device_connectivity" name="Imaging Device Connectivity" parent="menu_clinic_imaging_quality_safety" action="action_clinical_imaging_device_connectivity" sequence="50" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_staff_credential" name="Imaging Staff Credential" parent="menu_clinic_imaging_quality_safety" action="action_clinical_imaging_staff_credential" sequence="60" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_kpi_snapshot" name="Clinical Imaging KPI Snapshot" parent="menu_clinic_imaging_quality_safety" action="action_clinical_imaging_kpi_snapshot" sequence="70" groups="base.group_user"/>
+    <menuitem id="menu_clinic_imaging_configuration" name="Configuration" parent="menu_clinic_imaging_root" sequence="30" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_type" name="Clinical Imaging Type" parent="menu_clinic_imaging_configuration" action="action_clinical_imaging_type" sequence="10" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_protocol" name="Clinical Imaging Protocol" parent="menu_clinic_imaging_configuration" action="action_clinical_imaging_protocol" sequence="20" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_device" name="Clinical Imaging Device" parent="menu_clinic_imaging_configuration" action="action_clinical_imaging_device" sequence="30" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_report_template" name="Clinical Imaging Report Template" parent="menu_clinic_imaging_configuration" action="action_clinical_imaging_report_template" sequence="40" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_consent_template" name="Imaging Consent Template" parent="menu_clinic_imaging_configuration" action="action_clinical_imaging_consent_template" sequence="50" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_premed_protocol" name="Imaging Contrast Premedication Protocol" parent="menu_clinic_imaging_configuration" action="action_clinical_imaging_premed_protocol" sequence="60" groups="base.group_user"/>
+    <menuitem id="menu_clinical_imaging_modality_tag" name="Imaging Modality Tag" parent="menu_clinic_imaging_configuration" action="action_clinical_imaging_modality_tag" sequence="70" groups="base.group_user"/>
+</odoo>

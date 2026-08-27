@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_clinic_treatment_catalog_company" model="ir.rule">
+        <field name="name">clinic.treatment.catalog: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_catalog"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_category_company" model="ir.rule">
+        <field name="name">clinic.treatment.category: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_category"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_tag_company" model="ir.rule">
+        <field name="name">clinic.treatment.tag: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_tag"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_attribute_company" model="ir.rule">
+        <field name="name">clinic.treatment.attribute: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_attribute"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_attribute_value_company" model="ir.rule">
+        <field name="name">clinic.treatment.attribute.value: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_attribute_value"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_attribute_line_company" model="ir.rule">
+        <field name="name">clinic.treatment.attribute.line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_attribute_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_bundle_company" model="ir.rule">
+        <field name="name">clinic.treatment.bundle: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_bundle"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_bundle_line_company" model="ir.rule">
+        <field name="name">clinic.treatment.bundle.line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_bundle_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_pricelist_company" model="ir.rule">
+        <field name="name">clinic.treatment.pricelist: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_pricelist"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_pricelist_item_company" model="ir.rule">
+        <field name="name">clinic.treatment.pricelist.item: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_pricelist_item"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_treatment_company" model="ir.rule">
+        <field name="name">clinic.treatment: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_consent_request_company" model="ir.rule">
+        <field name="name">clinic.consent.request: allowed companies</field>
+        <field name="model_id" ref="model_clinic_consent_request"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_consent_request_item_company" model="ir.rule">
+        <field name="name">clinic.consent.request.item: allowed companies</field>
+        <field name="model_id" ref="model_clinic_consent_request_item"/>
+        <field name="domain_force">[('request_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>
+

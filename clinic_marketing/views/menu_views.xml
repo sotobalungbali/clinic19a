@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_marketing_root"
+              name="Marketing"
+              sequence="84"
+              groups="clinic_marketing.group_marketing_user"/>
+
+    <menuitem id="menu_marketing_campaigns"
+              name="Campaigns"
+              parent="menu_marketing_root"
+              action="action_marketing_campaign"
+              sequence="10"/>
+
+    <menuitem id="menu_marketing_audience"
+              name="Audience"
+              parent="menu_marketing_root"
+              sequence="20"/>
+
+    <menuitem id="menu_marketing_segments"
+              name="Patient Segments"
+              parent="menu_marketing_audience"
+              action="action_marketing_segment"
+              sequence="10"/>
+
+    <menuitem id="menu_marketing_preferences"
+              name="Communication Preferences"
+              parent="menu_marketing_audience"
+              action="action_marketing_preference"
+              sequence="20"/>
+
+    <menuitem id="menu_marketing_recipients"
+              name="Campaign Recipients"
+              parent="menu_marketing_audience"
+              action="action_marketing_recipient"
+              sequence="30"/>
+
+    <menuitem id="menu_marketing_promotions"
+              name="Promotions"
+              parent="menu_marketing_root"
+              action="action_marketing_promotion"
+              sequence="30"/>
+
+    <menuitem id="menu_marketing_communications"
+              name="Communications"
+              parent="menu_marketing_root"
+              sequence="40"/>
+
+    <menuitem id="menu_marketing_whatsapp"
+              name="WhatsApp Queue"
+              parent="menu_marketing_communications"
+              action="action_marketing_message"
+              sequence="10"/>
+
+    <menuitem id="menu_marketing_native_email"
+              name="Odoo Email Marketing"
+              parent="menu_marketing_communications"
+              action="mass_mailing.mailing_mailing_action_mail"
+              sequence="20"
+              groups="clinic_marketing.group_marketing_coordinator"/>
+
+    <menuitem id="menu_marketing_settings"
+              name="Settings"
+              parent="menu_marketing_root"
+              action="action_marketing_settings"
+              sequence="90"
+              groups="clinic_marketing.group_marketing_manager"/>
+</odoo>
+

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_postcare_process_due_tasks" model="ir.cron">
+        <field name="name">Clinic Post-Care: Process Due Follow-up Tasks</field>
+        <field name="model_id" ref="model_clinic_postcare_task"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_process_due_tasks()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_postcare_auto_create_encounters" model="ir.cron">
+        <field name="name">Clinic Post-Care: Create Plans from Completed Encounters</field>
+        <field name="model_id" ref="model_clinic_postcare_plan"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_auto_create_from_completed_encounters()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

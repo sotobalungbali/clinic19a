@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_warehouse_form_clinic_branch" model="ir.ui.view">
+        <field name="name">stock.warehouse.form.clinic.branch</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="branch_id" groups="clinic_branch.group_branch_user"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

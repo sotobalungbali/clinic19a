@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_telemedicine_root"
+              name="Telemedicine"
+              sequence="85"
+              groups="clinic_telemedicine_secure_messaging.group_telemedicine_user"/>
+
+    <menuitem id="menu_telemedicine_operations"
+              name="Teleconsultation"
+              parent="menu_telemedicine_root"
+              sequence="10"/>
+
+    <menuitem id="menu_telemedicine_sessions"
+              name="Sessions"
+              parent="menu_telemedicine_operations"
+              action="action_telemedicine_session"
+              sequence="10"/>
+
+    <menuitem id="menu_telemedicine_secure_messaging"
+              name="Secure Messaging"
+              parent="menu_telemedicine_root"
+              sequence="20"/>
+
+    <menuitem id="menu_telemedicine_threads"
+              name="Conversation Inbox"
+              parent="menu_telemedicine_secure_messaging"
+              action="action_telemedicine_thread"
+              sequence="10"/>
+
+    <menuitem id="menu_telemedicine_messages"
+              name="Message Evidence"
+              parent="menu_telemedicine_secure_messaging"
+              action="action_telemedicine_message"
+              sequence="20"/>
+
+    <menuitem id="menu_telemedicine_files"
+              name="Secure Shared Files"
+              parent="menu_telemedicine_secure_messaging"
+              action="action_telemedicine_attachment"
+              sequence="30"/>
+
+    <menuitem id="menu_telemedicine_access"
+              name="Patient Access"
+              parent="menu_telemedicine_root"
+              action="action_telemedicine_portal_access"
+              sequence="30"
+              groups="clinic_telemedicine_secure_messaging.group_telemedicine_manager"/>
+
+    <menuitem id="menu_telemedicine_settings"
+              name="Settings"
+              parent="menu_telemedicine_root"
+              action="action_telemedicine_settings"
+              sequence="90"
+              groups="clinic_telemedicine_secure_messaging.group_telemedicine_manager"/>
+</odoo>
+

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        OPTIONAL POST-INIT TEMPLATE
+
+        This file is intentionally NOT loaded directly from __manifest__.py.
+        hooks.py reads the inheritance architecture and installs it only when a
+        compatible clinic.patient form view exists in the target database.
+        This prevents an older installed clinic_patient revision from blocking
+        clinic_triage_vitals installation because of a missing parent XML-ID.
+    -->
+    <record id="view_clinic_patient_form_triage_vitals" model="ir.ui.view">
+        <field name="name">clinic.patient.form.triage.vitals</field>
+        <field name="model">clinic.patient</field>
+        <field name="inherit_id" ref="clinic_patient.view_clinic_patient_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_triage_sessions"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-stethoscope">
+                    <field name="triage_session_count"
+                           widget="statinfo"
+                           string="Triage Sessions"/>
+                </button>
+                <button name="action_view_latest_vitals"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-heartbeat"
+                        invisible="not latest_vitals_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Latest Vitals</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Triage &amp; Vitals" name="triage_vitals">
+                    <group>
+                        <group string="Triage Overview">
+                            <field name="triage_session_count" readonly="1"/>
+                            <field name="triage_session_open_count" readonly="1"/>
+                            <field name="latest_triage_session_id" readonly="1"/>
+                            <button name="action_new_triage_session"
+                                    type="object"
+                                    string="New Triage Session"
+                                    class="btn-primary"
+                                    icon="fa-plus"/>
+                        </group>
+                        <group string="Latest Vitals">
+                            <field name="latest_vitals_id" readonly="1"/>
+                            <field name="last_measure_on" readonly="1"/>
+                            <field name="has_recent_abnormal_vitals" readonly="1"/>
+                            <field name="last_vitals_summary" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Latest Snapshot">
+                        <group>
+                            <field name="last_temp_c" readonly="1"/>
+                            <field name="last_hr_bpm" readonly="1"/>
+                            <field name="last_rr_bpm" readonly="1"/>
+                            <field name="last_spo2_pct" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="last_bp_systolic" readonly="1"/>
+                            <field name="last_bp_diastolic" readonly="1"/>
+                            <field name="last_bmi" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <separator string="Triage History"/>
+                    <field name="triage_session_ids" readonly="1">
+                        <list decoration-danger="sla_breached"
+                              decoration-warning="has_abnormal_vitals and not sla_breached"
+                              decoration-success="state == 'completed'"
+                              decoration-muted="state == 'cancelled'">
+                            <field name="name"/>
+                            <field name="arrival_datetime"/>
+                            <field name="triage_level_id"/>
+                            <field name="priority_score"/>
+                            <field name="assigned_nurse_id"/>
+                            <field name="assigned_doctor_id" optional="show"/>
+                            <field name="sla_breached"/>
+                            <field name="has_abnormal_vitals"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_treatment_session" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.treatment.session</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Treatment Sessions"
+                     name="clinic_treatment_session"
+                     groups="clinic_treatment_session.group_treatment_session_manager">
+
+                    <block title="Scheduling and Attendance">
+                        <setting string="Reminder Offset"
+                                 help="Hours before planned start when reminder processing runs.">
+                            <field name="session_reminder_offset_hours"/>
+                        </setting>
+                        <setting string="Automatic No-show"
+                                 help="Allow the bounded cron to mark overdue Draft or Confirmed sessions as No-show.">
+                            <field name="session_auto_no_show_enabled"/>
+                            <div class="content-group mt16"
+                                 invisible="not session_auto_no_show_enabled">
+                                <label for="session_auto_no_show_hours"/>
+                                <field name="session_auto_no_show_hours"
+                                       class="oe_inline"/>
+                            </div>
+                        </setting>
+                        <setting string="Prevent Clinic Doctor Overlap"
+                                 help="Block overlapping Confirmed/In Progress Treatment Sessions for the same Clinic Doctor.">
+                            <field name="session_prevent_doctor_overlap"/>
+                        </setting>
+                        <setting string="Prevent Room Overlap"
+                                 help="Block overlapping Confirmed/In Progress Treatment Sessions for the same room.">
+                            <field name="session_prevent_room_overlap"/>
+                        </setting>
+                    </block>
+
+                    <block title="Inventory Consumption">
+                        <setting string="Default Source Location"
+                                 help="Default stock source used when a session line does not define one.">
+                            <field name="session_location_src_id"/>
+                        </setting>
+                        <setting string="Default Consumption Destination"
+                                 help="Destination used for actual Treatment Session stock consumption.">
+                            <field name="session_location_dest_id"/>
+                        </setting>
+                    </block>
+
+                    <block title="Billing and Coverage">
+                        <setting string="Automatic Billing on Done"
+                                 help="Create the configured billing document after a Treatment Session reaches Done.">
+                            <field name="session_auto_create_billing"/>
+                        </setting>
+                        <setting string="Default Billing Mode"
+                                 help="Select Clinic Billing, standard Accounting Invoice, or no automatic billing.">
+                            <field name="session_billing_mode"/>
+                        </setting>
+                        <setting string="Auto Deduct Package Balance"
+                                 help="Downstream Package logic may automatically deduct eligible usage.">
+                            <field name="session_package_auto_deduct"/>
+                        </setting>
+                        <setting string="Auto Apply Membership Benefits"
+                                 help="Downstream Membership logic may automatically apply eligible benefits.">
+                            <field name="session_membership_auto_apply"/>
+                        </setting>
+                        <setting string="Auto Consume Wallet or Vouchers"
+                                 help="Downstream Wallet logic may automatically consume eligible balances or vouchers.">
+                            <field name="session_wallet_auto_consume"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_treatment_session_settings" model="ir.actions.act_window">
+        <field name="name">Treatment Session Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="path">clinic-treatment-session-settings</field>
+        <field name="context">{'module': 'clinic_treatment_session'}</field>
+    </record>
+</odoo>

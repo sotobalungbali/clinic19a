@@ -1,0 +1,1403 @@
+<odoo>
+  <record id="view_clinic_adverse_event_search" model="ir.ui.view">
+    <field name="name">clinic.adverse.event.search</field>
+    <field name="model">clinic.adverse.event</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <field name="session_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_adverse_event_list" model="ir.ui.view">
+    <field name="name">clinic.adverse.event.list</field>
+    <field name="model">clinic.adverse.event</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <field name="session_id" optional="show"/>
+        <field name="category_id" optional="show"/>
+        <field name="type_id" optional="show"/>
+        <field name="state" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_ae_action_search" model="ir.ui.view">
+    <field name="name">clinic.ae.action.search</field>
+    <field name="model">clinic.ae.action</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="ae_id"/>
+        <field name="type"/>
+        <field name="owner_id"/>
+        <field name="deadline"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_ae_action_list" model="ir.ui.view">
+    <field name="name">clinic.ae.action.list</field>
+    <field name="model">clinic.ae.action</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="ae_id"/>
+        <field name="type"/>
+        <field name="owner_id"/>
+        <field name="deadline" optional="show"/>
+        <field name="done" optional="show"/>
+        <field name="date_done" optional="show"/>
+        <field name="attachment_ids" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_ae_category_search" model="ir.ui.view">
+    <field name="name">clinic.ae.category.search</field>
+    <field name="model">clinic.ae.category</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_ae_category_list" model="ir.ui.view">
+    <field name="name">clinic.ae.category.list</field>
+    <field name="model">clinic.ae.category</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_ae_factor_search" model="ir.ui.view">
+    <field name="name">clinic.ae.factor.search</field>
+    <field name="model">clinic.ae.factor</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="group"/>
+        <field name="sequence"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_ae_factor_list" model="ir.ui.view">
+    <field name="name">clinic.ae.factor.list</field>
+    <field name="model">clinic.ae.factor</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="group"/>
+        <field name="sequence" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_ae_followup_search" model="ir.ui.view">
+    <field name="name">clinic.ae.followup.search</field>
+    <field name="model">clinic.ae.followup</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="date_note"/>
+        <field name="company_id"/>
+        <field name="ae_id"/>
+        <field name="user_id"/>
+        <field name="attachment_ids"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_ae_followup_list" model="ir.ui.view">
+    <field name="name">clinic.ae.followup.list</field>
+    <field name="model">clinic.ae.followup</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="date_note"/>
+        <field name="company_id"/>
+        <field name="ae_id"/>
+        <field name="user_id"/>
+        <field name="attachment_ids"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_ae_type_search" model="ir.ui.view">
+    <field name="name">clinic.ae.type.search</field>
+    <field name="model">clinic.ae.type</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="category_id"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_category_id" string="Category" context="{'group_by':'category_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_ae_type_list" model="ir.ui.view">
+    <field name="name">clinic.ae.type.list</field>
+    <field name="model">clinic.ae.type</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="category_id"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_airway_search" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.airway.search</field>
+    <field name="model">clinic.anesthesia.airway</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_event"/>
+        <field name="event"/>
+        <field name="device"/>
+        <field name="device_size"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_airway_list" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.airway.list</field>
+    <field name="model">clinic.anesthesia.airway</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_event"/>
+        <field name="event"/>
+        <field name="device"/>
+        <field name="device_size" optional="show"/>
+        <field name="attempts" optional="show"/>
+        <field name="success" optional="show"/>
+        <field name="grade" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_case_search" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.case.search</field>
+    <field name="model">clinic.anesthesia.case</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <field name="session_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_case_list" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.case.list</field>
+    <field name="model">clinic.anesthesia.case</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <field name="session_id" optional="show"/>
+        <field name="state" optional="show"/>
+        <field name="date_start" optional="show"/>
+        <field name="date_end" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_event_search" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.event.search</field>
+    <field name="model">clinic.anesthesia.event</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_event"/>
+        <field name="category"/>
+        <field name="critical"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_event_list" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.event.list</field>
+    <field name="model">clinic.anesthesia.event</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_event"/>
+        <field name="category"/>
+        <field name="critical"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_fluid_search" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.fluid.search</field>
+    <field name="model">clinic.anesthesia.fluid</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_move"/>
+        <field name="direction"/>
+        <field name="product_id"/>
+        <field name="volume_ml"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_fluid_list" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.fluid.list</field>
+    <field name="model">clinic.anesthesia.fluid</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_move"/>
+        <field name="direction"/>
+        <field name="product_id"/>
+        <field name="volume_ml" optional="show"/>
+        <field name="is_blood_loss" optional="show"/>
+        <field name="is_urine" optional="show"/>
+        <field name="remark" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_medication_search" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.medication.search</field>
+    <field name="model">clinic.anesthesia.medication</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_admin"/>
+        <field name="product_id"/>
+        <field name="dose"/>
+        <field name="dose_uom"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_medication_list" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.medication.list</field>
+    <field name="model">clinic.anesthesia.medication</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_admin"/>
+        <field name="product_id"/>
+        <field name="dose"/>
+        <field name="dose_uom" optional="show"/>
+        <field name="route" optional="show"/>
+        <field name="remark" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_vital_search" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.vital.search</field>
+    <field name="model">clinic.anesthesia.vital</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_point"/>
+        <field name="hr"/>
+        <field name="rr"/>
+        <field name="spo2"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_vital_list" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.vital.list</field>
+    <field name="model">clinic.anesthesia.vital</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="company_id"/>
+        <field name="case_id"/>
+        <field name="time_point"/>
+        <field name="hr"/>
+        <field name="rr"/>
+        <field name="spo2" optional="show"/>
+        <field name="sbp" optional="show"/>
+        <field name="dbp" optional="show"/>
+        <field name="map" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_audit_log_search" model="ir.ui.view">
+    <field name="name">clinic.audit.log.search</field>
+    <field name="model">clinic.audit.log</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="currency_id"/>
+        <field name="ref_model"/>
+        <field name="ref_res_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_audit_log_list" model="ir.ui.view">
+    <field name="name">clinic.audit.log.list</field>
+    <field name="model">clinic.audit.log</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="currency_id"/>
+        <field name="ref_model"/>
+        <field name="ref_res_id" optional="show"/>
+        <field name="ref" optional="show"/>
+        <field name="ref_display_name" optional="show"/>
+        <field name="category" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_search" model="ir.ui.view">
+    <field name="name">clinic.checklist.search</field>
+    <field name="model">clinic.checklist</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="title"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="procedure_id"/>
+        <field name="session_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_procedure_id" string="Procedure" context="{'group_by':'procedure_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_list" model="ir.ui.view">
+    <field name="name">clinic.checklist.list</field>
+    <field name="model">clinic.checklist</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="title"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="procedure_id"/>
+        <field name="session_id" optional="show"/>
+        <field name="template_id" optional="show"/>
+        <field name="state" optional="show"/>
+        <field name="date_start" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_item_search" model="ir.ui.view">
+    <field name="name">clinic.checklist.item.search</field>
+    <field name="model">clinic.checklist.item</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="checklist_id"/>
+        <field name="template_item_id"/>
+        <field name="sequence"/>
+        <field name="guidance"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_item_list" model="ir.ui.view">
+    <field name="name">clinic.checklist.item.list</field>
+    <field name="model">clinic.checklist.item</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="checklist_id"/>
+        <field name="template_item_id"/>
+        <field name="sequence"/>
+        <field name="guidance" optional="show"/>
+        <field name="answer_type" optional="show"/>
+        <field name="required" optional="show"/>
+        <field name="allow_na" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_template_search" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.search</field>
+    <field name="model">clinic.checklist.template</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="language"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_template_list" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.list</field>
+    <field name="model">clinic.checklist.template</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="language" optional="show"/>
+        <field name="scope" optional="show"/>
+        <field name="encounter_stage_ids" optional="show"/>
+        <field name="procedure_category_ids" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_template_item_search" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.item.search</field>
+    <field name="model">clinic.checklist.template.item</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="template_id"/>
+        <field name="company_id"/>
+        <field name="sequence"/>
+        <field name="answer_type"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_template_item_list" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.item.list</field>
+    <field name="model">clinic.checklist.template.item</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="template_id"/>
+        <field name="company_id"/>
+        <field name="sequence"/>
+        <field name="answer_type" optional="show"/>
+        <field name="required" optional="show"/>
+        <field name="allow_na" optional="show"/>
+        <field name="weight" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_template_item_option_search" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.item.option.search</field>
+    <field name="model">clinic.checklist.template.item.option</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="item_id"/>
+        <field name="sequence"/>
+        <field name="score"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_template_item_option_list" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.item.option.list</field>
+    <field name="model">clinic.checklist.template.item.option</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="item_id"/>
+        <field name="sequence"/>
+        <field name="score" optional="show"/>
+        <field name="is_pass" optional="show"/>
+        <field name="note" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_consent_document_search" model="ir.ui.view">
+    <field name="name">clinic.consent.document.search</field>
+    <field name="model">clinic.consent.document</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="title"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="session_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_consent_document_list" model="ir.ui.view">
+    <field name="name">clinic.consent.document.list</field>
+    <field name="model">clinic.consent.document</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="title"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="session_id" optional="show"/>
+        <field name="template_id" optional="show"/>
+        <field name="state" optional="show"/>
+        <field name="company_id" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_consent_risk_search" model="ir.ui.view">
+    <field name="name">clinic.consent.risk.search</field>
+    <field name="model">clinic.consent.risk</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="consent_id"/>
+        <field name="sequence"/>
+        <field name="required"/>
+        <field name="acknowledged"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_consent_risk_list" model="ir.ui.view">
+    <field name="name">clinic.consent.risk.list</field>
+    <field name="model">clinic.consent.risk</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="consent_id"/>
+        <field name="sequence"/>
+        <field name="required"/>
+        <field name="acknowledged" optional="show"/>
+        <field name="note" optional="show"/>
+        <field name="color" optional="show"/>
+        <field name="treatment_id" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_consent_risk_template_search" model="ir.ui.view">
+    <field name="name">clinic.consent.risk.template.search</field>
+    <field name="model">clinic.consent.risk.template</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="required"/>
+        <field name="treatment_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_consent_risk_template_list" model="ir.ui.view">
+    <field name="name">clinic.consent.risk.template.list</field>
+    <field name="model">clinic.consent.risk.template</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="required"/>
+        <field name="treatment_id" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_consent_template_search" model="ir.ui.view">
+    <field name="name">clinic.consent.template.search</field>
+    <field name="model">clinic.consent.template</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="title"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="language"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_consent_template_list" model="ir.ui.view">
+    <field name="name">clinic.consent.template.list</field>
+    <field name="model">clinic.consent.template</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="title"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="language" optional="show"/>
+        <field name="procedure_ids" optional="show"/>
+        <field name="category" optional="show"/>
+        <field name="validity_days" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_diagnosis_search" model="ir.ui.view">
+    <field name="name">clinic.diagnosis.search</field>
+    <field name="model">clinic.diagnosis</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="category_id"/>
+        <group>
+          <filter name="group_status" string="Status" context="{'group_by':'status'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_diagnosis_list" model="ir.ui.view">
+    <field name="name">clinic.diagnosis.list</field>
+    <field name="model">clinic.diagnosis</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="category_id" optional="show"/>
+        <field name="status" optional="show"/>
+        <field name="priority" optional="show"/>
+        <field name="company_id" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_diagnosis_category_search" model="ir.ui.view">
+    <field name="name">clinic.diagnosis.category.search</field>
+    <field name="model">clinic.diagnosis.category</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_diagnosis_category_list" model="ir.ui.view">
+    <field name="name">clinic.diagnosis.category.list</field>
+    <field name="model">clinic.diagnosis.category</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_encounter_search" model="ir.ui.view">
+    <field name="name">clinic.encounter.search</field>
+    <field name="model">clinic.encounter</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="state"/>
+        <field name="priority"/>
+        <field name="date_start"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_encounter_list" model="ir.ui.view">
+    <field name="name">clinic.encounter.list</field>
+    <field name="model">clinic.encounter</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="state"/>
+        <field name="priority"/>
+        <field name="date_start" optional="show"/>
+        <field name="date_end" optional="show"/>
+        <field name="company_id" optional="show"/>
+        <field name="active" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_encounter_procedure_search" model="ir.ui.view">
+    <field name="name">clinic.encounter.procedure.search</field>
+    <field name="model">clinic.encounter.procedure</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <field name="state"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_encounter_procedure_list" model="ir.ui.view">
+    <field name="name">clinic.encounter.procedure.list</field>
+    <field name="model">clinic.encounter.procedure</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <field name="state" optional="show"/>
+        <field name="priority" optional="show"/>
+        <field name="company_id" optional="show"/>
+        <field name="active" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_encounter_stage_search" model="ir.ui.view">
+    <field name="name">clinic.encounter.stage.search</field>
+    <field name="model">clinic.encounter.stage</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="state"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="is_closed"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_encounter_stage_list" model="ir.ui.view">
+    <field name="name">clinic.encounter.stage.list</field>
+    <field name="model">clinic.encounter.stage</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="state"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="is_closed" optional="show"/>
+        <field name="fold" optional="show"/>
+        <field name="color" optional="show"/>
+        <field name="allow_edit" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_execution_log_search" model="ir.ui.view">
+    <field name="name">clinic.execution.log.search</field>
+    <field name="model">clinic.execution.log</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <field name="session_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+          <filter name="group_procedure_id" string="Procedure" context="{'group_by':'procedure_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_execution_log_list" model="ir.ui.view">
+    <field name="name">clinic.execution.log.list</field>
+    <field name="model">clinic.execution.log</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <field name="session_id" optional="show"/>
+        <field name="company_id" optional="show"/>
+        <field name="active" optional="show"/>
+        <field name="currency_id" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_catalog_search" model="ir.ui.view">
+    <field name="name">clinic.procedure.catalog.search</field>
+    <field name="model">clinic.procedure.catalog</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="category_id"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="display_name"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_category_id" string="Category" context="{'group_by':'category_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_catalog_list" model="ir.ui.view">
+    <field name="name">clinic.procedure.catalog.list</field>
+    <field name="model">clinic.procedure.catalog</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="category_id"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="display_name" optional="show"/>
+        <field name="sequence" optional="show"/>
+        <field name="currency_id" optional="show"/>
+        <field name="tag_ids" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_category_search" model="ir.ui.view">
+    <field name="name">clinic.procedure.category.search</field>
+    <field name="model">clinic.procedure.category</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="parent_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_category_list" model="ir.ui.view">
+    <field name="name">clinic.procedure.category.list</field>
+    <field name="model">clinic.procedure.category</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="parent_id" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_consumable_search" model="ir.ui.view">
+    <field name="name">clinic.procedure.consumable.search</field>
+    <field name="model">clinic.procedure.consumable</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="procedure_id"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="product_id"/>
+        <field name="uom_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_procedure_id" string="Procedure" context="{'group_by':'procedure_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_consumable_list" model="ir.ui.view">
+    <field name="name">clinic.procedure.consumable.list</field>
+    <field name="model">clinic.procedure.consumable</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="procedure_id"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="product_id"/>
+        <field name="uom_id" optional="show"/>
+        <field name="quantity" optional="show"/>
+        <field name="auto_issue" optional="show"/>
+        <field name="required" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_session_search" model="ir.ui.view">
+    <field name="name">clinic.procedure.session.search</field>
+    <field name="model">clinic.procedure.session</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="procedure_id"/>
+        <field name="state"/>
+        <field name="priority"/>
+        <field name="date_start"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_procedure_id" string="Procedure" context="{'group_by':'procedure_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_session_list" model="ir.ui.view">
+    <field name="name">clinic.procedure.session.list</field>
+    <field name="model">clinic.procedure.session</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="procedure_id"/>
+        <field name="state"/>
+        <field name="priority"/>
+        <field name="date_start" optional="show"/>
+        <field name="date_end" optional="show"/>
+        <field name="company_id" optional="show"/>
+        <field name="active" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_step_search" model="ir.ui.view">
+    <field name="name">clinic.procedure.step.search</field>
+    <field name="model">clinic.procedure.step</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="procedure_id"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_procedure_id" string="Procedure" context="{'group_by':'procedure_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_step_list" model="ir.ui.view">
+    <field name="name">clinic.procedure.step.list</field>
+    <field name="model">clinic.procedure.step</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="procedure_id"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence" optional="show"/>
+        <field name="currency_id" optional="show"/>
+        <field name="tag_ids" optional="show"/>
+        <field name="duration_min" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_step_checklist_search" model="ir.ui.view">
+    <field name="name">clinic.procedure.step.checklist.search</field>
+    <field name="model">clinic.procedure.step.checklist</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="step_id"/>
+        <field name="instruction"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_step_checklist_list" model="ir.ui.view">
+    <field name="name">clinic.procedure.step.checklist.list</field>
+    <field name="model">clinic.procedure.step.checklist</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="step_id"/>
+        <field name="instruction" optional="show"/>
+        <field name="is_required" optional="show"/>
+        <field name="color" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_tag_search" model="ir.ui.view">
+    <field name="name">clinic.procedure.tag.search</field>
+    <field name="model">clinic.procedure.tag</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="active"/>
+        <field name="color"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_tag_list" model="ir.ui.view">
+    <field name="name">clinic.procedure.tag.list</field>
+    <field name="model">clinic.procedure.tag</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="active"/>
+        <field name="color"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_result_document_search" model="ir.ui.view">
+    <field name="name">clinic.result.document.search</field>
+    <field name="model">clinic.result.document</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="title"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_result_document_list" model="ir.ui.view">
+    <field name="name">clinic.result.document.list</field>
+    <field name="model">clinic.result.document</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="title"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="procedure_id" optional="show"/>
+        <field name="session_id" optional="show"/>
+        <field name="state" optional="show"/>
+        <field name="priority" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_result_group_search" model="ir.ui.view">
+    <field name="name">clinic.result.group.search</field>
+    <field name="model">clinic.result.group</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="collapsed"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_result_group_list" model="ir.ui.view">
+    <field name="name">clinic.result.group.list</field>
+    <field name="model">clinic.result.group</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="collapsed"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_result_value_search" model="ir.ui.view">
+    <field name="name">clinic.result.value.search</field>
+    <field name="model">clinic.result.value</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="patient_id"/>
+        <field name="company_id"/>
+        <field name="result_id"/>
+        <field name="sequence"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_result_value_list" model="ir.ui.view">
+    <field name="name">clinic.result.value.list</field>
+    <field name="model">clinic.result.value</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="patient_id"/>
+        <field name="company_id"/>
+        <field name="result_id"/>
+        <field name="sequence" optional="show"/>
+        <field name="group_id" optional="show"/>
+        <field name="method" optional="show"/>
+        <field name="device" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_soap_note_search" model="ir.ui.view">
+    <field name="name">clinic.soap.note.search</field>
+    <field name="model">clinic.soap.note</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="template_id"/>
+        <field name="state"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_encounter_id" string="Encounter" context="{'group_by':'encounter_id'}"/>
+          <filter name="group_patient_id" string="Patient" context="{'group_by':'patient_id'}"/>
+          <filter name="group_doctor_id" string="Doctor" context="{'group_by':'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_soap_note_list" model="ir.ui.view">
+    <field name="name">clinic.soap.note.list</field>
+    <field name="model">clinic.soap.note</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="encounter_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="template_id"/>
+        <field name="state" optional="show"/>
+        <field name="priority" optional="show"/>
+        <field name="date_note" optional="show"/>
+        <field name="company_id" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_soap_tag_search" model="ir.ui.view">
+    <field name="name">clinic.soap.tag.search</field>
+    <field name="model">clinic.soap.tag</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="active"/>
+        <field name="color"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_soap_tag_list" model="ir.ui.view">
+    <field name="name">clinic.soap.tag.list</field>
+    <field name="model">clinic.soap.tag</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="active"/>
+        <field name="color"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_clinic_soap_template_search" model="ir.ui.view">
+    <field name="name">clinic.soap.template.search</field>
+    <field name="model">clinic.soap.template</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="tag_ids"/>
+        <field name="default_priority"/>
+        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+        <group>
+          <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_clinic_soap_template_list" model="ir.ui.view">
+    <field name="name">clinic.soap.template.list</field>
+    <field name="model">clinic.soap.template</field>
+    <field name="arch" type="xml">
+      <list multi_edit="1">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="tag_ids"/>
+        <field name="default_priority" optional="show"/>
+      </list>
+    </field>
+  </record>
+</odoo>

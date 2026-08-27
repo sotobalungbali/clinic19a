@@ -1,0 +1,196 @@
+<!--
+ClinicOne — Booking Management
+File: static/description/index.html
+Odoo 19 CE | License: LGPL-3.0
+
+NOTE:
+- Keep README.md (root) for long-form docs; this file is for the Apps UI description.
+- Avoid using <blockquote> across the ClinicOne project (team convention).
+-->
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h1 class="oe_slogan">ClinicOne — Booking Management</h1>
+        <h2 class="oe_slogan">Reservations • Doctor Handshake • Rooms & Devices • Portal & Feedback</h2>
+        <p>
+          Production-ready booking for front-desk teams that keeps a clean separation between
+          <b>Booking (reservation)</b> and <b>Appointment (clinical schedule in clinic_doctor)</b>.
+          Compatible with <b>Odoo 19 Community Edition</b>.
+        </p>
+        <p>
+          <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 19 CE</span>
+          <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+          <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+          <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Portal</span>
+          <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;">Calendar</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Overview</h3>
+        <p>
+          The module centralizes patient reservations with robust overlap prevention, room/device allocation,
+          and an optional handshake to <b>clinic_doctor</b> for creating or linking <i>clinic.appointment</i> on confirmation.
+          It includes portal-ready links for patient access and post-care feedback, billing and stock hooks,
+          and extensible policies/channels to fit both walk-in and online booking scenarios.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Key Features</h3>
+        <ul>
+          <li>Lifecycle: <i>Draft, Confirmed, In Progress, Done, Cancelled</i> with chatter & activities</li>
+          <li>Doctor/Room overlap prevention + slot-based scheduling (optional)</li>
+          <li>Rooms & resources (devices/tools) with capacity/compatibility flags</li>
+          <li>Policy & channel (cancellation window, deposits, walk-in/phone/web)</li>
+          <li>Portal & feedback links (secure tokens) and email templates</li>
+          <li>Invoice creation (optional) and inventory hooks for consumables</li>
+          <li>Calendar/Kanban/List/Search views with filters and smart buttons</li>
+          <li>Bulk confirm, reschedule, cancel via dedicated wizards</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Core Models</h3>
+        <ul>
+          <li><b>booking.booking</b> — master reservation (patient, doctor, treatment, schedule, room, state)</li>
+          <li><b>booking.line</b> — items/services/consumables per booking</li>
+          <li><b>booking.room</b>, <b>booking.resource</b>, <b>booking.slot</b></li>
+          <li><b>booking.policy</b>, <b>booking.channel</b></li>
+        </ul>
+        <p style="margin-top:8px;">
+          Inherits/links: <i>res.partner</i> (patient), <i>clinic.doctor</i>, <i>clinic.treatment</i>,
+          <i>account.move</i>, <i>stock.picking</i>. Appointments (<i>clinic.appointment</i>) live in <b>clinic_doctor</b>.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Holistic Integrations (24 Modules)</h3>
+        <p>
+          Seamless with:
+          <i>clinic_base, clinic_patient, clinic_doctor, clinic_treatment, clinic_billing,
+          clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory,
+          clinic_ecommerce, clinic_membership, clinic_feedback, clinic_reports, clinic_dashboard,
+          clinic_wallet, clinic_package, clinic_pricing, clinic_room_device, clinic_hr,
+          clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit</i>.
+        </p>
+        <p style="font-size:12px;color:#666;">
+          Integrations are soft-coupled via relations, activities, server actions, mail templates, and routes to keep modules independently deployable.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span4">
+        <h3>Installation</h3>
+        <ol>
+          <li>Add this addon to your Odoo <i>addons_path</i>.</li>
+          <li>Update Apps list, search <b>ClinicOne: Booking Management</b>.</li>
+          <li>Install; dependencies auto-resolve.</li>
+        </ol>
+      </div>
+      <div class="oe_span4">
+        <h3>Configuration</h3>
+        <ul>
+          <li>Enable sequence for <b>booking.booking</b></li>
+          <li>Define <b>Policies</b> (cancellation/deposit) & <b>Channels</b> (Walk-in/Phone/Web)</li>
+          <li>Create <b>Rooms</b> & <b>Resources</b>, set capacity/compatibility</li>
+          <li>(Optional) Define <b>Slots</b> and link mail templates & server actions</li>
+        </ul>
+      </div>
+      <div class="oe_span4">
+        <h3>Security</h3>
+        <ul>
+          <li>Groups: Booking Receptionist, Doctor, Booking Manager, Admin</li>
+          <li>Record Rules: company scope, assignment-based access, portal visibility for patient</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Demo &amp; Testing</h3>
+        <ul>
+          <li>Demo data: <i>booking_demo.xml</i>, <i>booking_room_demo.xml</i>, <i>booking_resource_demo.xml</i>, <i>booking_policy_demo.xml</i></li>
+          <li>Unit tests: booking lifecycle, overlap prevention, billing linkage</li>
+          <li>UAT: walk-in vs online, reschedule flow, cancellation policy, feedback request, consumables</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Performance Notes</h3>
+        <ul>
+          <li>Index commonly filtered fields: company_id, patient_id, doctor_id, room_id, state, start_datetime</li>
+          <li>Prefer domain filters in dashboards; avoid heavy computes in list views</li>
+          <li>Archive completed bookings periodically in high-volume environments</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Assets</h3>
+        <ul>
+          <li>JS: <i>static/src/js/booking_calendar.js</i></li>
+          <li>QWeb: <i>report/booking_qweb_templates.xml</i></li>
+          <li>CSS: <i>static/src/css/booking_styles.css</i></li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>API Endpoints</h3>
+        <ul>
+          <li><i>controllers/api.py</i> — JSON endpoints (booking create/update, reschedule, cancel)</li>
+          <li><i>controllers/portal.py</i> — portal routes (patient access & feedback)</li>
+          <li><i>controllers/website.py</i> — website pages/forms (optional)</li>
+          <li><i>controllers/webhook.py</i> — inbound webhooks (messaging/payment)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Upgrade &amp; Migration</h3>
+        <ul>
+          <li>Normalized module prefix to <b>clinic_*</b></li>
+          <li>Clean separation: Booking in <b>clinic_booking</b>, Appointment in <b>clinic_doctor</b></li>
+          <li>Handshake policies (create/sync/cancel) configurable to avoid circular dependencies</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>License</h3>
+        <p>Distributed under the <b>LGPL-3.0</b> license. See <i>LICENSE</i> file.</p>
+      </div>
+      <div class="oe_span6">
+        <h3>Support &amp; Contribution</h3>
+        <p>
+          For issues or enhancements, follow the ClinicOne contribution guide:
+          write tests, follow code style, and document migration impacts.
+        </p>
+      </div>
+    </div>
+  </section>
+  

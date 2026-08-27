@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="view_membership_voucher_search" model="ir.ui.view">
+    <field name="name">membership.voucher.search</field>
+    <field name="model">membership.voucher</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="contract_id"/>
+        <field name="partner_id"/>
+        <field name="voucher_type"/>
+        <filter string="Issued" name="issued" domain="[('state','=','issued')]"/>
+        <filter string="Reserved" name="reserved" domain="[('state','=','reserved')]"/>
+        <filter string="Expired by Date" name="expired" domain="[('is_expired','=',True)]"/>
+        <group>
+          <filter string="State" context="{'group_by':'state'}" name="group_state"/>
+          <filter string="Type" context="{'group_by':'voucher_type'}" name="group_voucher_type"/>
+          <filter string="Plan" context="{'group_by':'plan_id'}" name="group_plan_id"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_membership_voucher_list" model="ir.ui.view">
+    <field name="name">membership.voucher.list</field>
+    <field name="model">membership.voucher</field>
+    <field name="arch" type="xml">
+      <list decoration-success="state == 'redeemed'" decoration-warning="state == 'reserved'" decoration-muted="state in ('expired','cancelled')">
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="contract_id"/>
+        <field name="voucher_type" widget="badge"/>
+        <field name="pretty_value"/>
+        <field name="expiry_date"/>
+        <field name="state" widget="badge"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_membership_voucher_form" model="ir.ui.view">
+    <field name="name">membership.voucher.form</field>
+    <field name="model">membership.voucher</field>
+    <field name="arch" type="xml">
+      <form string="Membership Voucher">
+        <header>
+          <button name="action_issue" type="object" string="Issue" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_reserve" type="object" string="Reserve" invisible="state != 'issued'"/>
+          <button name="action_release" type="object" string="Release" invisible="state != 'reserved'"/>
+          <button name="action_redeem" type="object" string="Redeem" class="btn-primary" invisible="state not in ('issued','reserved')"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('redeemed','expired','cancelled')"/>
+          <button name="action_expire" type="object" string="Expire" invisible="state in ('redeemed','expired','cancelled')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,issued,reserved,redeemed,expired,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_contract" type="object" class="oe_stat_button" icon="fa-id-card">
+              <div class="o_stat_info">
+                <span class="o_stat_text">Contract</span>
+              </div>
+            </button>
+          </div>
+          <div class="oe_title">
+            <h1>
+              <field name="name"/>
+            </h1>
+            <div>
+              <field name="pretty_value" readonly="1"/>
+            </div>
+          </div>
+          <group>
+            <group>
+              <field name="contract_id"/>
+              <field name="partner_id" readonly="1"/>
+              <field name="plan_id" readonly="1"/>
+              <field name="voucher_type"/>
+              <field name="value"/>
+              <field name="max_amount"/>
+              <field name="min_base_amount"/>
+            </group>
+            <group>
+              <field name="issue_date"/>
+              <field name="expiry_date"/>
+              <field name="is_expired" readonly="1"/>
+              <field name="reserved_by" readonly="1"/>
+              <field name="redeemed_by" readonly="1"/>
+              <field name="usage_id" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Scope">
+              <group>
+                <field name="treatment_id"/>
+                <field name="product_id"/>
+                <field name="product_category_id"/>
+                <field name="doctor_id"/>
+              </group>
+            </page>
+            <page string="Traceability">
+              <group>
+                <field name="booking_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_session_id"/>
+                <field name="package_usage_id"/>
+                <field name="emar_administration_id"/>
+                <field name="move_id"/>
+              </group>
+            </page>
+            <page string="Notes">
+              <field name="notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="action_membership_vouchers" model="ir.actions.act_window">
+    <field name="name">Membership Vouchers</field>
+    <field name="res_model">membership.voucher</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+  </record>
+</odoo>
+

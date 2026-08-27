@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_analytics_root"
+              name="Analytics"
+              sequence="95"
+              groups="clinic_analytics.group_analytics_user"/>
+
+    <menuitem id="menu_analytics_overview"
+              name="Predictive Analytics"
+              parent="menu_analytics_root"
+              sequence="10"/>
+
+    <menuitem id="menu_analytics_snapshots"
+              name="KPI Snapshots"
+              parent="menu_analytics_overview"
+              action="action_analytics_snapshot"
+              sequence="10"/>
+
+    <menuitem id="menu_analytics_forecasts"
+              name="Forecasts"
+              parent="menu_analytics_overview"
+              action="action_analytics_forecast"
+              sequence="20"/>
+
+    <menuitem id="menu_analytics_cohorts"
+              name="Retention Cohorts"
+              parent="menu_analytics_overview"
+              action="action_analytics_cohort"
+              sequence="30"/>
+
+    <menuitem id="menu_analytics_insights"
+              name="Actionable Insights"
+              parent="menu_analytics_overview"
+              action="action_analytics_insight"
+              sequence="40"/>
+
+    <menuitem id="menu_analytics_analysis"
+              name="Analysis"
+              parent="menu_analytics_root"
+              sequence="20"/>
+
+    <menuitem id="menu_analytics_kpi_analysis"
+              name="KPI Trend Analysis"
+              parent="menu_analytics_analysis"
+              action="action_analytics_snapshot_line"
+              sequence="10"/>
+
+    <menuitem id="menu_analytics_forecast_analysis"
+              name="Forecast Series"
+              parent="menu_analytics_analysis"
+              action="action_analytics_forecast_point"
+              sequence="20"/>
+
+    <menuitem id="menu_analytics_governance"
+              name="Governance"
+              parent="menu_analytics_root"
+              sequence="30"
+              groups="clinic_analytics.group_analytics_manager"/>
+
+    <menuitem id="menu_analytics_kpi_catalog"
+              name="KPI Catalog"
+              parent="menu_analytics_governance"
+              action="action_analytics_kpi"
+              sequence="10"/>
+
+    <menuitem id="menu_analytics_schedules"
+              name="Schedules"
+              parent="menu_analytics_governance"
+              action="action_analytics_schedule"
+              sequence="20"/>
+
+    <menuitem id="menu_analytics_settings"
+              name="Settings"
+              parent="menu_analytics_governance"
+              action="action_analytics_settings"
+              sequence="30"/>
+
+    <!-- Safe cross-navigation: clinic_dashboard is a hard dependency. -->
+    <menuitem id="menu_dashboard_predictive_analytics"
+              name="Predictive Analytics"
+              parent="clinic_dashboard.menu_dashboard_root"
+              action="action_analytics_forecast"
+              sequence="80"
+              groups="clinic_analytics.group_analytics_user"/>
+</odoo>

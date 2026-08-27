@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_incident_root"
+              name="Incident &amp; Event"
+              sequence="88"
+              groups="clinic_incident_event.group_incident_user"/>
+
+    <menuitem id="menu_incident_cases"
+              name="Incident Cases"
+              parent="menu_incident_root"
+              action="action_incident"
+              sequence="10"/>
+
+    <menuitem id="menu_incident_regulatory"
+              name="Regulatory Review"
+              parent="menu_incident_root"
+              action="action_incident_regulatory"
+              sequence="15"
+              groups="clinic_incident_event.group_incident_investigator"/>
+
+    <menuitem id="menu_incident_investigations"
+              name="Investigations"
+              parent="menu_incident_root"
+              action="action_incident_investigation"
+              sequence="20"
+              groups="clinic_incident_event.group_incident_investigator"/>
+
+    <menuitem id="menu_incident_capa"
+              name="Corrective / Preventive Actions"
+              parent="menu_incident_root"
+              action="action_incident_action"
+              sequence="30"/>
+
+    <menuitem id="menu_incident_timeline"
+              name="Compliance Timeline"
+              parent="menu_incident_root"
+              action="action_incident_timeline"
+              sequence="40"/>
+
+    <menuitem id="menu_incident_configuration"
+              name="Configuration"
+              parent="menu_incident_root"
+              sequence="90"
+              groups="clinic_incident_event.group_incident_manager"/>
+
+    <menuitem id="menu_incident_categories"
+              name="Incident Categories"
+              parent="menu_incident_configuration"
+              action="action_incident_category"
+              sequence="10"/>
+
+    <menuitem id="menu_incident_settings"
+              name="Settings"
+              parent="menu_incident_configuration"
+              action="action_incident_settings"
+              sequence="20"/>
+</odoo>

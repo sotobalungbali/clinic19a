@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dashboard_board_user,Dashboard Board User,model_clinic_dashboard_board,clinic_dashboard.group_dashboard_user,1,0,0,0
+access_dashboard_board_manager,Dashboard Board Manager,model_clinic_dashboard_board,clinic_dashboard.group_dashboard_manager,1,1,1,1
+access_dashboard_widget_user,Dashboard Widget User,model_clinic_dashboard_widget,clinic_dashboard.group_dashboard_user,1,0,0,0
+access_dashboard_widget_manager,Dashboard Widget Manager,model_clinic_dashboard_widget,clinic_dashboard.group_dashboard_manager,1,1,1,1
+access_dashboard_snapshot_user,Dashboard Snapshot User,model_clinic_dashboard_snapshot,clinic_dashboard.group_dashboard_user,1,0,0,0
+access_dashboard_snapshot_line_user,Dashboard Snapshot KPI User,model_clinic_dashboard_snapshot_line,clinic_dashboard.group_dashboard_user,1,0,0,0

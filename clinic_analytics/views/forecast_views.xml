@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_analytics_forecast_search" model="ir.ui.view">
+        <field name="name">clinic.analytics.forecast.search</field>
+        <field name="model">clinic.analytics.forecast</field>
+        <field name="arch" type="xml">
+            <search string="Analytics Forecasts">
+                <field name="name"/>
+                <field name="kpi_id"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="as_of_date"/>
+                <field name="method"/>
+                <filter name="ready" string="Ready" domain="[('state','=','done')]"/>
+                <filter name="failed" string="Failed" domain="[('state','=','failed')]"/>
+                <separator/>
+                <filter name="group_kpi" string="KPI" context="{'group_by':'kpi_id'}"/>
+                <filter name="group_method" string="Method" context="{'group_by':'method'}"/>
+                <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_analytics_forecast_list" model="ir.ui.view">
+        <field name="name">clinic.analytics.forecast.list</field>
+        <field name="model">clinic.analytics.forecast</field>
+        <field name="arch" type="xml">
+            <list default_order="as_of_date desc,id desc"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'failed'"
+                  decoration-muted="state == 'archived'">
+                <field name="name"/>
+                <field name="kpi_id"/>
+                <field name="branch_id"/>
+                <field name="as_of_date"/>
+                <field name="frequency"/>
+                <field name="method"/>
+                <field name="history_periods"/>
+                <field name="horizon_periods"/>
+                <field name="mae" optional="show"/>
+                <field name="mape" optional="show"/>
+                <field name="trend_slope" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button name="action_run" type="object" string="Run" icon="fa-play"
+                        groups="clinic_analytics.group_analytics_analyst"
+                        invisible="state not in ('draft','failed')"/>
+                <button name="action_view_points" type="object" string="Points" icon="fa-line-chart"
+                        invisible="state != 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_analytics_forecast_form" model="ir.ui.view">
+        <field name="name">clinic.analytics.forecast.form</field>
+        <field name="model">clinic.analytics.forecast</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_run" type="object" string="Run Forecast" class="btn-primary"
+                            groups="clinic_analytics.group_analytics_analyst"
+                            invisible="state not in ('draft','failed')"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state not in ('done','failed')"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state != 'done'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,running,done,failed,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_points" type="object" class="oe_stat_button" icon="fa-line-chart">
+                            <field name="point_count" widget="statinfo" string="Points"/>
+                        </button>
+                        <button name="action_view_insights" type="object" class="oe_stat_button" icon="fa-lightbulb-o">
+                            <field name="insight_count" widget="statinfo" string="Insights"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        Forecasts are transparent baseline decision-support methods, not guarantees. Always compare them with governed reports and operational context.
+                    </div>
+
+                    <group>
+                        <group string="Scope &amp; KPI">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="kpi_id"/>
+                            <field name="as_of_date"/>
+                            <field name="frequency"/>
+                        </group>
+                        <group string="Forecast Method">
+                            <field name="method"/>
+                            <field name="history_periods"/>
+                            <field name="horizon_periods"/>
+                            <field name="moving_average_window" invisible="method != 'moving_average'"/>
+                        </group>
+                    </group>
+
+                    <group string="Backtest / Diagnostics">
+                        <group>
+                            <field name="mae"/>
+                            <field name="mape"/>
+                        </group>
+                        <group>
+                            <field name="trend_slope"/>
+                            <field name="residual_std"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-danger" role="alert" invisible="not error_message">
+                        <field name="error_message" nolabel="1"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Forecast Series">
+                            <field name="point_ids" readonly="1">
+                                <list decoration-info="point_type == 'forecast'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="point_type" widget="badge"/>
+                                    <field name="period_start"/>
+                                    <field name="period_end"/>
+                                    <field name="actual_value"/>
+                                    <field name="predicted_value"/>
+                                    <field name="lower_bound" optional="show"/>
+                                    <field name="upper_bound" optional="show"/>
+                                    <field name="residual" optional="hide"/>
+                                    <button name="action_open_source" type="object" string="Source" icon="fa-external-link"
+                                            invisible="point_type != 'actual'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Execution">
+                            <group>
+                                <field name="started_at"/>
+                                <field name="completed_at"/>
+                                <field name="generated_by_id"/>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_analytics_forecast" model="ir.actions.act_window">
+        <field name="name">Forecasts</field>
+        <field name="res_model">clinic.analytics.forecast</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_analytics_forecast_search"/>
+    </record>
+</odoo>

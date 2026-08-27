@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="view_membership_plan_search" model="ir.ui.view">
+    <field name="name">membership.plan.search</field>
+    <field name="model">membership.plan</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="tier"/>
+        <field name="company_id"/>
+        <filter string="Active Plans" name="active_plan" domain="[('state','=','active')]"/>
+        <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+        <group>
+          <filter string="Tier" context="{'group_by':'tier'}" name="group_tier"/>
+          <filter string="Company" context="{'group_by':'company_id'}" name="group_company_id"/>
+          <filter string="State" context="{'group_by':'state'}" name="group_state"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_membership_plan_list" model="ir.ui.view">
+    <field name="name">membership.plan.list</field>
+    <field name="model">membership.plan</field>
+    <field name="arch" type="xml">
+      <list decoration-success="state == 'active'" decoration-muted="state == 'retired'">
+        <field name="sequence" widget="handle"/>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="tier" widget="badge"/>
+        <field name="duration_human"/>
+        <field name="upfront_total" sum="Total"/>
+        <field name="active_contract_count"/>
+        <field name="state" widget="badge"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_membership_plan_form" model="ir.ui.view">
+    <field name="name">membership.plan.form</field>
+    <field name="model">membership.plan</field>
+    <field name="arch" type="xml">
+      <form string="Membership Plan">
+        <header>
+          <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_retire" type="object" string="Retire" invisible="state != 'active'"/>
+          <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state != 'retired'" groups="clinic_membership.group_clinic_membership_manager"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,active,retired"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_benefits" type="object" class="oe_stat_button" icon="fa-gift">
+              <field name="benefit_count" widget="statinfo" string="Benefits"/>
+            </button>
+            <button name="action_open_contracts" type="object" class="oe_stat_button" icon="fa-id-card">
+              <field name="contract_count" widget="statinfo" string="Contracts"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <label for="name"/>
+            <h1>
+              <field name="name"/>
+            </h1>
+            <div>
+              <field name="code" class="oe_inline"/>
+              <field name="tier" class="oe_inline"/>
+            </div>
+          </div>
+          <group>
+            <group string="Commercial">
+              <field name="company_id" groups="base.group_multi_company"/>
+              <field name="currency_id"/>
+              <field name="list_price"/>
+              <field name="join_fee"/>
+              <field name="renewal_fee"/>
+              <field name="upfront_total" readonly="1"/>
+              <field name="product_id"/>
+              <field name="pricelist_id"/>
+            </group>
+            <group string="Term &amp; Operations">
+              <field name="duration_value"/>
+              <field name="duration_unit"/>
+              <field name="duration_human" readonly="1"/>
+              <field name="priority_level"/>
+              <field name="max_concurrent_bookings"/>
+              <field name="allow_hold"/>
+              <field name="max_hold_days_per_term" invisible="not allow_hold"/>
+              <field name="rollover_enabled"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Benefits">
+              <field name="benefit_ids" context="{'default_plan_id': id}">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name"/>
+                  <field name="benefit_type"/>
+                  <field name="summary"/>
+                  <field name="active"/>
+                  <button name="action_open_plan" type="object" icon="fa-external-link" string="Plan"/>
+                </list>
+              </field>
+            </page>
+            <page string="Eligibility">
+              <group>
+                <field name="allowed_doctor_ids" widget="many2many_tags"/>
+                <field name="allowed_treatment_ids" widget="many2many_tags"/>
+                <field name="excluded_treatment_ids" widget="many2many_tags"/>
+                <field name="allowed_product_category_ids" widget="many2many_tags"/>
+              </group>
+            </page>
+            <page string="Accounting">
+              <group>
+                <field name="income_account_id"/>
+                <field name="analytic_account_id"/>
+              </group>
+            </page>
+            <page string="Description">
+              <field name="description" widget="html"/>
+              <field name="internal_notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="action_membership_plans" model="ir.actions.act_window">
+    <field name="name">Membership Plans</field>
+    <field name="res_model">membership.plan</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+  </record>
+</odoo>
+

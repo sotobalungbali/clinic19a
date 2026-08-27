@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Product Template: expose ClinicOne inventory semantics on the native product form. -->
+    <record id="view_product_template_form_clinic_inventory" model="ir.ui.view">
+        <field name="name">product.template.form.clinic.inventory</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_expiring_lots" type="object" class="oe_stat_button"
+                        icon="fa-calendar-times-o" invisible="not has_expiration">
+                    <div class="o_stat_info"><span class="o_stat_text">Expiring Lots</span></div>
+                </button>
+                <button name="action_view_stock_moves" type="object" class="oe_stat_button"
+                        icon="fa-exchange">
+                    <div class="o_stat_info"><span class="o_stat_text">Stock Moves</span></div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Clinic Inventory" name="clinic_inventory">
+                    <group>
+                        <group string="Clinical Classification">
+                            <field name="usage_type"/>
+                            <field name="brand_partner_id"/>
+                            <field name="regulatory_class"/>
+                            <field name="is_medication" readonly="1"/>
+                            <field name="is_cosmetic" readonly="1"/>
+                            <field name="is_service_flag" readonly="1"/>
+                            <field name="is_stockable_flag" readonly="1"/>
+                        </group>
+                        <group string="Dosage / Presentation">
+                            <field name="dosage_form"/>
+                            <field name="active_ingredients"/>
+                            <field name="dosage_strength"/>
+                            <field name="volume_ml"/>
+                            <field name="weight_g"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Expiry &amp; Storage">
+                            <field name="has_expiration"/>
+                            <field name="shelf_life_days" invisible="not has_expiration"/>
+                            <field name="expiration_alert_days" invisible="not has_expiration"/>
+                            <field name="next_expiration_date" readonly="1" invisible="not has_expiration"/>
+                            <field name="storage_requirement"/>
+                            <field name="storage_min_c"/>
+                            <field name="storage_max_c"/>
+                        </group>
+                        <group string="Clinic Policies">
+                            <field name="membership_pricing_policy"/>
+                            <field name="ecommerce_is_sellable"/>
+                            <field name="additional_barcodes"/>
+                        </group>
+                    </group>
+                    <group string="Clinical Guidance">
+                        <field name="contraindications"/>
+                        <field name="instructions"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Warehouse: ClinicOne locations, expiry policy and monitoring. -->
+    <record id="view_stock_warehouse_form_clinic_inventory" model="ir.ui.view">
+        <field name="name">stock.warehouse.form.clinic.inventory</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_internal_locations" type="object" class="oe_stat_button"
+                        icon="fa-map-marker">
+                    <field name="clinic_count_internal_locations" widget="statinfo" string="Clinic Locations"/>
+                </button>
+                <button name="action_view_quants" type="object" class="oe_stat_button"
+                        icon="fa-cubes">
+                    <div class="o_stat_info"><span class="o_stat_text">On Hand</span></div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Clinic Inventory" name="clinic_inventory">
+                    <group>
+                        <group string="Warehouse Role">
+                            <field name="is_clinic_warehouse"/>
+                            <field name="clinic_pharmacy_location_id"/>
+                            <field name="clinic_treatment_root_location_id"/>
+                            <field name="clinic_quarantine_location_id"/>
+                            <field name="clinic_auto_create_room_locations"/>
+                        </group>
+                        <group string="Governance">
+                            <field name="clinic_expiry_blocking_policy"/>
+                            <field name="clinic_replenishment_scope"/>
+                            <field name="clinic_temperature_monitoring"/>
+                        </group>
+                    </group>
+                    <group string="Operational Counters">
+                        <field name="clinic_count_internal_locations" readonly="1"/>
+                        <field name="clinic_count_treatment_rooms" readonly="1"/>
+                        <field name="clinic_count_quarantine_stock" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Location: operational classification remains on Odoo's canonical stock.location. -->
+    <record id="view_stock_location_form_clinic_inventory" model="ir.ui.view">
+        <field name="name">stock.location.form.clinic.inventory</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_quants" type="object" class="oe_stat_button" icon="fa-cubes">
+                    <div class="o_stat_info"><span class="o_stat_text">Clinic Stock</span></div>
+                </button>
+                <button name="action_view_moves" type="object" class="oe_stat_button" icon="fa-exchange">
+                    <div class="o_stat_info"><span class="o_stat_text">Moves</span></div>
+                </button>
+            </xpath>
+            <xpath expr="//sheet/group[1]" position="after">
+                <group string="Clinic Inventory">
+                    <group>
+                        <field name="clinic_location_code"/>
+                        <field name="clinic_warehouse_id"/>
+                        <field name="clinic_is_treatment_room"/>
+                        <field name="clinic_is_pharmacy"/>
+                        <field name="clinic_is_quarantine"/>
+                        <field name="clinic_room_capacity" invisible="not clinic_is_treatment_room"/>
+                        <field name="clinic_room_notes" invisible="not clinic_is_treatment_room"/>
+                    </group>
+                    <group>
+                        <field name="clinic_expiry_policy"/>
+                        <field name="clinic_temperature_monitoring"/>
+                        <field name="clinic_temp_min_c" invisible="not clinic_temperature_monitoring"/>
+                        <field name="clinic_temp_max_c" invisible="not clinic_temperature_monitoring"/>
+                        <field name="clinic_restrict_to_allowed_categories"/>
+                        <field name="clinic_allowed_categ_ids" widget="many2many_tags"
+                               invisible="not clinic_restrict_to_allowed_categories"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Lot/Serial: expose ClinicOne quality and expiry state on native lot form. -->
+    <record id="view_stock_lot_form_clinic_inventory" model="ir.ui.view">
+        <field name="name">stock.lot.form.clinic.inventory</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_quants" type="object" class="oe_stat_button" icon="fa-cubes">
+                    <field name="clinic_quants_count" widget="statinfo" string="Clinic Quants"/>
+                </button>
+                <button name="action_view_moves" type="object" class="oe_stat_button" icon="fa-exchange">
+                    <div class="o_stat_info"><span class="o_stat_text">Moves</span></div>
+                </button>
+            </xpath>
+            <xpath expr="//group[@name='main_group']" position="after">
+                <group string="Clinic Quality &amp; Expiry">
+                    <group>
+                        <field name="clinic_supplier_batch"/>
+                        <field name="clinic_manufacture_date"/>
+                        <field name="clinic_received_date"/>
+                        <field name="clinic_quality_state"/>
+                        <field name="clinic_quarantine_reason" invisible="clinic_quality_state != 'on_hold'"/>
+                    </group>
+                    <group>
+                        <field name="clinic_expiration_alert_days"/>
+                        <field name="clinic_days_to_expiry" readonly="1"/>
+                        <field name="clinic_expiration_state" readonly="1"/>
+                        <field name="clinic_is_expired" readonly="1"/>
+                        <field name="clinic_onhand_qty" readonly="1"/>
+                        <field name="clinic_primary_location_id" readonly="1"/>
+                    </group>
+                </group>
+                <group string="Clinic Actions" groups="stock.group_stock_manager">
+                    <button name="action_suggest_quarantine_transfer" type="object"
+                            string="Suggest Quarantine Transfer" class="btn-secondary"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

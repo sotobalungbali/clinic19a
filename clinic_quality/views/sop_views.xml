@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_quality_sop_search" model="ir.ui.view">
+        <field name="name">clinic.quality.sop.search</field>
+        <field name="model">clinic.quality.sop</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="owner_user_id"/>
+                <field name="approver_user_id"/>
+                <field name="branch_ids"/>
+                <field name="company_id"/>
+                <filter name="active_sop" string="Active" domain="[('state','=','active')]"/>
+                <filter name="draft_sop" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="retired_sop" string="Retired" domain="[('state','=','retired')]"/>
+                <filter name="review_due" string="Review Due"
+                        domain="[('next_review_date','!=',False),('next_review_date','&lt;',context_today())]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_owner" string="Owner" context="{'group_by':'owner_user_id'}"/>
+                    <filter name="group_approver" string="Approver" context="{'group_by':'approver_user_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_quality_sop_list" model="ir.ui.view">
+        <field name="name">clinic.quality.sop.list</field>
+        <field name="model">clinic.quality.sop</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'"
+                  decoration-muted="state == 'retired'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="owner_user_id"/>
+                <field name="approver_user_id"/>
+                <field name="current_version_id"/>
+                <field name="next_review_date"/>
+                <field name="version_count"/>
+                <field name="acknowledgement_count"/>
+                <field name="check_template_count"/>
+                <field name="branch_ids" widget="many2many_tags"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_current_version" type="object"
+                        string="Version" icon="fa-file-text-o"
+                        invisible="not current_version_id"/>
+                <button name="action_open_check_templates" type="object"
+                        string="Checks" icon="fa-check-square-o"/>
+                <button name="action_print_current_sop" type="object"
+                        string="PDF" icon="fa-file-pdf-o"
+                        invisible="not current_version_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_quality_sop_kanban" model="ir.ui.view">
+        <field name="name">clinic.quality.sop.kanban</field>
+        <field name="model">clinic.quality.sop</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="current_version_id"/>
+                <field name="next_review_date"/>
+                <field name="acknowledgement_count"/>
+                <field name="check_template_count"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between gap-2">
+                                <div>
+                                    <strong><field name="code"/></strong>
+                                    <div class="fw-semibold"><field name="name"/></div>
+                                </div>
+                                <field name="state" widget="badge"/>
+                            </div>
+                            <div class="small text-muted mt-2" t-if="current_version_id">
+                                Current: <field name="current_version_id"/>
+                            </div>
+                            <div class="small text-muted" t-if="next_review_date">
+                                Review: <field name="next_review_date"/>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap mt-3">
+                                <span class="badge text-bg-secondary">
+                                    Acknowledged <field name="acknowledgement_count"/>
+                                </span>
+                                <span class="badge text-bg-secondary">
+                                    Templates <field name="check_template_count"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_quality_sop_form" model="ir.ui.view">
+        <field name="name">clinic.quality.sop.form</field>
+        <field name="model">clinic.quality.sop</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_retire" type="object" string="Retire SOP"
+                            groups="clinic_quality.group_quality_manager"
+                            invisible="state == 'retired'"/>
+                    <button name="action_restore" type="object" string="Restore SOP" class="btn-primary"
+                            groups="clinic_quality.group_quality_manager"
+                            invisible="state != 'retired'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,retired"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_versions" type="object"
+                                class="oe_stat_button" icon="fa-code-fork">
+                            <field name="version_count" widget="statinfo" string="Versions"/>
+                        </button>
+                        <button name="action_open_acknowledgements" type="object"
+                                class="oe_stat_button" icon="fa-check">
+                            <field name="acknowledgement_count" widget="statinfo" string="Acknowledged"/>
+                        </button>
+                        <button name="action_open_check_templates" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="check_template_count" widget="statinfo" string="Check Templates"/>
+                        </button>
+                        <button name="action_open_current_version" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not current_version_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Current Version</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="state == 'retired'"/></h1>
+                        <div class="text-muted"><field name="code" readonly="state == 'retired'"/></div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert"
+                         invisible="state != 'active'">
+                        Approved SOP content is immutable in its Version record. Create a new Version for controlled changes.
+                    </div>
+
+                    <group>
+                        <group string="Governance">
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                            <field name="branch_ids" widget="many2many_tags"
+                                   readonly="state == 'retired'"/>
+                            <field name="owner_user_id" readonly="state == 'retired'"/>
+                            <field name="approver_user_id" readonly="state == 'retired'"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Current Approved Version">
+                            <field name="current_version_id" readonly="1"/>
+                            <field name="next_review_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="SOP Header">
+                        <field name="purpose" readonly="state == 'retired'"/>
+                        <field name="scope" readonly="state == 'retired'"/>
+                        <field name="responsibilities" readonly="state == 'retired'"/>
+                        <field name="keywords" readonly="state == 'retired'"/>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap my-3">
+                        <button name="action_new_version" type="object"
+                                string="Create New Version" class="btn btn-primary"
+                                groups="clinic_quality.group_quality_inspector"
+                                invisible="state == 'retired'"/>
+                        <button name="action_acknowledge_current_version" type="object"
+                                string="Acknowledge Current Version" class="btn btn-secondary"
+                                groups="clinic_quality.group_quality_user"
+                                invisible="not current_version_id or state != 'active'"/>
+                        <button name="action_print_current_sop" type="object"
+                                string="Print Current SOP" class="btn btn-secondary"
+                                invisible="not current_version_id"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Versions">
+                            <field name="version_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="version_no"/>
+                                    <field name="effective_date"/>
+                                    <field name="review_due_date"/>
+                                    <field name="approved_by_id"/>
+                                    <field name="acknowledgement_count"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_sop" type="object" string="SOP" icon="fa-external-link"/>
+                                    <button name="action_open_acknowledgements" type="object" string="Acknowledgements" icon="fa-check"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Acknowledgements">
+                            <field name="acknowledgement_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="version_id"/>
+                                    <field name="staff_id"/>
+                                    <field name="acknowledged_at"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_version" type="object" string="Version" icon="fa-file-text-o"/>
+                                    <button name="action_open_staff" type="object" string="Staff" icon="fa-user"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Quality Check Templates">
+                            <field name="check_template_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="scope_type" widget="badge"/>
+                                    <field name="target_score"/>
+                                    <field name="line_count"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_new_check" type="object" string="New Check" icon="fa-plus"
+                                            groups="clinic_quality.group_quality_inspector"
+                                            invisible="state != 'active'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quality_sop" model="ir.actions.act_window">
+        <field name="name">Standard Operating Procedures</field>
+        <field name="res_model">clinic.quality.sop</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_quality_sop_search"/>
+    </record>
+</odoo>

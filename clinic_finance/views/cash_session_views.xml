@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_cash_session_search" model="ir.ui.view">
+    <field name="name">clinic.finance.cash.session.search</field><field name="model">clinic.finance.cash.session</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="finance_account_id"/><field name="opened_by_id"/><field name="branch_id"/>
+      <filter name="open" string="Open" domain="[('state','=','open')]"/><filter name="closing" string="Closing Review" domain="[('state','=','closing')]"/><filter name="variance" string="Has Variance" domain="[('variance','!=',0)]"/>
+      <group><filter name="group_account" string="Finance Account" context="{'group_by':'finance_account_id'}"/><filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/></group>
+    </search></field>
+  </record>
+  <record id="view_cash_session_list" model="ir.ui.view">
+    <field name="name">clinic.finance.cash.session.list</field><field name="model">clinic.finance.cash.session</field>
+    <field name="arch" type="xml"><list decoration-info="state == 'closing'" decoration-success="state == 'closed'" decoration-danger="variance != 0 and state == 'closed'">
+      <field name="name"/><field name="finance_account_id"/><field name="branch_id"/><field name="opened_by_id"/><field name="opened_at"/><field name="opening_book_balance"/><field name="expected_closing_balance"/><field name="counted_total"/><field name="variance"/><field name="state" widget="badge"/>
+    </list></field>
+  </record>
+  <record id="view_cash_session_form" model="ir.ui.view">
+    <field name="name">clinic.finance.cash.session.form</field><field name="model">clinic.finance.cash.session</field>
+    <field name="arch" type="xml"><form>
+      <header>
+        <button name="action_open_session" type="object" string="Open Session" class="btn-primary" groups="clinic_finance.group_clinic_finance_cashier" invisible="state != 'draft'"/>
+        <button name="action_request_close" type="object" string="Request Close" class="btn-primary" groups="clinic_finance.group_clinic_finance_cashier" invisible="state != 'open'"/>
+        <button name="action_close_session" type="object" string="Close Session" class="btn-primary" groups="clinic_finance.group_clinic_finance_cashier" invisible="state != 'closing'"/>
+        <button name="action_cancel" type="object" string="Cancel" groups="clinic_finance.group_clinic_finance_manager" invisible="state in ('closed','cancelled')"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,open,closing,closed"/>
+      </header><sheet>
+        <div class="oe_button_box" name="button_box">
+          <button name="action_view_transactions" type="object" class="oe_stat_button" icon="fa-exchange"><field name="transaction_count" widget="statinfo" string="Transactions"/></button>
+          <button name="action_open_variance_transaction" type="object" class="oe_stat_button" icon="fa-balance-scale" invisible="not variance_transaction_id"><div class="o_stat_info"><span class="o_stat_text">Variance Entry</span></div></button>
+        </div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <group>
+          <group string="Cash Session"><field name="finance_account_id" readonly="state != 'draft'"/><field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/><field name="branch_id" readonly="state != 'draft'"/><field name="opened_by_id" readonly="1"/><field name="opened_at" readonly="1"/><field name="opening_book_balance" readonly="1"/></group>
+          <group string="Closing"><field name="expected_closing_balance" readonly="1"/><field name="counted_total" readonly="1"/><field name="variance" readonly="1"/><field name="tolerance" readonly="1"/><field name="closing_requested_by_id" readonly="1"/><field name="closed_by_id" readonly="1"/><field name="closed_at" readonly="1"/></group>
+        </group>
+        <div class="d-flex gap-2 my-3">
+          <button name="action_new_transaction" type="object" string="New Cash Transaction" class="btn btn-primary" groups="clinic_finance.group_clinic_finance_cashier" invisible="state != 'open'"/>
+          <button name="action_create_variance_adjustment" type="object" string="Create Variance Adjustment" class="btn btn-secondary" groups="clinic_finance.group_clinic_finance_manager" invisible="state != 'closed' or variance == 0 or variance_transaction_id"/>
+        </div>
+        <notebook>
+          <page string="Cash Count"><field name="count_line_ids" readonly="state == 'closed'"><list editable="bottom"><field name="denomination"/><field name="quantity"/><field name="subtotal" sum="Counted Total" readonly="1"/><field name="note" optional="hide"/><button name="action_zero_quantity" type="object" string="Zero" icon="fa-eraser"/></list></field></page>
+          <page string="Notes"><field name="note"/></page>
+        </notebook>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+
+  <record id="view_cash_count_line_search" model="ir.ui.view">
+    <field name="name">clinic.finance.cash.count.line.search</field><field name="model">clinic.finance.cash.count.line</field>
+    <field name="arch" type="xml"><search><field name="session_id"/><field name="denomination"/><field name="company_id"/><group><filter name="group_session" string="Session" context="{'group_by':'session_id'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}"/></group></search></field>
+  </record>
+  <record id="view_cash_count_line_list" model="ir.ui.view">
+    <field name="name">clinic.finance.cash.count.line.list</field><field name="model">clinic.finance.cash.count.line</field>
+    <field name="arch" type="xml"><list><field name="session_id"/><field name="denomination"/><field name="quantity"/><field name="subtotal" sum="Total"/><field name="company_id" groups="base.group_multi_company"/><button name="action_open_session" type="object" string="Session" icon="fa-external-link"/></list></field>
+  </record>
+  <record id="view_cash_count_line_form" model="ir.ui.view">
+    <field name="name">clinic.finance.cash.count.line.form</field><field name="model">clinic.finance.cash.count.line</field>
+    <field name="arch" type="xml"><form><sheet><group><field name="session_id"/><field name="company_id" groups="base.group_multi_company" readonly="1"/><field name="denomination"/><field name="quantity"/><field name="subtotal" readonly="1"/><field name="note"/></group><div class="d-flex gap-2"><button name="action_zero_quantity" type="object" string="Zero Quantity" class="btn-secondary"/><button name="action_open_session" type="object" string="Open Session" class="btn-secondary"/></div></sheet></form></field>
+  </record>
+
+  <record id="action_cash_session" model="ir.actions.act_window"><field name="name">Cash Sessions</field><field name="res_model">clinic.finance.cash.session</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_cash_session_search"/></record>
+  <record id="action_cash_count_line" model="ir.actions.act_window"><field name="name">Cash Count Lines</field><field name="res_model">clinic.finance.cash.count.line</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_cash_count_line_search"/></record>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_postcare_instructions" model="ir.actions.report">
+        <field name="name">Post-Care Instructions</field>
+        <field name="model">clinic.postcare.plan</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_post_care_followup.report_postcare_instructions</field>
+        <field name="report_file">clinic_post_care_followup.report_postcare_instructions</field>
+        <field name="binding_model_id" ref="model_clinic_postcare_plan"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Post-Care Instructions - %s' % (object.name)</field>
+    </record>
+</odoo>

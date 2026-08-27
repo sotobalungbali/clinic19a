@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_feedback_expire_requests" model="ir.cron">
+        <field name="name">Clinic Feedback: Expire Requests</field>
+        <field name="model_id" ref="model_clinic_feedback_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_requests()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_feedback_auto_create_requests" model="ir.cron">
+        <field name="name">Clinic Feedback: Create Requests from Completed Care</field>
+        <field name="model_id" ref="model_clinic_feedback_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_auto_create_requests()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_feedback_overdue_escalations" model="ir.cron">
+        <field name="name">Clinic Feedback: Service-Recovery SLA Watch</field>
+        <field name="model_id" ref="model_clinic_feedback_escalation"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_mark_overdue()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

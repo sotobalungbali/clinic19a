@@ -1,0 +1,6 @@
+CLINIC_REFERRAL_RUNTIME_REPAIR_20260826_V19.0.2.0.5
+Project: ClinicOne
+Source-actual addon order: 40 / 41
+Authoritative runtime-repair baseline: clinic19a(20260826-042410).md
+Build mode: Direct Full Addon Build
+Runtime status: PENDING after Odoo 19 menu group-field repair

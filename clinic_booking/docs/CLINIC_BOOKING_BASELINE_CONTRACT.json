@@ -1,0 +1,1147 @@
+{
+  "project": "ClinicOne",
+  "addon": "clinic_booking",
+  "target_path": "/mnt/d/projects/odoo19v/clinic19a/clinic_booking",
+  "authoritative_baseline": "clinic19a(20260813-000810).md active clinic_booking source; files prefixed with digit 0 excluded as user backup",
+  "functional_status": "FINISHED_BASELINE",
+  "allowed_change": "Odoo 19 CE technical hardening, compatibility repair, enterprise UI/security completion, guardrail/testability; preserve business scope",
+  "forbidden_change": [
+    "remove/rename/merge/move existing models without explicit owner decision",
+    "remove existing fields or methods",
+    "simplify workflows or business rules",
+    "change addon/model ownership",
+    "change manifest dependencies without explicit architectural decision",
+    "edit sibling ClinicOne addons",
+    "activate dormant models/files not imported by active models/__init__.py",
+    "unbounded retry loops"
+  ],
+  "max_focused_repair_attempts_per_blocker": 3,
+  "dependencies": [
+    "base",
+    "mail",
+    "contacts",
+    "hr",
+    "account",
+    "product",
+    "sale",
+    "stock",
+    "portal",
+    "website",
+    "uom",
+    "analytic",
+    "clinic_base",
+    "clinic_audit",
+    "clinic_branch",
+    "clinic_staff",
+    "clinic_room_device",
+    "clinic_treatment_catalog",
+    "clinic_patient",
+    "clinic_doctor",
+    "clinic_queue_room",
+    "clinic_inventory"
+  ],
+  "active_model_imports": [
+    "booking_tag",
+    "booking_channel",
+    "booking_policy",
+    "booking_room",
+    "booking_resource",
+    "booking_slot",
+    "booking_recurring_rule",
+    "booking_booking",
+    "booking_line",
+    "booking_feedback_link",
+    "res_partner_inherit",
+    "clinic_doctor_inherit",
+    "treatment_inherit",
+    "account_move_inherit",
+    "stock_move_inherit"
+  ],
+  "baseline_source_files": [
+    "README.md",
+    "__init__.py",
+    "__manifest__.py",
+    "controllers/__init__.py",
+    "controllers/controllers.py",
+    "demo/demo.xml",
+    "models/__init__.py",
+    "models/account_move_inherit.py",
+    "models/booking_booking.py",
+    "models/booking_channel.py",
+    "models/booking_feedback_link.py",
+    "models/booking_line.py",
+    "models/booking_policy.py",
+    "models/booking_recurring_rule.py",
+    "models/booking_resource.py",
+    "models/booking_room.py",
+    "models/booking_slot.py",
+    "models/booking_tag.py",
+    "models/clinic_doctor_inherit.py",
+    "models/models.py",
+    "models/res_partner_inherit.py",
+    "models/stock_move_inherit.py",
+    "models/treatment_inherit.py",
+    "models/xxx_clinic_booking.py",
+    "security/ir.model.access.csv",
+    "static/description/index.html",
+    "views/templates.xml",
+    "views/views.xml"
+  ],
+  "baseline_models": {
+    "booking.tag": {
+      "file": "models/booking_tag.py",
+      "class": "BookingTag",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "color",
+        "company_id",
+        "name"
+      ],
+      "methods": [
+        "_check_name"
+      ]
+    },
+    "booking.channel": {
+      "file": "models/booking_channel.py",
+      "class": "BookingChannel",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "active",
+        "allow_prepaid_deposit",
+        "auto_create_appointment",
+        "bookings_count",
+        "channel_type",
+        "code",
+        "color",
+        "company_id",
+        "currency_id",
+        "deposit_fixed_amount",
+        "deposit_is_required",
+        "deposit_percent",
+        "description",
+        "feedback_template_id",
+        "is_online",
+        "last_booking_id",
+        "lock_slot_on_confirm",
+        "name",
+        "policy_id",
+        "reminder_template_id",
+        "sequence",
+        "website_published",
+        "website_route"
+      ],
+      "methods": [
+        "_check_code_format",
+        "_check_deposit_config",
+        "_check_deposit_percent",
+        "_compute_bookings_count",
+        "_compute_is_online",
+        "_compute_last_booking",
+        "_domain_bookings",
+        "_find_default_policy_for_channel",
+        "_onchange_allow_prepaid_deposit",
+        "_onchange_channel_type",
+        "_onchange_deposit_values",
+        "action_view_bookings",
+        "apply_defaults_to_booking",
+        "create",
+        "message_post_channel_note",
+        "name_get",
+        "write"
+      ]
+    },
+    "booking.channel.mixin": {
+      "file": "models/booking_channel.py",
+      "class": "BookingChannelMixin",
+      "base": "models.AbstractModel",
+      "inherit": null,
+      "fields": [
+        "channel_id"
+      ],
+      "methods": [
+        "_onchange_channel_id"
+      ]
+    },
+    "booking.policy": {
+      "file": "models/booking_policy.py",
+      "class": "BookingPolicy",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "active",
+        "allow_cancel",
+        "allow_prepaid_deposit",
+        "allow_reschedule",
+        "bookings_count",
+        "cancel_cutoff_unit",
+        "cancel_cutoff_value",
+        "cancel_fee_fixed",
+        "cancel_fee_percent",
+        "cancel_fee_type",
+        "channel_ids",
+        "code",
+        "color",
+        "company_id",
+        "currency_id",
+        "date_end",
+        "date_start",
+        "deposit_before_start_hours",
+        "deposit_due_timing",
+        "deposit_fixed_amount",
+        "deposit_is_required",
+        "deposit_percent",
+        "deposit_refund_policy",
+        "description",
+        "exception_ids",
+        "name",
+        "no_show_fee_fixed",
+        "no_show_fee_percent",
+        "no_show_fee_type",
+        "no_show_grace_minutes",
+        "refund_delay_days",
+        "refund_method",
+        "reschedule_cutoff_unit",
+        "reschedule_cutoff_value",
+        "reschedule_fee_fixed",
+        "reschedule_fee_percent",
+        "reschedule_fee_type",
+        "reschedule_limit",
+        "sequence"
+      ],
+      "methods": [
+        "_check_date_range",
+        "_check_deposit_config",
+        "_check_percentages",
+        "_compute_bookings_count",
+        "_compute_fee",
+        "_domain_bookings",
+        "_get_now",
+        "_hours_to_start",
+        "_is_within_effective_dates",
+        "_match_exception",
+        "_unit_to_hours",
+        "action_view_bookings",
+        "can_cancel",
+        "can_mark_no_show",
+        "can_reschedule",
+        "compute_deposit",
+        "name_get"
+      ]
+    },
+    "booking.policy.exception": {
+      "file": "models/booking_policy.py",
+      "class": "BookingPolicyException",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "action_type",
+        "channel_id",
+        "company_id",
+        "currency_id",
+        "cutoff_unit",
+        "cutoff_value",
+        "date_end",
+        "date_start",
+        "fee_fixed",
+        "fee_percent",
+        "fee_type",
+        "policy_id",
+        "sequence"
+      ],
+      "methods": [
+        "_check_dates",
+        "_check_percent"
+      ]
+    },
+    "booking.policy.mixin": {
+      "file": "models/booking_policy.py",
+      "class": "BookingPolicyMixin",
+      "base": "models.AbstractModel",
+      "inherit": null,
+      "fields": [
+        "policy_id"
+      ],
+      "methods": [
+        "_onchange_policy_id"
+      ]
+    },
+    "booking.room.tag": {
+      "file": "models/booking_room.py",
+      "class": "BookingRoomTag",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "color",
+        "company_id",
+        "name"
+      ],
+      "methods": []
+    },
+    "booking.room": {
+      "file": "models/booking_room.py",
+      "class": "BookingRoom",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "active",
+        "allowed_doctor_ids",
+        "allowed_treatment_ids",
+        "blackout_ids",
+        "bookings_count",
+        "buffer_after_minutes",
+        "buffer_before_minutes",
+        "capacity",
+        "clinic_room_id",
+        "code",
+        "color",
+        "company_id",
+        "last_booking_id",
+        "name",
+        "next_available_from",
+        "notes",
+        "resource_ids",
+        "schedule_ids",
+        "sequence",
+        "tag_ids"
+      ],
+      "methods": [
+        "_check_capacity",
+        "_compute_bookings_count",
+        "_compute_last_booking",
+        "_compute_next_available_from",
+        "_count_overlapping_bookings",
+        "_domain_bookings",
+        "_fits_weekly_schedule",
+        "_has_overlapping_booking",
+        "_overlaps_blackout",
+        "action_new_booking",
+        "action_view_bookings",
+        "is_available",
+        "name_get"
+      ]
+    },
+    "booking.room.schedule": {
+      "file": "models/booking_room.py",
+      "class": "BookingRoomSchedule",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "hour_from",
+        "hour_to",
+        "note",
+        "room_id",
+        "weekday"
+      ],
+      "methods": [
+        "_check_hours"
+      ]
+    },
+    "booking.room.blackout": {
+      "file": "models/booking_room.py",
+      "class": "BookingRoomBlackout",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "end_datetime",
+        "internal_notes",
+        "reason",
+        "room_id",
+        "start_datetime"
+      ],
+      "methods": [
+        "_check_range",
+        "action_view_conflicting_bookings"
+      ]
+    },
+    "booking.resource.tag": {
+      "file": "models/booking_resource.py",
+      "class": "BookingResourceTag",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "color",
+        "company_id",
+        "name"
+      ],
+      "methods": []
+    },
+    "booking.resource": {
+      "file": "models/booking_resource.py",
+      "class": "BookingResource",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "active",
+        "allowed_doctor_ids",
+        "allowed_treatment_ids",
+        "blackout_ids",
+        "bookings_count",
+        "buffer_after_minutes",
+        "buffer_before_minutes",
+        "capacity_concurrent",
+        "code",
+        "color",
+        "company_id",
+        "consumption_qty_per_booking",
+        "currency_id",
+        "description",
+        "last_booking_id",
+        "name",
+        "next_available_from",
+        "product_id",
+        "product_tracking",
+        "resource_type",
+        "room_ids",
+        "schedule_ids",
+        "sequence",
+        "tag_ids",
+        "track_consumption",
+        "uom_id"
+      ],
+      "methods": [
+        "_check_capacity",
+        "_check_consumption_config",
+        "_compute_bookings_count",
+        "_compute_last_booking",
+        "_compute_next_available_from",
+        "_compute_product_tracking",
+        "_count_overlapping_bookings",
+        "_domain_bookings",
+        "_fits_weekly_schedule",
+        "_has_overlapping_booking",
+        "_overlaps_blackout",
+        "action_new_booking",
+        "action_view_bookings",
+        "is_available",
+        "name_get",
+        "prepare_stock_moves"
+      ]
+    },
+    "booking.resource.schedule": {
+      "file": "models/booking_resource.py",
+      "class": "BookingResourceSchedule",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "hour_from",
+        "hour_to",
+        "note",
+        "resource_id",
+        "weekday"
+      ],
+      "methods": [
+        "_check_hours"
+      ]
+    },
+    "booking.resource.blackout": {
+      "file": "models/booking_resource.py",
+      "class": "BookingResourceBlackout",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "end_datetime",
+        "internal_notes",
+        "reason",
+        "resource_id",
+        "start_datetime"
+      ],
+      "methods": [
+        "_check_range",
+        "action_view_conflicting_bookings"
+      ]
+    },
+    "booking.resource.mixin": {
+      "file": "models/booking_resource.py",
+      "class": "BookingResourceMixin",
+      "base": "models.AbstractModel",
+      "inherit": null,
+      "fields": [
+        "resource_ids"
+      ],
+      "methods": [
+        "_onchange_resource_ids"
+      ]
+    },
+    "booking.slot": {
+      "file": "models/booking_slot.py",
+      "class": "BookingSlot",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "active",
+        "bookings_count",
+        "buffer_after_minutes",
+        "buffer_before_minutes",
+        "capacity",
+        "channel_id",
+        "code",
+        "color",
+        "company_id",
+        "currency_id",
+        "date_end",
+        "date_start",
+        "description",
+        "doctor_id",
+        "duration_minutes",
+        "hour_from",
+        "hour_to",
+        "last_booking_id",
+        "name",
+        "policy_id",
+        "recurring_rule_id",
+        "resource_ids",
+        "room_id",
+        "sequence",
+        "treatment_id",
+        "weekday"
+      ],
+      "methods": [
+        "_check_dates",
+        "_check_hours",
+        "_check_positive_values",
+        "_compute_bookings_count",
+        "_compute_last_booking",
+        "_count_overlapping_bookings",
+        "_doctor_overlaps",
+        "_domain_bookings",
+        "_float_hour_to_str",
+        "_is_effective_on",
+        "_is_exception_on",
+        "_make_datetime",
+        "_suggest_next_window",
+        "action_new_booking",
+        "action_view_bookings",
+        "apply_defaults_to_booking_vals",
+        "is_bookable_window",
+        "iter_occurrences",
+        "name_get"
+      ]
+    },
+    "booking.slot.exception": {
+      "file": "models/booking_slot.py",
+      "class": "BookingSlotException",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "capacity_override",
+        "company_id",
+        "date",
+        "hour_override_from",
+        "hour_override_to",
+        "is_disabled",
+        "note",
+        "slot_id"
+      ],
+      "methods": [
+        "_check_capacity",
+        "_check_hours"
+      ]
+    },
+    "booking.slot.mixin": {
+      "file": "models/booking_slot.py",
+      "class": "BookingSlotMixin",
+      "base": "models.AbstractModel",
+      "inherit": null,
+      "fields": [
+        "slot_id"
+      ],
+      "methods": [
+        "_onchange_slot_id"
+      ]
+    },
+    "booking.recurring.rule": {
+      "file": "models/booking_recurring_rule.py",
+      "class": "BookingRecurringRule",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "active",
+        "bysetpos",
+        "byweekday_ids",
+        "code",
+        "company_id",
+        "count",
+        "currency_id",
+        "date_end",
+        "date_start",
+        "duration_minutes",
+        "exdate_ids",
+        "freq",
+        "hour_from",
+        "hour_to",
+        "interval",
+        "monthday_ids",
+        "name",
+        "next_occurrence_date",
+        "sequence",
+        "slot_ids",
+        "slots_count",
+        "weekday_ids"
+      ],
+      "methods": [
+        "_advance",
+        "_check_dates",
+        "_check_numeric",
+        "_check_selector_requirements",
+        "_combine_date_hour",
+        "_compute_next_occurrence_date",
+        "_compute_slots_count",
+        "_is_daily_match",
+        "_is_exdate",
+        "_is_monthly_match",
+        "_is_weekly_match",
+        "_matches",
+        "_next_date_on_or_after",
+        "_sanitize_hour",
+        "action_view_slots",
+        "iter_dates",
+        "iter_windows",
+        "name_get",
+        "next_date"
+      ]
+    },
+    "booking.recurring.weekday": {
+      "file": "models/booking_recurring_rule.py",
+      "class": "BookingRecurringWeekday",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "rule_id",
+        "weekday"
+      ],
+      "methods": []
+    },
+    "booking.recurring.monthday": {
+      "file": "models/booking_recurring_rule.py",
+      "class": "BookingRecurringMonthday",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "day",
+        "rule_id"
+      ],
+      "methods": [
+        "_check_day"
+      ]
+    },
+    "booking.recurring.byweekday": {
+      "file": "models/booking_recurring_rule.py",
+      "class": "BookingRecurringByWeekday",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "rule_id",
+        "weekday"
+      ],
+      "methods": []
+    },
+    "booking.recurring.exdate": {
+      "file": "models/booking_recurring_rule.py",
+      "class": "BookingRecurringExdate",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "date",
+        "reason",
+        "rule_id"
+      ],
+      "methods": []
+    },
+    "booking.recurring.rule.mixin": {
+      "file": "models/booking_recurring_rule.py",
+      "class": "BookingRecurringRuleMixin",
+      "base": "models.AbstractModel",
+      "inherit": null,
+      "fields": [
+        "recurring_rule_id"
+      ],
+      "methods": [
+        "generate_occurrence_windows"
+      ]
+    },
+    "booking.booking": {
+      "file": "models/booking_booking.py",
+      "class": "BookingBooking",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin",
+        "booking.policy.mixin",
+        "booking.resource.mixin",
+        "booking.channel.mixin",
+        "booking.slot.mixin"
+      ],
+      "fields": [
+        "active",
+        "allow_prepaid_deposit",
+        "amount_tax",
+        "amount_total",
+        "amount_untaxed",
+        "appointment_id",
+        "auto_create_appointment",
+        "checkin_time",
+        "checkout_time",
+        "company_id",
+        "currency_id",
+        "deposit_amount",
+        "deposit_fixed_amount",
+        "deposit_is_required",
+        "deposit_percent",
+        "deposit_status",
+        "doctor_id",
+        "duration_minutes",
+        "end_datetime",
+        "invoice_id",
+        "is_no_show",
+        "line_ids",
+        "lock_slot_on_confirm",
+        "name",
+        "notes",
+        "patient_id",
+        "room_id",
+        "start_datetime",
+        "state",
+        "tag_ids",
+        "treatment_id"
+      ],
+      "methods": [
+        "_cancel_linked_appointment",
+        "_check_doctor_can_do_treatment",
+        "_check_overlaps",
+        "_check_time_range",
+        "_compute_amounts",
+        "_compute_deposit_amount",
+        "_compute_duration_minutes",
+        "_create_or_link_appointment",
+        "_doctor_overlaps",
+        "_inverse_duration_minutes",
+        "_onchange_channel_id",
+        "_onchange_slot_id",
+        "_prepare_invoice_line_from_booking_line",
+        "_schedule_initial_activities",
+        "action_apply_reschedule",
+        "action_cancel",
+        "action_confirm",
+        "action_create_invoice",
+        "action_done",
+        "action_mark_no_show",
+        "action_start",
+        "can_reschedule_to",
+        "create",
+        "name_get",
+        "write"
+      ]
+    },
+    "booking.line": {
+      "file": "models/booking_line.py",
+      "class": "BookingLine",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "analytic_account_id",
+        "booking_id",
+        "company_id",
+        "currency_id",
+        "discount",
+        "display_type",
+        "is_display_type",
+        "name",
+        "patient_id",
+        "price_subtotal",
+        "price_tax",
+        "price_total",
+        "price_unit",
+        "product_id",
+        "product_uom",
+        "product_uom_qty",
+        "resource_ids",
+        "sequence",
+        "state",
+        "tag_ids",
+        "tax_ids",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_content_presence",
+        "_check_numbers",
+        "_compute_amount",
+        "_compute_is_display_type",
+        "_onchange_product_id",
+        "_onchange_qty_uom",
+        "action_view_booking",
+        "copy_data",
+        "default_get",
+        "prepare_invoice_line_vals",
+        "prepare_resource_consumption"
+      ]
+    },
+    "booking.feedback.link": {
+      "file": "models/booking_feedback_link.py",
+      "class": "BookingFeedbackLink",
+      "base": "models.Model",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "access_path",
+        "access_url",
+        "allow_anonymous_update",
+        "booking_id",
+        "channel_id",
+        "comment",
+        "company_id",
+        "doctor_id",
+        "expiration_days",
+        "expire_at",
+        "is_expired",
+        "last_mail_id",
+        "last_reminder_at",
+        "mail_template_id",
+        "name",
+        "opened_at",
+        "patient_id",
+        "policy_id",
+        "rating_value",
+        "reminder_count",
+        "sent_at",
+        "state",
+        "submitted_at",
+        "tag_ids",
+        "token",
+        "treatment_id",
+        "would_recommend"
+      ],
+      "methods": [
+        "_check_expiration_days",
+        "_check_patient_email",
+        "_compute_access_path",
+        "_compute_access_url",
+        "_compute_expire_at",
+        "_compute_is_expired",
+        "_get_base_url",
+        "_get_mail_template",
+        "_prepare_mail_context",
+        "action_generate_link",
+        "action_mark_opened",
+        "action_open_public",
+        "action_revoke",
+        "action_send_invitation",
+        "action_send_reminder",
+        "action_submit_feedback",
+        "create",
+        "cron_expire_feedback_links",
+        "name_get",
+        "sudo_find_by_token",
+        "write"
+      ]
+    },
+    "booking.feedback.link.mixin": {
+      "file": "models/booking_feedback_link.py",
+      "class": "BookingFeedbackLinkMixin",
+      "base": "models.AbstractModel",
+      "inherit": null,
+      "fields": [
+        "feedback_link_ids"
+      ],
+      "methods": [
+        "action_new_feedback_link"
+      ]
+    },
+    "booking.doctor.schedule": {
+      "file": "models/clinic_doctor_inherit.py",
+      "class": "BookingDoctorSchedule",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "doctor_id",
+        "hour_from",
+        "hour_to",
+        "note",
+        "weekday"
+      ],
+      "methods": [
+        "_check_hours"
+      ]
+    },
+    "booking.doctor.blackout": {
+      "file": "models/clinic_doctor_inherit.py",
+      "class": "BookingDoctorBlackout",
+      "base": "models.Model",
+      "inherit": null,
+      "fields": [
+        "active",
+        "company_id",
+        "doctor_id",
+        "end_datetime",
+        "internal_notes",
+        "reason",
+        "start_datetime"
+      ],
+      "methods": [
+        "_check_range",
+        "action_view_conflicting_bookings"
+      ]
+    }
+  },
+  "baseline_extensions": [
+    {
+      "model": "res.partner",
+      "file": "models/res_partner_inherit.py",
+      "class": "ResPartner",
+      "fields": [
+        "allow_portal_booking",
+        "booking_cancel_count",
+        "booking_confirmed_count",
+        "booking_count",
+        "booking_done_count",
+        "booking_ids",
+        "booking_noshow_count",
+        "booking_reminder_hours_before",
+        "booking_reminder_method",
+        "feedback_avg_rating",
+        "feedback_count",
+        "last_booking_id",
+        "next_booking_id",
+        "next_booking_start",
+        "preferred_channel_id",
+        "preferred_doctor_id",
+        "preferred_policy_id",
+        "preferred_treatment_ids"
+      ],
+      "methods": [
+        "_booking_domain_base",
+        "_check_preferred_pairs",
+        "_check_reminder_hours",
+        "_compute_booking_stats",
+        "_compute_feedback_stats",
+        "_compute_last_next_booking",
+        "_get_smart_button_label",
+        "_onchange_preferred_channel_id",
+        "_onchange_preferred_doctor_id",
+        "_prepare_default_booking_context",
+        "action_new_booking",
+        "action_send_next_booking_reminder",
+        "action_view_bookings",
+        "action_view_last_booking",
+        "action_view_next_booking"
+      ]
+    },
+    {
+      "model": "clinic.doctor",
+      "file": "models/clinic_doctor_inherit.py",
+      "class": "ClinicDoctor",
+      "fields": [
+        "blackout_ids",
+        "booking_default_channel_id",
+        "booking_default_policy_id",
+        "booking_default_resource_ids",
+        "booking_default_room_ids",
+        "bookings_count",
+        "buffer_after_minutes",
+        "buffer_before_minutes",
+        "busy_now",
+        "last_booking_id",
+        "next_available_from",
+        "schedule_ids"
+      ],
+      "methods": [
+        "_check_buffers",
+        "_compute_booking_stats",
+        "_compute_last_and_busy",
+        "_compute_next_available_from",
+        "_domain_bookings",
+        "_fits_weekly_schedule",
+        "_has_overlapping_appointment",
+        "_has_overlapping_booking",
+        "_overlaps_blackout",
+        "action_new_booking",
+        "action_view_bookings",
+        "is_available",
+        "name_get"
+      ]
+    },
+    {
+      "model": "clinic.treatment",
+      "file": "models/treatment_inherit.py",
+      "class": "ClinicTreatment",
+      "fields": [
+        "allowed_doctor_ids",
+        "booking_buffer_after_minutes",
+        "booking_buffer_before_minutes",
+        "booking_contraindication_note",
+        "booking_default_channel_id",
+        "booking_default_duration_minutes",
+        "booking_default_policy_id",
+        "booking_default_resource_ids",
+        "booking_default_room_ids",
+        "bookings_count",
+        "last_booking_id"
+      ],
+      "methods": [
+        "_check_booking_numbers",
+        "_compute_booking_stats",
+        "_compute_last_booking",
+        "_onchange_allowed_doctor_ids",
+        "_onchange_booking_default_resource_ids",
+        "action_new_booking",
+        "action_view_bookings",
+        "apply_defaults_to_booking_vals",
+        "check_doctor_allowed",
+        "filter_resources_for_doctor"
+      ]
+    },
+    {
+      "model": "account.move",
+      "file": "models/account_move_inherit.py",
+      "class": "AccountMove",
+      "fields": [
+        "booking_channel_id",
+        "booking_charge_kind",
+        "booking_deposit_amount",
+        "booking_id",
+        "booking_patient_id",
+        "booking_policy_id",
+        "booking_state"
+      ],
+      "methods": [
+        "_check_company_consistency",
+        "_check_partner_patient_consistency",
+        "_compute_booking_deposit_amount",
+        "_onchange_booking_id",
+        "_onchange_partner_id_booking_guard",
+        "_prepare_invoice_line_from_booking_line",
+        "action_post",
+        "action_pull_lines_from_booking",
+        "action_view_booking"
+      ]
+    },
+    {
+      "model": "account.move.line",
+      "file": "models/account_move_inherit.py",
+      "class": "AccountMoveLine",
+      "fields": [
+        "booking_fee_type",
+        "booking_id",
+        "booking_line_id",
+        "is_booking_fee"
+      ],
+      "methods": [
+        "_check_booking_line_company_and_header",
+        "_onchange_booking_line_id"
+      ]
+    },
+    {
+      "model": "stock.move",
+      "file": "models/stock_move_inherit.py",
+      "class": "StockMove",
+      "fields": [
+        "booking_id",
+        "booking_line_id",
+        "doctor_id",
+        "is_booking_consumption",
+        "patient_id",
+        "resource_id",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_booking_line_header",
+        "_check_company_consistency",
+        "_onchange_booking_id",
+        "_onchange_booking_line_id",
+        "_prepare_move_vals_from_booking_line"
+      ]
+    },
+    {
+      "model": "stock.picking",
+      "file": "models/stock_move_inherit.py",
+      "class": "StockPicking",
+      "fields": [
+        "booking_id",
+        "doctor_id",
+        "is_booking_consumption",
+        "patient_id",
+        "treatment_id"
+      ],
+      "methods": [
+        "_check_booking_company",
+        "_check_moves_booking_link",
+        "_onchange_booking_id",
+        "action_load_moves_from_booking",
+        "action_view_booking",
+        "button_validate"
+      ]
+    }
+  ],
+  "persistent_custom_models": [
+    "booking.tag",
+    "booking.channel",
+    "booking.policy",
+    "booking.policy.exception",
+    "booking.room.tag",
+    "booking.room",
+    "booking.room.schedule",
+    "booking.room.blackout",
+    "booking.resource.tag",
+    "booking.resource",
+    "booking.resource.schedule",
+    "booking.resource.blackout",
+    "booking.slot",
+    "booking.slot.exception",
+    "booking.recurring.rule",
+    "booking.recurring.weekday",
+    "booking.recurring.monthday",
+    "booking.recurring.byweekday",
+    "booking.recurring.exdate",
+    "booking.booking",
+    "booking.line",
+    "booking.feedback.link",
+    "booking.doctor.schedule",
+    "booking.doctor.blackout"
+  ],
+  "expected_active_models_constraint_count": 19,
+  "expected_total_models_constraint_count_after_hardening": 37
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_feedback_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Feedback Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_feedback', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_feedback" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.feedback</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Feedback"
+                     name="clinic_feedback"
+                     groups="clinic_feedback.group_feedback_manager">
+                    <block title="Survey Defaults">
+                        <setting string="Default Feedback Survey">
+                            <field name="clinic_feedback_default_survey_id"
+                                   options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Default Service-Recovery Owner">
+                            <field name="clinic_feedback_default_owner_staff_id"/>
+                        </setting>
+                    </block>
+
+                    <block title="Escalation Thresholds">
+                        <setting string="Low Rating Threshold"
+                                 help="Overall ratings at or below this 1-5 threshold require review.">
+                            <field name="clinic_feedback_low_rating_threshold"/>
+                        </setting>
+                        <setting string="NPS Escalation Threshold"
+                                 help="NPS scores at or below this 0-10 threshold require review.">
+                            <field name="clinic_feedback_nps_escalation_threshold"/>
+                        </setting>
+                        <setting string="Service-Recovery SLA">
+                            <field name="clinic_feedback_escalation_sla_hours"/>
+                        </setting>
+                    </block>
+
+                    <block title="Automation">
+                        <setting string="Auto-Create from Completed Encounters">
+                            <field name="clinic_feedback_auto_from_encounter"/>
+                        </setting>
+                        <setting string="Auto-Create from Completed Post-Care">
+                            <field name="clinic_feedback_auto_from_postcare"/>
+                        </setting>
+                        <setting string="Auto-Send Generated Requests"
+                                 help="Email only; no SMS/WhatsApp/API provider is assumed.">
+                            <field name="clinic_feedback_auto_send"/>
+                        </setting>
+                        <setting string="Source Lookback">
+                            <field name="clinic_feedback_source_lookback_days"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="clinic_shop_catalog" name="ClinicOne Online Catalog">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure o_clinic_shop">
+                <section class="container py-5">
+                    <div class="o_clinic_shop_hero p-4 p-lg-5 mb-4">
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-8">
+                                <span class="badge text-bg-primary mb-3">ClinicOne Online Services</span>
+                                <h1 class="display-6 fw-semibold mb-3">Clinic Online Catalog</h1>
+                                <p class="lead mb-0">
+                                    Browse clinic treatments, packages, memberships and other approved offerings.
+                                    Checkout, payment and invoicing continue through the standard Odoo eCommerce lifecycle.
+                                </p>
+                            </div>
+                            <div class="col-lg-4 text-lg-end">
+                                <a href="/shop/cart" class="btn btn-primary btn-lg">
+                                    <i class="fa fa-shopping-cart me-2"/>View Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div t-if="company.clinic_ecom_show_disclaimer and company.clinic_ecom_disclaimer"
+                         class="alert alert-info o_clinic_shop_guardrails">
+                        <t t-out="company.clinic_ecom_disclaimer"/>
+                    </div>
+
+                    <div t-if="not cards" class="alert alert-light border text-center py-5">
+                        <i class="fa fa-info-circle fa-2x mb-3"/>
+                        <h4>No online clinic offerings are currently published.</h4>
+                        <p class="text-muted mb-0">Please contact the clinic if you need assistance.</p>
+                    </div>
+
+                    <div class="row g-4" t-if="cards">
+                        <t t-foreach="cards" t-as="card">
+                            <t t-set="item" t-value="card['item']"/>
+                            <t t-set="product" t-value="card['product']"/>
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <article class="card o_clinic_shop_card h-100 border">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="mb-3">
+                                            <img t-if="product"
+                                                 t-att-src="'/web/image/product.product/%s/image_512' % product.id"
+                                                 t-att-alt="item.name"
+                                                 class="o_clinic_shop_image w-100"/>
+                                            <div t-else="" class="o_clinic_shop_image w-100 d-flex align-items-center justify-content-center text-muted">
+                                                <i class="fa fa-medkit fa-3x"/>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                            <span class="badge text-bg-light border">
+                                                <t t-esc="card['offering_label']"/>
+                                            </span>
+                                            <span t-if="item.requires_login" class="badge text-bg-secondary">Sign-in required</span>
+                                        </div>
+                                        <h3 class="h5 mb-2"><t t-esc="item.name"/></h3>
+                                        <p t-if="item.public_summary" class="text-muted flex-grow-1">
+                                            <t t-esc="item.public_summary"/>
+                                        </p>
+                                        <div class="o_clinic_shop_price mb-3">
+                                            <t t-esc="card['price_display']"/>
+                                        </div>
+                                        <a t-att-href="item.website_url"
+                                           class="btn btn-outline-primary w-100">
+                                            View Offering
+                                        </a>
+                                    </div>
+                                </article>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="clinic_shop_item" name="ClinicOne Online Offering">
+        <t t-call="website.layout">
+            <t t-set="item" t-value="card['item']"/>
+            <t t-set="product" t-value="card['product']"/>
+            <div id="wrap" class="oe_structure o_clinic_shop">
+                <section class="container py-5">
+                    <div class="mb-4">
+                        <a href="/clinic/shop" class="text-decoration-none">
+                            <i class="fa fa-arrow-left me-2"/>Back to Clinic Catalog
+                        </a>
+                    </div>
+
+                    <div class="row g-5">
+                        <div class="col-lg-6">
+                            <img t-if="product"
+                                 t-att-src="'/web/image/product.product/%s/image_1024' % product.id"
+                                 t-att-alt="item.name"
+                                 class="o_clinic_shop_image w-100"/>
+                            <div t-else="" class="o_clinic_shop_image w-100 d-flex align-items-center justify-content-center text-muted">
+                                <i class="fa fa-medkit fa-5x"/>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge text-bg-primary">
+                                    <t t-esc="card['offering_label']"/>
+                                </span>
+                                <span t-if="item.requires_patient" class="badge text-bg-light border">Patient card required</span>
+                                <span t-if="item.requires_branch" class="badge text-bg-light border">Branch required</span>
+                                <span t-if="item.requires_schedule" class="badge text-bg-light border">Scheduling preference required</span>
+                            </div>
+
+                            <h1 class="display-6 fw-semibold"><t t-esc="item.name"/></h1>
+                            <p t-if="item.public_summary" class="lead text-muted">
+                                <t t-esc="item.public_summary"/>
+                            </p>
+                            <div class="o_clinic_shop_price my-4">
+                                <t t-esc="card['price_display']"/>
+                            </div>
+
+                            <div t-if="item.public_description" class="mb-4">
+                                <t t-out="item.public_description"/>
+                            </div>
+
+                            <div t-if="is_public_user and (item.requires_login or not company.clinic_ecommerce_allow_guest)"
+                                 class="alert alert-warning">
+                                <strong>Sign-in required.</strong>
+                                Please sign in before adding this clinic offering to your cart.
+                            </div>
+
+                            <div t-if="not is_public_user and item.requires_patient and not patient"
+                                 class="alert alert-warning">
+                                Your Contact does not currently have an active Clinic Patient card for this company.
+                                Please contact clinic staff before checkout.
+                            </div>
+
+                            <form t-att-action="'/clinic/shop/add/%s' % item.id"
+                                  method="post"
+                                  class="border rounded-3 p-4 bg-light">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div t-if="branches" class="mb-3">
+                                    <label class="form-label fw-semibold" for="branch_id">Clinic Branch</label>
+                                    <select name="branch_id" id="branch_id" class="form-select">
+                                        <option value="">Select Branch</option>
+                                        <t t-foreach="branches" t-as="branch">
+                                            <option t-att-value="branch.id"
+                                                    t-att-selected="item.default_branch_id and branch.id == item.default_branch_id.id">
+                                                <t t-esc="branch.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+
+                                <div t-if="item.requires_schedule" class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold" for="preferred_date">Preferred Date</label>
+                                        <input type="date" name="preferred_date" id="preferred_date" class="form-control" required="required"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold" for="time_window">Preferred Time Window</label>
+                                        <select name="time_window" id="time_window" class="form-select">
+                                            <option value="flexible">Flexible</option>
+                                            <option value="morning">Morning</option>
+                                            <option value="afternoon">Afternoon</option>
+                                            <option value="evening">Evening</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-text">
+                                            This is a preference only. Clinic staff assigns the exact Booking time through the Booking owner workflow after purchase.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div t-if="not item.single_quantity_only" class="mb-3">
+                                    <label class="form-label fw-semibold" for="quantity">Quantity</label>
+                                    <input type="number"
+                                           name="quantity"
+                                           id="quantity"
+                                           class="form-control"
+                                           t-att-min="item.min_quantity"
+                                           t-att-max="item.max_quantity or None"
+                                           t-att-value="item.min_quantity"
+                                           step="1"/>
+                                </div>
+                                <input t-else="" type="hidden" name="quantity" value="1"/>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold" for="notes">Notes for Clinic Staff</label>
+                                    <textarea name="notes" id="notes" rows="3" class="form-control"
+                                              placeholder="Optional notes or scheduling context"/>
+                                </div>
+
+                                <div t-if="item.customer_disclaimer" class="alert alert-info">
+                                    <t t-out="item.customer_disclaimer"/>
+                                </div>
+
+                                <div t-if="item.terms_required or company.clinic_ecommerce_require_terms"
+                                     class="form-check mb-4">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="terms_accepted"
+                                           value="1"
+                                           id="terms_accepted"
+                                           required="required"/>
+                                    <label class="form-check-label" for="terms_accepted">
+                                        I acknowledge the Clinic purchase terms and understand that treatment scheduling/clinical workflows remain subject to clinic confirmation.
+                                    </label>
+                                </div>
+
+                                <button type="submit"
+                                        class="btn btn-primary btn-lg w-100"
+                                        t-att-disabled="(is_public_user and (item.requires_login or not company.clinic_ecommerce_allow_guest)) or (not is_public_user and item.requires_patient and not patient)">
+                                    <i class="fa fa-shopping-cart me-2"/>Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="clinic_shop_error" name="ClinicOne Shop Error">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure o_clinic_shop">
+                <section class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-7">
+                            <div class="alert alert-warning p-4">
+                                <div class="d-flex gap-3 align-items-start">
+                                    <i class="fa fa-exclamation-triangle fa-2x"/>
+                                    <div>
+                                        <h2 class="h4">Clinic Online Purchase Needs Attention</h2>
+                                        <p class="mb-3"><t t-esc="message"/></p>
+                                        <a t-att-href="back_url" class="btn btn-primary">Return</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

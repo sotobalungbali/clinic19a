@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_triage_level_search" model="ir.ui.view">
+        <field name="name">clinic.triage.level.search</field>
+        <field name="model">clinic.triage.level</field>
+        <field name="arch" type="xml">
+            <search string="Triage Levels">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="recommended_room_type_id"/>
+                <field name="default_queue_stage_id"/>
+                <filter name="filter_active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="filter_billable" string="Billable" domain="[('billable', '=', True)]"/>
+                <filter name="filter_auto_escalate" string="Auto Escalate" domain="[('auto_escalate', '=', True)]"/>
+                <separator/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_room_type" string="Room Type" context="{'group_by': 'recommended_room_type_id'}"/>
+                    <filter name="group_queue_stage" string="Queue Stage" context="{'group_by': 'default_queue_stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_triage_level_list" model="ir.ui.view">
+        <field name="name">clinic.triage.level.list</field>
+        <field name="model">clinic.triage.level</field>
+        <field name="arch" type="xml">
+            <list string="Triage Levels" default_order="sequence, weight desc, id">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="sla_minutes"/>
+                <field name="weight"/>
+                <field name="recommended_room_type_id" optional="show"/>
+                <field name="default_queue_stage_id" optional="show"/>
+                <field name="auto_escalate" optional="show"/>
+                <field name="billable" optional="show"/>
+                <field name="default_fee" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_triage_level_form" model="ir.ui.view">
+        <field name="name">clinic.triage.level.form</field>
+        <field name="model">clinic.triage.level</field>
+        <field name="arch" type="xml">
+            <form string="Triage Level">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Emergency / Red"/></h1>
+                        <div class="o_row">
+                            <field name="code" placeholder="RED"/>
+                            <field name="active"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Priority &amp; SLA">
+                            <field name="sequence"/>
+                            <field name="weight"/>
+                            <field name="sla_minutes"/>
+                            <field name="color"/>
+                            <field name="color_hex"/>
+                        </group>
+                        <group string="Routing &amp; Billing">
+                            <field name="recommended_room_type_id"/>
+                            <field name="default_queue_stage_id"/>
+                            <field name="billable"/>
+                            <field name="product_id" invisible="not billable"/>
+                            <field name="default_fee" invisible="not billable"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Clinical Thresholds" name="thresholds">
+                            <group>
+                                <group string="Temperature / Respiratory">
+                                    <field name="temp_min_c"/>
+                                    <field name="temp_max_c"/>
+                                    <field name="rr_min_bpm"/>
+                                    <field name="rr_max_bpm"/>
+                                    <field name="spo2_min_percent"/>
+                                </group>
+                                <group string="Cardiovascular / Neurologic">
+                                    <field name="hr_min_bpm"/>
+                                    <field name="hr_max_bpm"/>
+                                    <field name="sbp_min_mm_hg"/>
+                                    <field name="sbp_max_mm_hg"/>
+                                    <field name="dbp_min_mm_hg"/>
+                                    <field name="dbp_max_mm_hg"/>
+                                    <field name="gcs_min"/>
+                                    <field name="gcs_max"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Escalation" name="escalation">
+                            <group>
+                                <field name="auto_escalate"/>
+                                <field name="escalate_after_minutes" invisible="not auto_escalate"/>
+                                <field name="escalate_to_level_id" invisible="not auto_escalate"/>
+                                <field name="default_activity_type_id"/>
+                                <field name="rule_domain"/>
+                            </group>
+                        </page>
+                        <page string="Guidelines" name="guidelines">
+                            <field name="description" placeholder="Short clinical description..."/>
+                            <field name="guidelines_html" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_triage_level" model="ir.actions.act_window">
+        <field name="name">Triage Levels</field>
+        <field name="res_model">clinic.triage.level</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_triage_level_search"/>
+    </record>
+</odoo>

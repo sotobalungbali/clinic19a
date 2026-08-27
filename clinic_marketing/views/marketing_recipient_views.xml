@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_marketing_recipient_search" model="ir.ui.view">
+        <field name="name">clinic.marketing.recipient.search</field>
+        <field name="model">clinic.marketing.recipient</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="campaign_id"/>
+                <field name="patient_id"/>
+                <field name="partner_id"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <filter name="included" string="Included" domain="[('inclusion_state','=','included')]"/>
+                <filter name="excluded" string="Excluded" domain="[('inclusion_state','=','excluded')]"/>
+                <filter name="email" string="Email Eligible" domain="[('email_allowed','=',True)]"/>
+                <filter name="whatsapp" string="WhatsApp Eligible" domain="[('whatsapp_allowed','=',True)]"/>
+                <filter name="email_failed" string="Email Failed/Bounced" domain="[('email_delivery_state','in',('failed','bounced'))]"/>
+                <group>
+                    <filter name="group_campaign" string="Campaign" context="{'group_by':'campaign_id'}"/>
+                    <filter name="group_inclusion" string="Inclusion" context="{'group_by':'inclusion_state'}"/>
+                    <filter name="group_email" string="Email Delivery" context="{'group_by':'email_delivery_state'}"/>
+                    <filter name="group_whatsapp" string="WhatsApp Delivery" context="{'group_by':'whatsapp_state'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_marketing_recipient_list" model="ir.ui.view">
+        <field name="name">clinic.marketing.recipient.list</field>
+        <field name="model">clinic.marketing.recipient</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0"
+                  decoration-success="inclusion_state == 'included'"
+                  decoration-muted="inclusion_state == 'excluded'"
+                  decoration-danger="email_delivery_state in ('failed','bounced') or whatsapp_state == 'failed'">
+                <field name="campaign_id"/>
+                <field name="patient_id"/>
+                <field name="partner_id"/>
+                <field name="email"/>
+                <field name="mobile"/>
+                <field name="inclusion_state" widget="badge"/>
+                <field name="email_allowed"/>
+                <field name="email_delivery_state" widget="badge"/>
+                <field name="whatsapp_allowed"/>
+                <field name="whatsapp_state" widget="badge"/>
+                <field name="exclusion_reason"/>
+                <field name="branch_id"/>
+                <button name="action_open_patient" type="object" string="Patient" icon="fa-user-md"/>
+                <button name="action_open_preference" type="object" string="Consent" icon="fa-check-circle"
+                        invisible="not preference_id"/>
+                <button name="action_open_whatsapp_messages" type="object" string="WhatsApp" icon="fa-comments"
+                        invisible="not whatsapp_allowed"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_marketing_recipient_form" model="ir.ui.view">
+        <field name="name">clinic.marketing.recipient.form</field>
+        <field name="model">clinic.marketing.recipient</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_campaign" type="object" class="oe_stat_button" icon="fa-bullhorn">
+                            <div class="o_stat_info"><span class="o_stat_text">Campaign</span></div>
+                        </button>
+                        <button name="action_open_patient" type="object" class="oe_stat_button" icon="fa-user-md">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient</span></div>
+                        </button>
+                        <button name="action_open_preference" type="object" class="oe_stat_button" icon="fa-check-circle"
+                                invisible="not preference_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Preference</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="partner_id"/></h1>
+                    </div>
+                    <group>
+                        <group string="Audience Snapshot">
+                            <field name="campaign_id"/>
+                            <field name="segment_id"/>
+                            <field name="promotion_id"/>
+                            <field name="patient_id"/>
+                            <field name="preference_id"/>
+                            <field name="inclusion_state" widget="badge"/>
+                            <field name="exclusion_reason"/>
+                        </group>
+                        <group string="Channel Snapshot">
+                            <field name="email"/>
+                            <field name="email_allowed"/>
+                            <field name="email_delivery_state" widget="badge"/>
+                            <field name="email_failure_reason"/>
+                            <field name="mobile"/>
+                            <field name="whatsapp_allowed"/>
+                            <field name="whatsapp_state" widget="badge"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_patient" type="object" string="Open Patient" class="btn btn-primary"/>
+                        <button name="action_open_preference" type="object" string="Open Marketing Preference" class="btn btn-secondary"
+                                invisible="not preference_id"/>
+                        <button name="action_open_whatsapp_messages" type="object" string="Open WhatsApp Messages" class="btn btn-secondary"
+                                invisible="not whatsapp_allowed"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_marketing_recipient_pivot" model="ir.ui.view">
+        <field name="name">clinic.marketing.recipient.pivot</field>
+        <field name="model">clinic.marketing.recipient</field>
+        <field name="arch" type="xml">
+            <pivot string="Marketing Audience Analysis">
+                <field name="campaign_id" type="row"/>
+                <field name="inclusion_state" type="col"/>
+                <field name="record_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_marketing_recipient_graph" model="ir.ui.view">
+        <field name="name">clinic.marketing.recipient.graph</field>
+        <field name="model">clinic.marketing.recipient</field>
+        <field name="arch" type="xml">
+            <graph string="Marketing Audience" type="bar">
+                <field name="campaign_id"/>
+                <field name="record_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_marketing_recipient" model="ir.actions.act_window">
+        <field name="name">Audience Recipients</field>
+        <field name="res_model">clinic.marketing.recipient</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_marketing_recipient_search"/>
+    </record>
+</odoo>
+

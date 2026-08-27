@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_clinic_queue_stage_company" model="ir.rule">
+        <field name="name">Clinic Queue Stage: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_queue_stage"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_queue_token_company" model="ir.rule">
+        <field name="name">Clinic Queue Token: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_queue_token"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_queue_company" model="ir.rule">
+        <field name="name">Clinic Queue: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_queue"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_room_assignment_company" model="ir.rule">
+        <field name="name">Clinic Room Assignment: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_room_assignment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_queue_event_company" model="ir.rule">
+        <field name="name">Clinic Queue Event: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_queue_event"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_queue_channel_company" model="ir.rule">
+        <field name="name">Clinic Queue Channel: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_queue_channel"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_queue_visit_company" model="ir.rule">
+        <field name="name">Clinic Queue Visit: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_queue_visit"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_clinic_queue_ticket_company" model="ir.rule">
+        <field name="name">Clinic Queue Ticket: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_queue_ticket"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

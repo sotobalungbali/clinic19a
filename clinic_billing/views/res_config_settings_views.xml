@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_config_settings_clinic_billing" model="ir.ui.view">
+        <field name="name">res.config.settings.clinic.billing</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Clinic Billing" name="clinic_billing">
+                    <block title="Discounts &amp; Vouchers">
+                        <setting string="Auto-apply discounts on confirmation">
+                            <field name="discount_auto_apply_on_confirm"/>
+                        </setting>
+                        <setting string="Discount service product">
+                            <field name="discount_product_code"/>
+                        </setting>
+                        <setting string="Auto-apply vouchers on confirmation">
+                            <field name="voucher_auto_apply_on_confirm"/>
+                        </setting>
+                        <setting string="Reserve gift-card value on confirmation">
+                            <field name="voucher_reserve_on_confirm"/>
+                        </setting>
+                        <setting string="Voucher service product">
+                            <field name="voucher_product_code"/>
+                        </setting>
+                    </block>
+                    <block title="Membership / Wallet">
+                        <setting string="Auto-apply membership benefits">
+                            <field name="membership_auto_apply_on_confirm"/>
+                        </setting>
+                        <setting string="Reserve membership value">
+                            <field name="membership_reserve_on_confirm"/>
+                        </setting>
+                        <setting string="Membership deduction product">
+                            <field name="membership_product_code"/>
+                        </setting>
+                    </block>
+                    <block title="Insurance">
+                        <setting string="Default insurance coverage">
+                            <field name="insurance_default_coverage_percent"/>
+                        </setting>
+                        <setting string="Default patient co-pay">
+                            <field name="insurance_default_copay_percent"/>
+                        </setting>
+                        <setting string="Insurance settlement journal">
+                            <field name="insurance_settlement_journal_id"/>
+                        </setting>
+                    </block>
+                    <block title="Provider Commission">
+                        <setting string="Default commission percentage">
+                            <field name="commission_default_percent"/>
+                        </setting>
+                        <setting string="Commission base">
+                            <field name="commission_base_type"/>
+                        </setting>
+                        <setting string="Expense account">
+                            <field name="commission_expense_account_id"/>
+                        </setting>
+                        <setting string="Payable account">
+                            <field name="commission_payable_account_id"/>
+                        </setting>
+                        <setting string="Settlement journal">
+                            <field name="commission_settlement_journal_id"/>
+                        </setting>
+                    </block>
+                    <block title="Payment Gateway" groups="base.group_system">
+                        <setting string="Enforce webhook signatures">
+                            <field name="gateway_enforce_signature"/>
+                        </setting>
+                        <setting string="Default gateway journal">
+                            <field name="gateway_default_journal_id"/>
+                        </setting>
+                        <setting string="Midtrans server key">
+                            <field name="gateway_midtrans_server_key" password="True"/>
+                        </setting>
+                        <setting string="Xendit callback token">
+                            <field name="gateway_xendit_callback_token" password="True"/>
+                        </setting>
+                        <setting string="Stripe webhook secret">
+                            <field name="gateway_stripe_webhook_secret" password="True"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_clinic_billing_settings" model="ir.actions.act_window">
+        <field name="name">Billing Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_billing'}</field>
+    </record>
+</odoo>

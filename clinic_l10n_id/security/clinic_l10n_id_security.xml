@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_clinic_l10n_id" model="ir.module.category">
+        <field name="name">ClinicOne Indonesia Localization</field>
+        <field name="sequence">62</field>
+    </record>
+
+    <record id="privilege_clinic_l10n_id" model="res.groups.privilege">
+        <field name="name">ClinicOne Indonesia Localization</field>
+        <field name="category_id" ref="clinic_l10n_id.module_category_clinic_l10n_id"/>
+        <field name="sequence">62</field>
+    </record>
+
+    <record id="group_clinic_l10n_id_user" model="res.groups">
+        <field name="name">Indonesia Localization User</field>
+        <field name="privilege_id" ref="clinic_l10n_id.privilege_clinic_l10n_id"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_accounting.group_clinic_accounting_user'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_l10n_id_accountant" model="res.groups">
+        <field name="name">Indonesia Tax Accountant</field>
+        <field name="privilege_id" ref="clinic_l10n_id.privilege_clinic_l10n_id"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_user')),
+            Command.link(ref('clinic_accounting.group_clinic_accounting_accountant'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_l10n_id_approver" model="res.groups">
+        <field name="name">Indonesia Tax Approver</field>
+        <field name="privilege_id" ref="clinic_l10n_id.privilege_clinic_l10n_id"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_accountant')),
+            Command.link(ref('clinic_accounting.group_clinic_accounting_approver'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_l10n_id_manager" model="res.groups">
+        <field name="name">Indonesia Localization Manager</field>
+        <field name="privilege_id" ref="clinic_l10n_id.privilege_clinic_l10n_id"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_approver')),
+            Command.link(ref('clinic_accounting.group_clinic_accounting_manager'))
+        ]"/>
+    </record>
+
+    <record id="rule_tax_profile_company" model="ir.rule">
+        <field name="name">Indonesia Tax Profile: allowed companies</field>
+        <field name="model_id" ref="model_clinic_l10n_id_tax_profile"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_user'))]"/>
+    </record>
+
+    <record id="rule_tax_report_company" model="ir.rule">
+        <field name="name">PPN Report: allowed companies</field>
+        <field name="model_id" ref="model_clinic_l10n_id_tax_report"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_user'))]"/>
+    </record>
+
+    <record id="rule_tax_report_line_company" model="ir.rule">
+        <field name="name">PPN Report Line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_l10n_id_tax_report_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_user'))]"/>
+    </record>
+
+    <record id="rule_numbering_policy_company" model="ir.rule">
+        <field name="name">Numbering Policy: allowed companies</field>
+        <field name="model_id" ref="model_clinic_l10n_id_numbering_policy"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_user'))]"/>
+    </record>
+
+    <record id="rule_compliance_run_company" model="ir.rule">
+        <field name="name">Indonesia Compliance Run: allowed companies</field>
+        <field name="model_id" ref="model_clinic_l10n_id_compliance_run"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_user'))]"/>
+    </record>
+
+    <record id="rule_compliance_line_company" model="ir.rule">
+        <field name="name">Indonesia Compliance Line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_l10n_id_compliance_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_l10n_id.group_clinic_l10n_id_user'))]"/>
+    </record>
+</odoo>
+

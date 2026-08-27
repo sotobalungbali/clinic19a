@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_quality_check_search" model="ir.ui.view">
+        <field name="name">clinic.quality.check.search</field>
+        <field name="model">clinic.quality.check</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="template_id"/>
+                <field name="sop_version_id"/>
+                <field name="performed_by_user_id"/>
+                <field name="reviewed_by_user_id"/>
+                <field name="branch_id"/>
+                <field name="room_id"/>
+                <field name="staff_id"/>
+                <field name="doctor_id"/>
+                <field name="stock_lot_id"/>
+                <field name="treatment_id"/>
+                <field name="company_id"/>
+
+                <filter name="open_checks" string="Open Checks"
+                        domain="[('state','in',('draft','in_progress','review'))]"/>
+                <filter name="review" string="Awaiting Review"
+                        domain="[('state','=','review')]"/>
+                <filter name="nonconforming" string="Nonconforming"
+                        domain="[('overall_result','in',('nonconforming','critical_nonconformity'))]"/>
+                <filter name="critical" string="Critical Nonconformity"
+                        domain="[('overall_result','=','critical_nonconformity')]"/>
+                <filter name="closed" string="Closed"
+                        domain="[('state','=','closed')]"/>
+                <filter name="planned" string="Planned Date" date="planned_date"/>
+
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_result" string="Result" context="{'group_by':'overall_result'}"/>
+                    <filter name="group_template" string="Template" context="{'group_by':'template_id'}"/>
+                    <filter name="group_scope" string="Scope Type" context="{'group_by':'scope_type'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_inspector" string="Inspector" context="{'group_by':'performed_by_user_id'}"/>
+                    <filter name="group_reviewer" string="Reviewer" context="{'group_by':'reviewed_by_user_id'}"/>
+                    <filter name="group_month" string="Planned Month" context="{'group_by':'planned_date:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_quality_check_list" model="ir.ui.view">
+        <field name="name">clinic.quality.check.list</field>
+        <field name="model">clinic.quality.check</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="overall_result == 'critical_nonconformity'"
+                  decoration-warning="overall_result == 'nonconforming' or state == 'review'"
+                  decoration-success="state == 'closed' and overall_result == 'conforming'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="planned_date"/>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="template_id"/>
+                <field name="scope_type" widget="badge"/>
+                <field name="branch_id"/>
+                <field name="performed_by_user_id"/>
+                <field name="compliance_score"/>
+                <field name="target_score"/>
+                <field name="fail_count"/>
+                <field name="critical_fail_count"/>
+                <field name="incident_count"/>
+                <field name="overall_result" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_start" type="object" string="Start" icon="fa-play"
+                        groups="clinic_quality.group_quality_inspector"
+                        invisible="state != 'draft'"/>
+                <button name="action_submit_review" type="object" string="Submit" icon="fa-send"
+                        groups="clinic_quality.group_quality_inspector"
+                        invisible="state != 'in_progress'"/>
+                <button name="action_create_incidents_for_failed_lines" type="object" string="Escalate" icon="fa-exclamation-triangle"
+                        groups="clinic_quality.group_quality_approver"
+                        invisible="state not in ('review','closed') or fail_count == 0"/>
+                <button name="action_print_quality_check" type="object" string="PDF" icon="fa-file-pdf-o"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_quality_check_kanban" model="ir.ui.view">
+        <field name="name">clinic.quality.check.kanban</field>
+        <field name="model">clinic.quality.check</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="template_id"/>
+                <field name="scope_type"/>
+                <field name="branch_id"/>
+                <field name="planned_date"/>
+                <field name="compliance_score"/>
+                <field name="target_score"/>
+                <field name="fail_count"/>
+                <field name="critical_fail_count"/>
+                <field name="overall_result"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between gap-2">
+                                <div>
+                                    <strong><field name="name"/></strong>
+                                    <div class="fw-semibold"><field name="title"/></div>
+                                </div>
+                                <field name="overall_result" widget="badge"/>
+                            </div>
+                            <div class="small text-muted mt-2">
+                                <field name="template_id"/>
+                            </div>
+                            <div class="small text-muted">
+                                Planned: <field name="planned_date"/>
+                            </div>
+                            <div class="mt-3 d-flex gap-2 flex-wrap">
+                                <span class="badge text-bg-secondary">
+                                    Score <field name="compliance_score"/>%
+                                </span>
+                                <span t-if="fail_count" class="badge text-bg-warning">
+                                    Fail <field name="fail_count"/>
+                                </span>
+                                <span t-if="critical_fail_count" class="badge text-bg-danger">
+                                    Critical <field name="critical_fail_count"/>
+                                </span>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button name="action_start" type="object"
+                                        class="btn btn-primary btn-sm"
+                                        groups="clinic_quality.group_quality_inspector"
+                                        invisible="state != 'draft'">Start</button>
+                                <button name="action_submit_review" type="object"
+                                        class="btn btn-primary btn-sm"
+                                        groups="clinic_quality.group_quality_inspector"
+                                        invisible="state != 'in_progress'">Submit</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_quality_check_pivot" model="ir.ui.view">
+        <field name="name">clinic.quality.check.pivot</field>
+        <field name="model">clinic.quality.check</field>
+        <field name="arch" type="xml">
+            <pivot string="Quality Compliance Analysis">
+                <field name="planned_date" type="row" interval="month"/>
+                <field name="template_id" type="row"/>
+                <field name="overall_result" type="col"/>
+                <field name="id" type="measure"/>
+                <field name="compliance_score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_quality_check_graph" model="ir.ui.view">
+        <field name="name">clinic.quality.check.graph</field>
+        <field name="model">clinic.quality.check</field>
+        <field name="arch" type="xml">
+            <graph string="Quality Compliance Trend" type="bar">
+                <field name="planned_date" interval="month"/>
+                <field name="overall_result"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_quality_check_form" model="ir.ui.view">
+        <field name="name">clinic.quality.check.form</field>
+        <field name="model">clinic.quality.check</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Start Check" class="btn-primary"
+                            groups="clinic_quality.group_quality_inspector"
+                            invisible="state != 'draft'"/>
+                    <button name="action_submit_review" type="object" string="Submit for Review" class="btn-primary"
+                            groups="clinic_quality.group_quality_inspector"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_return_to_progress" type="object" string="Return for Correction"
+                            groups="clinic_quality.group_quality_approver"
+                            invisible="state != 'review'"/>
+                    <button name="action_create_incidents_for_failed_lines" type="object"
+                            string="Escalate Failed Controls"
+                            groups="clinic_quality.group_quality_approver"
+                            invisible="state not in ('review','closed') or fail_count == 0"/>
+                    <button name="action_close" type="object" string="Close Check" class="btn-primary"
+                            groups="clinic_quality.group_quality_approver"
+                            invisible="state != 'review'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_quality.group_quality_manager"
+                            invisible="state in ('closed','cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,in_progress,review,closed,cancelled"/>
+                </header>
+
+                <sheet>
+                    <field name="allowed_branch_ids" invisible="1"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_template" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <div class="o_stat_info"><span class="o_stat_text">Template</span></div>
+                        </button>
+                        <button name="action_open_sop_version" type="object"
+                                class="oe_stat_button" icon="fa-book"
+                                invisible="not sop_version_id">
+                            <div class="o_stat_info"><span class="o_stat_text">SOP Version</span></div>
+                        </button>
+                        <button name="action_open_incidents" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="incident_count" widget="statinfo" string="Incidents"/>
+                        </button>
+                        <button name="action_open_scope_branch" type="object"
+                                class="oe_stat_button" icon="fa-sitemap"
+                                invisible="not branch_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Branch</span></div>
+                        </button>
+                        <button name="action_open_scope_room" type="object"
+                                class="oe_stat_button" icon="fa-building"
+                                invisible="not room_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Room</span></div>
+                        </button>
+                        <button name="action_open_scope_staff" type="object"
+                                class="oe_stat_button" icon="fa-user"
+                                invisible="not staff_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Staff</span></div>
+                        </button>
+                        <button name="action_open_scope_doctor" type="object"
+                                class="oe_stat_button" icon="fa-user-md"
+                                invisible="not doctor_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Doctor</span></div>
+                        </button>
+                        <button name="action_open_scope_inventory_lot" type="object"
+                                class="oe_stat_button" icon="fa-cubes"
+                                invisible="not stock_lot_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Inventory Lot</span></div>
+                        </button>
+                        <button name="action_open_scope_treatment" type="object"
+                                class="oe_stat_button" icon="fa-stethoscope"
+                                invisible="not treatment_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Treatment</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1><field name="title" readonly="state in ('closed','cancelled')"/></h1>
+                        <div class="text-muted"><field name="name"/></div>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert"
+                         invisible="overall_result != 'critical_nonconformity'">
+                        Critical nonconformity detected. Follow Quality governance and escalate failed critical controls to Incident cases where required.
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="overall_result != 'nonconforming'">
+                        This Quality Check is nonconforming and requires reviewer disposition.
+                    </div>
+
+                    <div class="alert alert-info" role="alert"
+                         invisible="state not in ('review','closed')">
+                        Quality evidence is a compliance snapshot. Source Room/Staff/Doctor/Treatment/Inventory workflows remain owned upstream.
+                    </div>
+
+                    <group>
+                        <group string="Check Governance">
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                            <field name="template_id" readonly="state != 'draft'"/>
+                            <field name="sop_version_id" readonly="1"/>
+                            <field name="schedule_id" readonly="1"/>
+                            <field name="planned_date" readonly="state != 'draft'"/>
+                            <field name="target_score" readonly="1"/>
+                        </group>
+                        <group string="Execution &amp; Review">
+                            <field name="performed_by_user_id" readonly="state not in ('draft','in_progress')"/>
+                            <field name="reviewed_by_user_id" readonly="state in ('closed','cancelled')"/>
+                            <field name="started_at" readonly="1"/>
+                            <field name="submitted_at" readonly="1"/>
+                            <field name="closed_at" readonly="1"/>
+                            <field name="closed_by_user_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Quality Scope">
+                        <group>
+                            <field name="scope_type" readonly="state != 'draft'"/>
+                            <field name="branch_id" readonly="state != 'draft'"/>
+                            <field name="room_id" readonly="state != 'draft'"
+                                   invisible="scope_type != 'room'"/>
+                            <field name="staff_id" readonly="state != 'draft'"
+                                   invisible="scope_type != 'staff'"/>
+                        </group>
+                        <group>
+                            <field name="doctor_id" readonly="state != 'draft'"
+                                   invisible="scope_type != 'doctor'"/>
+                            <field name="stock_lot_id" readonly="state != 'draft'"
+                                   invisible="scope_type != 'inventory_lot'"/>
+                            <field name="treatment_id" readonly="state != 'draft'"
+                                   invisible="scope_type != 'treatment'"/>
+                        </group>
+                    </group>
+
+                    <group string="Result Summary">
+                        <group>
+                            <field name="overall_result" widget="badge" readonly="1"/>
+                            <field name="compliance_score" readonly="1"/>
+                            <field name="evaluated_count" readonly="1"/>
+                            <field name="pending_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="pass_count" readonly="1"/>
+                            <field name="fail_count" readonly="1"/>
+                            <field name="critical_fail_count" readonly="1"/>
+                            <field name="observation_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap my-3">
+                        <button name="action_create_incidents_for_failed_lines" type="object"
+                                string="Create Incident Cases for Failed Controls"
+                                class="btn btn-primary"
+                                groups="clinic_quality.group_quality_approver"
+                                invisible="state not in ('review','closed') or fail_count == 0"/>
+                        <button name="action_open_incidents" type="object"
+                                string="Review Incident Escalations"
+                                class="btn btn-secondary"/>
+                        <button name="action_print_quality_check" type="object"
+                                string="Print Quality Check"
+                                class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Compliance Controls">
+                            <field name="line_ids">
+                                <list create="0" delete="0" editable="bottom"
+                                      decoration-danger="result == 'fail' and critical"
+                                      decoration-warning="result in ('fail','observation')"
+                                      decoration-success="result == 'pass'"
+                                      decoration-muted="result == 'not_applicable'">
+                                    <field name="sequence"/>
+                                    <field name="control_code"/>
+                                    <field name="requirement"/>
+                                    <field name="critical"/>
+                                    <field name="weight"/>
+                                    <field name="result"
+                                           readonly="parent.state != 'in_progress'"
+                                           widget="badge"/>
+                                    <field name="evidence_note"
+                                           readonly="parent.state != 'in_progress'"/>
+                                    <field name="evidence_attachment_ids"
+                                           widget="many2many_binary"
+                                           readonly="parent.state != 'in_progress'"/>
+                                    <field name="reviewer_note"
+                                           readonly="parent.state != 'review'"/>
+                                    <field name="incident_count"/>
+                                    <button name="action_create_incident" type="object"
+                                            string="Incident" icon="fa-exclamation-triangle"
+                                            groups="clinic_quality.group_quality_approver"
+                                            invisible="result != 'fail' or incident_count != 0"/>
+                                    <button name="action_open_incidents" type="object"
+                                            string="Open Incident" icon="fa-external-link"
+                                            invisible="incident_count == 0"/>
+                                    <button name="action_open_check" type="object"
+                                            string="Check" icon="fa-check-square-o"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Review &amp; Closure">
+                            <field name="note" readonly="state in ('closed','cancelled')"/>
+                            <field name="review_summary"
+                                   readonly="state not in ('review','closed')"/>
+                            <field name="cancellation_reason"
+                                   readonly="state in ('closed','cancelled')"
+                                   placeholder="Required before cancelling the Quality Check..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quality_check" model="ir.actions.act_window">
+        <field name="name">Quality Checks</field>
+        <field name="res_model">clinic.quality.check</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_quality_check_search"/>
+    </record>
+
+    <record id="action_quality_review_queue" model="ir.actions.act_window">
+        <field name="name">Quality Review Queue</field>
+        <field name="res_model">clinic.quality.check</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_quality_check_search"/>
+        <field name="domain">[('state','=','review')]</field>
+    </record>
+
+    <record id="action_quality_nonconformity" model="ir.actions.act_window">
+        <field name="name">Quality Nonconformities</field>
+        <field name="res_model">clinic.quality.check</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_quality_check_search"/>
+        <field name="domain">[('overall_result','in',('nonconforming','critical_nonconformity'))]</field>
+    </record>
+</odoo>

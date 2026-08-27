@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_postcare_protocol_search" model="ir.ui.view">
+        <field name="name">clinic.postcare.protocol.search</field>
+        <field name="model">clinic.postcare.protocol</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="treatment_catalog_ids"/>
+                <field name="procedure_catalog_ids"/>
+                <field name="care_protocol_id"/>
+                <field name="company_id"/>
+                <filter name="active_protocol" string="Active" domain="[('state','=','active')]"/>
+                <filter name="high_risk" string="High Risk" domain="[('risk_level','=','high')]"/>
+                <filter name="generic" string="Generic" domain="[('treatment_catalog_ids','=',False),('procedure_catalog_ids','=',False),('care_protocol_id','=',False)]"/>
+                <group>
+                    <filter name="group_risk" string="Risk" context="{'group_by':'risk_level'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_protocol_list" model="ir.ui.view">
+        <field name="name">clinic.postcare.protocol.list</field>
+        <field name="model">clinic.postcare.protocol</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="risk_level" widget="badge"/>
+                <field name="default_assignee_id"/>
+                <field name="default_duration_days"/>
+                <field name="step_count"/>
+                <field name="plan_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_postcare_protocol_form" model="ir.ui.view">
+        <field name="name">clinic.postcare.protocol.form</field>
+        <field name="model">clinic.postcare.protocol</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_post_care_followup.group_postcare_manager"
+                            invisible="state == 'archived'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_post_care_followup.group_postcare_manager"
+                            invisible="state != 'archived'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_plans" type="object" class="oe_stat_button" icon="fa-heartbeat">
+                            <field name="plan_count" widget="statinfo" string="Post-Care Plans"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Protocol Identity">
+                            <field name="company_id" groups="base.group_multi_company" readonly="state == 'active'"/>
+                            <field name="branch_id"/>
+                            <field name="risk_level"/>
+                            <field name="default_assignee_id"/>
+                            <field name="default_duration_days"/>
+                            <field name="auto_generate_tasks"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Clinical Applicability">
+                            <field name="treatment_catalog_ids" widget="many2many_tags"/>
+                            <field name="procedure_catalog_ids" widget="many2many_tags"/>
+                            <field name="care_protocol_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Patient Instructions">
+                            <group string="Routine Instructions">
+                                <field name="instruction_html"/>
+                            </group>
+                            <group string="Warning Signs">
+                                <field name="warning_signs_html"/>
+                            </group>
+                            <group string="Urgent / Emergency Guidance">
+                                <field name="emergency_instruction_html"/>
+                            </group>
+                        </page>
+
+                        <page string="Follow-up Steps">
+                            <field name="step_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="task_type"/>
+                                    <field name="channel"/>
+                                    <field name="delay_days"/>
+                                    <field name="delay_hours"/>
+                                    <field name="assignee_id"/>
+                                    <field name="requires_response"/>
+                                    <field name="auto_send"/>
+                                    <field name="escalate_if_overdue"/>
+                                    <field name="escalation_after_hours"/>
+                                    <field name="active"/>
+                                    <button name="action_open_protocol" type="object" string="Protocol" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Internal Notes">
+                            <field name="internal_note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_postcare_protocol_step_search" model="ir.ui.view">
+        <field name="name">clinic.postcare.protocol.step.search</field>
+        <field name="model">clinic.postcare.protocol.step</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="protocol_id"/>
+                <field name="name"/>
+                <field name="task_type"/>
+                <field name="channel"/>
+                <field name="assignee_id"/>
+                <filter name="active_step" string="Active" domain="[('active','=',True)]"/>
+                <filter name="response_required" string="Response Required" domain="[('requires_response','=',True)]"/>
+                <filter name="auto_email" string="Auto Email" domain="[('channel','=','email'),('auto_send','=',True)]"/>
+                <filter name="escalation" string="Escalates if Overdue" domain="[('escalate_if_overdue','=',True)]"/>
+                <group>
+                    <filter name="group_protocol" string="Protocol" context="{'group_by':'protocol_id'}"/>
+                    <filter name="group_type" string="Task Type" context="{'group_by':'task_type'}"/>
+                    <filter name="group_channel" string="Channel" context="{'group_by':'channel'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_protocol_step_list" model="ir.ui.view">
+        <field name="name">clinic.postcare.protocol.step.list</field>
+        <field name="model">clinic.postcare.protocol.step</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="protocol_id"/>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="task_type"/>
+                <field name="channel"/>
+                <field name="delay_days"/>
+                <field name="delay_hours"/>
+                <field name="assignee_id"/>
+                <field name="requires_response"/>
+                <field name="auto_send"/>
+                <field name="escalate_if_overdue"/>
+                <field name="escalation_after_hours"/>
+                <field name="active"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_protocol" type="object" string="Open Protocol" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_postcare_protocol_step_form" model="ir.ui.view">
+        <field name="name">clinic.postcare.protocol.step.form</field>
+        <field name="model">clinic.postcare.protocol.step</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Task Definition">
+                            <field name="protocol_id"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="name"/>
+                            <field name="task_type"/>
+                            <field name="channel"/>
+                            <field name="priority"/>
+                            <field name="assignee_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Timing &amp; Escalation">
+                            <field name="delay_days"/>
+                            <field name="delay_hours"/>
+                            <field name="requires_response"/>
+                            <field name="response_due_hours" invisible="not requires_response"/>
+                            <field name="auto_send"/>
+                            <field name="escalate_if_overdue"/>
+                            <field name="escalation_after_hours" invisible="not escalate_if_overdue"/>
+                            <field name="escalation_severity" invisible="not escalate_if_overdue"/>
+                        </group>
+                    </group>
+                    <field name="instruction_html"/>
+                    <div class="d-flex gap-2">
+                        <button name="action_open_protocol" type="object" string="Open Protocol" class="btn-secondary"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_postcare_protocol" model="ir.actions.act_window">
+        <field name="name">Post-Care Protocols</field>
+        <field name="res_model">clinic.postcare.protocol</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_postcare_protocol_search"/>
+    </record>
+
+    <record id="action_postcare_protocol_step" model="ir.actions.act_window">
+        <field name="name">Protocol Follow-up Steps</field>
+        <field name="res_model">clinic.postcare.protocol.step</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_postcare_protocol_step_search"/>
+    </record>
+</odoo>

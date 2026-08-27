@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Local root is intentionally installation-safe. post_init_hook reparents
+         it under ClinicOne when the upstream presentation XML-ID exists. -->
+    <menuitem id="menu_clinic_care_plan_root"
+              name="Care Plans"
+              sequence="45"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_clinic_care_plan_operations"
+              name="Operations"
+              parent="menu_clinic_care_plan_root"
+              sequence="10"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_clinic_care_plan_library"
+              name="Protocol Library"
+              parent="menu_clinic_care_plan_root"
+              sequence="20"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_clinic_care_plan_plans"
+              name="Care Plans"
+              parent="menu_clinic_care_plan_operations"
+              action="action_clinic_care_plan"
+              sequence="10"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_clinic_care_plan_lines"
+              name="Plan Lines"
+              parent="menu_clinic_care_plan_operations"
+              action="action_clinic_care_plan_line"
+              sequence="20"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_clinic_care_protocols"
+              name="Protocols"
+              parent="menu_clinic_care_plan_library"
+              action="action_clinic_care_protocol"
+              sequence="10"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_clinic_care_protocol_steps"
+              name="Protocol Steps"
+              parent="menu_clinic_care_plan_library"
+              action="action_clinic_care_protocol_step"
+              sequence="20"
+              groups="base.group_user"/>
+</odoo>

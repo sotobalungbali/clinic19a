@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_package_search" model="ir.ui.view">
+        <field name="name">clinic.package.search</field><field name="model">clinic.package</field>
+        <field name="arch" type="xml"><search string="Search Treatment Packages">
+            <field name="name"/><field name="code"/><field name="tag_ids"/><field name="pricing_id"/><field name="policy_id"/>
+            <filter name="active_catalog" string="Active" domain="[('state','=','active')]"/>
+            <filter name="paused" string="Paused" domain="[('state','=','paused')]"/>
+            <filter name="archived" string="Archived" domain="[('active','=',False)]"/>
+            <separator/><filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+            <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+        </search></field>
+    </record>
+    <record id="view_clinic_package_list" model="ir.ui.view">
+        <field name="name">clinic.package.list</field><field name="model">clinic.package</field>
+        <field name="arch" type="xml"><list string="Treatment Packages" decoration-success="state == 'active'" decoration-muted="state in ('closed','cancelled')" multi_edit="1">
+            <field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="tag_ids" widget="many2many_tags" optional="show"/>
+            <field name="list_price" sum="Total Catalog Price"/><field name="cost_price" optional="hide"/><field name="margin_percent" widget="percentage" optional="show"/>
+            <field name="duration_value" optional="show"/><field name="duration_uom" optional="show"/><field name="allocation_count" optional="show"/>
+            <field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company" optional="hide"/>
+        </list></field>
+    </record>
+    <record id="view_clinic_package_form" model="ir.ui.view">
+        <field name="name">clinic.package.form</field><field name="model">clinic.package</field>
+        <field name="arch" type="xml"><form string="Treatment Package">
+            <header>
+                <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
+                <button name="action_pause" type="object" string="Pause" invisible="state != 'active'"/>
+                <button name="action_resume" type="object" string="Resume" class="btn-primary" invisible="state != 'paused'"/>
+                <button name="action_close" type="object" string="Close" invisible="state not in ('active','paused')"/>
+                <button name="action_cancel" type="object" string="Cancel" invisible="state in ('closed','cancelled')"/>
+                <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state != 'cancelled'" groups="clinic_package.group_clinic_package_manager"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,active,paused,closed,cancelled"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_allocations" type="object" class="oe_stat_button" icon="fa-users"><field name="allocation_count" widget="statinfo" string="Allocations"/></button>
+                    <button name="action_view_usages" type="object" class="oe_stat_button" icon="fa-check-square-o"><field name="usage_count" widget="statinfo" string="Redemptions"/></button>
+                    <button name="action_view_vouchers" type="object" class="oe_stat_button" icon="fa-ticket"><field name="voucher_count" widget="statinfo" string="Vouchers"/></button>
+                    <button name="action_view_service_product" type="object" class="oe_stat_button" icon="fa-cube" invisible="not product_template_id"><div class="o_stat_info"><span class="o_stat_text">Service Product</span></div></button>
+                </div>
+                <widget name="web_ribbon" text="PAUSED" bg_color="text-bg-warning" invisible="state != 'paused'"/>
+                <widget name="web_ribbon" text="CLOSED" bg_color="text-bg-secondary" invisible="state != 'closed'"/>
+                <div class="oe_title"><label for="name"/><h1><field name="name" placeholder="e.g. Acne Recovery 6-Session Package"/></h1><div class="o_row"><field name="code" readonly="1" class="oe_inline"/><field name="tag_ids" widget="many2many_tags" options="{'color_field':'color'}"/></div></div>
+                <group>
+                    <group string="Commercial Definition"><field name="list_price"/><field name="cost_price"/><field name="margin_amount" readonly="1"/><field name="margin_percent" widget="percentage" readonly="1"/><field name="pricing_id"/><field name="product_template_id"/></group>
+                    <group string="Validity &amp; Governance"><field name="policy_id"/><field name="duration_value"/><field name="duration_uom"/><field name="duration_days" readonly="1"/><field name="valid_from"/><field name="valid_to"/><field name="company_id" groups="base.group_multi_company"/></group>
+                </group>
+                <div class="oe_button_box" name="body_action_box">
+                    <button name="action_create_service_product" type="object" string="Create Service Product" icon="fa-cube" class="btn btn-secondary" invisible="product_template_id or state == 'cancelled'" groups="clinic_package.group_clinic_package_manager"/>
+                </div>
+                <notebook>
+                    <page string="Package Components" name="components"><field name="line_ids" context="{'default_package_id': id}">
+                        <list editable="bottom" decoration-muted="not active">
+                            <field name="sequence" widget="handle"/><field name="active" column_invisible="True"/><field name="line_type"/><field name="name"/>
+                            <field name="benefit_id" optional="hide"/><field name="treatment_id" optional="show"/><field name="product_id" optional="show"/>
+                            <field name="qty"/><field name="uom_id" optional="hide"/><field name="credit_amount" optional="show"/><field name="discount_value" optional="hide"/>
+                            <field name="list_price" optional="show"/><field name="total_value" readonly="1" optional="show"/>
+                            <button name="action_view_usage" type="object" string="Usage" icon="fa-history"/>
+                            <button name="action_view_related_allocations" type="object" string="Allocations" icon="fa-users"/>
+                        </list>
+                        <form string="Package Component"><sheet><group><group><field name="line_type"/><field name="name"/><field name="benefit_id"/><field name="active"/><field name="sequence"/></group><group><field name="treatment_id" invisible="line_type != 'treatment'"/><field name="treatment_categ_id" invisible="line_type != 'treatment'"/><field name="apply_to_all_treatments" invisible="line_type != 'treatment'"/><field name="product_id" invisible="line_type != 'product'"/><field name="product_categ_id" invisible="line_type != 'product'"/><field name="apply_to_all_products" invisible="line_type != 'product'"/></group></group>
+                            <notebook><page string="Entitlement"><group><field name="qty" invisible="line_type not in ('treatment','product')"/><field name="uom_id" invisible="line_type != 'product'"/><field name="consume_per_use" invisible="line_type not in ('treatment','product')"/><field name="credit_amount" invisible="line_type != 'credit'"/><field name="discount_type" invisible="line_type != 'discount'"/><field name="discount_value" invisible="line_type != 'discount'"/><field name="discount_max_amount" invisible="line_type != 'discount'"/></group></page>
+                            <page string="Clinical Restrictions"><group><field name="allowed_doctor_ids" widget="many2many_tags"/><field name="allowed_room_ids" widget="many2many_tags"/><field name="allowed_device_ids" widget="many2many_tags"/><field name="limit_per_visit"/><field name="limit_per_day"/><field name="cooldown_days"/></group></page>
+                            <page string="Value &amp; Notes"><group><field name="list_price"/><field name="cost_price"/><field name="total_value" readonly="1"/><field name="total_cost" readonly="1"/></group><field name="note"/><field name="internal_note" groups="clinic_package.group_clinic_package_manager"/></page></notebook></sheet></form>
+                    </field></page>
+                    <page string="Policy"><group><field name="allow_pause" readonly="1"/><field name="allow_transfer" readonly="1"/><field name="allow_refund" readonly="1"/><field name="allow_upgrade" readonly="1"/><field name="allow_usage_when_paused" groups="clinic_package.group_clinic_package_manager"/></group></page>
+                    <page string="Description"><field name="description" widget="html"/></page>
+                    <page string="Terms &amp; Conditions"><field name="terms" widget="html"/></page>
+                    <page string="Internal Notes" groups="clinic_package.group_clinic_package_manager"><field name="internal_note"/></page>
+                </notebook>
+            </sheet><chatter/></form></field>
+    </record>
+    <record id="action_clinic_package" model="ir.actions.act_window"><field name="name">Treatment Packages</field><field name="res_model">clinic.package</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_clinic_package_search"/></record>
+</odoo>

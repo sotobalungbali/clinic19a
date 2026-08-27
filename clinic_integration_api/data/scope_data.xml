@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="scope_clinical_read" model="clinic.api.scope"><field name="name">Clinical Read</field><field name="code">clinical.read</field><field name="sequence">10</field></record>
+    <record id="scope_operations_read" model="clinic.api.scope"><field name="name">Operations Read</field><field name="code">operations.read</field><field name="sequence">20</field></record>
+    <record id="scope_finance_read" model="clinic.api.scope"><field name="name">Finance Read</field><field name="code">finance.read</field><field name="sequence">30</field></record>
+    <record id="scope_engagement_read" model="clinic.api.scope"><field name="name">Engagement Read</field><field name="code">engagement.read</field><field name="sequence">40</field></record>
+    <record id="scope_governance_read" model="clinic.api.scope"><field name="name">Governance Read</field><field name="code">governance.read</field><field name="sequence">50</field></record>
+    <record id="scope_patient_write" model="clinic.api.scope"><field name="name">Patient Write</field><field name="code">patient.write</field><field name="sequence">60</field></record>
+    <record id="scope_booking_write" model="clinic.api.scope"><field name="name">Booking Write</field><field name="code">booking.write</field><field name="sequence">70</field></record>
+    <record id="scope_booking_action" model="clinic.api.scope"><field name="name">Booking Workflow Actions</field><field name="code">booking.action</field><field name="sequence">80</field></record>
+</odoo>

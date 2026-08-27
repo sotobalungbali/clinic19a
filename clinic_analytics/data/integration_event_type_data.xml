@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="api_event_type_analytics_snapshot_ready" model="clinic.api.event.type">
+        <field name="name">Analytics Snapshot Ready</field>
+        <field name="code">analytics.snapshot.ready</field>
+        <field name="description">A governed Clinic Analytics KPI snapshot completed.</field>
+    </record>
+    <record id="api_event_type_analytics_forecast_ready" model="clinic.api.event.type">
+        <field name="name">Analytics Forecast Ready</field>
+        <field name="code">analytics.forecast.ready</field>
+        <field name="description">A governed Clinic Analytics forecast completed.</field>
+    </record>
+    <record id="api_event_type_analytics_cohort_ready" model="clinic.api.event.type">
+        <field name="name">Analytics Cohort Ready</field>
+        <field name="code">analytics.cohort.ready</field>
+        <field name="description">A patient-retention cohort calculation completed.</field>
+    </record>
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_compliance_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>ClinicOne Indonesia Localization Compliance Evidence</h2>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Reference:</strong> <span t-field="o.name"/><br/>
+                        <strong>Period:</strong> <span t-field="o.date_from"/> - <span t-field="o.date_to"/><br/>
+                        <strong>Tax Profile:</strong> <span t-field="o.profile_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Company:</strong> <span t-field="o.company_id"/><br/>
+                        <strong>Status:</strong> <span t-field="o.state"/><br/>
+                        <strong>Readiness Score:</strong> <span t-field="o.readiness_score"/>
+                    </div>
+                </div>
+
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Check</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th class="text-end">Records</th>
+                            <th>Guidance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.line_ids" t-as="line">
+                            <td><span t-field="line.title"/></td>
+                            <td><span t-field="line.severity"/></td>
+                            <td><span t-field="line.status"/></td>
+                            <td class="text-end"><span t-field="line.record_count"/></td>
+                            <td><span t-field="line.note"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <strong>Blocking:</strong> <span t-field="o.blocking_count"/><br/>
+                        <strong>Warnings:</strong> <span t-field="o.warning_count"/><br/>
+                        <strong>Clear:</strong> <span t-field="o.clear_count"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Generated:</strong> <span t-field="o.generated_at"/><br/>
+                        <strong>Reviewed:</strong> <span t-field="o.reviewed_at"/><br/>
+                        <strong>Reviewed By:</strong> <span t-field="o.reviewed_by_id"/>
+                    </div>
+                </div>
+
+                <div t-if="o.note" class="mt-3">
+                    <strong>Review Note</strong>
+                    <p t-field="o.note"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_compliance">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="clinic_l10n_id.report_compliance_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+

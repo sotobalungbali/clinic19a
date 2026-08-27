@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_clinic_package_user" model="res.groups">
+        <field name="name">Clinic Package User</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_clinic_package_manager" model="res.groups">
+        <field name="name">Clinic Package Manager</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('base.group_user')),
+            Command.link(ref('clinic_package.group_clinic_package_user'))
+        ]"/>
+    </record>
+
+    <!-- Multi-company protection: UI visibility never substitutes for record rules. -->
+    <record id="rule_package_tag_company" model="ir.rule">
+        <field name="name">Package Tags: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_tag"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_company" model="ir.rule">
+        <field name="name">Treatment Packages: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_line_company" model="ir.rule">
+        <field name="name">Package Components: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_pricing_company" model="ir.rule">
+        <field name="name">Package Pricing: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_pricing"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_pricing_rule_company" model="ir.rule">
+        <field name="name">Package Pricing Rules: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_pricing_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_policy_company" model="ir.rule">
+        <field name="name">Package Policies: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_policy"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_benefit_company" model="ir.rule">
+        <field name="name">Package Benefits: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_benefit"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_allocation_company" model="ir.rule">
+        <field name="name">Package Allocations: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_allocation"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_allocation_line_company" model="ir.rule">
+        <field name="name">Allocation Benefits: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_allocation_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_usage_company" model="ir.rule">
+        <field name="name">Package Redemptions: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_usage"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_voucher_company" model="ir.rule">
+        <field name="name">Package Vouchers: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_voucher"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_voucher_batch_company" model="ir.rule">
+        <field name="name">Voucher Batches: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_voucher_batch"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_package_event_company" model="ir.rule">
+        <field name="name">Package Integration Events: allowed companies</field>
+        <field name="model_id" ref="model_clinic_package_integration_event"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_package.group_clinic_package_manager'))]"/>
+    </record>
+</odoo>

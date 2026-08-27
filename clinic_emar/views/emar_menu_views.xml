@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_emar_root" name="Medication / eMAR" sequence="45" groups="clinic_emar.group_emar_user"/>
+    <menuitem id="menu_emar_operations" name="Operations" parent="menu_emar_root" sequence="10"/>
+    <menuitem id="menu_emar_prescriptions" name="Prescriptions" parent="menu_emar_operations" action="action_emar_prescriptions" sequence="10"/>
+    <menuitem id="menu_emar_orders" name="Medication Orders" parent="menu_emar_operations" action="action_emar_orders" sequence="20"/>
+    <menuitem id="menu_emar_lines" name="Medication Lines" parent="menu_emar_operations" action="action_emar_medication_lines" sequence="25" groups="clinic_emar.group_emar_manager"/>
+    <menuitem id="menu_emar_schedules" name="Administration Schedule" parent="menu_emar_operations" action="action_emar_schedules" sequence="30"/>
+    <menuitem id="menu_emar_administrations" name="Medication Administrations" parent="menu_emar_operations" action="action_emar_administrations" sequence="40"/>
+    <menuitem id="menu_emar_safety" name="Safety &amp; Governance" parent="menu_emar_root" sequence="20"/>
+    <menuitem id="menu_emar_alerts" name="Medication Safety Alerts" parent="menu_emar_safety" action="action_emar_alerts" sequence="10"/>
+    <menuitem id="menu_emar_configuration" name="Configuration" parent="menu_emar_root" sequence="90" groups="clinic_emar.group_emar_manager"/>
+    <menuitem id="menu_emar_profiles" name="Medication Profiles" parent="menu_emar_configuration" action="action_emar_medication_profiles" sequence="10"/>
+    <menuitem id="menu_emar_settings" name="Settings" parent="menu_emar_configuration" action="action_emar_config_settings" sequence="90"/>
+</odoo>

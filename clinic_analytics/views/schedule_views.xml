@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_analytics_schedule_search" model="ir.ui.view">
+        <field name="name">clinic.analytics.schedule.search</field>
+        <field name="model">clinic.analytics.schedule</field>
+        <field name="arch" type="xml">
+            <search string="Analytics Schedules">
+                <field name="name"/>
+                <field name="schedule_type"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="next_run_at"/>
+                <filter name="active_schedule" string="Active" domain="[('state','=','active')]"/>
+                <filter name="paused" string="Paused" domain="[('state','=','paused')]"/>
+                <separator/>
+                <filter name="group_type" string="Type" context="{'group_by':'schedule_type'}"/>
+                <filter name="group_cadence" string="Cadence" context="{'group_by':'cadence'}"/>
+                <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_analytics_schedule_list" model="ir.ui.view">
+        <field name="name">clinic.analytics.schedule.list</field>
+        <field name="model">clinic.analytics.schedule</field>
+        <field name="arch" type="xml">
+            <list default_order="next_run_at,sequence"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state == 'paused'">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="schedule_type" widget="badge"/>
+                <field name="cadence"/>
+                <field name="kpi_id" optional="show"/>
+                <field name="next_run_at"/>
+                <field name="last_run_at" optional="show"/>
+                <field name="run_count"/>
+                <field name="state" widget="badge"/>
+                <button name="action_run_now" type="object" string="Run Now" icon="fa-play"
+                        groups="clinic_analytics.group_analytics_manager"/>
+                <button name="action_open_last_result" type="object" string="Last Result" icon="fa-external-link"
+                        invisible="not last_snapshot_id and not last_forecast_id and not last_cohort_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_analytics_schedule_form" model="ir.ui.view">
+        <field name="name">clinic.analytics.schedule.form</field>
+        <field name="model">clinic.analytics.schedule</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_pause" type="object" string="Pause"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state != 'paused'"/>
+                    <button name="action_run_now" type="object" string="Run Now"
+                            groups="clinic_analytics.group_analytics_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,paused"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_last_result" type="object" class="oe_stat_button" icon="fa-external-link"
+                                invisible="not last_snapshot_id and not last_forecast_id and not last_cohort_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value"><field name="run_count"/></span>
+                                <span class="o_stat_text">Runs / Last Result</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Scope &amp; Job">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="schedule_type"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Timing">
+                            <field name="cadence"/>
+                            <field name="interval_count"/>
+                            <field name="next_run_at"/>
+                            <field name="last_run_at"/>
+                            <field name="run_count"/>
+                        </group>
+                    </group>
+
+                    <group string="Snapshot Parameters" invisible="schedule_type != 'snapshot'">
+                        <field name="window_days"/>
+                    </group>
+
+                    <group string="Forecast Parameters" invisible="schedule_type != 'forecast'">
+                        <group>
+                            <field name="kpi_id"/>
+                            <field name="forecast_frequency"/>
+                            <field name="forecast_method"/>
+                        </group>
+                        <group>
+                            <field name="history_periods"/>
+                            <field name="horizon_periods"/>
+                            <field name="moving_average_window" invisible="forecast_method != 'moving_average'"/>
+                        </group>
+                    </group>
+
+                    <group string="Cohort Parameters" invisible="schedule_type != 'cohort'">
+                        <field name="cohort_month_offset"/>
+                    </group>
+
+                    <group string="Execution Evidence">
+                        <field name="last_snapshot_id"/>
+                        <field name="last_forecast_id"/>
+                        <field name="last_cohort_id"/>
+                        <field name="last_error"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_analytics_schedule" model="ir.actions.act_window">
+        <field name="name">Analytics Schedules</field>
+        <field name="res_model">clinic.analytics.schedule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_analytics_schedule_search"/>
+    </record>
+</odoo>

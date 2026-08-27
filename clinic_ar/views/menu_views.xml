@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_clinic_ar_root" name="Accounts Receivable" sequence="65" groups="clinic_ar.group_clinic_ar_user"/>
+  <menuitem id="menu_clinic_ar_operations" name="Operations" parent="menu_clinic_ar_root" sequence="10"/>
+  <menuitem id="menu_clinic_ar_invoice" name="AR Invoices" parent="menu_clinic_ar_operations" action="action_clinic_ar_invoice" sequence="10"/>
+  <menuitem id="menu_clinic_ar_payment" name="Receipts" parent="menu_clinic_ar_operations" action="action_clinic_ar_payment" sequence="20"/>
+  <menuitem id="menu_clinic_ar_allocation" name="Credit Allocations" parent="menu_clinic_ar_operations" action="action_clinic_ar_allocation" sequence="30"/>
+  <menuitem id="menu_clinic_ar_statement" name="Customer Statements" parent="menu_clinic_ar_operations" action="action_clinic_ar_statement" sequence="40"/>
+  <menuitem id="menu_clinic_ar_collections" name="Collections" parent="menu_clinic_ar_root" sequence="20"/>
+  <menuitem id="menu_clinic_ar_followup" name="Follow-ups" parent="menu_clinic_ar_collections" action="action_clinic_ar_followup" sequence="10"/>
+  <menuitem id="menu_clinic_ar_configuration" name="Configuration" parent="menu_clinic_ar_root" sequence="90" groups="clinic_ar.group_clinic_ar_manager"/>
+  <menuitem id="menu_clinic_ar_followup_level" name="Follow-up Levels" parent="menu_clinic_ar_configuration" action="action_clinic_ar_followup_level" sequence="10"/>
+  <menuitem id="menu_clinic_ar_events" name="Integration Events" parent="menu_clinic_ar_configuration" action="action_clinic_ar_integration_event" sequence="20"/>
+  <menuitem id="menu_clinic_ar_settings" name="Settings" parent="menu_clinic_ar_configuration" action="action_clinic_ar_settings" sequence="30"/>
+</odoo>
+

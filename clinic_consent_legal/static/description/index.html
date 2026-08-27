@@ -1,0 +1,198 @@
+
+<!--
+ClinicOne — Consent & Legal Forms
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTES:
+- Keep README.md (root) for long-form docs; this file is for the Apps UI description.
+- Team convention: DO NOT use <blockquote> anywhere across ClinicOne.
+-->
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span3">
+        <img src="icon.png" alt="ClinicOne Consent & Legal Forms Icon" style="width:100%; border-radius:16px;">
+      </div>
+      <div class="oe_span9">
+        <h1 class="oe_slogan">ClinicOne — Consent & Legal Forms</h1>
+        <h2 class="oe_slogan">Digital Consents • E-Signature • Integrity Hash • Portal Signing</h2>
+        <p>
+          A production-ready module to manage <b>procedure consents and legal forms</b> with
+          <b>portal signing</b>, <b>guardian/representative support</b>, and <b>audit-grade integrity</b>.
+          Seamlessly integrated across the ClinicOne suite on <b>Odoo 18 Community Edition</b>.
+        </p>
+        <p>
+          <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+          <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+          <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+          <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Portal</span>
+          <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Security</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Overview</h3>
+        <p>
+          Centralizes <b>legal templates</b>, <b>patient consent records</b>, and <b>e-signatures</b> with clear lifecycle:
+          <i>Draft → Waiting for Signature → Signed → Archived</i>. Includes <b>validity &amp; expiry</b>,
+          <b>reminders</b>, <b>content versioning</b>, and <b>content integrity hashing</b> for audit readiness.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Key Features</h3>
+        <ul>
+          <li>Template-driven content (HTML/Text) with version marker</li>
+          <li>E-Signature capture (name, image, timestamp, IP, user-agent)</li>
+          <li>Integrity hash (SHA-256) over key legal fields at sign time</li>
+          <li>Guardian/Representative signing &amp; relationship tracking</li>
+          <li>Required-before-procedure policy with workflow locks</li>
+          <li>Validity (days), computed expiry date &amp; expiry checks</li>
+          <li>Portal links for patient review &amp; signing</li>
+          <li>Reminders via activities / mail templates</li>
+          <li>Attachments and chatter for full audit trail</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Core Models</h3>
+        <ul>
+          <li><b>clinic.consent.form</b> — primary legal record &amp; signature lifecycle</li>
+          <li><b>clinic.consent.template</b> — reusable legal content &amp; defaults</li>
+          <li><b>clinic.consent.signature</b> — signature meta (optional split model)</li>
+          <li><b>clinic.consent.attachment</b> — supporting documents registry</li>
+        </ul>
+        <p style="margin-top:8px;">
+          Inherits mail/thread &amp; portal mixins for activities, followers, and patient portal access.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Holistic Integrations (26 Modules)</h3>
+        <p>
+          Seamless with: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment, clinic_billing,
+          clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_ecommerce, clinic_membership,
+          clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet, clinic_package, clinic_pricing, clinic_room_device,
+          clinic_hr, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit</i>.
+        </p>
+        <p style="font-size:12px;color:#666;">
+          Integrations are soft-coupled via relations, server actions, activities, and mail templates to keep modules independently deployable.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span4">
+        <h3>Installation</h3>
+        <ol>
+          <li>Add this addon to your Odoo <i>addons_path</i>.</li>
+          <li>Update Apps list, search <b>ClinicOne: Consent &amp; Legal Forms</b>.</li>
+          <li>Install; dependencies auto-resolve.</li>
+        </ol>
+      </div>
+      <div class="oe_span4">
+        <h3>Configuration</h3>
+        <ul>
+          <li>Define <b>Consent Templates</b> (title, HTML, text, version, validity).</li>
+          <li>Set up <b>mail templates</b> &amp; <b>server actions</b> for reminders.</li>
+          <li>Verify sequence <b>clinic.consent.form</b> is active.</li>
+          <li>Optional: expose portal menu for patient access.</li>
+        </ul>
+      </div>
+      <div class="oe_span4">
+        <h3>Security</h3>
+        <ul>
+          <li>Groups: Consent User, Consent Manager, Portal User (Patient)</li>
+          <li>Record Rules: company scope; patients see their own consents</li>
+          <li>Signed/Archived records are protected from edits</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Typical Flows</h3>
+        <ul>
+          <li><b>Pre-appointment</b>: auto-create consent from booking/treatment</li>
+          <li><b>Portal signing</b>: patient/guardian signs via secure link</li>
+          <li><b>In-clinic</b>: staff triggers signature capture on tablet</li>
+          <li><b>Post-signature</b>: compute integrity hash, set expiry, archive later</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Performance Notes</h3>
+        <ul>
+          <li>Index frequently filtered fields: state, company_id, patient_id, doctor_id, treatment_id, expiry_date</li>
+          <li>Avoid heavy computes in list views; prefer stored fields</li>
+          <li>Archive signed/expired consents periodically in high-volume clinics</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Screenshots</h3>
+        <p>
+          <img src="../img/screenshots/consent_form.png" alt="Consent form view" style="max-width:100%;border-radius:8px;margin-bottom:10px;">
+          <img src="../img/screenshots/consent_template.png" alt="Consent template editor" style="max-width:100%;border-radius:8px;">
+        </p>
+      </div>
+      <div class="oe_span6">
+        <h3>API &amp; Assets</h3>
+        <ul>
+          <li>JS: <i>static/src/js/consent_signature_widget.js</i>, <i>static/src/js/portal_consent.js</i></li>
+          <li>SCSS: <i>static/src/scss/consent_styles.scss</i></li>
+          <li>QWeb: portal &amp; signature templates embedded in views</li>
+          <li>Controllers: <i>controllers/portal.py</i>, <i>controllers/web_signature.py</i></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Upgrade &amp; Migration</h3>
+        <ul>
+          <li>Model prefix normalized to <b>clinic.consent.*</b> across the suite</li>
+          <li>Content version tracked; changes after signature are disallowed</li>
+          <li>Backwards-compatible data loads via seed templates</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>License</h3>
+        <p>Distributed under the <b>LGPL-3.0</b> license. See <i>LICENSE</i> file.</p>
+      </div>
+      <div class="oe_span6">
+        <h3>Support &amp; Contribution</h3>
+        <p>
+          For issues or enhancements, follow the ClinicOne contribution guide:
+          write tests, follow code style, and document migration impacts.
+        </p>
+      </div>
+    </div>
+  </section>
+  

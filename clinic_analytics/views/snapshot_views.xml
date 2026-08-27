@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_analytics_snapshot_search" model="ir.ui.view">
+        <field name="name">clinic.analytics.snapshot.search</field>
+        <field name="model">clinic.analytics.snapshot</field>
+        <field name="arch" type="xml">
+            <search string="Analytics Snapshots">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="generated_by_id"/>
+                <filter name="ready" string="Ready" domain="[('state','=','done')]"/>
+                <filter name="failed" string="Failed" domain="[('state','=','failed')]"/>
+                <separator/>
+                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                <filter name="group_month" string="Period End" context="{'group_by':'date_to:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_analytics_snapshot_list" model="ir.ui.view">
+        <field name="name">clinic.analytics.snapshot.list</field>
+        <field name="model">clinic.analytics.snapshot</field>
+        <field name="arch" type="xml">
+            <list default_order="date_to desc,id desc"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'failed'">
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="branch_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="line_count"/>
+                <field name="warning_count" optional="show"/>
+                <field name="critical_count" optional="show"/>
+                <field name="insight_count" optional="show"/>
+                <field name="generated_at" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button name="action_generate" type="object" string="Generate" icon="fa-play"
+                        groups="clinic_analytics.group_analytics_analyst"
+                        invisible="state not in ('draft','failed')"/>
+                <button name="action_view_lines" type="object" string="KPIs" icon="fa-bar-chart"
+                        invisible="state != 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_analytics_snapshot_form" model="ir.ui.view">
+        <field name="name">clinic.analytics.snapshot.form</field>
+        <field name="model">clinic.analytics.snapshot</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate" type="object" string="Generate Snapshot" class="btn-primary"
+                            groups="clinic_analytics.group_analytics_analyst"
+                            invisible="state not in ('draft','failed')"/>
+                    <button name="action_generate_insights" type="object" string="Refresh Insights"
+                            groups="clinic_analytics.group_analytics_analyst"
+                            invisible="state != 'done'"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state not in ('done','failed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,running,done,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_lines" type="object" class="oe_stat_button" icon="fa-bar-chart">
+                            <field name="line_count" widget="statinfo" string="KPI Lines"/>
+                        </button>
+                        <button name="action_view_insights" type="object" class="oe_stat_button" icon="fa-lightbulb-o">
+                            <field name="insight_count" widget="statinfo" string="Insights"/>
+                        </button>
+                        <button name="action_open_dashboards" type="object" class="oe_stat_button" icon="fa-dashboard">
+                            <div class="o_stat_info"><span class="o_stat_text">Dashboards</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="currency_id" readonly="1"/>
+                        </group>
+                        <group string="Generation">
+                            <field name="generated_at"/>
+                            <field name="generated_by_id"/>
+                            <field name="line_count"/>
+                            <field name="warning_count"/>
+                            <field name="critical_count"/>
+                            <field name="source_dashboard_snapshot_id"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-danger" role="alert" invisible="not error_message">
+                        <field name="error_message" nolabel="1"/>
+                    </div>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_generate" type="object" string="Generate / Rebuild" class="btn btn-primary"
+                                groups="clinic_analytics.group_analytics_analyst"
+                                invisible="state not in ('draft','failed')"/>
+                        <button name="action_view_lines" type="object" string="Analyze KPI Lines" class="btn btn-secondary"
+                                invisible="state != 'done'"/>
+                        <button name="action_generate_insights" type="object" string="Generate Actionable Insights" class="btn btn-secondary"
+                                groups="clinic_analytics.group_analytics_analyst"
+                                invisible="state != 'done'"/>
+                    </div>
+
+                    <notebook>
+                        <page string="KPI Snapshot">
+                            <field name="line_ids" readonly="1">
+                                <list decoration-success="status == 'normal'"
+                                      decoration-warning="status == 'warning'"
+                                      decoration-danger="status == 'critical'">
+                                    <field name="kpi_sequence" widget="handle"/>
+                                    <field name="kpi_id"/>
+                                    <field name="display_value"/>
+                                    <field name="has_previous" optional="hide"/>
+                                    <field name="previous_value" optional="hide"/>
+                                    <field name="trend_percent" optional="show"/>
+                                    <field name="source_count" optional="show"/>
+                                    <field name="status" widget="badge"/>
+                                    <button name="action_open_source" type="object" string="Source" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_analytics_snapshot" model="ir.actions.act_window">
+        <field name="name">KPI Snapshots</field>
+        <field name="res_model">clinic.analytics.snapshot</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_analytics_snapshot_search"/>
+    </record>
+</odoo>

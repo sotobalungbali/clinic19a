@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_clinic_report_run" model="ir.actions.report">
+        <field name="name">Clinic Report</field>
+        <field name="model">clinic.report.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_reports.report_clinic_report_run</field>
+        <field name="report_file">clinic_reports.report_clinic_report_run</field>
+        <field name="binding_model_id" ref="model_clinic_report_run"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Clinic Report - %s' % (object.name)</field>
+    </record>
+</odoo>

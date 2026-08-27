@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_consent_template_legal_search" model="ir.ui.view">
+        <field name="name">clinic.consent.template.legal.search</field>
+        <field name="model">clinic.consent.template</field>
+        <field name="arch" type="xml">
+            <search string="Consent Templates">
+                <field name="legal_reference"/>
+                <field name="legal_governed"/>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="code"/>
+                <field name="treatment_id"/>
+                <field name="company_id"/>
+                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="filter_published" string="Published" domain="[('state','=','published')]"/>
+                <filter name="filter_retired" string="Retired" domain="[('state','=','retired')]"/>
+                <filter name="filter_required_before" string="Required Before Procedure"
+                        domain="[('required_before_procedure','=',True)]"/>
+                <filter name="filter_treatment_specific" string="Treatment Specific"
+                        domain="[('applicability','=','treatment')]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archived" domain="[('active','=',False)]"/>
+                <group>
+                    <filter name="group_by_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_by_treatment" string="Treatment" context="{'group_by':'treatment_id'}"/>
+                    <filter name="group_by_scope" string="Scope" context="{'group_by':'scope'}"/>
+                    <filter name="group_by_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_consent_template_legal_list" model="ir.ui.view">
+        <field name="name">clinic.consent.template.legal.list</field>
+        <field name="model">clinic.consent.template</field>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <list string="Consent Templates" default_order="state,title,id"
+                  decoration-success="state == 'published'"
+                  decoration-muted="state == 'retired'">
+                <field name="sequence" optional="hide"/>
+                <field name="legal_reference"/>
+                <field name="legal_governed"/>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="consent_version"/>
+                <field name="scope" optional="show"/>
+                <field name="applicability"/>
+                <field name="treatment_id" optional="show"/>
+                <field name="effective_date" optional="show"/>
+                <field name="validity_days" optional="show"/>
+                <field name="usage_count" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_consent_template_legal_form" model="ir.ui.view">
+        <field name="name">clinic.consent.template.legal.form</field>
+        <field name="model">clinic.consent.template</field>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <form string="Consent Template">
+                <header>
+                    <button name="action_publish" type="object" string="Publish"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_duplicate_new_version" type="object"
+                            string="Duplicate as New Version"
+                            class="btn-secondary"
+                            invisible="state == 'retired'"/>
+                    <button name="action_retire" type="object" string="Retire"
+                            class="btn-secondary" invisible="state == 'retired'"/>
+                    <button name="action_create_consent_from_template" type="object"
+                            string="Create Consent" class="btn-primary"
+                            invisible="state != 'published'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,published,retired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_related_consents" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="usage_count" widget="statinfo" string="Consents"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Retired" bg_color="text-bg-secondary"
+                            invisible="state != 'retired'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Template name..."/></h1>
+                        <h2><field name="title" placeholder="Legal document title..."/></h2>
+                        <div class="text-muted">
+                            <field name="legal_reference" readonly="1"/>
+                            <field name="consent_version" class="oe_inline"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Legal Policy">
+                            <field name="applicability"/>
+                            <field name="treatment_id"
+                                   invisible="applicability != 'treatment'"/>
+                            <field name="required_before_procedure"/>
+                            <field name="validity_days"/>
+                            <field name="effective_date"/>
+                            <field name="default_mail_template_id"/>
+                        </group>
+                        <group string="Version &amp; Governance">
+                            <field name="legal_governed" readonly="1"/>
+                            <field name="version_auto_bump"/>
+                            <field name="version_major"/>
+                            <field name="version_minor"/>
+                            <field name="supersedes_id" readonly="1"/>
+                            <field name="superseded_by_id" readonly="1"/>
+                            <field name="content_checksum" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Consent Content" name="legal_content">
+                            <field name="content_html" widget="html"
+                                   placeholder="Enter the legally approved consent language..."/>
+                            <separator string="Plain Text Fallback"/>
+                            <field name="content_text"
+                                   placeholder="Optional plain-text version..."/>
+                        </page>
+                        <page string="Risks &amp; Alternatives" name="risks">
+                            <group>
+                                <field name="risks_and_complications" widget="html"/>
+                                <field name="alternatives" widget="html"/>
+                            </group>
+                        </page>
+                        <page string="Canonical Catalog Contract" name="catalog_contract">
+                            <group>
+                                <group string="Treatment Catalog Identity">
+                                    <field name="code"/>
+                                    <field name="scope"/>
+                                    <field name="category"/>
+                                    <field name="active"/>
+                                </group>
+                                <group string="Signature Requirements">
+                                    <field name="requires_guardian"/>
+                                    <field name="requires_witness"/>
+                                    <field name="allow_reuse"/>
+                                    <field name="latest_version_id" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="default_item_ids">
+                                <list editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="label"/>
+                                    <field name="required"/>
+                                    <field name="default_value"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Version History" name="catalog_versions">
+                            <field name="version_ids" readonly="1">
+                                <list>
+                                    <field name="version"/>
+                                    <field name="title"/>
+                                    <field name="effective_from"/>
+                                    <field name="effective_to"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Internal Notes" name="notes">
+                            <field name="notes" placeholder="Internal legal or operational notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_consent_template_legal" model="ir.actions.act_window">
+        <field name="name">Consent Templates</field>
+        <field name="res_model">clinic.consent.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_consent_template_legal_search"/>
+        <field name="domain">[('legal_governed', '=', True)]</field>
+        <field name="context">{'default_legal_governed': True, 'default_scope': 'treatment_general'}</field>
+    </record>
+    <record id="action_clinic_consent_template_legal_list_view" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_clinic_consent_template_legal_list"/>
+        <field name="act_window_id" ref="action_clinic_consent_template_legal"/>
+    </record>
+    <record id="action_clinic_consent_template_legal_form_view" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_clinic_consent_template_legal_form"/>
+        <field name="act_window_id" ref="action_clinic_consent_template_legal"/>
+    </record>
+</odoo>

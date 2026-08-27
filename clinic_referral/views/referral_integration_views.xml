@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Only runtime-proven Booking parent XML IDs remain in loadable XML.
+
+        Patient and Branch presentation integrations are installed by
+        data/optional_ui_bridge.xml through an idempotent Python runtime bridge.
+        This prevents stale upstream ir.model.data/view layouts from blocking
+        the Referral business module upgrade.
+    -->
+<record id="view_booking_form_referral" model="ir.ui.view">
+        <field name="name">booking.booking.form.referral</field>
+        <field name="model">booking.booking</field>
+        <field name="inherit_id" ref="clinic_booking.view_booking_booking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_referral" type="object" class="oe_stat_button" icon="fa-share-alt" groups="clinic_referral.group_referral_user" invisible="not referral_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Referral</span>
+                    </div>
+                </button>
+            </xpath>
+            
+            <xpath expr="//form//field[@name='patient_id']" position="after">
+                <field name="referral_id" groups="clinic_referral.group_referral_user" />
+                <button name="action_create_referral" type="object" string="Create Referral" icon="fa-share-alt" groups="clinic_referral.group_referral_user" invisible="referral_id" />
+                <field name="referral_source_id" readonly="1" groups="clinic_referral.group_referral_user" invisible="not referral_id" />
+                <field name="referral_program_id" readonly="1" groups="clinic_referral.group_referral_user" invisible="not referral_id" />
+            </xpath>
+        </field>
+    </record>
+
+    
+
+<record id="view_booking_search_referral" model="ir.ui.view">
+        <field name="name">booking.booking.search.referral</field>
+        <field name="model">booking.booking</field>
+        <field name="inherit_id" ref="clinic_booking.view_booking_booking_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='patient_id']" position="after">
+                <field name="referral_id" groups="clinic_referral.group_referral_user" />
+                <field name="referral_source_id" groups="clinic_referral.group_referral_user" />
+                <field name="referral_program_id" groups="clinic_referral.group_referral_user" />
+            </xpath>
+        </field>
+    </record>
+
+    
+    
+</odoo>

@@ -1,0 +1,6 @@
+CLINIC_POST_CARE_FOLLOWUP_BUILD_20260820_V19.0.1.0.0
+Project: ClinicOne
+Addon: clinic_post_care_followup
+Official sequence: 26 of 39
+Authoritative upstream baseline: clinic_insurance_authorization 19.0.1.0.1
+Runtime status: PENDING

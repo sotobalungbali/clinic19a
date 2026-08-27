@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_consent_form_search" model="ir.ui.view">
+        <field name="name">clinic.consent.form.search</field>
+        <field name="model">clinic.consent.form</field>
+        <field name="arch" type="xml">
+            <search string="Consent Forms">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="booking_id"/>
+                <field name="appointment_id"/>
+                <field name="template_id"/>
+                <filter name="filter_waiting" string="Waiting for Signature"
+                        domain="[('state','=','to_sign')]"/>
+                <filter name="filter_signed" string="Signed"
+                        domain="[('state','=','signed')]"/>
+                <filter name="filter_expired" string="Expired"
+                        domain="[('is_expired','=',True)]"/>
+                <filter name="filter_archived" string="Archived"
+                        domain="[('state','=','archived')]"/>
+                <filter name="filter_active" string="Active Records"
+                        domain="[('active','=',True)]"/>
+                <group>
+                    <filter name="group_by_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_by_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_by_treatment" string="Treatment" context="{'group_by':'treatment_id'}"/>
+                    <filter name="group_by_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_by_template" string="Template" context="{'group_by':'template_id'}"/>
+                    <filter name="group_by_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_consent_form_list" model="ir.ui.view">
+        <field name="name">clinic.consent.form.list</field>
+        <field name="model">clinic.consent.form</field>
+        <field name="arch" type="xml">
+            <list string="Consent Forms"
+                  decoration-info="state == 'to_sign'"
+                  decoration-success="state == 'signed' and not is_expired"
+                  decoration-danger="is_expired"
+                  decoration-muted="state in ('cancelled','archived')">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="title"/>
+                <field name="treatment_id" optional="show"/>
+                <field name="appointment_id" optional="show"/>
+                <field name="doctor_id" optional="show"/>
+                <field name="template_id" optional="show"/>
+                <field name="signature_datetime" optional="show"/>
+                <field name="expiry_date" optional="show"/>
+                <field name="is_expired" optional="show"/>
+                <field name="source" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_consent_form_form" model="ir.ui.view">
+        <field name="name">clinic.consent.form.form</field>
+        <field name="model">clinic.consent.form</field>
+        <field name="arch" type="xml">
+            <form string="Consent &amp; Legal Form">
+                <header>
+                    <button name="action_set_to_sign" type="object" string="Request Signature"
+                            class="btn-primary" invisible="state not in ('draft','cancelled')"/>
+                    <button name="action_sign" type="object" string="Sign"
+                            class="btn-primary" invisible="state != 'to_sign'"/>
+                    <button name="action_send_reminder" type="object" string="Schedule Reminder"
+                            invisible="state != 'to_sign'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state not in ('draft','to_sign')"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            invisible="state != 'signed'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,to_sign,signed,cancelled,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_signatures" type="object"
+                                class="oe_stat_button" icon="fa-pencil-square-o">
+                            <field name="signature_count" widget="statinfo" string="Signatures"/>
+                        </button>
+                        <button name="action_view_legal_attachments" type="object"
+                                class="oe_stat_button" icon="fa-folder-open-o">
+                            <field name="legal_attachment_count" widget="statinfo" string="Legal Docs"/>
+                        </button>
+                        <button name="action_view_attachments" type="object"
+                                class="oe_stat_button" icon="fa-paperclip">
+                            <field name="attachments_count" widget="statinfo" string="Files"/>
+                        </button>
+                        <button name="action_open_template" type="object"
+                                class="oe_stat_button" icon="fa-copy"
+                                invisible="not template_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Template</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Expired" bg_color="text-bg-danger"
+                            invisible="not is_expired"/>
+                    <widget name="web_ribbon" title="Signed" bg_color="text-bg-success"
+                            invisible="state != 'signed' or is_expired"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="title" placeholder="Legal consent title..."/></h2>
+                    </div>
+
+                    <group>
+                        <group string="Patient &amp; Clinical Context">
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="treatment_id"/>
+                            <field name="booking_id"/>
+                            <field name="appointment_id"/>
+                            <field name="room_session_id"/>
+                            <field name="invoice_id"/>
+                        </group>
+                        <group string="Legal Governance">
+                            <field name="template_id"/>
+                            <field name="consent_version" readonly="state in ('signed','archived')"/>
+                            <field name="required_before_procedure"/>
+                            <field name="validity_days"/>
+                            <field name="expiry_date" readonly="1"/>
+                            <field name="is_expired" readonly="1"/>
+                            <field name="source"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Consent Content" name="content">
+                            <field name="content_html" widget="html"
+                                   readonly="state in ('signed','archived')"/>
+                            <separator string="Plain Text"/>
+                            <field name="content_text" readonly="state in ('signed','archived')"/>
+                        </page>
+
+                        <page string="Risks &amp; Alternatives" name="risks">
+                            <field name="risks_and_complications" widget="html"
+                                   readonly="state in ('signed','archived')"/>
+                            <field name="alternatives" widget="html"
+                                   readonly="state in ('signed','archived')"/>
+                        </page>
+
+                        <page string="Signature &amp; Audit" name="signature">
+                            <group>
+                                <group string="Signer">
+                                    <field name="signer_name"/>
+                                    <field name="signer_relationship"/>
+                                    <field name="guardian_partner_id"/>
+                                    <field name="signature_binary" widget="image"
+                                           readonly="state in ('signed','archived')"/>
+                                </group>
+                                <group string="Audit Evidence">
+                                    <field name="signature_datetime" readonly="1"/>
+                                    <field name="signature_ip" readonly="1"/>
+                                    <field name="signature_user_agent" readonly="1"/>
+                                    <field name="integrity_hash" readonly="1"/>
+                                    <field name="next_reminder_date"/>
+                                    <button name="action_preview_portal" type="object"
+                                            string="Preview Portal" icon="fa-external-link"/>
+                                </group>
+                            </group>
+                            <separator string="Signature Ledger"/>
+                            <field name="signature_ids" readonly="1">
+                                <list decoration-danger="state == 'revoked'"
+                                      decoration-muted="state == 'superseded'">
+                                    <field name="signed_on"/>
+                                    <field name="role"/>
+                                    <field name="signer_name"/>
+                                    <field name="relationship"/>
+                                    <field name="state"/>
+                                    <field name="is_latest_for_role"/>
+                                    <button name="action_open_parent_consent" type="object"
+                                            string="Open Consent" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Legal Attachments" name="attachments">
+                            <field name="legal_attachment_ids" readonly="1">
+                                <list>
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                    <field name="category"/>
+                                    <field name="confidentiality"/>
+                                    <field name="show_on_portal"/>
+                                    <field name="file_name"/>
+                                    <field name="uploaded_on"/>
+                                    <button name="action_open_attachment_record" type="object"
+                                            string="Open File" icon="fa-paperclip"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Internal Notes" name="notes">
+                            <field name="note" placeholder="Internal staff/legal notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_consent_form" model="ir.actions.act_window">
+        <field name="name">Consent Forms</field>
+        <field name="res_model">clinic.consent.form</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_consent_form_search"/>
+        <field name="context">{'search_default_group_by_state': 1}</field>
+    </record>
+</odoo>

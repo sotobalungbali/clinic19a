@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_partner_form_clinic_ar" model="ir.ui.view">
+    <field name="name">res.partner.form.clinic.ar</field><field name="model">res.partner</field><field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="action_view_ar_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o" groups="clinic_ar.group_clinic_ar_user"><field name="ar_open_invoices_count" string="Open AR" widget="statinfo"/></button>
+        <button name="action_view_ar_payments" type="object" class="oe_stat_button" icon="fa-money" groups="clinic_ar.group_clinic_ar_user"><field name="ar_payments_count" string="AR Receipts" widget="statinfo"/></button>
+        <button name="action_view_ar_followups" type="object" class="oe_stat_button" icon="fa-bell" groups="clinic_ar.group_clinic_ar_user"><field name="ar_followups_count" string="Follow-ups" widget="statinfo"/></button>
+        <button name="action_view_ar_statements" type="object" class="oe_stat_button" icon="fa-list-alt" groups="clinic_ar.group_clinic_ar_user"><field name="ar_statements_count" string="Statements" widget="statinfo"/></button>
+      </xpath>
+      <xpath expr="//notebook" position="inside">
+        <page string="Accounts Receivable" name="clinic_ar" groups="clinic_ar.group_clinic_ar_user">
+          <group><group string="Credit Policy"><field name="ar_credit_limit"/><field name="ar_allow_overlimit"/><field name="ar_on_hold"/><field name="ar_on_hold_reason" invisible="not ar_on_hold"/><field name="ar_overdue_guard_days"/></group><group string="Collection Preferences"><field name="ar_preferred_channel"/><field name="ar_statement_opt_out"/><field name="ar_last_statement_date"/><field name="ar_next_followup_date"/></group></group>
+          <group string="Current Exposure"><field name="ar_outstanding"/><field name="ar_overdue"/><field name="ar_has_overdue"/><field name="ar_aging_current"/><field name="ar_aging_1_30"/><field name="ar_aging_31_60"/><field name="ar_aging_61_90"/><field name="ar_aging_90_plus"/></group>
+          <div class="oe_button_box"><button name="action_create_ar_statement" string="Create Statement" type="object" class="btn-primary"/><button name="action_toggle_ar_hold" string="Toggle Credit Hold" type="object" class="btn-secondary" groups="clinic_ar.group_clinic_ar_manager"/></div>
+        </page>
+      </xpath>
+    </field>
+  </record>
+</odoo>
+

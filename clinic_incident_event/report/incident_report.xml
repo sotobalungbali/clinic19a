@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_incident_case" model="ir.actions.report">
+        <field name="name">Incident Case Summary</field>
+        <field name="model">clinic.incident</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_incident_event.report_incident_case_document</field>
+        <field name="report_file">clinic_incident_event.report_incident_case_document</field>
+        <field name="print_report_name">'Incident - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="model_clinic_incident"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_incident_case_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            Incident Case Summary
+                            <span class="text-muted" t-field="o.name"/>
+                        </h2>
+
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Title</th>
+                                    <td t-field="o.title"/>
+                                    <th>Status</th>
+                                    <td t-field="o.state"/>
+                                </tr>
+                                <tr>
+                                    <th>Category</th>
+                                    <td t-field="o.category_id"/>
+                                    <th>Severity</th>
+                                    <td t-field="o.severity"/>
+                                </tr>
+                                <tr>
+                                    <th>Classification</th>
+                                    <td t-field="o.classification"/>
+                                    <th>Occurred At</th>
+                                    <td t-field="o.occurred_at"/>
+                                </tr>
+                                <tr>
+                                    <th>Patient</th>
+                                    <td t-field="o.patient_id"/>
+                                    <th>Doctor</th>
+                                    <td t-field="o.doctor_id"/>
+                                </tr>
+                                <tr>
+                                    <th>Branch</th>
+                                    <td t-field="o.branch_id"/>
+                                    <th>Case Owner</th>
+                                    <td t-field="o.case_owner_id"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Incident Narrative</h4>
+                        <div t-field="o.description"/>
+
+                        <h4 class="mt-3">Immediate / Containment Action</h4>
+                        <p t-field="o.immediate_action"/>
+
+                        <h4 class="mt-3">Patient Impact</h4>
+                        <p t-field="o.patient_impact"/>
+
+                        <h4 class="mt-3">Root Cause Summary</h4>
+                        <p t-field="o.root_cause_summary"/>
+
+                        <h4 class="mt-3">Corrective / Preventive Actions</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>Type</th>
+                                    <th>Owner</th>
+                                    <th>Due</th>
+                                    <th>Status</th>
+                                    <th>Effectiveness</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.action_ids" t-as="a">
+                                    <td t-field="a.name"/>
+                                    <td t-field="a.action_type"/>
+                                    <td t-field="a.owner_user_id"/>
+                                    <td t-field="a.due_at"/>
+                                    <td t-field="a.state"/>
+                                    <td t-field="a.effectiveness_result"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt-3">Regulatory Review</h4>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Required</th>
+                                    <td><span t-out="'Yes' if o.regulatory_required else 'No'"/></td>
+                                    <th>Reviewed</th>
+                                    <td><span t-out="'Yes' if o.reportability_reviewed else 'No'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Regulatory Body</th>
+                                    <td t-field="o.regulator_body"/>
+                                    <th>Reference</th>
+                                    <td t-field="o.regulator_reference"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt-3">Resolution</h4>
+                        <p t-field="o.resolution_summary"/>
+
+                        <p class="text-muted small mt-4">
+                            Internal ClinicOne incident/compliance evidence.
+                            External regulatory transmission, where required,
+                            is outside this base addon.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

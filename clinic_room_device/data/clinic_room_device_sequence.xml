@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_clinic_device" model="ir.sequence">
+            <field name="name">Clinic Device</field>
+            <field name="code">clinic.device.code</field>
+            <field name="prefix">DEV/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_clinic_room_device_assignment" model="ir.sequence">
+            <field name="name">Clinic Room Device Assignment</field>
+            <field name="code">clinic.room.device.assignment</field>
+            <field name="prefix">RDA/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_clinic_device_movement" model="ir.sequence">
+            <field name="name">Clinic Device Movement</field>
+            <field name="code">clinic.device.movement</field>
+            <field name="prefix">MOV/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_room_session" model="ir.sequence">
+            <field name="name">Clinic Room Session</field>
+            <field name="code">clinic.room.session</field>
+            <field name="prefix">SES/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

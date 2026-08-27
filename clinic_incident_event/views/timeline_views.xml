@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_incident_timeline_search" model="ir.ui.view">
+        <field name="name">clinic.incident.timeline.search</field>
+        <field name="model">clinic.incident.timeline</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="incident_id"/>
+                <field name="event_type"/>
+                <field name="title"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+                <filter name="state_change" string="State Changes"
+                        domain="[('event_type','=','state')]"/>
+                <filter name="investigation" string="Investigation"
+                        domain="[('event_type','=','investigation')]"/>
+                <filter name="action" string="CAPA"
+                        domain="[('event_type','=','action')]"/>
+                <filter name="regulatory" string="Regulatory"
+                        domain="[('event_type','=','regulatory')]"/>
+                <filter name="event_date" string="Event Date" date="event_at"/>
+                <group>
+                    <filter name="group_incident" string="Incident" context="{'group_by':'incident_id'}"/>
+                    <filter name="group_type" string="Event Type" context="{'group_by':'event_type'}"/>
+                    <filter name="group_user" string="User" context="{'group_by':'user_id'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by':'event_at:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_incident_timeline_list" model="ir.ui.view">
+        <field name="name">clinic.incident.timeline.list</field>
+        <field name="model">clinic.incident.timeline</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="event_at"/>
+                <field name="incident_id"/>
+                <field name="event_type" widget="badge"/>
+                <field name="title"/>
+                <field name="user_id"/>
+                <field name="from_state"/>
+                <field name="to_state"/>
+                <field name="branch_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_incident" type="object" string="Incident" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_incident_timeline_form" model="ir.ui.view">
+        <field name="name">clinic.incident.timeline.form</field>
+        <field name="model">clinic.incident.timeline</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_incident" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <div class="o_stat_info"><span class="o_stat_text">Incident</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="title"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="incident_id"/>
+                            <field name="event_type"/>
+                            <field name="event_at"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="from_state"/>
+                            <field name="to_state"/>
+                            <field name="branch_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="note"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_incident_timeline" model="ir.actions.act_window">
+        <field name="name">Incident Timeline</field>
+        <field name="res_model">clinic.incident.timeline</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_incident_timeline_search"/>
+    </record>
+</odoo>

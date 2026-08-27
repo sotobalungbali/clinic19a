@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <record id="mail_template_result_released" model="mail.template">
+    <field name="name">ClinicOne - Clinical Result Released</field>
+    <field name="model_id" ref="model_clinic_result_document"/>
+    <field name="subject">Clinical Result Released - {{ object.name or '' }}</field>
+    <field name="email_from">{{ object.company_id.email or user.email_formatted }}</field>
+    <field name="email_to">{{ object.partner_id.email or '' }}</field>
+    <field name="body_html" type="html">
+      <div>
+        <p>Hello <t t-out="object.partner_id.name or 'Patient'"/>,</p>
+        <p>Your clinical result <strong><t t-out="object.name"/></strong> has been released.</p>
+        <p t-if="object.title">Report: <t t-out="object.title"/></p>
+        <p>Please contact the clinic if you need assistance interpreting this result.</p>
+      </div>
+    </field>
+    <field name="auto_delete" eval="False"/>
+  </record>
+</odoo>

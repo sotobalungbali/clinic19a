@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_branch_location_search" model="ir.ui.view">
+        <field name="name">clinic.branch.location.search</field>
+        <field name="model">clinic.branch.location</field>
+        <field name="arch" type="xml">
+            <search string="Branch Locations">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="branch_id"/>
+                <field name="company_id"/>
+                <field name="type"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="bookable" string="Bookable" domain="[('allow_booking', '=', True)]"/>
+                <separator/>
+                <filter name="group_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+                <filter name="group_type" string="Type" context="{'group_by': 'type'}"/>
+                <filter name="group_parent" string="Parent Location" context="{'group_by': 'parent_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_branch_location_list" model="ir.ui.view">
+        <field name="name">clinic.branch.location.list</field>
+        <field name="model">clinic.branch.location</field>
+        <field name="arch" type="xml">
+            <list string="Branch Locations" default_order="branch_id,sequence,name"
+                  decoration-muted="not active" multi_edit="1">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="type"/>
+                <field name="parent_id" optional="show"/>
+                <field name="capacity" optional="show"/>
+                <field name="allow_booking" optional="show"/>
+                <field name="warehouse_id" optional="hide"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_branch_location_form" model="ir.ui.view">
+        <field name="name">clinic.branch.location.form</field>
+        <field name="model">clinic.branch.location</field>
+        <field name="arch" type="xml">
+            <form string="Branch Location">
+                <header>
+                    <button name="action_view_children" type="object" string="Open Child Locations"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="code"/>
+                            <field name="type"/>
+                            <field name="parent_id"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Capacity &amp; Booking">
+                            <field name="allow_booking"/>
+                            <field name="capacity"/>
+                            <field name="booking_strategy"/>
+                            <field name="resource_calendar_id"/>
+                            <field name="resource_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Inventory Mapping">
+                            <group>
+                                <field name="warehouse_id"/>
+                                <field name="stock_location_id"/>
+                            </group>
+                        </page>
+                        <page string="Address">
+                            <group>
+                                <group>
+                                    <field name="phone" widget="phone"/>
+                                    <field name="email" widget="email"/>
+                                    <field name="street"/>
+                                    <field name="street2"/>
+                                    <field name="city"/>
+                                    <field name="state_id"/>
+                                    <field name="zip"/>
+                                    <field name="country_id"/>
+                                </group>
+                                <group>
+                                    <field name="tz"/>
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                    <field name="color" widget="color_picker"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Child Locations">
+                            <field name="child_ids" context="{'default_parent_id': id, 'default_branch_id': branch_id, 'default_company_id': company_id}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                    <field name="capacity"/>
+                                    <field name="allow_booking"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_branch_location" model="ir.actions.act_window">
+        <field name="name">Branch Locations</field>
+        <field name="res_model">clinic.branch.location</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_branch_location_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

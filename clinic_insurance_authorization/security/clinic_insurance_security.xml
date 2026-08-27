@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_clinic_insurance" model="ir.module.category">
+        <field name="name">ClinicOne Insurance</field>
+        <field name="sequence">63</field>
+    </record>
+
+    <record id="privilege_clinic_insurance" model="res.groups.privilege">
+        <field name="name">ClinicOne Insurance</field>
+        <field name="category_id" ref="clinic_insurance_authorization.module_category_clinic_insurance"/>
+        <field name="sequence">63</field>
+    </record>
+
+    <record id="group_clinic_insurance_user" model="res.groups">
+        <field name="name">Insurance User</field>
+        <field name="privilege_id" ref="clinic_insurance_authorization.privilege_clinic_insurance"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_billing.group_clinic_billing_user'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_insurance_coordinator" model="res.groups">
+        <field name="name">Insurance Coordinator</field>
+        <field name="privilege_id" ref="clinic_insurance_authorization.privilege_clinic_insurance"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_user'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_insurance_adjudicator" model="res.groups">
+        <field name="name">Insurance Adjudicator</field>
+        <field name="privilege_id" ref="clinic_insurance_authorization.privilege_clinic_insurance"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_coordinator'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_insurance_manager" model="res.groups">
+        <field name="name">Insurance Manager</field>
+        <field name="privilege_id" ref="clinic_insurance_authorization.privilege_clinic_insurance"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_adjudicator')),
+            Command.link(ref('clinic_billing.group_clinic_billing_manager'))
+        ]"/>
+    </record>
+
+    <record id="rule_insurance_plan_company" model="ir.rule">
+        <field name="name">Insurance Plan: allowed companies</field>
+        <field name="model_id" ref="model_clinic_insurance_plan"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_user'))]"/>
+    </record>
+
+    <record id="rule_insurance_plan_rule_company" model="ir.rule">
+        <field name="name">Insurance Plan Rule: allowed companies</field>
+        <field name="model_id" ref="model_clinic_insurance_plan_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_user'))]"/>
+    </record>
+
+    <record id="rule_insurance_policy_company" model="ir.rule">
+        <field name="name">Insurance Policy: allowed companies</field>
+        <field name="model_id" ref="model_clinic_insurance_policy"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_user'))]"/>
+    </record>
+
+    <record id="rule_insurance_eligibility_company" model="ir.rule">
+        <field name="name">Insurance Eligibility: allowed companies</field>
+        <field name="model_id" ref="model_clinic_insurance_eligibility_check"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_user'))]"/>
+    </record>
+
+    <record id="rule_insurance_authorization_company" model="ir.rule">
+        <field name="name">Insurance Authorization: allowed companies</field>
+        <field name="model_id" ref="model_clinic_insurance_authorization"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_user'))]"/>
+    </record>
+
+    <record id="rule_insurance_authorization_line_company" model="ir.rule">
+        <field name="name">Insurance Authorization Line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_insurance_authorization_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_insurance_authorization.group_clinic_insurance_user'))]"/>
+    </record>
+</odoo>
+

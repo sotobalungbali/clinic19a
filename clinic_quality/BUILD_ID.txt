@@ -1,0 +1,8 @@
+CLINIC_QUALITY_BUILD_20260821_V19.0.1.0.0
+Project: ClinicOne
+Addon: clinic_quality
+Official sequence: 35 of 39
+Authoritative baseline: clinic19a(20260821-080252).md
+Latest frozen upstream: clinic_incident_event 19.0.1.0.0
+Official responsibility: Documents standard operating procedures and compliance quality checks.
+Runtime status: PENDING

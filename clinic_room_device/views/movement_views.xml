@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_device_movement_search" model="ir.ui.view">
+        <field name="name">clinic.device.movement.search</field>
+        <field name="model">clinic.device.movement</field>
+        <field name="arch" type="xml">
+            <search><field name="name"/><field name="code"/><field name="device_id"/><field name="from_room_id"/><field name="to_room_id"/><field name="reason"/><field name="date"/><group><filter name="group_reason" string="Reason" context="{'group_by':'reason'}"/><filter name="group_device" string="Device" context="{'group_by':'device_id'}"/></group></search>
+        </field>
+    </record>
+
+    <record id="view_clinic_device_movement_list" model="ir.ui.view">
+        <field name="name">clinic.device.movement.list</field>
+        <field name="model">clinic.device.movement</field>
+        <field name="arch" type="xml">
+            <list><field name="date"/><field name="code"/><field name="device_id"/><field name="from_room_id"/><field name="to_room_id"/><field name="reason"/><field name="company_id" groups="base.group_multi_company"/></list>
+        </field>
+    </record>
+
+    <record id="view_clinic_device_movement_form" model="ir.ui.view">
+        <field name="name">clinic.device.movement.form</field>
+        <field name="model">clinic.device.movement</field>
+        <field name="arch" type="xml">
+            <form string="Device Movement"><sheet><div class="oe_button_box" name="button_box"><button name="action_open_device" type="object" class="oe_stat_button" icon="fa-medkit"><span class="o_stat_text">Device</span></button><button name="action_open_from_room" type="object" class="oe_stat_button" icon="fa-sign-out"><span class="o_stat_text">From Room</span></button><button name="action_open_to_room" type="object" class="oe_stat_button" icon="fa-sign-in"><span class="o_stat_text">To Room</span></button><button name="action_open_stock_moves" type="object" class="oe_stat_button" icon="fa-cubes"><span class="o_stat_text">Stock Moves</span></button></div><div class="oe_title"><h1><field name="display_name" readonly="1"/></h1><field name="code"/></div><group><group><field name="device_id"/><field name="reason"/><field name="date"/></group><group><field name="from_room_id"/><field name="to_room_id"/><field name="is_consistent" readonly="1"/><field name="company_id" groups="base.group_multi_company"/></group></group><field name="note"/></sheet><chatter/></form>
+        </field>
+    </record>
+
+    <record id="action_clinic_device_movement" model="ir.actions.act_window"><field name="name">Device Movements</field><field name="res_model">clinic.device.movement</field><field name="view_mode">list,form</field></record>
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_quality_settings" model="ir.actions.act_window">
+        <field name="name">Quality Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_quality'}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_quality" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.quality</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Quality"
+                     name="clinic_quality"
+                     groups="clinic_quality.group_quality_manager">
+                    <block title="Quality Governance">
+                        <setting string="Default Quality Approver"
+                                 help="Default reviewer for SOP Versions and Quality Checks when no explicit reviewer is assigned.">
+                            <field name="clinic_quality_default_approver_id"/>
+                        </setting>
+
+                        <setting string="Default SOP Review Interval"
+                                 help="Default number of months between approved SOP effective date and review due date.">
+                            <field name="clinic_quality_default_review_months"/>
+                        </setting>
+
+                        <setting string="Default Compliance Threshold"
+                                 help="Default weighted pass threshold used when new Quality Templates are created.">
+                            <field name="clinic_quality_default_pass_threshold"/>
+                        </setting>
+
+                        <setting string="Critical Failure Incident Gate"
+                                 help="Require every failed critical control to have an Incident case before the Quality Check can close.">
+                            <field name="clinic_quality_require_incident_critical"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

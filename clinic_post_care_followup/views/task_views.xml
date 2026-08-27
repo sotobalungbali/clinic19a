@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_postcare_task_search" model="ir.ui.view">
+        <field name="name">clinic.postcare.task.search</field>
+        <field name="model">clinic.postcare.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="plan_id"/>
+                <field name="assignee_id"/>
+                <field name="task_type"/>
+                <field name="channel"/>
+                <field name="company_id"/>
+                <filter name="open_tasks" string="Open Tasks" domain="[('state','not in',('completed','cancelled'))]"/>
+                <filter name="due" string="Due" domain="[('state','=','due')]"/>
+                <filter name="overdue" string="Overdue / Escalated" domain="[('is_overdue','=',True)]"/>
+                <filter name="response_required" string="Response Required" domain="[('response_required','=',True),('state','not in',('completed','cancelled'))]"/>
+                <filter name="auto_email" string="Automated Email" domain="[('channel','=','email'),('auto_send','=',True)]"/>
+                <group>
+                    <filter name="group_assignee" string="Assignee" context="{'group_by':'assignee_id'}"/>
+                    <filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_type" string="Task Type" context="{'group_by':'task_type'}"/>
+                    <filter name="group_channel" string="Channel" context="{'group_by':'channel'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_due_day" string="Due Day" context="{'group_by':'due_datetime:day'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_task_list" model="ir.ui.view">
+        <field name="name">clinic.postcare.task.list</field>
+        <field name="model">clinic.postcare.task</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state in ('overdue','escalated')" decoration-warning="state == 'due'" decoration-info="state == 'sent'" decoration-success="state == 'completed'" decoration-muted="state == 'cancelled'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="task_type"/>
+                <field name="channel"/>
+                <field name="assignee_id"/>
+                <field name="due_datetime"/>
+                <field name="response_required"/>
+                <field name="checkin_count"/>
+                <field name="send_count"/>
+                <field name="completed_on_time" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_send_reminder" type="object" string="Send Email" icon="fa-envelope" groups="clinic_post_care_followup.group_postcare_coordinator" invisible="channel != 'email' or state in ('completed','cancelled')"/>
+                <button name="action_mark_contacted" type="object" string="Contacted" icon="fa-phone" groups="clinic_post_care_followup.group_postcare_coordinator" invisible="state in ('completed','cancelled')"/>
+                <button name="action_new_checkin" type="object" string="Check-in" icon="fa-comments" groups="clinic_post_care_followup.group_postcare_coordinator" invisible="state in ('completed','cancelled')"/>
+                <button name="action_escalate" type="object" string="Escalate" icon="fa-exclamation-triangle" groups="clinic_post_care_followup.group_postcare_clinician" invisible="state in ('completed','cancelled','escalated')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_postcare_task_form" model="ir.ui.view">
+        <field name="name">clinic.postcare.task.form</field>
+        <field name="model">clinic.postcare.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_schedule" type="object" string="Schedule"
+                            groups="clinic_post_care_followup.group_postcare_coordinator"
+                            invisible="state != 'pending'"/>
+                    <button name="action_send_reminder" type="object" string="Send Email Reminder" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_coordinator"
+                            invisible="channel != 'email' or state in ('completed','cancelled')"/>
+                    <button name="action_mark_due" type="object" string="Mark Due"
+                            groups="clinic_post_care_followup.group_postcare_coordinator"
+                            invisible="state not in ('pending','scheduled')"/>
+                    <button name="action_mark_contacted" type="object" string="Mark Contacted"
+                            groups="clinic_post_care_followup.group_postcare_coordinator"
+                            invisible="state in ('completed','cancelled')"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state in ('completed','cancelled')"/>
+                    <button name="action_escalate" type="object" string="Escalate"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state in ('completed','cancelled','escalated')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_post_care_followup.group_postcare_manager"
+                            invisible="state in ('completed','cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,scheduled,due,sent,contacted,overdue,escalated,completed,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_plan" type="object" class="oe_stat_button" icon="fa-heartbeat">
+                            <div class="o_stat_info"><span class="o_stat_text">Post-Care Plan</span></div>
+                        </button>
+                        <button name="action_open_patient" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="reference" readonly="1"/></div>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="not is_overdue">
+                        This follow-up task is overdue or escalated.
+                    </div>
+
+                    <group>
+                        <group string="Follow-up Work">
+                            <field name="plan_id" readonly="state not in ('pending','scheduled')"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="assignee_id"/>
+                            <field name="task_type"/>
+                            <field name="channel"/>
+                            <field name="priority"/>
+                            <field name="protocol_step_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="branch_id" readonly="1"/>
+                        </group>
+                        <group string="Timing &amp; Contact Evidence">
+                            <field name="due_datetime" readonly="state not in ('pending','scheduled')"/>
+                            <field name="response_required"/>
+                            <field name="response_due_datetime" invisible="not response_required"/>
+                            <field name="auto_send"/>
+                            <field name="sent_at" readonly="1"/>
+                            <field name="contacted_at" readonly="1"/>
+                            <field name="completed_at" readonly="1"/>
+                            <field name="completed_by_id" readonly="1"/>
+                            <field name="completed_on_time" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_new_checkin" type="object" string="Record Patient Check-in" class="btn btn-primary"
+                                groups="clinic_post_care_followup.group_postcare_coordinator"
+                                invisible="state in ('completed','cancelled')"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Patient Instruction">
+                            <field name="instruction_html"/>
+                        </page>
+                        <page string="Escalation Policy">
+                            <group>
+                                <field name="escalate_if_overdue"/>
+                                <field name="escalation_after_hours" invisible="not escalate_if_overdue"/>
+                                <field name="escalation_severity" invisible="not escalate_if_overdue"/>
+                                <field name="escalation_count" readonly="1"/>
+                                <field name="send_count" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Check-ins">
+                            <field name="checkin_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="response_at"/>
+                                    <field name="wellbeing"/>
+                                    <field name="pain_score"/>
+                                    <field name="red_flag"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_plan" type="object" string="Plan" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_postcare_task_kanban" model="ir.ui.view">
+        <field name="name">clinic.postcare.task.kanban</field>
+        <field name="model">clinic.postcare.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="assignee_id"/>
+                <field name="task_type"/>
+                <field name="channel"/>
+                <field name="priority"/>
+                <field name="due_datetime"/>
+                <field name="state"/>
+                <field name="is_overdue"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <strong><field name="name"/></strong>
+                            <field name="priority" widget="priority"/>
+                        </div>
+                        <div class="text-muted mt-1">
+                            <field name="reference"/>
+                        </div>
+                        <div class="mt-2">
+                            <span class="fa fa-user me-1" title="Patient"/>
+                            <field name="patient_id"/>
+                        </div>
+                        <div>
+                            <span class="fa fa-user-md me-1" title="Assigned Staff"/>
+                            <field name="assignee_id"/>
+                        </div>
+                        <div>
+                            <span class="fa fa-clock-o me-1" title="Due"/>
+                            <field name="due_datetime"/>
+                        </div>
+                        <div class="mt-2 d-flex gap-1 flex-wrap">
+                            <field name="task_type" widget="badge"/>
+                            <field name="channel" widget="badge"/>
+                            <field name="state" widget="badge"/>
+                        </div>
+                        <div class="alert alert-danger py-1 px-2 mt-2 mb-0" role="alert" t-if="record.is_overdue.raw_value">
+                            Follow-up requires attention.
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_postcare_task" model="ir.actions.act_window">
+        <field name="name">Post-Care Tasks</field>
+        <field name="res_model">clinic.postcare.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_postcare_task_search"/>
+        <field name="context">{'search_default_open_tasks': 1}</field>
+    </record>
+</odoo>

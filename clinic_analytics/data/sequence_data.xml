@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_analytics_snapshot" model="ir.sequence">
+        <field name="name">Clinic Analytics Snapshot</field>
+        <field name="code">clinic.analytics.snapshot</field>
+        <field name="prefix">ANS/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_analytics_forecast" model="ir.sequence">
+        <field name="name">Clinic Analytics Forecast</field>
+        <field name="code">clinic.analytics.forecast</field>
+        <field name="prefix">ANF/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_analytics_cohort" model="ir.sequence">
+        <field name="name">Clinic Analytics Cohort</field>
+        <field name="code">clinic.analytics.cohort</field>
+        <field name="prefix">ANC/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

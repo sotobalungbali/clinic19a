@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_portal_profile_operator,Portal Profile Operator,model_clinic_portal_profile,clinic_portal.group_patient_portal_operator,1,0,0,0
+access_portal_profile_manager,Portal Profile Manager,model_clinic_portal_profile,clinic_portal.group_patient_portal_manager,1,1,1,1

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_treatment_code" model="ir.sequence">
+        <field name="name">Treatment Code</field>
+        <field name="code">clinic.treatment.catalog</field>
+        <field name="prefix">TRT/</field>
+        <field name="padding">6</field>
+    </record>
+    <record id="seq_treatment_category_code" model="ir.sequence">
+        <field name="name">Treatment Category Code</field>
+        <field name="code">clinic.treatment.category</field>
+        <field name="prefix">TCAT/</field>
+        <field name="padding">6</field>
+    </record>
+    <record id="seq_treatment_tag_code" model="ir.sequence">
+        <field name="name">Treatment Tag Code</field>
+        <field name="code">clinic.treatment.tag</field>
+        <field name="prefix">TTAG/</field>
+        <field name="padding">6</field>
+    </record>
+    <record id="seq_treatment_bundle_code" model="ir.sequence">
+        <field name="name">Treatment Bundle Code</field>
+        <field name="code">clinic.treatment.bundle</field>
+        <field name="prefix">TBND/</field>
+        <field name="padding">6</field>
+    </record>
+    <record id="seq_treatment_pricelist_code" model="ir.sequence">
+        <field name="name">Treatment Pricelist Code</field>
+        <field name="code">clinic.treatment.pricelist</field>
+        <field name="prefix">TPL/</field>
+        <field name="padding">6</field>
+    </record>
+    <record id="seq_treatment_attribute_code" model="ir.sequence">
+        <field name="name">Treatment Attribute Code</field>
+        <field name="code">clinic.treatment.attribute</field>
+        <field name="prefix">TATTR/</field>
+        <field name="padding">6</field>
+    </record>
+    <record id="seq_treatment_attribute_value_code" model="ir.sequence">
+        <field name="name">Treatment Attribute Value Code</field>
+        <field name="code">clinic.treatment.attribute.value</field>
+        <field name="prefix">TVAL/</field>
+        <field name="padding">6</field>
+    </record>
+    <record id="seq_treatment_pricelist_item_code" model="ir.sequence">
+        <field name="name">Treatment Price Rule Code</field>
+        <field name="code">clinic.treatment.pricelist.item</field>
+        <field name="prefix">TPR/</field>
+        <field name="padding">6</field>
+    </record>
+    <record id="seq_consent_request" model="ir.sequence">
+        <field name="name">Consent Request</field>
+        <field name="code">clinic.consent.request</field>
+        <field name="prefix">CONS/</field>
+        <field name="padding">6</field>
+    </record>
+</odoo>
+

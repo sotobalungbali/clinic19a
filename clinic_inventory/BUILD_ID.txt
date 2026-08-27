@@ -1,0 +1,7 @@
+CLINIC_INVENTORY_BUILD_20260821_V19.0.1.0.2
+Project: ClinicOne
+Addon: clinic_inventory
+Repair owner: clinic_inventory
+Runtime defect: env-model recordset incorrectly used as isinstance() type
+Target Odoo: 19 CE
+Runtime status: PENDING

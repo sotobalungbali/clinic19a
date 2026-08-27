@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_consents" name="My Consents">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <div class="container py-3">
+                <h2>My Consents</h2>
+                <t t-if="not consents">
+                    <div class="alert alert-info">
+                        No consent documents are currently available.
+                    </div>
+                </t>
+                <div class="list-group" t-else="">
+                    <t t-foreach="consents" t-as="consent">
+                        <a class="list-group-item list-group-item-action"
+                           t-att-href="consent.get_portal_url()">
+                            <div class="d-flex w-100 justify-content-between">
+                                <strong t-esc="consent.display_name"/>
+                                <span class="badge text-bg-secondary" t-esc="consent.state"/>
+                            </div>
+                            <small t-if="consent.treatment_id" t-esc="consent.treatment_id.display_name"/>
+                        </a>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_consent_page" name="Consent Document">
+        <t t-call="portal.portal_layout">
+            <div class="container py-3">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h2 t-esc="consent.title or consent.display_name"/>
+                        <div class="text-muted" t-esc="consent.name"/>
+                    </div>
+                    <span class="badge text-bg-secondary" t-esc="consent.state"/>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Patient</strong>
+                        <div t-esc="consent.patient_id.display_name"/>
+                    </div>
+                    <div class="col-md-6" t-if="consent.treatment_id">
+                        <strong>Treatment</strong>
+                        <div t-esc="consent.treatment_id.display_name"/>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div t-if="consent.content_html" t-field="consent.content_html"/>
+                        <pre t-elif="consent.content_text" class="mb-0"
+                             t-esc="consent.content_text"/>
+                    </div>
+                </div>
+
+                <div class="card mb-3" t-if="consent.risks_and_complications">
+                    <div class="card-header"><strong>Risks &amp; Complications</strong></div>
+                    <div class="card-body" t-field="consent.risks_and_complications"/>
+                </div>
+
+                <div class="card mb-3" t-if="consent.alternatives">
+                    <div class="card-header"><strong>Alternatives</strong></div>
+                    <div class="card-body" t-field="consent.alternatives"/>
+                </div>
+
+                <div class="alert alert-success" t-if="consent.state == 'signed' and not consent.is_expired">
+                    Signed by <strong t-esc="consent.signer_name or '-'"/> on
+                    <span t-field="consent.signature_datetime"/>.
+                </div>
+                <div class="alert alert-danger" t-if="consent.is_expired">
+                    This consent has expired.
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

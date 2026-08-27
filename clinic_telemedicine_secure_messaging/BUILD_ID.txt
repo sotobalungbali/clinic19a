@@ -1,0 +1,9 @@
+CLINIC_TELEMEDICINE_SECURE_MESSAGING_BUILD_20260821_V19.0.1.0.1
+Project: ClinicOne
+Addon: clinic_telemedicine_secure_messaging
+Official sequence: 33 of 39
+Authoritative failed baseline: 19.0.1.0.0
+Latest frozen upstream: clinic_marketing 19.0.1.0.1
+Repair: remove runtime dependency on missing clinic_patient custom view XML ID
+Patient smart navigation: moved to stable base.view_partner_form
+Runtime status: PENDING

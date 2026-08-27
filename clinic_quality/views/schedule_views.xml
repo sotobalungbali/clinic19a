@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_quality_schedule_search" model="ir.ui.view">
+        <field name="name">clinic.quality.schedule.search</field>
+        <field name="model">clinic.quality.schedule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="template_id"/>
+                <field name="assigned_user_id"/>
+                <field name="reviewer_user_id"/>
+                <field name="scope_type"/>
+                <field name="branch_id"/>
+                <field name="company_id"/>
+                <filter name="active_schedule" string="Active" domain="[('state','=','active')]"/>
+                <filter name="paused_schedule" string="Paused" domain="[('state','=','paused')]"/>
+                <filter name="due" string="Due"
+                        domain="[('state','=','active'),('next_run_date','&lt;=',context_today())]"/>
+                <filter name="next_run" string="Next Run" date="next_run_date"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_template" string="Template" context="{'group_by':'template_id'}"/>
+                    <filter name="group_recurrence" string="Recurrence" context="{'group_by':'recurrence'}"/>
+                    <filter name="group_scope" string="Scope Type" context="{'group_by':'scope_type'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_inspector" string="Inspector" context="{'group_by':'assigned_user_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_quality_schedule_list" model="ir.ui.view">
+        <field name="name">clinic.quality.schedule.list</field>
+        <field name="model">clinic.quality.schedule</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'paused'"
+                  decoration-danger="last_error"
+                  decoration-success="state == 'active' and not last_error">
+                <field name="name"/>
+                <field name="template_id"/>
+                <field name="scope_type" widget="badge"/>
+                <field name="branch_id"/>
+                <field name="recurrence" widget="badge"/>
+                <field name="interval_count"/>
+                <field name="assigned_user_id"/>
+                <field name="next_run_date"/>
+                <field name="last_run_date"/>
+                <field name="check_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_run_now" type="object" string="Run Now" icon="fa-play"
+                        groups="clinic_quality.group_quality_manager"
+                        invisible="state != 'active'"/>
+                <button name="action_pause" type="object" string="Pause" icon="fa-pause"
+                        groups="clinic_quality.group_quality_manager"
+                        invisible="state != 'active'"/>
+                <button name="action_resume" type="object" string="Resume" icon="fa-play-circle"
+                        groups="clinic_quality.group_quality_manager"
+                        invisible="state != 'paused'"/>
+                <button name="action_open_checks" type="object" string="Checks" icon="fa-check-square-o"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_quality_schedule_form" model="ir.ui.view">
+        <field name="name">clinic.quality.schedule.form</field>
+        <field name="model">clinic.quality.schedule</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_resume" type="object" string="Activate Schedule" class="btn-primary"
+                            groups="clinic_quality.group_quality_manager"
+                            invisible="state != 'paused'"/>
+                    <button name="action_run_now" type="object" string="Run Now" class="btn-primary"
+                            groups="clinic_quality.group_quality_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_pause" type="object" string="Pause"
+                            groups="clinic_quality.group_quality_manager"
+                            invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="paused,active"/>
+                </header>
+
+                <sheet>
+                    <field name="allowed_branch_ids" invisible="1"/>
+                    <field name="active" invisible="1"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_checks" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="check_count" widget="statinfo" string="Checks"/>
+                        </button>
+                        <button name="action_open_last_check" type="object"
+                                class="oe_stat_button" icon="fa-history"
+                                invisible="not last_check_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Last Check</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="state == 'active'"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not last_error">
+                        The last scheduled run failed. The recurrence was advanced to prevent endless retry. Review Last Error before resuming normal operations.
+                    </div>
+
+                    <group>
+                        <group string="Template &amp; Assignment">
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state == 'active'"/>
+                            <field name="template_id" readonly="state == 'active'"/>
+                            <field name="assigned_user_id" readonly="state == 'active'"/>
+                            <field name="reviewer_user_id" readonly="state == 'active'"/>
+                        </group>
+                        <group string="Recurrence">
+                            <field name="recurrence" readonly="state == 'active'"/>
+                            <field name="interval_count" readonly="state == 'active'"/>
+                            <field name="next_run_date" readonly="state == 'active'"/>
+                            <field name="last_run_date" readonly="1"/>
+                            <field name="last_check_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Quality Scope">
+                        <group>
+                            <field name="scope_type" readonly="state == 'active'"/>
+                            <field name="branch_id" readonly="state == 'active'"/>
+                            <field name="room_id" readonly="state == 'active'"
+                                   invisible="scope_type != 'room'"/>
+                            <field name="staff_id" readonly="state == 'active'"
+                                   invisible="scope_type != 'staff'"/>
+                        </group>
+                        <group>
+                            <field name="doctor_id" readonly="state == 'active'"
+                                   invisible="scope_type != 'doctor'"/>
+                            <field name="stock_lot_id" readonly="state == 'active'"
+                                   invisible="scope_type != 'inventory_lot'"/>
+                            <field name="treatment_id" readonly="state == 'active'"
+                                   invisible="scope_type != 'treatment'"/>
+                        </group>
+                    </group>
+
+                    <group string="Last Run Evidence" invisible="not last_error">
+                        <field name="last_error" readonly="1"/>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap my-3">
+                        <button name="action_run_now" type="object"
+                                string="Generate Check Now" class="btn btn-primary"
+                                groups="clinic_quality.group_quality_manager"
+                                invisible="state != 'active'"/>
+                        <button name="action_open_checks" type="object"
+                                string="Review Generated Checks" class="btn btn-secondary"/>
+                        <button name="action_open_last_check" type="object"
+                                string="Open Last Check" class="btn btn-secondary"
+                                invisible="not last_check_id"/>
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quality_schedule" model="ir.actions.act_window">
+        <field name="name">Quality Check Schedules</field>
+        <field name="res_model">clinic.quality.schedule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_quality_schedule_search"/>
+    </record>
+</odoo>

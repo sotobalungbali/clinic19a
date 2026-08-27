@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_finance_transaction" model="ir.sequence">
+        <field name="name">Clinic Finance Transaction</field>
+        <field name="code">clinic.finance.transaction</field>
+        <field name="prefix">FIN-TX/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_finance_transfer" model="ir.sequence">
+        <field name="name">Clinic Finance Transfer</field>
+        <field name="code">clinic.finance.transfer</field>
+        <field name="prefix">FIN-TRF/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_finance_fund_request" model="ir.sequence">
+        <field name="name">Clinic Finance Fund Request</field>
+        <field name="code">clinic.finance.fund.request</field>
+        <field name="prefix">FIN-REQ/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_finance_cash_session" model="ir.sequence">
+        <field name="name">Clinic Finance Cash Session</field>
+        <field name="code">clinic.finance.cash.session</field>
+        <field name="prefix">FIN-CASH/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_finance_position" model="ir.sequence">
+        <field name="name">Clinic Finance Treasury Position</field>
+        <field name="code">clinic.finance.position</field>
+        <field name="prefix">FIN-POS/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_room_device_assignment_search" model="ir.ui.view">
+        <field name="name">clinic.room.device.assignment.search</field>
+        <field name="model">clinic.room.device.assignment</field>
+        <field name="arch" type="xml">
+            <search><field name="name"/><field name="code"/><field name="device_id"/><field name="room_id"/><field name="state"/><field name="responsible_id"/><filter name="active_assignments" string="Active" domain="[('state','=','active')]"/><group><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_room" string="Room" context="{'group_by':'room_id'}"/><filter name="group_device" string="Device" context="{'group_by':'device_id'}"/></group></search>
+        </field>
+    </record>
+
+    <record id="view_clinic_room_device_assignment_list" model="ir.ui.view">
+        <field name="name">clinic.room.device.assignment.list</field>
+        <field name="model">clinic.room.device.assignment</field>
+        <field name="arch" type="xml">
+            <list><field name="code"/><field name="device_id"/><field name="room_id"/><field name="state"/><field name="start"/><field name="end"/><field name="responsible_id"/><field name="duration_hours"/><field name="company_id" groups="base.group_multi_company"/></list>
+        </field>
+    </record>
+
+    <record id="view_clinic_room_device_assignment_form" model="ir.ui.view">
+        <field name="name">clinic.room.device.assignment.form</field>
+        <field name="model">clinic.room.device.assignment</field>
+        <field name="arch" type="xml">
+            <form string="Room Device Assignment">
+                <header><button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/><button name="action_end" type="object" string="End" invisible="state != 'active'"/><button name="action_cancel" type="object" string="Cancel" invisible="state in ('done','cancelled')"/><field name="state" widget="statusbar" statusbar_visible="draft,active,done,cancelled"/></header>
+                <sheet><div class="oe_button_box" name="button_box"><button name="action_open_device" type="object" class="oe_stat_button" icon="fa-medkit"><span class="o_stat_text">Device</span></button><button name="action_open_room" type="object" class="oe_stat_button" icon="fa-building"><span class="o_stat_text">Room</span></button></div>
+                <div class="oe_title"><h1><field name="name"/></h1><field name="code"/></div><group><group><field name="device_id"/><field name="room_id"/><field name="room_type_id" readonly="1"/><field name="responsible_id"/></group><group><field name="start"/><field name="end"/><field name="is_active" readonly="1"/><field name="duration_hours" readonly="1"/><field name="company_id" groups="base.group_multi_company"/></group></group><group><field name="reason"/><field name="create_movement_logs"/></group><field name="notes"/></sheet><chatter/></form>
+        </field>
+    </record>
+
+    <record id="action_clinic_room_device_assignment" model="ir.actions.act_window"><field name="name">Device Assignments</field><field name="res_model">clinic.room.device.assignment</field><field name="view_mode">list,form</field></record>
+</odoo>

@@ -1,0 +1,881 @@
+<odoo>
+  <record id="view_clinic_ae_action_form" model="ir.ui.view">
+    <field name="name">clinic.ae.action.form</field>
+    <field name="model">clinic.ae.action</field>
+    <field name="arch" type="xml">
+      <form string="Adverse Event Action (CAPA)">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="ae_id"/>
+              <field name="owner_id"/>
+              <field name="done"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="type"/>
+              <field name="deadline"/>
+              <field name="date_done"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="effectiveness_note"/>
+                <field name="attachment_ids"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_ae_category_form" model="ir.ui.view">
+    <field name="name">clinic.ae.category.form</field>
+    <field name="model">clinic.ae.category</field>
+    <field name="arch" type="xml">
+      <form string="Adverse Event Category">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="company_id"/>
+              <field name="sequence"/>
+            </group>
+            <group>
+              <field name="code"/>
+              <field name="active"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_ae_factor_form" model="ir.ui.view">
+    <field name="name">clinic.ae.factor.form</field>
+    <field name="model">clinic.ae.factor</field>
+    <field name="arch" type="xml">
+      <form string="Adverse Event Contributing Factor">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="company_id"/>
+              <field name="sequence"/>
+            </group>
+            <group>
+              <field name="code"/>
+              <field name="active"/>
+              <field name="group"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_ae_followup_form" model="ir.ui.view">
+    <field name="name">clinic.ae.followup.form</field>
+    <field name="model">clinic.ae.followup</field>
+    <field name="arch" type="xml">
+      <form string="Adverse Event Follow-up / Note">
+        <sheet>
+          <group>
+            <group>
+              <field name="date_note"/>
+              <field name="ae_id"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="user_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="note"/>
+                <field name="attachment_ids"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_ae_type_form" model="ir.ui.view">
+    <field name="name">clinic.ae.type.form</field>
+    <field name="model">clinic.ae.type</field>
+    <field name="arch" type="xml">
+      <form string="Adverse Event Type">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="category_id"/>
+              <field name="active"/>
+            </group>
+            <group>
+              <field name="code"/>
+              <field name="company_id"/>
+              <field name="sequence"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_airway_form" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.airway.form</field>
+    <field name="model">clinic.anesthesia.airway</field>
+    <field name="arch" type="xml">
+      <form string="Anesthesia Airway Event">
+        <sheet>
+          <group>
+            <group>
+              <field name="company_id"/>
+              <field name="case_id"/>
+              <field name="event"/>
+              <field name="device_size"/>
+              <field name="success"/>
+              <field name="confirmation"/>
+            </group>
+            <group>
+              <field name="note"/>
+              <field name="time_event"/>
+              <field name="device"/>
+              <field name="attempts"/>
+              <field name="grade"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_event_form" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.event.form</field>
+    <field name="model">clinic.anesthesia.event</field>
+    <field name="arch" type="xml">
+      <form string="Anesthesia Intraop Event/Note">
+        <sheet>
+          <group>
+            <group>
+              <field name="company_id"/>
+              <field name="time_event"/>
+              <field name="critical"/>
+            </group>
+            <group>
+              <field name="case_id"/>
+              <field name="category"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_fluid_form" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.fluid.form</field>
+    <field name="model">clinic.anesthesia.fluid</field>
+    <field name="arch" type="xml">
+      <form string="Anesthesia Fluid In/Out">
+        <sheet>
+          <group>
+            <group>
+              <field name="company_id"/>
+              <field name="time_move"/>
+              <field name="product_id"/>
+              <field name="is_blood_loss"/>
+              <field name="remark"/>
+            </group>
+            <group>
+              <field name="case_id"/>
+              <field name="direction"/>
+              <field name="volume_ml"/>
+              <field name="is_urine"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_medication_form" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.medication.form</field>
+    <field name="model">clinic.anesthesia.medication</field>
+    <field name="arch" type="xml">
+      <form string="Anesthesia Medication Line">
+        <sheet>
+          <group>
+            <group>
+              <field name="company_id"/>
+              <field name="time_admin"/>
+              <field name="dose"/>
+              <field name="route"/>
+            </group>
+            <group>
+              <field name="case_id"/>
+              <field name="product_id"/>
+              <field name="dose_uom"/>
+              <field name="remark"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_anesthesia_vital_form" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.vital.form</field>
+    <field name="model">clinic.anesthesia.vital</field>
+    <field name="arch" type="xml">
+      <form string="Anesthesia Vital Sign">
+        <sheet>
+          <group>
+            <group>
+              <field name="company_id"/>
+              <field name="case_id"/>
+              <field name="hr"/>
+              <field name="spo2"/>
+              <field name="dbp"/>
+              <field name="temp"/>
+              <field name="fio2"/>
+              <field name="agent_et"/>
+            </group>
+            <group>
+              <field name="note"/>
+              <field name="time_point"/>
+              <field name="rr"/>
+              <field name="sbp"/>
+              <field name="map"/>
+              <field name="etco2"/>
+              <field name="agent"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_audit_log_form" model="ir.ui.view">
+    <field name="name">clinic.audit.log.form</field>
+    <field name="model">clinic.audit.log</field>
+    <field name="arch" type="xml">
+      <form string="ClinicOne Audit Log">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="active"/>
+              <field name="ref_model"/>
+              <field name="ref"/>
+              <field name="category"/>
+              <field name="user_id"/>
+              <field name="summary"/>
+              <field name="field_name"/>
+              <field name="new_value_text"/>
+              <field name="user_agent"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+              <field name="ref_res_id"/>
+              <field name="ref_display_name"/>
+              <field name="date_event"/>
+              <field name="role"/>
+              <field name="reason_code"/>
+              <field name="old_value_text"/>
+              <field name="client_ip"/>
+              <field name="color"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="note"/>
+                <field name="changes_json"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_item_form" model="ir.ui.view">
+    <field name="name">clinic.checklist.item.form</field>
+    <field name="model">clinic.checklist.item</field>
+    <field name="arch" type="xml">
+      <form string="Checklist Item">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="sequence"/>
+              <field name="template_item_id"/>
+              <field name="answer_type"/>
+              <field name="allow_na"/>
+              <field name="min_value"/>
+              <field name="regex"/>
+              <field name="value_bool"/>
+              <field name="value_number"/>
+              <field name="value_date"/>
+              <field name="answered"/>
+              <field name="score_value"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="checklist_id"/>
+              <field name="guidance"/>
+              <field name="required"/>
+              <field name="weight"/>
+              <field name="max_value"/>
+              <field name="is_na"/>
+              <field name="value_select_id"/>
+              <field name="value_text"/>
+              <field name="value_datetime"/>
+              <field name="is_passed"/>
+              <field name="score_max"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+                <field name="value_attachment_ids"/>
+                <field name="value_signature" widget="image"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_template_item_form" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.item.form</field>
+    <field name="model">clinic.checklist.template.item</field>
+    <field name="arch" type="xml">
+      <form string="Checklist Template Item">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="template_id"/>
+              <field name="sequence"/>
+              <field name="required"/>
+              <field name="weight"/>
+              <field name="max_value"/>
+              <field name="guidance"/>
+            </group>
+            <group>
+              <field name="code"/>
+              <field name="company_id"/>
+              <field name="answer_type"/>
+              <field name="allow_na"/>
+              <field name="min_value"/>
+              <field name="regex"/>
+              <field name="color"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+                <field name="option_ids"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_checklist_template_item_option_form" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.item.option.form</field>
+    <field name="model">clinic.checklist.template.item.option</field>
+    <field name="arch" type="xml">
+      <form string="Checklist Template Item Option">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="company_id"/>
+              <field name="note"/>
+              <field name="score"/>
+            </group>
+            <group>
+              <field name="code"/>
+              <field name="sequence"/>
+              <field name="item_id"/>
+              <field name="is_pass"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_consent_risk_form" model="ir.ui.view">
+    <field name="name">clinic.consent.risk.form</field>
+    <field name="model">clinic.consent.risk</field>
+    <field name="arch" type="xml">
+      <form string="Consent Risk/Disclosure (Document Line)">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="sequence"/>
+              <field name="consent_id"/>
+              <field name="acknowledged"/>
+              <field name="treatment_id"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="note"/>
+              <field name="required"/>
+              <field name="color"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_consent_risk_template_form" model="ir.ui.view">
+    <field name="name">clinic.consent.risk.template.form</field>
+    <field name="model">clinic.consent.risk.template</field>
+    <field name="arch" type="xml">
+      <form string="Consent Risk/Disclosure (Template)">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="active"/>
+              <field name="required"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="sequence"/>
+              <field name="treatment_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_consent_template_form" model="ir.ui.view">
+    <field name="name">clinic.consent.template.form</field>
+    <field name="model">clinic.consent.template</field>
+    <field name="arch" type="xml">
+      <form string="Consent Template">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="company_id"/>
+              <field name="sequence"/>
+              <field name="category"/>
+              <field name="require_witness"/>
+              <field name="treatment_id"/>
+            </group>
+            <group>
+              <field name="title"/>
+              <field name="active"/>
+              <field name="language"/>
+              <field name="validity_days"/>
+              <field name="require_guardian_if_minor"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="procedure_ids"/>
+                <field name="body_html"/>
+                <field name="footer_html"/>
+                <field name="risk_item_ids"/>
+                <field name="note_internal"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_diagnosis_category_form" model="ir.ui.view">
+    <field name="name">clinic.diagnosis.category.form</field>
+    <field name="model">clinic.diagnosis.category</field>
+    <field name="arch" type="xml">
+      <form string="Diagnosis Category">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="active"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="sequence"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_encounter_stage_form" model="ir.ui.view">
+    <field name="name">clinic.encounter.stage.form</field>
+    <field name="model">clinic.encounter.stage</field>
+    <field name="arch" type="xml">
+      <form string="Encounter Stage">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="company_id"/>
+              <field name="sequence"/>
+              <field name="fold"/>
+              <field name="allow_edit"/>
+              <field name="require_procedures"/>
+              <field name="activity_summary"/>
+            </group>
+            <group>
+              <field name="state"/>
+              <field name="active"/>
+              <field name="is_closed"/>
+              <field name="color"/>
+              <field name="require_consent"/>
+              <field name="activity_type_id"/>
+              <field name="action_server_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+                <field name="allowed_group_ids"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_execution_log_form" model="ir.ui.view">
+    <field name="name">clinic.execution.log.form</field>
+    <field name="model">clinic.execution.log</field>
+    <field name="arch" type="xml">
+      <form string="Procedure Session Execution Log">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="patient_id"/>
+              <field name="procedure_id"/>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+              <field name="event_type"/>
+              <field name="state_after"/>
+              <field name="performer_role"/>
+              <field name="delta_minutes_from_prev"/>
+              <field name="color"/>
+            </group>
+            <group>
+              <field name="encounter_id"/>
+              <field name="doctor_id"/>
+              <field name="session_id"/>
+              <field name="active"/>
+              <field name="room_id"/>
+              <field name="date_event"/>
+              <field name="performer_user_id"/>
+              <field name="is_timer_event"/>
+              <field name="cumulative_runtime_minutes"/>
+              <field name="treatment_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="message"/>
+                <field name="attachment_ids"/>
+                <field name="payload"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_category_form" model="ir.ui.view">
+    <field name="name">clinic.procedure.category.form</field>
+    <field name="model">clinic.procedure.category</field>
+    <field name="arch" type="xml">
+      <form string="Procedure Category">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="company_id"/>
+              <field name="sequence"/>
+            </group>
+            <group>
+              <field name="code"/>
+              <field name="active"/>
+              <field name="parent_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="child_ids"/>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_consumable_form" model="ir.ui.view">
+    <field name="name">clinic.procedure.consumable.form</field>
+    <field name="model">clinic.procedure.consumable</field>
+    <field name="arch" type="xml">
+      <form string="Procedure Consumable">
+        <sheet>
+          <group>
+            <group>
+              <field name="procedure_id"/>
+              <field name="active"/>
+              <field name="notes"/>
+              <field name="uom_id"/>
+              <field name="auto_issue"/>
+              <field name="color"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="sequence"/>
+              <field name="product_id"/>
+              <field name="quantity"/>
+              <field name="required"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_step_checklist_form" model="ir.ui.view">
+    <field name="name">clinic.procedure.step.checklist.form</field>
+    <field name="model">clinic.procedure.step.checklist</field>
+    <field name="arch" type="xml">
+      <form string="Procedure Step Checklist (Template)">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="active"/>
+              <field name="step_id"/>
+              <field name="is_required"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="sequence"/>
+              <field name="instruction"/>
+              <field name="color"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_procedure_tag_form" model="ir.ui.view">
+    <field name="name">clinic.procedure.tag.form</field>
+    <field name="model">clinic.procedure.tag</field>
+    <field name="arch" type="xml">
+      <form string="Procedure Tag">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="color"/>
+            </group>
+            <group>
+              <field name="active"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_result_group_form" model="ir.ui.view">
+    <field name="name">clinic.result.group.form</field>
+    <field name="model">clinic.result.group</field>
+    <field name="arch" type="xml">
+      <form string="Result Parameter Group">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="active"/>
+              <field name="collapsed"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="sequence"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_result_value_form" model="ir.ui.view">
+    <field name="name">clinic.result.value.form</field>
+    <field name="model">clinic.result.value</field>
+    <field name="arch" type="xml">
+      <form string="Clinical Result Value">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="patient_id"/>
+              <field name="sequence"/>
+              <field name="result_id"/>
+              <field name="method"/>
+              <field name="value_type"/>
+              <field name="value_text"/>
+              <field name="unit"/>
+              <field name="ref_low"/>
+              <field name="ref_text"/>
+              <field name="is_abnormal"/>
+              <field name="display_value"/>
+            </group>
+            <group>
+              <field name="code"/>
+              <field name="company_id"/>
+              <field name="notes"/>
+              <field name="group_id"/>
+              <field name="device"/>
+              <field name="value_number"/>
+              <field name="value_bool"/>
+              <field name="uom_id"/>
+              <field name="ref_high"/>
+              <field name="flag"/>
+              <field name="is_critical"/>
+              <field name="color"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_soap_tag_form" model="ir.ui.view">
+    <field name="name">clinic.soap.tag.form</field>
+    <field name="model">clinic.soap.tag</field>
+    <field name="arch" type="xml">
+      <form string="SOAP Tag">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="color"/>
+            </group>
+            <group>
+              <field name="active"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="description"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_clinic_soap_template_form" model="ir.ui.view">
+    <field name="name">clinic.soap.template.form</field>
+    <field name="model">clinic.soap.template</field>
+    <field name="arch" type="xml">
+      <form string="SOAP Template">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="active"/>
+              <field name="default_priority"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+              <field name="sequence"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Details">
+              <group>
+                <field name="tag_ids"/>
+                <field name="subjective_tmpl"/>
+                <field name="objective_tmpl"/>
+                <field name="assessment_tmpl"/>
+                <field name="plan_tmpl"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+</odoo>

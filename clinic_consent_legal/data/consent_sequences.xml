@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_clinic_consent_template_legal" model="ir.sequence">
+        <field name="name">Consent Template Number</field>
+        <field name="code">clinic.consent.template</field>
+        <field name="prefix">CT/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_clinic_consent_form" model="ir.sequence">
+        <field name="name">Consent Form Number</field>
+        <field name="code">clinic.consent.form</field>
+        <field name="prefix">CF/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

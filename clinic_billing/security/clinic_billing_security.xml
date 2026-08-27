@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="module_category_clinic_billing" model="ir.module.category">
+        <field name="name">ClinicOne Billing</field>
+        <field name="sequence">45</field>
+    </record>
+
+    <record id="privilege_clinic_billing" model="res.groups.privilege"><field name="name">ClinicOne Billing</field><field name="category_id" ref="clinic_billing.module_category_clinic_billing"/><field name="sequence">45</field></record><record id="group_clinic_billing_user" model="res.groups">
+        <field name="name">Billing User</field>
+        <field name="privilege_id" ref="clinic_billing.privilege_clinic_billing"/><field name="sequence">10</field><field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="group_clinic_billing_cashier" model="res.groups">
+        <field name="name">Billing Cashier</field>
+        <field name="privilege_id" ref="clinic_billing.privilege_clinic_billing"/><field name="sequence">20</field><field name="implied_ids" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+    <record id="group_clinic_billing_manager" model="res.groups">
+        <field name="name">Billing Manager</field>
+        <field name="privilege_id" ref="clinic_billing.privilege_clinic_billing"/><field name="sequence">30</field><field name="implied_ids" eval="[(4, ref('clinic_billing.group_clinic_billing_cashier'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_invoice_company" model="ir.rule">
+        <field name="name">clinic.billing.invoice: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_invoice"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_line_company" model="ir.rule">
+        <field name="name">clinic.billing.line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_line"/>
+        <field name="domain_force">[('invoice_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_payment_company" model="ir.rule">
+        <field name="name">clinic.billing.payment: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_payment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_payment_line_company" model="ir.rule">
+        <field name="name">clinic.billing.payment.line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_payment_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_discount_rule_company" model="ir.rule">
+        <field name="name">clinic.billing.discount.rule: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_discount_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_discount_redemption_company" model="ir.rule">
+        <field name="name">clinic.billing.discount.redemption: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_discount_redemption"/>
+        <field name="domain_force">[('invoice_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_voucher_program_company" model="ir.rule">
+        <field name="name">clinic.billing.voucher.program: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_voucher_program"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_voucher_company" model="ir.rule">
+        <field name="name">clinic.billing.voucher: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_voucher"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_voucher_redemption_company" model="ir.rule">
+        <field name="name">clinic.billing.voucher.redemption: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_voucher_redemption"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_insurance_claim_company" model="ir.rule">
+        <field name="name">clinic.insurance.claim: allowed companies</field>
+        <field name="model_id" ref="model_clinic_insurance_claim"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_insurance_claim_line_company" model="ir.rule">
+        <field name="name">clinic.insurance.claim.line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_insurance_claim_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_commission_rule_company" model="ir.rule">
+        <field name="name">clinic.billing.commission.rule: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_commission_rule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_commission_line_company" model="ir.rule">
+        <field name="name">clinic.billing.commission.line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_commission_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_commission_settlement_company" model="ir.rule">
+        <field name="name">clinic.billing.commission.settlement: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_commission_settlement"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_gateway_tx_company" model="ir.rule">
+        <field name="name">clinic.billing.gateway.tx: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_gateway_tx"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_gateway_event_company" model="ir.rule">
+        <field name="name">clinic.billing.gateway.event: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_gateway_event"/>
+        <field name="domain_force">[('tx_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_membership_usage_company" model="ir.rule">
+        <field name="name">clinic.billing.membership.usage: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_membership_usage"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_treatment_billing_link_company" model="ir.rule">
+        <field name="name">clinic.treatment.billing.link: allowed companies</field>
+        <field name="model_id" ref="model_clinic_treatment_billing_link"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_billing_integration_event_company" model="ir.rule">
+        <field name="name">clinic.billing.integration.event: allowed companies</field>
+        <field name="model_id" ref="model_clinic_billing_integration_event"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
+    </record>
+</odoo>

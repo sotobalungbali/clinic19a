@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_clinic_package" model="ir.ui.view"><field name="name">res.partner.form.clinic.package</field><field name="model">res.partner</field><field name="inherit_id" ref="base.view_partner_form"/><field name="arch" type="xml"><xpath expr="//div[@name='button_box']" position="inside"><button name="action_view_clinic_packages" type="object" class="oe_stat_button" icon="fa-id-card"><field name="clinic_package_allocation_count" widget="statinfo" string="Packages"/></button></xpath><xpath expr="//sheet" position="inside"><field name="clinic_package_active_count" invisible="1"/><field name="clinic_package_remaining_value" invisible="1"/><field name="clinic_package_currency_id" invisible="1"/></xpath></field></record>
+</odoo>

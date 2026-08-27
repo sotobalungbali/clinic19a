@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_postcare_escalation_search" model="ir.ui.view">
+        <field name="name">clinic.postcare.escalation.search</field>
+        <field name="model">clinic.postcare.escalation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="plan_id"/>
+                <field name="task_id"/>
+                <field name="checkin_id"/>
+                <field name="owner_staff_id"/>
+                <field name="company_id"/>
+                <filter name="open_escalation" string="Open" domain="[('state','not in',('resolved','cancelled'))]"/>
+                <filter name="high_attention" string="High / Critical" domain="[('severity','in',('high','critical')),('state','not in',('resolved','cancelled'))]"/>
+                <filter name="critical" string="Critical" domain="[('severity','=','critical'),('state','not in',('resolved','cancelled'))]"/>
+                <group>
+                    <filter name="group_owner" string="Clinical Owner" context="{'group_by':'owner_staff_id'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by':'severity'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_escalation_list" model="ir.ui.view">
+        <field name="name">clinic.postcare.escalation.list</field>
+        <field name="model">clinic.postcare.escalation</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="severity == 'critical' and state not in ('resolved','cancelled')" decoration-warning="state in ('open','acknowledged','in_progress')" decoration-success="state == 'resolved'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="plan_id"/>
+                <field name="severity" widget="badge"/>
+                <field name="reason"/>
+                <field name="owner_staff_id"/>
+                <field name="acknowledged_at"/>
+                <field name="resolved_at"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_acknowledge" type="object" string="Acknowledge" icon="fa-eye"
+                        groups="clinic_post_care_followup.group_postcare_clinician"
+                        invisible="state != 'open'"/>
+                <button name="action_start" type="object" string="Start" icon="fa-play"
+                        groups="clinic_post_care_followup.group_postcare_clinician"
+                        invisible="state not in ('open','acknowledged')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_postcare_escalation_form" model="ir.ui.view">
+        <field name="name">clinic.postcare.escalation.form</field>
+        <field name="model">clinic.postcare.escalation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_acknowledge" type="object" string="Acknowledge" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state != 'open'"/>
+                    <button name="action_start" type="object" string="Start Clinical Review" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state not in ('open','acknowledged')"/>
+                    <button name="action_resolve" type="object" string="Resolve" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state not in ('acknowledged','in_progress')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_post_care_followup.group_postcare_manager"
+                            invisible="state in ('resolved','cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,acknowledged,in_progress,resolved,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_plan" type="object" class="oe_stat_button" icon="fa-heartbeat">
+                            <div class="o_stat_info"><span class="o_stat_text">Post-Care Plan</span></div>
+                        </button>
+                        <button name="action_open_source" type="object" class="oe_stat_button" icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Source Signal</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="severity != 'critical' or state in ('resolved','cancelled')">
+                        Critical post-care attention signal. Follow the clinic's clinical escalation protocol.
+                    </div>
+
+                    <group>
+                        <group string="Escalation">
+                            <field name="plan_id" readonly="1"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="task_id" readonly="1"/>
+                            <field name="checkin_id" readonly="1"/>
+                            <field name="encounter_id" readonly="1"/>
+                            <field name="severity"/>
+                            <field name="owner_staff_id"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="branch_id" readonly="1"/>
+                        </group>
+                        <group string="Audit">
+                            <field name="acknowledged_at" readonly="1"/>
+                            <field name="acknowledged_by_id" readonly="1"/>
+                            <field name="resolved_at" readonly="1"/>
+                            <field name="resolved_by_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Reason"><field name="reason"/></page>
+                        <page string="Clinical Note"><field name="clinical_note"/></page>
+                        <page string="Resolution"><field name="resolution_note"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_postcare_escalation" model="ir.actions.act_window">
+        <field name="name">Post-Care Escalations</field>
+        <field name="res_model">clinic.postcare.escalation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_postcare_escalation_search"/>
+        <field name="context">{'search_default_open_escalation': 1}</field>
+    </record>
+</odoo>

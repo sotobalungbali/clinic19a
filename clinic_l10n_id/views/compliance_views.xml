@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_l10n_id_compliance_search" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.compliance.run.search</field><field name="model">clinic.l10n.id.compliance.run</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="profile_id"/><field name="date_from"/><field name="date_to"/><field name="company_id"/>
+      <filter name="blocking" string="Has Blockers" domain="[('blocking_count','&gt;',0)]"/><filter name="reviewed" string="Reviewed" domain="[('state','=','reviewed')]"/><filter name="locked" string="Locked" domain="[('state','=','locked')]"/>
+      <group><filter name="group_company" string="Company" context="{'group_by':'company_id'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_month" string="Month" context="{'group_by':'date_to:month'}"/></group>
+    </search></field>
+  </record>
+  <record id="view_l10n_id_compliance_list" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.compliance.run.list</field><field name="model">clinic.l10n.id.compliance.run</field>
+    <field name="arch" type="xml"><list decoration-danger="blocking_count &gt; 0" decoration-warning="warning_count &gt; 0 and blocking_count == 0" decoration-success="state == 'locked'">
+      <field name="name"/><field name="date_from"/><field name="date_to"/><field name="profile_id"/><field name="blocking_count"/><field name="warning_count"/><field name="clear_count"/><field name="readiness_score"/><field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company"/>
+    </list></field>
+  </record>
+  <record id="view_l10n_id_compliance_form" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.compliance.run.form</field><field name="model">clinic.l10n.id.compliance.run</field>
+    <field name="arch" type="xml"><form>
+      <header>
+        <button name="action_generate" type="object" string="Generate / Refresh" class="btn-primary" invisible="state == 'locked'"/>
+        <button name="action_mark_reviewed" type="object" string="Mark Reviewed" class="btn-primary" groups="clinic_l10n_id.group_clinic_l10n_id_approver" invisible="state != 'generated'"/>
+        <button name="action_lock" type="object" string="Lock Evidence" class="btn-primary" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state != 'reviewed'"/>
+        <button name="action_reset_to_draft" type="object" string="Reset to Draft" groups="clinic_l10n_id.group_clinic_l10n_id_accountant" invisible="state not in ('generated','reviewed')"/>
+        <button name="action_print_compliance" type="object" string="Print Evidence" invisible="state == 'draft'"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,generated,reviewed,locked"/>
+      </header><sheet>
+        <div class="oe_button_box" name="button_box"><button name="action_view_lines" type="object" class="oe_stat_button" icon="fa-check-square-o"><field name="clear_count" widget="statinfo" string="Clear Checks"/></button></div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <div class="alert alert-danger" role="alert" invisible="blocking_count == 0">Blocking Indonesia localization issues require attention.</div>
+        <div class="alert alert-warning" role="alert" invisible="warning_count == 0">Warnings remain for tax/Coretax/numbering readiness.</div>
+        <group>
+          <group string="Scope"><field name="profile_id" readonly="state != 'draft'"/><field name="date_from" readonly="state != 'draft'"/><field name="date_to" readonly="state != 'draft'"/><field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/></group>
+          <group string="Result"><field name="blocking_count" readonly="1"/><field name="warning_count" readonly="1"/><field name="clear_count" readonly="1"/><field name="readiness_score" readonly="1"/><field name="generated_at" readonly="1"/><field name="generated_by_id" readonly="1"/><field name="reviewed_at" readonly="1"/><field name="reviewed_by_id" readonly="1"/></group>
+        </group>
+        <notebook>
+          <page string="Compliance Checks"><field name="line_ids" readonly="1"><list decoration-danger="status == 'open' and severity == 'blocking'" decoration-warning="status == 'open' and severity == 'warning'" decoration-success="status == 'clear'"><field name="code" optional="hide"/><field name="title"/><field name="severity" widget="badge"/><field name="status" widget="badge"/><field name="record_count"/><field name="note" optional="show"/><button name="action_open_records" type="object" string="Open Records" icon="fa-external-link" invisible="record_count == 0"/></list></field></page>
+          <page string="Review Note"><field name="note"/></page>
+        </notebook>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+
+  <record id="view_l10n_id_compliance_line_search" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.compliance.line.search</field><field name="model">clinic.l10n.id.compliance.line</field>
+    <field name="arch" type="xml"><search><field name="run_id"/><field name="title"/><field name="code"/><field name="severity"/><filter name="open" string="Open" domain="[('status','=','open')]"/><filter name="blocking" string="Blocking" domain="[('severity','=','blocking')]"/><group><filter name="group_run" string="Run" context="{'group_by':'run_id'}"/><filter name="group_severity" string="Severity" context="{'group_by':'severity'}"/><filter name="group_status" string="Status" context="{'group_by':'status'}"/></group></search></field>
+  </record>
+  <record id="view_l10n_id_compliance_line_list" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.compliance.line.list</field><field name="model">clinic.l10n.id.compliance.line</field>
+    <field name="arch" type="xml"><list decoration-danger="status == 'open' and severity == 'blocking'" decoration-warning="status == 'open' and severity == 'warning'" decoration-success="status == 'clear'"><field name="run_id"/><field name="title"/><field name="severity" widget="badge"/><field name="status" widget="badge"/><field name="record_count"/><field name="company_id" groups="base.group_multi_company"/><button name="action_open_records" type="object" string="Open Records" icon="fa-external-link" invisible="record_count == 0"/><button name="action_open_run" type="object" string="Run" icon="fa-folder-open"/></list></field>
+  </record>
+  <record id="view_l10n_id_compliance_line_form" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.compliance.line.form</field><field name="model">clinic.l10n.id.compliance.line</field>
+    <field name="arch" type="xml"><form><sheet><group><field name="run_id" readonly="1"/><field name="company_id" groups="base.group_multi_company" readonly="1"/><field name="code" readonly="1"/><field name="title" readonly="1"/><field name="severity" readonly="1"/><field name="status" readonly="1"/><field name="record_count" readonly="1"/><field name="model_name" readonly="1"/></group><notebook><page string="Guidance"><field name="note" readonly="1"/></page><page string="Technical Domain" groups="base.group_no_one"><field name="domain_text" readonly="1"/></page></notebook><div class="d-flex gap-2"><button name="action_open_records" type="object" string="Open Records" class="btn-primary" invisible="record_count == 0"/><button name="action_open_run" type="object" string="Open Run" class="btn-secondary"/></div></sheet></form></field>
+  </record>
+
+  <record id="action_l10n_id_compliance" model="ir.actions.act_window"><field name="name">Indonesia Compliance</field><field name="res_model">clinic.l10n.id.compliance.run</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_l10n_id_compliance_search"/></record>
+  <record id="action_l10n_id_compliance_line" model="ir.actions.act_window"><field name="name">Compliance Checks</field><field name="res_model">clinic.l10n.id.compliance.line</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_l10n_id_compliance_line_search"/></record>
+</odoo>
+

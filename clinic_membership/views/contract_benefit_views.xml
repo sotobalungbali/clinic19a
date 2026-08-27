@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="view_membership_contract_benefit_search" model="ir.ui.view">
+    <field name="name">membership.contract.benefit.search</field>
+    <field name="model">membership.contract.benefit</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="contract_id"/>
+        <field name="plan_id"/>
+        <field name="benefit_type"/>
+        <filter string="Available" name="available" domain="[('is_depleted','=',False),('active','=',True)]"/>
+        <filter string="Depleted" name="depleted" domain="[('is_depleted','=',True)]"/>
+        <group>
+          <filter string="Contract" context="{'group_by':'contract_id'}" name="group_contract_id"/>
+          <filter string="Benefit Type" context="{'group_by':'benefit_type'}" name="group_benefit_type"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_membership_contract_benefit_list" model="ir.ui.view">
+    <field name="name">membership.contract.benefit.list</field>
+    <field name="model">membership.contract.benefit</field>
+    <field name="arch" type="xml">
+      <list decoration-muted="is_depleted">
+        <field name="contract_id"/>
+        <field name="name"/>
+        <field name="benefit_type" widget="badge"/>
+        <field name="remaining_quota"/>
+        <field name="consumed_discount"/>
+        <field name="usage_count"/>
+        <field name="is_depleted"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_membership_contract_benefit_form" model="ir.ui.view">
+    <field name="name">membership.contract.benefit.form</field>
+    <field name="model">membership.contract.benefit</field>
+    <field name="arch" type="xml">
+      <form string="Contract Entitlement">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_usages" type="object" class="oe_stat_button" icon="fa-list">
+              <field name="usage_count" widget="statinfo" string="Usage"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <h1>
+              <field name="name" readonly="1"/>
+            </h1>
+          </div>
+          <group>
+            <group>
+              <field name="contract_id" readonly="1"/>
+              <field name="plan_id" readonly="1"/>
+              <field name="source_benefit_id" readonly="1"/>
+              <field name="benefit_type" readonly="1"/>
+              <field name="active" readonly="1"/>
+            </group>
+            <group>
+              <field name="usage_count" readonly="1"/>
+              <field name="remaining_quota" readonly="1"/>
+              <field name="consumed_qty" readonly="1"/>
+              <field name="consumed_discount" readonly="1"/>
+              <field name="is_depleted" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Scope">
+              <group>
+                <field name="treatment_id"/>
+                <field name="product_id"/>
+                <field name="product_category_id"/>
+                <field name="doctor_id"/>
+              </group>
+            </page>
+            <page string="Snapshot">
+              <group>
+                <field name="discount_percent"/>
+                <field name="discount_amount"/>
+                <field name="quota_value"/>
+                <field name="total_term_quota"/>
+                <field name="free_qty"/>
+                <field name="voucher_on_join_qty"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="action_membership_entitlements" model="ir.actions.act_window">
+    <field name="name">Contract Entitlements</field>
+    <field name="res_model">membership.contract.benefit</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+  </record>
+</odoo>
+

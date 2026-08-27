@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================
+         Treatment Product Usage
+         Existing business states/methods are surfaced; no new workflow.
+         ============================================================ -->
+    <record id="view_clinic_treatment_product_usage_search" model="ir.ui.view">
+        <field name="name">clinic.treatment.product.usage.search</field>
+        <field name="model">clinic.treatment.product.usage</field>
+        <field name="arch" type="xml">
+            <search string="Treatment Product Usage">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="warehouse_id"/>
+                <field name="responsible_id"/>
+                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="filter_confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                <filter name="filter_done" string="Consumed" domain="[('state','=','done')]"/>
+                <filter name="filter_cancel" string="Cancelled" domain="[('state','=','cancel')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_warehouse" string="Warehouse" context="{'group_by':'warehouse_id'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_date" string="Usage Date" context="{'group_by':'date_usage:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_product_usage_list" model="ir.ui.view">
+        <field name="name">clinic.treatment.product.usage.list</field>
+        <field name="model">clinic.treatment.product.usage</field>
+        <field name="arch" type="xml">
+            <list string="Treatment Product Usage"
+                  decoration-muted="state == 'cancel'"
+                  decoration-success="state == 'done'"
+                  decoration-info="state == 'confirmed'">
+                <field name="name"/>
+                <field name="date_usage"/>
+                <field name="state" widget="badge"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="warehouse_id"/>
+                <field name="total_lines"/>
+                <field name="total_qty"/>
+                <field name="responsible_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_product_usage_form" model="ir.ui.view">
+        <field name="name">clinic.treatment.product.usage.form</field>
+        <field name="model">clinic.treatment.product.usage</field>
+        <field name="arch" type="xml">
+            <form string="Treatment Product Usage">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_consume" type="object" string="Consume Stock"
+                            class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state not in ['confirmed', 'cancel']"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ['done', 'cancel']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_moves" type="object" class="oe_stat_button"
+                                icon="fa-exchange" invisible="generated_move_count == 0">
+                            <field name="generated_move_count" widget="statinfo" string="Stock Moves"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Clinical Context">
+                            <field name="date_usage"/>
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="treatment_ref"/>
+                        </group>
+                        <group string="Inventory Context">
+                            <field name="warehouse_id"/>
+                            <field name="src_location_id"/>
+                            <field name="dest_location_id"/>
+                            <field name="responsible_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products" name="products">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="lot_id" optional="show"/>
+                                    <field name="qty_onhand_at_source" readonly="1" optional="show"/>
+                                    <field name="note" optional="hide"/>
+                                    <button name="action_open_usage" type="object" icon="fa-external-link"
+                                            title="Open Usage"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Generated Moves" name="moves">
+                            <field name="move_ids" readonly="1">
+                                <list>
+                                    <field name="reference"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Operational or clinical consumption notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_treatment_product_usage" model="ir.actions.act_window">
+        <field name="name">Treatment Product Usage</field>
+        <field name="res_model">clinic.treatment.product.usage</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_treatment_product_usage_search"/>
+    </record>
+
+    <!-- Standalone line views exist for diagnostics and enterprise completeness.
+         Normal users work with the embedded One2many on the parent. -->
+    <record id="view_clinic_treatment_product_usage_line_search" model="ir.ui.view">
+        <field name="name">clinic.treatment.product.usage.line.search</field>
+        <field name="model">clinic.treatment.product.usage.line</field>
+        <field name="arch" type="xml">
+            <search string="Treatment Product Usage Lines">
+                <field name="usage_id"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_product_usage_line_list" model="ir.ui.view">
+        <field name="name">clinic.treatment.product.usage.line.list</field>
+        <field name="model">clinic.treatment.product.usage.line</field>
+        <field name="arch" type="xml">
+            <list string="Treatment Product Usage Lines">
+                <field name="usage_id"/>
+                <field name="sequence"/>
+                <field name="product_id"/>
+                <field name="product_uom"/>
+                <field name="product_uom_qty"/>
+                <field name="lot_id"/>
+                <field name="qty_onhand_at_source"/>
+                <button name="action_open_usage" type="object" icon="fa-external-link" title="Open Usage"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_product_usage_line_form" model="ir.ui.view">
+        <field name="name">clinic.treatment.product.usage.line.form</field>
+        <field name="model">clinic.treatment.product.usage.line</field>
+        <field name="arch" type="xml">
+            <form string="Treatment Product Usage Line">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_usage" type="object" class="oe_stat_button" icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Usage</span></div>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="usage_id"/>
+                        <field name="sequence"/>
+                        <field name="product_id"/>
+                        <field name="product_uom"/>
+                        <field name="product_uom_qty"/>
+                        <field name="lot_id"/>
+                        <field name="qty_onhand_at_source" readonly="1"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_treatment_product_usage_line" model="ir.actions.act_window">
+        <field name="name">Treatment Product Usage Lines</field>
+        <field name="res_model">clinic.treatment.product.usage.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_treatment_product_usage_line_search"/>
+    </record>
+</odoo>
+

@@ -1,0 +1,18 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clinic_treatment_catalog_user,clinic.treatment.catalog internal user,model_clinic_treatment_catalog,base.group_user,1,1,1,1
+access_clinic_treatment_category_user,clinic.treatment.category internal user,model_clinic_treatment_category,base.group_user,1,1,1,1
+access_clinic_treatment_tag_user,clinic.treatment.tag internal user,model_clinic_treatment_tag,base.group_user,1,1,1,1
+access_clinic_treatment_attribute_user,clinic.treatment.attribute internal user,model_clinic_treatment_attribute,base.group_user,1,1,1,1
+access_clinic_treatment_attribute_value_user,clinic.treatment.attribute.value internal user,model_clinic_treatment_attribute_value,base.group_user,1,1,1,1
+access_clinic_treatment_attribute_line_user,clinic.treatment.attribute.line internal user,model_clinic_treatment_attribute_line,base.group_user,1,1,1,1
+access_clinic_treatment_bundle_user,clinic.treatment.bundle internal user,model_clinic_treatment_bundle,base.group_user,1,1,1,1
+access_clinic_treatment_bundle_line_user,clinic.treatment.bundle.line internal user,model_clinic_treatment_bundle_line,base.group_user,1,1,1,1
+access_clinic_treatment_pricelist_user,clinic.treatment.pricelist internal user,model_clinic_treatment_pricelist,base.group_user,1,1,1,1
+access_clinic_treatment_pricelist_item_user,clinic.treatment.pricelist.item internal user,model_clinic_treatment_pricelist_item,base.group_user,1,1,1,1
+access_clinic_treatment_user,clinic.treatment internal user,model_clinic_treatment,base.group_user,1,1,1,1
+access_clinic_consent_template_user,clinic.consent.template internal user,model_clinic_consent_template,base.group_user,1,1,1,1
+access_clinic_consent_template_item_user,clinic.consent.template.item internal user,model_clinic_consent_template_item,base.group_user,1,1,1,1
+access_clinic_consent_template_version_user,clinic.consent.template.version internal user,model_clinic_consent_template_version,base.group_user,1,1,1,1
+access_clinic_consent_request_user,clinic.consent.request internal user,model_clinic_consent_request,base.group_user,1,1,1,1
+access_clinic_consent_request_item_user,clinic.consent.request.item internal user,model_clinic_consent_request_item,base.group_user,1,1,1,1
+

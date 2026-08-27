@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- =========================================================
+         Patient Stage
+         ========================================================= -->
+    <record id="view_clinic_patient_stage_search" model="ir.ui.view">
+        <field name="name">clinic.patient.stage.search</field>
+        <field name="model">clinic.patient.stage</field>
+        <field name="arch" type="xml">
+            <search string="Patient Stages">
+                <field name="name"/>
+                <filter name="default_new" string="Default New" domain="[('is_default_new', '=', True)]"/>
+                <filter name="registered" string="Registered" domain="[('is_registered', '=', True)]"/>
+                <filter name="folded" string="Folded" domain="[('fold', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_stage_list" model="ir.ui.view">
+        <field name="name">clinic.patient.stage.list</field>
+        <field name="model">clinic.patient.stage</field>
+        <field name="arch" type="xml">
+            <list string="Patient Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="is_default_new"/>
+                <field name="is_registered"/>
+                <field name="is_inactive"/>
+                <field name="is_deceased"/>
+                <field name="fold"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_stage_form" model="ir.ui.view">
+        <field name="name">clinic.patient.stage.form</field>
+        <field name="model">clinic.patient.stage</field>
+        <field name="arch" type="xml">
+            <form string="Patient Stage">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="fold"/>
+                        </group>
+                        <group string="Functional Flags">
+                            <field name="is_default_new"/>
+                            <field name="is_registered"/>
+                            <field name="is_inactive"/>
+                            <field name="is_deceased"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_patient_stage" model="ir.actions.act_window">
+        <field name="name">Patient Stages</field>
+        <field name="res_model">clinic.patient.stage</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_patient_stage_search"/>
+    </record>
+
+    <!-- =========================================================
+         Patient Tag
+         ========================================================= -->
+    <record id="view_clinic_patient_tag_search" model="ir.ui.view">
+        <field name="name">clinic.patient.tag.search</field>
+        <field name="model">clinic.patient.tag</field>
+        <field name="arch" type="xml">
+            <search string="Patient Tags">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_tag_list" model="ir.ui.view">
+        <field name="name">clinic.patient.tag.list</field>
+        <field name="model">clinic.patient.tag</field>
+        <field name="arch" type="xml">
+            <list string="Patient Tags" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_tag_form" model="ir.ui.view">
+        <field name="name">clinic.patient.tag.form</field>
+        <field name="model">clinic.patient.tag</field>
+        <field name="arch" type="xml">
+            <form string="Patient Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_patient_tag" model="ir.actions.act_window">
+        <field name="name">Patient Tags</field>
+        <field name="res_model">clinic.patient.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_patient_tag_search"/>
+    </record>
+
+    <!-- =========================================================
+         Patient
+         ========================================================= -->
+    <record id="view_clinic_patient_search" model="ir.ui.view">
+        <field name="name">clinic.patient.search</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <search string="Patients">
+                <field name="patient_code"/>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="partner_id"/>
+                <field name="stage_id"/>
+                <field name="tag_ids"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="vip" string="VIP" domain="[('is_vip', '=', True)]"/>
+                <filter name="deceased" string="Deceased" domain="[('is_deceased', '=', True)]"/>
+                <separator/>
+                <filter name="group_stage" string="Stage" context="{'group_by': 'stage_id'}"/>
+                <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                <filter name="group_gender" string="Gender" context="{'group_by': 'gender'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_list" model="ir.ui.view">
+        <field name="name">clinic.patient.list</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <list string="Patients" multi_edit="1"
+                  decoration-muted="not active"
+                  decoration-danger="is_deceased"
+                  decoration-warning="is_vip">
+                <field name="patient_code"/>
+                <field name="name"/>
+                <field name="stage_id"/>
+                <field name="gender" optional="show"/>
+                <field name="age_display" optional="show"/>
+                <field name="phone" optional="show"/>
+                <field name="mobile" optional="hide"/>
+                <field name="email" optional="show"/>
+                <field name="tag_ids" widget="many2many_tags" optional="show"/>
+                <field name="is_vip" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" optional="hide"/>
+                <field name="is_deceased" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_form" model="ir.ui.view">
+        <field name="name">clinic.patient.form</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <form string="Patient">
+                <header>
+                    <button name="action_set_registered"
+                            type="object"
+                            string="Register Patient"
+                            class="btn-primary"
+                            invisible="stage_id and registered_date"/>
+                    <button name="action_print_patient_card"
+                            type="object"
+                            string="Print Patient Card"
+                            class="btn-secondary"/>
+                    <field name="stage_id"
+                           widget="statusbar"
+                           options="{'fold_field': 'fold'}"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_attachments"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-paperclip"
+                                string="Attachments"/>
+                    </div>
+
+                    <widget name="web_ribbon" text="VIP" invisible="not is_vip"/>
+                    <widget name="web_ribbon" text="Deceased" bg_color="text-bg-danger"
+                            invisible="not is_deceased"/>
+
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                           options="{'preview_image': 'image_1920'}"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Patient full name"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="patient_code" readonly="1"/>
+                            <field name="is_vip"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Identity">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="partner_id"/>
+                            <button name="action_open_contact"
+                                    type="object"
+                                    string="Open Contact"
+                                    icon="fa-address-card"
+                                    invisible="not partner_id"/>
+                            <field name="gender"/>
+                            <field name="birth_date"/>
+                            <field name="age_display" readonly="1"/>
+                            <field name="blood_type"/>
+                            <field name="rh_factor"/>
+                        </group>
+                        <group string="Patient Status">
+                            <field name="tag_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color'}"/>
+                            <field name="registered_date" readonly="1"/>
+                            <field name="last_seen_date" readonly="1"/>
+                            <field name="active"/>
+                            <field name="is_deceased"/>
+                            <field name="deceased_date" invisible="not is_deceased"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Contact &amp; Emergency" name="contact">
+                            <group>
+                                <group string="Contact">
+                                    <field name="phone"/>
+                                    <field name="mobile"/>
+                                    <field name="email"/>
+                                </group>
+                                <group string="Emergency">
+                                    <field name="emergency_contact_id"/>
+                                    <field name="emergency_phone"/>
+                                </group>
+                            </group>
+                            <group string="Address">
+                                <field name="street" placeholder="Street..."/>
+                                <field name="street2"/>
+                                <field name="city"/>
+                                <field name="state_id"/>
+                                <field name="zip"/>
+                                <field name="country_id"/>
+                            </group>
+                        </page>
+
+                        <page string="Identifiers" name="identifiers">
+                            <field name="identifier_ids" context="{'default_patient_id': id}">
+                                <list editable="bottom">
+                                    <field name="is_primary"/>
+                                    <field name="type_id"/>
+                                    <field name="value"/>
+                                    <field name="status"/>
+                                    <field name="issue_date" optional="hide"/>
+                                    <field name="expiry_date"/>
+                                    <button name="action_set_primary"
+                                            type="object"
+                                            string="Set Primary"
+                                            icon="fa-star"
+                                            invisible="is_primary"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Allergies" name="allergies">
+                            <field name="allergy_ids" context="{'default_patient_id': id}">
+                                <list decoration-danger="is_critical"
+                                      decoration-muted="status == 'resolved'">
+                                    <field name="allergen_id"/>
+                                    <field name="allergen_name" optional="hide"/>
+                                    <field name="severity"/>
+                                    <field name="criticality" optional="show"/>
+                                    <field name="status"/>
+                                    <field name="verification_status" optional="hide"/>
+                                    <field name="recorded_date"/>
+                                    <button name="action_mark_resolved"
+                                            type="object"
+                                            string="Resolve"
+                                            icon="fa-check"
+                                            invisible="status == 'resolved'"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Conditions" name="conditions">
+                            <field name="condition_ids" context="{'default_patient_id': id}">
+                                <list decoration-muted="status == 'resolved'"
+                                      decoration-danger="severity == 'severe'">
+                                    <field name="condition_id"/>
+                                    <field name="condition_name" optional="hide"/>
+                                    <field name="code_value" optional="show"/>
+                                    <field name="status"/>
+                                    <field name="severity"/>
+                                    <field name="is_chronic"/>
+                                    <field name="onset_date"/>
+                                    <button name="action_mark_resolved"
+                                            type="object"
+                                            string="Resolve"
+                                            icon="fa-check"
+                                            invisible="status == 'resolved'"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Vitals" name="vitals">
+                            <field name="vital_ids" context="{'default_patient_id': id}">
+                                <list decoration-success="is_latest">
+                                    <field name="measured_datetime"/>
+                                    <field name="measured_by"/>
+                                    <field name="bp_systolic"/>
+                                    <field name="bp_diastolic"/>
+                                    <field name="heart_rate"/>
+                                    <field name="temperature_c"/>
+                                    <field name="spo2"/>
+                                    <field name="weight_kg" optional="hide"/>
+                                    <field name="bmi" optional="hide"/>
+                                    <field name="is_latest" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_patient" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="res_model">clinic.patient</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_patient_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

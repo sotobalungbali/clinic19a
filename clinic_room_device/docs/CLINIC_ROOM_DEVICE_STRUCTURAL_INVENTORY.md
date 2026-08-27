@@ -1,0 +1,103 @@
+# ClinicOne — clinic_room_device Full Structural Inventory
+
+Authoritative source: original non-backup addon source supplied by the user.
+
+Active import graph: `room`, `room_type`, `device`, `device_category`, `assignment`, `availability`, `movement`, `room_session`.
+
+`models/inherit` is preserved but dormant because `models/__init__.py` does not import it.
+
+## `models/room_type.py`
+
+### `ClinicRoomType`
+- Model: `clinic.room.type`
+- Inherit: `['mail.thread', 'mail.activity.mixin']`
+- Fields (21): `name`, `code`, `display_name`, `sequence`, `active`, `company_id`, `color`, `description`, `image_1920`, `image_512`, `usage_kind`, `booking_policy`, `require_queue`, `default_capacity`, `default_is_bookable`, `device_category_ids`, `feature_product_ids`, `maintenance_team_id`, `room_ids`, `room_count`, `doctor_ids`
+- Methods (10): `_check_feature_products_type`, `_compute_display_name`, `_compute_require_queue`, `_compute_room_count`, `create`, `write`, `_onchange_suggest_feature_products`, `name_get`, `name_search`, `action_view_rooms`
+
+## `models/room.py`
+
+### `ClinicRoom`
+- Model: `clinic.room`
+- Inherit: `['mail.thread', 'mail.activity.mixin']`
+- Fields (24): `name`, `code`, `display_name`, `sequence`, `active`, `company_id`, `color`, `room_type_id`, `usage_kind`, `booking_policy`, `require_queue`, `capacity`, `is_bookable`, `status`, `supervisor_id`, `technician_ids`, `location_id`, `availability_ids`, `next_available_from`, `assignment_ids`, `device_count`, `image_1920`, `image_512`, `notes`
+- Methods (13): `_compute_display_name`, `_compute_booking_policy`, `_compute_next_available_from`, `_compute_device_count`, `create`, `write`, `_onchange_room_type_id`, `name_get`, `name_search`, `action_view_availability`, `action_view_assignments`, `action_view_devices`, `get_room_snapshot`
+
+## `models/room_session.py`
+
+### `ClinicRoomSession`
+- Model: `clinic.room.session`
+- Inherit: `['mail.thread', 'mail.activity.mixin']`
+- Fields (17): `name`, `sequence`, `active`, `company_id`, `room_id`, `patient_id`, `doctor_id`, `employee_ids`, `queue_token`, `start_datetime`, `end_datetime`, `duration_minutes`, `booking_policy`, `state`, `device_ids`, `device_count`, `notes`
+- Methods (15): `_compute_duration`, `_compute_policy_from_room`, `_compute_device_count`, `create`, `write`, `_check_overlap_policy`, `_onchange_booking_id`, `_onchange_room_devices_default`, `action_schedule`, `action_start`, `action_finish`, `action_cancel`, `action_no_show`, `action_open_room`, `action_open_devices`
+
+## `models/movement.py`
+
+### `ClinicDeviceMovement`
+- Model: `clinic.device.movement`
+- Inherit: `['mail.thread', 'mail.activity.mixin']`
+- Fields (15): `name`, `code`, `display_name`, `active`, `sequence`, `company_id`, `device_id`, `from_room_id`, `to_room_id`, `reason`, `date`, `note`, `from_room_type_id`, `to_room_type_id`, `is_consistent`
+- Methods (13): `_compute_display_name`, `_format_default_name`, `_reason_requires`, `_compute_consistency`, `_sequence_next`, `create`, `write`, `action_open_device`, `action_open_from_room`, `action_open_to_room`, `action_open_stock_moves`, `name_get`, `name_search`
+
+## `models/device.py`
+
+### `ClinicDevice`
+- Model: `clinic.device`
+- Inherit: `['mail.thread', 'mail.activity.mixin']`
+- Fields (38): `name`, `code`, `display_name`, `sequence`, `active`, `company_id`, `category_id`, `product_id`, `lot_id`, `serial_no`, `model`, `manufacturer`, `status`, `is_ready`, `location_id`, `assignment_ids`, `current_room_id`, `movement_ids`, `maintenance_team_id`, `maintenance_interval_days`, `last_maintenance_date`, `next_maintenance_date`, `maintenance_request_count`, `calibration_interval_days`, `calibration_date_last`, `calibration_due_date`, `vendor_id`, `purchase_date`, `purchase_price`, `currency_id`, `warranty_months`, `warranty_end_date`, `image_1920`, `image_512`, `notes`, `assignment_count`, `movement_count`, `qualified_doctor_ids`
+- Methods (26): `_compute_display_name`, `_compute_is_ready`, `_compute_current_room`, `_compute_next_maintenance_date`, `_compute_calibration_due`, `_compute_warranty_end`, `_get_maintenance_request_model`, `_get_room_model`, `_get_movement_model`, `_compute_counters`, `create`, `write`, `_onchange_category_id`, `name_get`, `name_search`, `set_available`, `set_reserved`, `set_in_use`, `set_maintenance`, `set_offline`, `set_retired`, `action_view_assignments`, `action_view_movements`, `action_view_maintenance_requests`, `action_request_maintenance`, `action_open_stock_moves`
+
+## `models/device_category.py`
+
+### `ClinicDeviceCategory`
+- Model: `clinic.device.category`
+- Inherit: `['mail.thread', 'mail.activity.mixin']`
+- Fields (28): `name`, `code`, `display_name`, `sequence`, `active`, `color`, `company_id`, `usage_kind`, `readiness_hint`, `default_maintenance_interval_days`, `default_calibration_interval_days`, `default_warranty_months`, `maintenance_team_id`, `requires_certification`, `certification_notes`, `safety_tags`, `product_category_ids`, `recommended_product_ids`, `preferred_vendor_ids`, `training_required`, `training_description`, `device_ids`, `device_count`, `due_maintenance_count`, `due_calibration_count`, `image_1920`, `image_512`, `notes`
+- Methods (12): `_compute_display_name`, `_get_device_model`, `_compute_device_stats`, `create`, `write`, `_onchange_usage_kind`, `name_get`, `name_search`, `action_view_devices`, `action_view_due_maintenance`, `action_view_due_calibration`, `get_default_policy_payload`
+
+## `models/assignment.py`
+
+### `ClinicRoomDeviceAssignment`
+- Model: `clinic.room.device.assignment`
+- Inherit: `['mail.thread', 'mail.activity.mixin']`
+- Fields (16): `name`, `code`, `active`, `company_id`, `device_id`, `room_id`, `room_type_id`, `state`, `start`, `end`, `is_active`, `duration_hours`, `responsible_id`, `reason`, `notes`, `create_movement_logs`
+- Methods (15): `_compute_is_active`, `_compute_duration`, `_sequence_next`, `_build_default_name`, `_room_capacity_guard`, `_ensure_no_device_overlap`, `_auto_end_previous_active`, `create`, `write`, `action_activate`, `action_end`, `action_cancel`, `action_move_to_room`, `action_open_device`, `action_open_room`
+
+## `models/availability.py`
+
+### `ClinicRoomAvailability`
+- Model: `clinic.room.availability`
+- Inherit: `['mail.thread', 'mail.activity.mixin']`
+- Fields (18): `name`, `active`, `company_id`, `room_id`, `start`, `stop`, `shift`, `color`, `capacity_hint`, `is_template`, `recurrence`, `interval`, `byweekday`, `bysetpos`, `until`, `state`, `in_effect_now`, `label`
+- Methods (18): `_compute_in_effect_now`, `_compute_label`, `_get_shift_display`, `create`, `write`, `_build_default_name`, `_guard_overlap`, `action_set_active`, `action_set_archived`, `action_set_draft`, `action_open_bookings`, `_get_generator_bounds`, `_weekly_iter_dates`, `_monthly_by_date_iter`, `_monthly_by_weekday_iter`, `action_generate_from_template`, `_create_one_generated_slot`, `find_next_available`
+
+## `models/inherit/maintenance_request_inherit.py`
+
+### `MaintenanceRequest`
+- Model: `None`
+- Inherit: `maintenance.request`
+- Fields (24): `device_id`, `room_id`, `partner_id`, `employee_id`, `service_level`, `sla_response_hours`, `sla_resolution_hours`, `coverage_days`, `coverage_start`, `coverage_end`, `response_due`, `resolution_due`, `response_overdue`, `resolution_overdue`, `impact`, `urgency`, `priority_score`, `booking_overlap_count`, `active_assignment_id`, `movement_count`, `assignment_count`, `requires_shutdown`, `safety_notes`, `certification_required`
+- Methods (23): `_onchange_device_id`, `_onchange_room_id`, `_onchange_partner_id`, `_apply_partner_service_profile`, `_compute_sla_due`, `_impact_urgency_score`, `_compute_priority_score`, `_get_booking_model`, `_compute_booking_overlap`, `_compute_active_assignment`, `_compute_counts`, `_compute_overdue_flags`, `create`, `write`, `_apply_operational_signals_on_create`, `_apply_operational_signals_on_write`, `action_open_device`, `action_open_room`, `action_open_assignments`, `action_open_movements`, `action_mark_requires_shutdown`, `action_check_room_booking_impact`, `get_operational_snapshot`
+
+## `models/inherit/hr_employee_inherit.py`
+
+### `HREmployee`
+- Model: `None`
+- Inherit: `hr.employee`
+- Fields (20): `is_room_supervisor`, `is_device_technician`, `device_category_ids`, `room_type_ids`, `maintenance_team_ids`, `supervised_room_ids`, `supervised_room_count`, `technician_room_ids`, `technician_room_count`, `assignment_ids`, `assignment_active_count`, `movement_ids`, `movement_count`, `maintenance_request_ids`, `maintenance_open_count`, `booking_upcoming_count`, `shift_days`, `shift_start`, `shift_end`, `on_shift_now`
+- Methods (11): `_get_maintenance_model`, `_compute_on_shift_now`, `_is_in_shift_window`, `action_view_supervised_rooms`, `action_view_technician_rooms`, `action_view_assignments`, `action_view_device_movements`, `action_view_maintenance_requests`, `_onchange_is_room_supervisor`, `_onchange_is_device_technician`, `get_profile_payload`
+
+## `models/inherit/res_partner_inherit.py`
+
+### `ResPartner`
+- Model: `None`
+- Inherit: `res.partner`
+- Fields (26): `is_device_vendor`, `is_device_installer`, `is_maintenance_provider`, `is_training_provider`, `device_category_ids`, `product_category_ids`, `service_level`, `sla_response_hours`, `sla_resolution_hours`, `coverage_days`, `coverage_start`, `coverage_end`, `onsite_available`, `remote_available`, `contract_reference`, `contract_start`, `contract_end`, `contract_notes`, `technician_ids`, `certifications`, `device_ids`, `maintenance_request_ids`, `device_count`, `maintenance_request_open_count`, `last_service_date`, `active_contract`
+- Methods (10): `_get_maintenance_model`, `_compute_metrics`, `_compute_active_contract`, `check_in_coverage_window`, `action_view_devices`, `action_view_maintenance_requests`, `action_view_stock_pickings`, `_onchange_is_device_vendor`, `_onchange_service_level`, `get_service_profile_payload`
+
+## `models/inherit/stock_location_inherit.py`
+
+### `StockLocation`
+- Model: `None`
+- Inherit: `stock.location`
+- Fields (10): `is_clinic_room_location`, `clinic_room_id`, `sanitation_required`, `quarantine_location`, `maintenance_dropzone`, `capacity_device_hint`, `allow_device_storage`, `device_count`, `stock_quant_count`, `maintenance_queue_count`
+- Methods (18): `_get_assignment_model`, `_get_maintenance_model`, `_compute_metrics`, `_ensure_usage_valid`, `_ensure_room_company_match`, `_ensure_capacity_hint_guard`, `write`, `create`, `action_open_clinic_room`, `action_open_active_devices`, `action_open_quants`, `action_open_stock_moves`, `action_open_maintenance_requests`, `sync_room_location_link`, `guard_assignment_capacity`, `_onchange_is_clinic_room_location`, `_onchange_clinic_room_id`, `get_room_location_payload`

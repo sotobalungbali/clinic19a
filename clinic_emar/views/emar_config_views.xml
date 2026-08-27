@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_emar_config_settings" model="ir.actions.act_window">
+        <field name="name">eMAR Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_emar', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_emar" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.emar</field><field name="model">res.config.settings</field><field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml"><xpath expr="//form" position="inside"><app string="ClinicOne eMAR" name="clinic_emar" groups="clinic_emar.group_emar_manager"><block title="Medication Administration Governance">
+            <setting string="Default Warehouse" help="Warehouse used when a medication administration consumes inventory and no order-specific warehouse is configured."><field name="emar_default_warehouse_id"/></setting>
+            <setting string="Auto-generate Schedules" help="Generate administration schedule entries when an order is confirmed."><field name="emar_auto_generate_schedules"/></setting>
+            <setting string="Require Patient Barcode" help="Require patient barcode verification before medication administration can be completed."><field name="emar_require_patient_scan"/></setting>
+            <setting string="Require Medication Barcode" help="Require medication product barcode verification before administration can be completed."><field name="emar_require_product_scan"/></setting>
+            <setting string="High-alert Independent Check" help="Require a different user to independently verify high-alert medication administrations."><field name="emar_require_double_check_high_alert"/></setting>
+            <setting string="Overdue Grace Minutes" help="Grace period after the end of an administration window before the schedule is marked missed."><field name="emar_overdue_grace_minutes"/></setting>
+        </block></app></xpath></field>
+    </record>
+</odoo>

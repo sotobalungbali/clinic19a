@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Standalone native-model search/actions avoid fragile inherited custom ClinicOne views. -->
+
+    <record id="view_account_move_clinic_l10n_id_search" model="ir.ui.view">
+        <field name="name">account.move.search.clinic.l10n.id</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="invoice_date"/>
+                <field name="partner_id"/>
+                <field name="journal_id"/>
+                <field name="clinic_accounting_source"/>
+                <field name="clinic_l10n_id_readiness"/>
+                <field name="l10n_id_kode_transaksi"/>
+                <filter name="ppn_candidate" string="Clinic PPN Candidates" domain="[('clinic_l10n_id_ppn_candidate', '=', True)]"/>
+                <filter name="attention" string="Indonesia Tax Attention" domain="[('clinic_l10n_id_readiness', '=', 'attention')]"/>
+                <filter name="ready" string="Indonesia Tax Ready" domain="[('clinic_l10n_id_readiness', '=', 'ready')]"/>
+                <filter name="coretax_pending" string="Coretax Not Batched" domain="[('clinic_l10n_id_ppn_candidate', '=', True), ('l10n_id_coretax_document', '=', False)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_journal" string="Journal" context="{'group_by':'journal_id'}"/>
+                    <filter name="group_source" string="Clinic Source" context="{'group_by':'clinic_accounting_source'}"/>
+                    <filter name="group_readiness" string="Readiness" context="{'group_by':'clinic_l10n_id_readiness'}"/>
+                    <filter name="group_month" string="Invoice Month" context="{'group_by':'invoice_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_l10n_id_clinic_invoices" model="ir.actions.act_window">
+        <field name="name">Indonesia Tax Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', 'in', ('out_invoice', 'out_refund')), ('state', '=', 'posted')]</field>
+        <field name="search_view_id" ref="view_account_move_clinic_l10n_id_search"/>
+    </record>
+
+    <record id="action_l10n_id_native_taxes" model="ir.actions.act_window">
+        <field name="name">Native Indonesian Taxes</field>
+        <field name="res_model">account.tax</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('country_id.code', '=', 'ID')]</field>
+    </record>
+
+    <record id="action_l10n_id_native_coretax_documents" model="ir.actions.act_window">
+        <field name="name">Coretax E-Faktur Documents</field>
+        <field name="res_model">l10n_id_efaktur_coretax.document</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_l10n_id_native_coretax_product_codes" model="ir.actions.act_window">
+        <field name="name">Coretax Product Codes</field>
+        <field name="res_model">l10n_id_efaktur_coretax.product.code</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_l10n_id_native_coretax_uom_codes" model="ir.actions.act_window">
+        <field name="name">Coretax UoM Codes</field>
+        <field name="res_model">l10n_id_efaktur_coretax.uom.code</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
+

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ClinicOne Patient owns only patient-domain menus. -->
+    <menuitem id="menu_root"
+              name="ClinicOne"
+              sequence="20"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_patient_management"
+              name="Patients"
+              parent="menu_root"
+              sequence="10"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_patient_operations"
+              name="Clinical Registry"
+              parent="menu_root"
+              sequence="20"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_patient_configuration"
+              name="Configuration"
+              parent="menu_root"
+              sequence="90"
+              groups="base.group_user"/>
+
+    <!-- Main patient workflow -->
+    <menuitem id="menu_patient"
+              name="Patients"
+              parent="menu_patient_management"
+              action="action_clinic_patient"
+              sequence="10"/>
+
+    <menuitem id="menu_patient_identifier"
+              name="Identifiers"
+              parent="menu_patient_operations"
+              action="action_clinic_patient_identifier"
+              sequence="10"/>
+    <menuitem id="menu_patient_allergy"
+              name="Allergies"
+              parent="menu_patient_operations"
+              action="action_clinic_patient_allergy"
+              sequence="20"/>
+    <menuitem id="menu_patient_condition"
+              name="Conditions"
+              parent="menu_patient_operations"
+              action="action_clinic_patient_condition"
+              sequence="30"/>
+    <menuitem id="menu_patient_vital"
+              name="Vitals"
+              parent="menu_patient_operations"
+              action="action_clinic_patient_vital"
+              sequence="40"/>
+
+    <!-- Configuration: existing dictionary/master models only -->
+    <menuitem id="menu_patient_stage"
+              name="Patient Stages"
+              parent="menu_patient_configuration"
+              action="action_clinic_patient_stage"
+              sequence="10"/>
+    <menuitem id="menu_patient_tag"
+              name="Patient Tags"
+              parent="menu_patient_configuration"
+              action="action_clinic_patient_tag"
+              sequence="20"/>
+    <menuitem id="menu_patient_identifier_type"
+              name="Identifier Types"
+              parent="menu_patient_configuration"
+              action="action_clinic_patient_identifier_type"
+              sequence="30"/>
+    <menuitem id="menu_allergen_category"
+              name="Allergen Categories"
+              parent="menu_patient_configuration"
+              action="action_clinic_allergen_category"
+              sequence="40"/>
+    <menuitem id="menu_allergen"
+              name="Allergens"
+              parent="menu_patient_configuration"
+              action="action_clinic_allergen"
+              sequence="50"/>
+    <menuitem id="menu_allergy_reaction_type"
+              name="Allergy Reaction Types"
+              parent="menu_patient_configuration"
+              action="action_clinic_allergy_reaction_type"
+              sequence="60"/>
+    <menuitem id="menu_condition_category"
+              name="Condition Categories"
+              parent="menu_patient_configuration"
+              action="action_clinic_condition_category"
+              sequence="70"/>
+    <menuitem id="menu_condition"
+              name="Condition Dictionary"
+              parent="menu_patient_configuration"
+              action="action_clinic_condition"
+              sequence="80"/>
+    <menuitem id="menu_condition_code"
+              name="Condition Codes"
+              parent="menu_patient_configuration"
+              action="action_clinic_condition_code"
+              sequence="90"/>
+</odoo>

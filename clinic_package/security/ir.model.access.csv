@@ -1,0 +1,26 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pkg_tag_user,clinic.package.tag user,model_clinic_package_tag,base.group_user,1,0,0,0
+access_pkg_tag_manager,clinic.package.tag manager,model_clinic_package_tag,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_user,clinic.package user,model_clinic_package,base.group_user,1,0,0,0
+access_pkg_manager,clinic.package manager,model_clinic_package,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_line_user,clinic.package.line user,model_clinic_package_line,base.group_user,1,0,0,0
+access_pkg_line_manager,clinic.package.line manager,model_clinic_package_line,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_pricing_user,clinic.package.pricing user,model_clinic_package_pricing,base.group_user,1,0,0,0
+access_pkg_pricing_manager,clinic.package.pricing manager,model_clinic_package_pricing,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_pricing_rule_user,clinic.package.pricing.rule user,model_clinic_package_pricing_rule,base.group_user,1,0,0,0
+access_pkg_pricing_rule_manager,clinic.package.pricing.rule manager,model_clinic_package_pricing_rule,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_policy_user,clinic.package.policy user,model_clinic_package_policy,base.group_user,1,0,0,0
+access_pkg_policy_manager,clinic.package.policy manager,model_clinic_package_policy,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_benefit_user,clinic.package.benefit user,model_clinic_package_benefit,base.group_user,1,0,0,0
+access_pkg_benefit_manager,clinic.package.benefit manager,model_clinic_package_benefit,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_alloc_user,clinic.package.allocation user,model_clinic_package_allocation,base.group_user,1,1,1,0
+access_pkg_alloc_manager,clinic.package.allocation manager,model_clinic_package_allocation,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_alloc_line_user,clinic.package.allocation.line user,model_clinic_package_allocation_line,base.group_user,1,1,1,0
+access_pkg_alloc_line_manager,clinic.package.allocation.line manager,model_clinic_package_allocation_line,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_usage_user,clinic.package.usage user,model_clinic_package_usage,base.group_user,1,1,1,0
+access_pkg_usage_manager,clinic.package.usage manager,model_clinic_package_usage,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_voucher_user,clinic.package.voucher user,model_clinic_package_voucher,base.group_user,1,1,1,0
+access_pkg_voucher_manager,clinic.package.voucher manager,model_clinic_package_voucher,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_voucher_batch_user,clinic.package.voucher.batch user,model_clinic_package_voucher_batch,base.group_user,1,1,1,0
+access_pkg_voucher_batch_manager,clinic.package.voucher.batch manager,model_clinic_package_voucher_batch,clinic_package.group_clinic_package_manager,1,1,1,1
+access_pkg_event_manager,clinic.package.integration.event manager,model_clinic_package_integration_event,clinic_package.group_clinic_package_manager,1,1,1,1

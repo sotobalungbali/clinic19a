@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_care_protocol_step_search" model="ir.ui.view">
+        <field name="name">clinic.care.protocol.step.search</field>
+        <field name="model">clinic.care.protocol.step</field>
+        <field name="arch" type="xml">
+            <search string="Protocol Steps">
+                <field name="name"/>
+                <field name="protocol_id"/>
+                <field name="treatment_id"/>
+                <field name="product_id"/>
+                <filter name="filter_consent" string="Consent Required" domain="[('require_consent','=',True)]"/>
+                <filter name="filter_product" string="Product / Consumable" domain="[('is_product','=',True)]"/>
+                <filter name="filter_high_risk" string="High Risk" domain="[('risk_level','=','high')]"/>
+                <group>
+                    <filter name="group_protocol" string="Protocol" context="{'group_by':'protocol_id'}"/>
+                    <filter name="group_risk" string="Risk" context="{'group_by':'risk_level'}"/>
+                    <filter name="group_treatment" string="Treatment" context="{'group_by':'treatment_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_protocol_step_list" model="ir.ui.view">
+        <field name="name">clinic.care.protocol.step.list</field>
+        <field name="model">clinic.care.protocol.step</field>
+        <field name="arch" type="xml">
+            <list string="Protocol Steps"
+                  decoration-danger="risk_level == 'high'"
+                  decoration-warning="require_consent">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="protocol_id"/>
+                <field name="risk_level"/>
+                <field name="require_consent"/>
+                <field name="treatment_id" optional="show"/>
+                <field name="product_id" optional="show"/>
+                <field name="qty" optional="hide"/>
+                <field name="duration_minutes"/>
+                <field name="expected_day_offset"/>
+                <field name="estimated_subtotal" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_protocol_step_form" model="ir.ui.view">
+        <field name="name">clinic.care.protocol.step.form</field>
+        <field name="model">clinic.care.protocol.step</field>
+        <field name="arch" type="xml">
+            <form string="Protocol Step">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_protocol" type="object" class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info"><span class="o_stat_text">Protocol</span></div>
+                        </button>
+                        <button name="action_view_dependents" type="object" class="oe_stat_button" icon="fa-sitemap">
+                            <field name="dependents_count" widget="statinfo" string="Dependents"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Ownership">
+                            <field name="protocol_id"/>
+                            <field name="sequence"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Clinical Classification">
+                            <field name="risk_level"/>
+                            <field name="require_consent"/>
+                            <field name="treatment_id"/>
+                            <field name="duration_minutes"/>
+                            <field name="expected_day_offset"/>
+                            <field name="recommended_min_interval_days"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Instructions" name="instructions">
+                            <field name="description"/>
+                            <field name="instruction"/>
+                            <field name="instruction_html"/>
+                        </page>
+
+                        <page string="Product / Consumable" name="product">
+                            <group>
+                                <group>
+                                    <field name="product_id"/>
+                                    <field name="is_product" readonly="1"/>
+                                    <field name="qty"/>
+                                    <field name="uom_id"/>
+                                </group>
+                                <group>
+                                    <field name="estimated_subtotal" readonly="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Dependencies" name="dependencies">
+                            <field name="dependency_step_ids"
+                                   widget="many2many_tags"
+                                   domain="[('protocol_id','=',protocol_id),('id','!=',id)]"/>
+                        </page>
+
+                        <page string="Evidence" name="evidence">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_care_protocol_step" model="ir.actions.act_window">
+        <field name="name">Protocol Steps</field>
+        <field name="res_model">clinic.care.protocol.step</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_care_protocol_step_search"/>
+    </record>
+</odoo>

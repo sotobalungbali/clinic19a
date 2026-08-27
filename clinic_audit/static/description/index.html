@@ -1,0 +1,199 @@
+<!--
+ClinicOne — Audit Trail & Compliance
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTE:
+- Keep README.md (root) for long-form docs; this file is for the Apps UI description.
+- Avoid using <blockquote> across the ClinicOne project (team convention).
+-->
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span3">
+        <img src="icon.png" alt="ClinicOne Audit Icon" style="width:100%; border-radius:16px;">
+      </div>
+      <div class="oe_span9">
+        <h1 class="oe_slogan">ClinicOne — Audit Trail &amp; Compliance</h1>
+        <h2 class="oe_slogan">Field-level Diff • Tamper-evident Logs • Policies • Retention</h2>
+        <p>
+          End-to-end <b>auditability</b> untuk setiap perubahan data kritis: create, write, unlink, state transition,
+          approval, hingga export. Dirancang untuk <b>Odoo 18 Community Edition</b> dan terintegrasi secara holistik
+          dengan modul ClinicOne lainnya.
+        </p>
+        <p>
+          <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+          <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+          <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+          <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Reports</span>
+          <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Security &amp; Policy</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Overview</h3>
+        <p>
+          Modul ini mencatat perubahan data pada level field (before/after), pengguna, waktu, dan konteks tindakan.
+          Tersedia <b>policy engine</b> untuk mewajibkan alasan perubahan, level approval, hingga <i>tamper-evident hash</i>.
+          Log dapat diekspor (CSV/PDF) untuk kebutuhan audit eksternal, serta memiliki <b>retention policy</b> yang dapat dikonfigurasi.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Key Features</h3>
+        <ul>
+          <li><b>Field-level diff</b> (old → new) untuk create, write, unlink.</li>
+          <li><b>Policy &amp; Controls</b>: mandatory reason, approver chain, sensitive field guard.</li>
+          <li><b>Tamper-evident</b>: hashing berantai (log chain) &amp; signature metadata.</li>
+          <li><b>Event Hooks</b>: stage/state change, approval, post to mail.activity.</li>
+          <li><b>Retention &amp; Purge</b>: jadwal otomatis, TTL per kategori data.</li>
+          <li><b>Export &amp; Evidence</b>: PDF/CSV, nomor bukti, watermark, cap waktu.</li>
+          <li><b>Review Queue</b>: antrian investigasi &amp; rekomendasi tindakan.</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Core Models</h3>
+        <ul>
+          <li><b>clinic.audit.log</b> — header log, actor, context, hash chain.</li>
+          <li><b>clinic.audit.log.line</b> — detail per field (before/after, type, label).</li>
+          <li><b>clinic.audit.policy</b> — rule builder: model, fields, triggers, actions.</li>
+          <li><b>clinic.audit.review</b> — review &amp; disposition (investigate/close/escalate).</li>
+          <li><b>res.config.settings</b> (inherit) — konfigurasi retention &amp; global flags.</li>
+        </ul>
+        <p style="margin-top:8px;">
+          Model dibuat generik agar dapat memantau modul lain tanpa <i>hard dependency</i>.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Holistic Integrations (26 Modules)</h3>
+        <p>
+          Terintegrasi lunak dengan: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment,
+          clinic_billing, clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_ecommerce,
+          clinic_membership, clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet, clinic_package,
+          clinic_pricing, clinic_room_device, clinic_hr, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_queue_room</i>.
+        </p>
+        <p style="font-size:12px;color:#666;">
+          Integrasi via inheritance, server action, activity, dan template mail agar modul tetap dapat dipasang terpisah.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span4">
+        <h3>Installation</h3>
+        <ol>
+          <li>Tambahkan addon ini ke <i>addons_path</i> Odoo Anda.</li>
+          <li>Update daftar Apps, cari <b>ClinicOne: Audit Trail &amp; Compliance</b>.</li>
+          <li>Install; dependensi inti akan terpasang otomatis.</li>
+        </ol>
+      </div>
+      <div class="oe_span4">
+        <h3>Configuration</h3>
+        <ul>
+          <li>Atur <b>Global Settings</b>: enable logging, hash chain, retention TTL.</li>
+          <li>Buat <b>Audit Policies</b>: scope model, fields, trigger, action (reason/approval).</li>
+          <li>Opsional: aktifkan <b>mail.activity</b> pada event tertentu.</li>
+        </ul>
+      </div>
+      <div class="oe_span4">
+        <h3>Security</h3>
+        <ul>
+          <li>Groups: Audit User, Auditor, Compliance Manager, Admin.</li>
+          <li>Record Rules: pembatasan per company &amp; model yang diizinkan.</li>
+          <li>Data Masking: opsi sembunyikan nilai sensitif pada tampilan log.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Demo &amp; Testing</h3>
+        <ul>
+          <li>Demo: <i>demo_policy.xml</i>, <i>demo_logs.xml</i> (sandbox only).</li>
+          <li>Unit tests: create/write/unlink, policy enforcement, retention purge.</li>
+          <li>UAT: perubahan tagihan, ubah harga treatment, pembatalan transaksi, approval.</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Performance Notes</h3>
+        <ul>
+          <li>Index: model, res_id, create_date, user_id, company_id, severity.</li>
+          <li>Gunakan <i>policy scope</i> untuk membatasi high-churn models.</li>
+          <li>Arsipkan/rotate log lama sesuai SLA dan regulasi.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Assets</h3>
+        <ul>
+          <li>JS: <i>audit_badge.js</i>, <i>audit_list_renderer.js</i></li>
+          <li>QWeb: <i>audit_templates.xml</i>, <i>audit_qweb.xml</i></li>
+          <li>SCSS: <i>audit_backend.scss</i></li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Reports</h3>
+        <ul>
+          <li>Audit Summary PDF (per model/periode).</li>
+          <li>Detail Field Changes (CSV/PDF).</li>
+          <li>Evidence Pack dengan nomor bukti &amp; cap waktu.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Upgrade &amp; Migration</h3>
+        <ul>
+          <li>Backward-compatible: tabel &amp; kolom mempertahankan data existing.</li>
+          <li>Alias legacy (jika ada) untuk transisi nama model.</li>
+          <li>Migrasi aman: skrip rehash &amp; re-index opsional.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>License</h3>
+        <p>Dirilis di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+      </div>
+      <div class="oe_span6">
+        <h3>Support &amp; Contribution</h3>
+        <p>
+          Untuk issue/fitur baru, ikuti panduan kontribusi ClinicOne:
+          tulis test, ikuti gaya kode, dan dokumentasikan dampak migrasi.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Optional banner -->
+  <p style="text-align:center;margin-top:16px;">
+    <img src="banner.png" alt="ClinicOne Audit Banner" style="max-width:100%; border-radius:12px;">
+  </p>
+  

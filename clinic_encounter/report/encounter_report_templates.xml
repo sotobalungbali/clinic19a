@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="report_consent_document">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="o">
+        <t t-call="web.external_layout">
+          <div class="page">
+            <h2>Consent Document</h2>
+            <table class="table table-sm o_main_table">
+              <tbody>
+                <tr><th>Consent #</th><td><span t-field="o.name"/></td><th>Status</th><td><span t-field="o.state"/></td></tr>
+                <tr><th>Patient</th><td><span t-field="o.patient_id"/></td><th>Doctor</th><td><span t-field="o.doctor_id"/></td></tr>
+                <tr><th>Encounter</th><td><span t-field="o.encounter_id"/></td><th>Signed On</th><td><span t-field="o.date_signed"/></td></tr>
+                <tr><th>Title</th><td colspan="3"><span t-field="o.title"/></td></tr>
+              </tbody>
+            </table>
+            <div class="mt-3" t-if="o.body_html"><span t-field="o.body_html"/></div>
+            <div class="mt-3" t-if="o.risk_line_ids">
+              <h4>Risk / Disclosure Acknowledgements</h4>
+              <table class="table table-sm">
+                <thead><tr><th>Item</th><th>Acknowledged</th><th>Note</th></tr></thead>
+                <tbody>
+                  <tr t-foreach="o.risk_line_ids" t-as="line">
+                    <td><span t-field="line.name"/></td>
+                    <td><span t-field="line.acknowledged"/></td>
+                    <td><span t-field="line.note"/></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-4" t-if="o.signer_name"><strong>Signer:</strong> <span t-field="o.signer_name"/></div>
+            <div class="mt-2" t-if="o.footer_html"><span t-field="o.footer_html"/></div>
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+
+  <template id="report_result_document">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="o">
+        <t t-call="web.external_layout">
+          <div class="page">
+            <h2>Clinical Result Document</h2>
+            <table class="table table-sm o_main_table">
+              <tbody>
+                <tr><th>Document</th><td><span t-field="o.name"/></td><th>Status</th><td><span t-field="o.state"/></td></tr>
+                <tr><th>Patient</th><td><span t-field="o.patient_id"/></td><th>Doctor</th><td><span t-field="o.doctor_id"/></td></tr>
+                <tr><th>Encounter</th><td><span t-field="o.encounter_id"/></td><th>Procedure</th><td><span t-field="o.procedure_id"/></td></tr>
+                <tr><th>Report Title</th><td colspan="3"><span t-field="o.title"/></td></tr>
+              </tbody>
+            </table>
+            <div class="mt-3" t-if="o.summary"><span t-field="o.summary"/></div>
+            <table class="table table-sm mt-3" t-if="o.line_ids">
+              <thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Reference</th><th>Flag</th></tr></thead>
+              <tbody>
+                <tr t-foreach="o.line_ids" t-as="line">
+                  <td><span t-field="line.name"/></td>
+                  <td><span t-field="line.display_value"/></td>
+                  <td><span t-field="line.unit"/></td>
+                  <td><span t-field="line.ref_text"/></td>
+                  <td><span t-field="line.flag"/></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="mt-3"><strong>Validated:</strong> <span t-field="o.date_validated"/> &#160; <strong>Released:</strong> <span t-field="o.date_released"/></div>
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+</odoo>

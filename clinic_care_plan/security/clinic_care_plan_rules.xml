@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_clinic_care_plan_company" model="ir.rule">
+        <field name="name">Care Plan - allowed companies</field>
+        <field name="model_id" ref="model_clinic_care_plan"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_care_plan_line_company" model="ir.rule">
+        <field name="name">Care Plan Line - allowed companies</field>
+        <field name="model_id" ref="model_clinic_care_plan_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_care_protocol_company" model="ir.rule">
+        <field name="name">Care Protocol - allowed companies</field>
+        <field name="model_id" ref="model_clinic_care_protocol"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_care_protocol_step_company" model="ir.rule">
+        <field name="name">Care Protocol Step - allowed companies</field>
+        <field name="model_id" ref="model_clinic_care_protocol_step"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

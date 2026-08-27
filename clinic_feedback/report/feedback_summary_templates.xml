@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_feedback_summary_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Patient Feedback Summary</h2>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Reference:</strong> <span t-field="o.name"/><br/>
+                        <strong>Patient:</strong>
+                        <span t-if="not o.anonymous_public" t-field="o.patient_id"/>
+                        <span t-else="">Anonymous (identity retained internally)</span><br/>
+                        <strong>Survey:</strong> <span t-field="o.survey_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Submitted:</strong> <span t-field="o.submitted_at"/><br/>
+                        <strong>Source:</strong> <span t-field="o.source_type"/><br/>
+                        <strong>Status:</strong> <span t-field="o.state"/>
+                    </div>
+                </div>
+
+                <h4>Satisfaction</h4>
+                <table class="table table-sm table-bordered">
+                    <tbody>
+                        <tr>
+                            <td><strong>Feedback Type</strong></td>
+                            <td><span t-field="o.feedback_type"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Overall Rating</strong></td>
+                            <td>
+                                <span t-if="o.overall_rating" t-out="o.overall_rating"/>
+                                <span t-else="">Not Collected</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NPS</strong></td>
+                            <td>
+                                <span t-if="o.nps_score &gt;= 0" t-out="o.nps_score"/>
+                                <span t-else="">Not Collected</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NPS Class</strong></td>
+                            <td><span t-field="o.nps_class"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Would Recommend</strong></td>
+                            <td><span t-field="o.would_recommend"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div t-if="o.comment" class="mt-3">
+                    <h4>Patient Comment</h4>
+                    <p t-out="o.comment"/>
+                </div>
+
+                <h4 class="mt-4" t-if="o.answer_ids">Structured Survey Answers</h4>
+                <table t-if="o.answer_ids" class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Category</th>
+                            <th>Answer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.answer_ids" t-as="answer">
+                            <td><span t-field="answer.question_id"/></td>
+                            <td><span t-field="answer.question_id.category"/></td>
+                            <td><span t-field="answer.display_value"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="mt-4" t-if="o.escalation_ids">Service-Recovery Escalations</h4>
+                <table t-if="o.escalation_ids" class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Severity</th>
+                            <th>Reason</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Resolved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.escalation_ids" t-as="esc">
+                            <td><span t-field="esc.severity"/></td>
+                            <td><span t-field="esc.reason"/></td>
+                            <td><span t-field="esc.owner_staff_id"/></td>
+                            <td><span t-field="esc.state"/></td>
+                            <td><span t-field="esc.resolved_at"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_feedback_summary">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="clinic_feedback.report_feedback_summary_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

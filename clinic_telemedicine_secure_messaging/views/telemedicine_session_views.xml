@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_telemedicine_session_search" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.session.search</field>
+        <field name="model">clinic.telemedicine.session</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="host_staff_id"/>
+                <field name="booking_id"/>
+                <field name="appointment_id"/>
+                <field name="encounter_id"/>
+                <field name="branch_id"/>
+                <field name="company_id"/>
+                <filter name="scheduled" string="Scheduled" domain="[('state','=','scheduled')]"/>
+                <filter name="ready" string="Ready" domain="[('state','=','ready')]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state','=','in_progress')]"/>
+                <filter name="completed" string="Completed" domain="[('state','=','completed')]"/>
+                <filter name="today" string="Today" date="scheduled_start"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by':'scheduled_start:day'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_session_list" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.session.list</field>
+        <field name="model">clinic.telemedicine.session</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'ready'"
+                  decoration-success="state == 'completed'"
+                  decoration-warning="state == 'in_progress'"
+                  decoration-muted="state in ('cancelled','no_show')">
+                <field name="scheduled_start"/>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="host_staff_id"/>
+                <field name="branch_id"/>
+                <field name="duration_minutes"/>
+                <field name="provider_mode"/>
+                <field name="meeting_ready"/>
+                <field name="thread_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_thread" type="object" string="Chat" icon="fa-comments"
+                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"/>
+                <button name="action_join_meeting" type="object" string="Join" icon="fa-video-camera"
+                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                        invisible="state not in ('ready','in_progress') or not meeting_ready"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_session_kanban" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.session.kanban</field>
+        <field name="model">clinic.telemedicine.session</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="scheduled_start"/>
+                <field name="scheduled_end"/>
+                <field name="branch_id"/>
+                <field name="meeting_ready"/>
+                <field name="thread_count"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div>
+                                    <strong><field name="name"/></strong>
+                                    <div class="text-muted"><field name="patient_id"/></div>
+                                </div>
+                                <field name="state" widget="badge"/>
+                            </div>
+                            <div class="mt-2">
+                                <i class="fa fa-user-md me-1"/>
+                                <field name="doctor_id"/>
+                            </div>
+                            <div class="small text-muted mt-1">
+                                <field name="scheduled_start"/> – <field name="scheduled_end"/>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap mt-3">
+                                <span class="badge text-bg-secondary">Threads <field name="thread_count"/></span>
+                                <span t-if="meeting_ready" class="badge text-bg-success">Meeting Ready</span>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button name="action_open_thread" type="object" class="btn btn-secondary btn-sm"
+                                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician">Secure Chat</button>
+                                <button name="action_join_meeting" type="object" class="btn btn-primary btn-sm"
+                                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                                        invisible="state not in ('ready','in_progress') or not meeting_ready">Join</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_session_form" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.session.form</field>
+        <field name="model">clinic.telemedicine.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_schedule" type="object" string="Schedule" class="btn-primary"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state != 'draft'"/>
+                    <button name="action_provision_meeting" type="object" string="Provision Meeting"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state not in ('draft','scheduled') or provider_mode != 'provider_hook' or meeting_ready"/>
+                    <button name="action_mark_ready" type="object" string="Mark Ready" class="btn-primary"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state != 'scheduled'"/>
+                    <button name="action_join_meeting" type="object" string="Join Meeting" class="btn-primary"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state not in ('ready','in_progress') or not meeting_ready"/>
+                    <button name="action_start" type="object" string="Start Consultation" class="btn-primary"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state != 'ready'"/>
+                    <button name="action_complete" type="object" string="Complete"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_mark_no_show" type="object" string="Mark No Show"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state not in ('scheduled','ready')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                            invisible="state in ('completed','cancelled','no_show')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,scheduled,ready,in_progress,completed,cancelled,no_show"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_patient" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient</span></div>
+                        </button>
+                        <button name="action_open_doctor" type="object" class="oe_stat_button" icon="fa-user-md">
+                            <div class="o_stat_info"><span class="o_stat_text">Doctor</span></div>
+                        </button>
+                        <button name="action_open_thread" type="object" class="oe_stat_button" icon="fa-comments"
+                                groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician">
+                            <field name="thread_count" widget="statinfo" string="Secure Chat"/>
+                        </button>
+                        <button name="action_open_queues" type="object" class="oe_stat_button" icon="fa-list-ol">
+                            <field name="queue_count" widget="statinfo" string="Queues"/>
+                        </button>
+                        <button name="action_open_booking" type="object" class="oe_stat_button" icon="fa-calendar"
+                                invisible="not booking_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Booking</span></div>
+                        </button>
+                        <button name="action_open_appointment" type="object" class="oe_stat_button" icon="fa-calendar-check-o"
+                                invisible="not appointment_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Appointment</span></div>
+                        </button>
+                        <button name="action_open_encounter" type="object" class="oe_stat_button" icon="fa-stethoscope"
+                                invisible="not encounter_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Encounter</span></div>
+                        </button>
+                        <button name="action_open_portal" type="object" class="oe_stat_button" icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient Portal</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        This record coordinates a Teleconsultation. Clinical SOAP notes, diagnosis, prescriptions,
+                        and treatment documentation remain in Clinic Encounter/eMAR. Secure chat is not mirrored to generic chatter/email.
+                    </div>
+
+                    <div class="alert alert-warning" role="alert" invisible="meeting_ready">
+                        A secure HTTPS Meeting URL must exist before the Session can become Ready.
+                        The base addon does not fabricate a video provider.
+                    </div>
+
+                    <group>
+                        <group string="Patient &amp; Clinical Team">
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state in ('ready','in_progress','completed')"/>
+                            <field name="branch_id" readonly="state in ('ready','in_progress','completed')"/>
+                            <field name="patient_id" readonly="state in ('ready','in_progress','completed')"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="doctor_id" readonly="state in ('ready','in_progress','completed')"/>
+                            <field name="host_staff_id"/>
+                        </group>
+                        <group string="Schedule">
+                            <field name="scheduled_start" readonly="state in ('ready','in_progress','completed')"/>
+                            <field name="scheduled_end" readonly="state in ('ready','in_progress','completed')"/>
+                            <field name="duration_minutes" readonly="1"/>
+                            <field name="patient_can_join" readonly="1"/>
+                            <field name="host_joined_at" readonly="1"/>
+                            <field name="patient_joined_at" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Source Records">
+                            <field name="booking_id" readonly="state in ('ready','in_progress','completed')"/>
+                            <field name="appointment_id" readonly="state in ('ready','in_progress','completed')"/>
+                            <field name="encounter_id"/>
+                            <field name="consent_form_id"/>
+                        </group>
+                        <group string="Meeting Provisioning">
+                            <field name="provider_mode"/>
+                            <field name="meeting_url"
+                                   readonly="state in ('in_progress','completed','cancelled','no_show')"/>
+                            <field name="provider_reference" readonly="1"/>
+                            <field name="meeting_ready" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap my-3">
+                        <button name="action_open_thread" type="object" string="Open Secure Conversation"
+                                class="btn btn-primary"
+                                groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"/>
+                        <button name="action_join_meeting" type="object" string="Open Video Meeting"
+                                class="btn btn-secondary"
+                                groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                                invisible="state not in ('ready','in_progress') or not meeting_ready"/>
+                        <button name="action_open_queues" type="object" string="Open Telemedicine Queue"
+                                class="btn btn-secondary"/>
+                        <button name="action_open_portal" type="object" string="Preview Patient Portal"
+                                class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Secure Conversation">
+                            <field name="thread_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="name"/>
+                                    <field name="subject"/>
+                                    <field name="handler_id"/>
+                                    <field name="message_count"/>
+                                    <field name="attachment_count"/>
+                                    <field name="clinic_unread_count"/>
+                                    <field name="last_message_at"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_messages" type="object" string="Messages" icon="fa-comments"/>
+                                    <button name="action_open_attachments" type="object" string="Files" icon="fa-paperclip"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Operational Evidence">
+                            <group>
+                                <field name="started_at" readonly="1"/>
+                                <field name="ended_at" readonly="1"/>
+                                <field name="cancelled_at" readonly="1"/>
+                                <field name="cancellation_reason" readonly="1"/>
+                                <field name="portal_url" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_telemedicine_session" model="ir.actions.act_window">
+        <field name="name">Telemedicine Sessions</field>
+        <field name="res_model">clinic.telemedicine.session</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_telemedicine_session_search"/>
+    </record>
+</odoo>
+

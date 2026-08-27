@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_branch_root"
+              name="Branch Management"
+              sequence="80"
+              groups="clinic_branch.group_branch_user"/>
+
+    <menuitem id="menu_clinic_branch_operations"
+              name="Operations"
+              parent="menu_clinic_branch_root"
+              sequence="10"/>
+
+    <menuitem id="menu_clinic_branches"
+              name="Branches"
+              parent="menu_clinic_branch_operations"
+              action="action_clinic_branch"
+              sequence="10"/>
+
+    <menuitem id="menu_clinic_branch_locations"
+              name="Locations"
+              parent="menu_clinic_branch_operations"
+              action="action_clinic_branch_location"
+              sequence="20"/>
+</odoo>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_clinic_branch" model="ir.ui.view">
+        <field name="name">res.company.form.clinic.branch</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Clinic Branch Governance" groups="clinic_branch.group_branch_manager">
+                    <group>
+                        <group string="Defaults">
+                            <field name="default_branch_id"/>
+                            <field name="branch_auto_assign_users"/>
+                            <field name="branch_count" readonly="1"/>
+                        </group>
+                        <group string="Report Branding">
+                            <field name="branch_report_header"/>
+                            <field name="branch_report_footer"/>
+                        </group>
+                    </group>
+                    <group string="Branch Scope Policies" col="4">
+                        <field name="policy_branch_scope_patient"/>
+                        <field name="policy_branch_scope_doctor"/>
+                        <field name="policy_branch_scope_booking"/>
+                        <field name="policy_branch_scope_encounter"/>
+                        <field name="policy_branch_scope_treatment"/>
+                        <field name="policy_branch_scope_inventory"/>
+                        <field name="policy_branch_scope_room_device"/>
+                        <field name="policy_branch_scope_billing"/>
+                        <field name="policy_branch_scope_accounting"/>
+                        <field name="policy_branch_scope_wallet"/>
+                        <field name="policy_branch_scope_package"/>
+                        <field name="policy_branch_scope_membership"/>
+                        <field name="policy_branch_scope_portal"/>
+                        <field name="policy_branch_scope_reports"/>
+                        <field name="policy_branch_scope_dashboard"/>
+                        <field name="policy_branch_scope_ecommerce"/>
+                        <field name="policy_branch_scope_marketing"/>
+                        <field name="policy_branch_scope_emar"/>
+                        <field name="policy_branch_scope_care_plan"/>
+                        <field name="policy_branch_scope_incident_event"/>
+                        <field name="policy_branch_scope_post_care"/>
+                        <field name="policy_branch_scope_telemedicine"/>
+                        <field name="policy_branch_scope_audit"/>
+                        <field name="policy_branch_scope_l10n"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

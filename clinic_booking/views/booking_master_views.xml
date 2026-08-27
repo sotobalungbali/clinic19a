@@ -1,0 +1,590 @@
+<odoo>
+  <record id="view_booking_tag_search" model="ir.ui.view">
+    <field name="name">booking.tag.search</field>
+    <field name="model">booking.tag</field>
+    <field name="arch" type="xml">
+      <search string="Search Tag">
+        <field name="name"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="color"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_tag_list" model="ir.ui.view">
+    <field name="name">booking.tag.list</field>
+    <field name="model">booking.tag</field>
+    <field name="arch" type="xml">
+      <list string="Tag">
+        <field name="name"/>
+        <field name="color"/>
+        <field name="active"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_tag_form" model="ir.ui.view">
+    <field name="name">booking.tag.form</field>
+    <field name="model">booking.tag</field>
+    <field name="arch" type="xml">
+      <form string="Tag">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="color"/>
+            </group>
+            <group>
+              <field name="active"/>
+              <field name="company_id"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_channel_search" model="ir.ui.view">
+    <field name="name">booking.channel.search</field>
+    <field name="model">booking.channel</field>
+    <field name="arch" type="xml">
+      <search string="Search Channel">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="policy_id"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="channel_type"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_policy_id" string="Policy" context="{'group_by': 'policy_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_channel_list" model="ir.ui.view">
+    <field name="name">booking.channel.list</field>
+    <field name="model">booking.channel</field>
+    <field name="arch" type="xml">
+      <list string="Channel">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="channel_type"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="color"/>
+        <field name="is_online"/>
+        <field name="website_published"/>
+        <field name="website_route"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_channel_form" model="ir.ui.view">
+    <field name="name">booking.channel.form</field>
+    <field name="model">booking.channel</field>
+    <field name="arch" type="xml">
+      <form string="Channel">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+              <field name="bookings_count" widget="statinfo" string="Bookings"/>
+            </button>
+          </div>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="code"/>
+              <field name="channel_type"/>
+              <field name="active"/>
+              <field name="sequence"/>
+              <field name="color"/>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+              <field name="is_online"/>
+              <field name="website_published"/>
+              <field name="website_route"/>
+            </group>
+            <group>
+              <field name="policy_id"/>
+              <field name="reminder_template_id"/>
+              <field name="feedback_template_id"/>
+              <field name="allow_prepaid_deposit"/>
+              <field name="deposit_is_required"/>
+              <field name="deposit_fixed_amount"/>
+              <field name="deposit_percent"/>
+              <field name="auto_create_appointment"/>
+              <field name="lock_slot_on_confirm"/>
+              <field name="bookings_count"/>
+              <field name="last_booking_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Notes &amp; Details">
+              <field name="description"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_policy_search" model="ir.ui.view">
+    <field name="name">booking.policy.search</field>
+    <field name="model">booking.policy</field>
+    <field name="arch" type="xml">
+      <search string="Search Policy">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="date_start"/>
+        <field name="date_end"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_policy_list" model="ir.ui.view">
+    <field name="name">booking.policy.list</field>
+    <field name="model">booking.policy</field>
+    <field name="arch" type="xml">
+      <list string="Policy">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="color"/>
+        <field name="date_start"/>
+        <field name="date_end"/>
+        <field name="allow_cancel"/>
+        <field name="cancel_cutoff_unit"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_policy_form" model="ir.ui.view">
+    <field name="name">booking.policy.form</field>
+    <field name="model">booking.policy</field>
+    <field name="arch" type="xml">
+      <form string="Policy">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+              <field name="bookings_count" widget="statinfo" string="Bookings"/>
+            </button>
+          </div>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="code"/>
+              <field name="active"/>
+              <field name="sequence"/>
+              <field name="color"/>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+              <field name="date_start"/>
+              <field name="date_end"/>
+              <field name="allow_cancel"/>
+              <field name="cancel_cutoff_unit"/>
+              <field name="cancel_cutoff_value"/>
+              <field name="cancel_fee_type"/>
+              <field name="cancel_fee_fixed"/>
+              <field name="cancel_fee_percent"/>
+              <field name="allow_reschedule"/>
+              <field name="reschedule_cutoff_unit"/>
+              <field name="reschedule_cutoff_value"/>
+            </group>
+            <group>
+              <field name="reschedule_limit"/>
+              <field name="reschedule_fee_type"/>
+              <field name="reschedule_fee_fixed"/>
+              <field name="reschedule_fee_percent"/>
+              <field name="no_show_fee_type"/>
+              <field name="no_show_fee_fixed"/>
+              <field name="no_show_fee_percent"/>
+              <field name="no_show_grace_minutes"/>
+              <field name="allow_prepaid_deposit"/>
+              <field name="deposit_is_required"/>
+              <field name="deposit_fixed_amount"/>
+              <field name="deposit_percent"/>
+              <field name="deposit_due_timing"/>
+              <field name="deposit_before_start_hours"/>
+              <field name="deposit_refund_policy"/>
+              <field name="refund_method"/>
+              <field name="refund_delay_days"/>
+              <field name="bookings_count"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Channel">
+              <field name="channel_ids"/>
+            </page>
+            <page string="Exception">
+              <field name="exception_ids"/>
+            </page>
+            <page string="Notes &amp; Details">
+              <field name="description"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_policy_exception_search" model="ir.ui.view">
+    <field name="name">booking.policy.exception.search</field>
+    <field name="model">booking.policy.exception</field>
+    <field name="arch" type="xml">
+      <search string="Search Policy Exception">
+        <field name="channel_id"/>
+        <field name="policy_id"/>
+        <field name="date_start"/>
+        <field name="date_end"/>
+        <field name="company_id"/>
+        <field name="sequence"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_policy_id" string="Policy" context="{'group_by': 'policy_id'}"/>
+          <filter name="group_by_channel_id" string="Channel" context="{'group_by': 'channel_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_policy_exception_list" model="ir.ui.view">
+    <field name="name">booking.policy.exception.list</field>
+    <field name="model">booking.policy.exception</field>
+    <field name="arch" type="xml">
+      <list string="Policy Exception">
+        <field name="policy_id"/>
+        <field name="sequence"/>
+        <field name="channel_id"/>
+        <field name="date_start"/>
+        <field name="date_end"/>
+        <field name="action_type"/>
+        <field name="cutoff_unit"/>
+        <field name="cutoff_value"/>
+        <field name="fee_type"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_policy_exception_form" model="ir.ui.view">
+    <field name="name">booking.policy.exception.form</field>
+    <field name="model">booking.policy.exception</field>
+    <field name="arch" type="xml">
+      <form string="Policy Exception">
+        <sheet>
+          <group>
+            <group>
+              <field name="policy_id"/>
+              <field name="sequence"/>
+              <field name="channel_id"/>
+              <field name="date_start"/>
+              <field name="date_end"/>
+              <field name="action_type"/>
+              <field name="cutoff_unit"/>
+            </group>
+            <group>
+              <field name="cutoff_value"/>
+              <field name="fee_type"/>
+              <field name="fee_fixed"/>
+              <field name="fee_percent"/>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_room_tag_search" model="ir.ui.view">
+    <field name="name">booking.room.tag.search</field>
+    <field name="model">booking.room.tag</field>
+    <field name="arch" type="xml">
+      <search string="Search Room Tag">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="color"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_room_tag_list" model="ir.ui.view">
+    <field name="name">booking.room.tag.list</field>
+    <field name="model">booking.room.tag</field>
+    <field name="arch" type="xml">
+      <list string="Room Tag">
+        <field name="name"/>
+        <field name="color"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_room_tag_form" model="ir.ui.view">
+    <field name="name">booking.room.tag.form</field>
+    <field name="model">booking.room.tag</field>
+    <field name="arch" type="xml">
+      <form string="Room Tag">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="color"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_room_search" model="ir.ui.view">
+    <field name="name">booking.room.search</field>
+    <field name="model">booking.room</field>
+    <field name="arch" type="xml">
+      <search string="Search Room">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="clinic_room_id"/>
+        <field name="sequence"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_room_list" model="ir.ui.view">
+    <field name="name">booking.room.list</field>
+    <field name="model">booking.room</field>
+    <field name="arch" type="xml">
+      <list string="Room">
+        <field name="clinic_room_id"/>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="color"/>
+        <field name="capacity"/>
+        <field name="buffer_before_minutes"/>
+        <field name="buffer_after_minutes"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_room_form" model="ir.ui.view">
+    <field name="name">booking.room.form</field>
+    <field name="model">booking.room</field>
+    <field name="arch" type="xml">
+      <form string="Room">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+              <field name="bookings_count" widget="statinfo" string="Bookings"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <button name="action_new_booking" type="object" string="New Booking" class="btn btn-secondary"/>
+          </div>
+          <group>
+            <group>
+              <field name="clinic_room_id"/>
+              <field name="name"/>
+              <field name="code"/>
+              <field name="active"/>
+              <field name="company_id"/>
+              <field name="sequence"/>
+              <field name="color"/>
+            </group>
+            <group>
+              <field name="capacity"/>
+              <field name="buffer_before_minutes"/>
+              <field name="buffer_after_minutes"/>
+              <field name="bookings_count"/>
+              <field name="last_booking_id"/>
+              <field name="next_available_from"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Allowed Treatment">
+              <field name="allowed_treatment_ids"/>
+            </page>
+            <page string="Allowed Doctor">
+              <field name="allowed_doctor_ids"/>
+            </page>
+            <page string="Resource">
+              <field name="resource_ids"/>
+            </page>
+            <page string="Tag">
+              <field name="tag_ids"/>
+            </page>
+            <page string="Schedule">
+              <field name="schedule_ids"/>
+            </page>
+            <page string="Blackout">
+              <field name="blackout_ids"/>
+            </page>
+            <page string="Notes &amp; Details">
+              <field name="notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_resource_tag_search" model="ir.ui.view">
+    <field name="name">booking.resource.tag.search</field>
+    <field name="model">booking.resource.tag</field>
+    <field name="arch" type="xml">
+      <search string="Search Resource Tag">
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="color"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_resource_tag_list" model="ir.ui.view">
+    <field name="name">booking.resource.tag.list</field>
+    <field name="model">booking.resource.tag</field>
+    <field name="arch" type="xml">
+      <list string="Resource Tag">
+        <field name="name"/>
+        <field name="color"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_resource_tag_form" model="ir.ui.view">
+    <field name="name">booking.resource.tag.form</field>
+    <field name="model">booking.resource.tag</field>
+    <field name="arch" type="xml">
+      <form string="Resource Tag">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="color"/>
+            </group>
+            <group>
+              <field name="company_id"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_resource_search" model="ir.ui.view">
+    <field name="name">booking.resource.search</field>
+    <field name="model">booking.resource</field>
+    <field name="arch" type="xml">
+      <search string="Search Resource">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="resource_type"/>
+        <field name="sequence"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_resource_list" model="ir.ui.view">
+    <field name="name">booking.resource.list</field>
+    <field name="model">booking.resource</field>
+    <field name="arch" type="xml">
+      <list string="Resource">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="resource_type"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="color"/>
+        <field name="capacity_concurrent"/>
+        <field name="buffer_before_minutes"/>
+        <field name="buffer_after_minutes"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_resource_form" model="ir.ui.view">
+    <field name="name">booking.resource.form</field>
+    <field name="model">booking.resource</field>
+    <field name="arch" type="xml">
+      <form string="Resource">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+              <field name="bookings_count" widget="statinfo" string="Bookings"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <button name="action_new_booking" type="object" string="New Booking" class="btn btn-secondary"/>
+          </div>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="code"/>
+              <field name="resource_type"/>
+              <field name="active"/>
+              <field name="sequence"/>
+              <field name="color"/>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+              <field name="capacity_concurrent"/>
+              <field name="buffer_before_minutes"/>
+            </group>
+            <group>
+              <field name="buffer_after_minutes"/>
+              <field name="product_id"/>
+              <field name="product_tracking"/>
+              <field name="track_consumption"/>
+              <field name="consumption_qty_per_booking"/>
+              <field name="uom_id"/>
+              <field name="bookings_count"/>
+              <field name="last_booking_id"/>
+              <field name="next_available_from"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Allowed Treatment">
+              <field name="allowed_treatment_ids"/>
+            </page>
+            <page string="Allowed Doctor">
+              <field name="allowed_doctor_ids"/>
+            </page>
+            <page string="Tag">
+              <field name="tag_ids"/>
+            </page>
+            <page string="Room">
+              <field name="room_ids"/>
+            </page>
+            <page string="Schedule">
+              <field name="schedule_ids"/>
+            </page>
+            <page string="Blackout">
+              <field name="blackout_ids"/>
+            </page>
+            <page string="Notes &amp; Details">
+              <field name="description"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+</odoo>

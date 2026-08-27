@@ -1,0 +1,18 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_audit_event_user,clinic.audit.event user,model_clinic_audit_event,clinic_audit.group_audit_user,1,0,0,0
+access_audit_event_manager,clinic.audit.event manager,model_clinic_audit_event,clinic_audit.group_audit_manager,1,0,0,0
+access_audit_event_line_user,clinic.audit.event.line user,model_clinic_audit_event_line,clinic_audit.group_audit_user,1,0,0,0
+access_audit_event_line_manager,clinic.audit.event.line manager,model_clinic_audit_event_line,clinic_audit.group_audit_manager,1,0,0,0
+access_audit_policy_user,clinic.audit.policy user,model_clinic_audit_policy,clinic_audit.group_audit_user,1,0,0,0
+access_audit_policy_manager,clinic.audit.policy manager,model_clinic_audit_policy,clinic_audit.group_audit_manager,1,1,1,1
+access_audit_review_user,clinic.audit.review user,model_clinic_audit_review,clinic_audit.group_audit_user,1,1,0,0
+access_audit_review_manager,clinic.audit.review manager,model_clinic_audit_review,clinic_audit.group_audit_manager,1,1,1,0
+access_audit_review_tag_user,clinic.audit.review.tag user,model_clinic_audit_review_tag,clinic_audit.group_audit_user,1,0,0,0
+access_audit_review_tag_manager,clinic.audit.review.tag manager,model_clinic_audit_review_tag,clinic_audit.group_audit_manager,1,1,1,1
+access_audit_review_line_user,clinic.audit.review.line user,model_clinic_audit_review_line,clinic_audit.group_audit_user,1,1,1,0
+access_audit_review_line_manager,clinic.audit.review.line manager,model_clinic_audit_review_line,clinic_audit.group_audit_manager,1,1,1,0
+access_audit_verification_user,clinic.audit.verification user,model_clinic_audit_verification,clinic_audit.group_audit_user,1,0,0,0
+access_audit_verification_manager,clinic.audit.verification manager,model_clinic_audit_verification,clinic_audit.group_audit_manager,1,1,1,0
+access_audit_legacy_line_manager,clinic.audit.log.line manager,model_clinic_audit_log_line,clinic_audit.group_audit_manager,1,0,0,0
+access_audit_export_wizard,clinic.audit.evidence.export wizard,model_clinic_audit_evidence_export_wizard,clinic_audit.group_audit_user,1,1,1,1
+access_audit_legacy_import_wizard,clinic.audit.legacy.import wizard,model_clinic_audit_legacy_import_wizard,clinic_audit.group_audit_manager,1,1,1,1

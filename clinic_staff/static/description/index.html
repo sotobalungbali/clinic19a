@@ -1,0 +1,206 @@
+
+<!--
+ClinicOne — Clinical Staff (Nurse & Therapist) Management
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+Notes:
+- Keep README.rst (root) for long-form docs; this file is for the Odoo Apps UI description.
+- Team convention: avoid <blockquote> across ClinicOne project.
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="ClinicOne Staff Management Icon" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Clinical Staff (Nurse &amp; Therapist) Management</h1>
+      <h2 class="oe_slogan">Skill Matrix • Licenses • Shift &amp; Roster • Workload • Assignment • KPI</h2>
+      <p>
+        Kelola <b>tenaga klinis</b> (Perawat &amp; Terapis) secara terpadu: kompetensi/skill-matrix, lisensi &amp; masa
+        berlaku, level/grade, <b>shift &amp; roster</b>, <b>workload</b>, serta penugasan ke ruangan/antrian/tindakan.
+        Terintegrasi dengan <i>Incident</i>, <i>Post-Care Task</i>, <i>Telemedicine</i>, dan <i>KPI dashboard</i>.
+        Kompatibel dengan <b>Odoo 18 Community Edition</b>.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Calendar/Gantt</span>
+        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">KPI Dashboard</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <img src="banner.png" alt="ClinicOne Staff Module Banner" style="width:100%;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08);">
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Overview</h3>
+      <p>
+        Modul ini memusatkan pengelolaan <b>Master Staff</b> (kompetensi/skill, lisensi/masa berlaku, grade),
+        <b>Shift &amp; Roster</b>, <b>Workload</b>, dan <b>Assignment</b> ke ruangan/antrian/tindakan.
+        Dilengkapi hak akses terpisah (FO/Therapist/Nurse/Doctor/Manager) dan keterkaitan ke
+        <i>Incident</i>, <i>Post-Care Task</i>, <i>Telemedicine chat</i>, serta <i>KPI &amp; presence</i>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li><b>Master Staff</b>: profile, role, grade/level, team, branch, skill-matrix, status eligibility</li>
+        <li><b>Licenses</b>: jenis lisensi, nomor &amp; issuer, masa berlaku, reminder &amp; renewal wizard</li>
+        <li><b>Shift &amp; Roster</b>: template shift, roster Gantt, swap shift, conflict validation</li>
+        <li><b>Workload</b>: target vs actual (hour/encounter/procedure), overtime &amp; workload rebalance</li>
+        <li><b>Assignment</b>: penugasan ke <i>Room/Queue/Procedure</i> dengan kapasitas &amp; kualifikasi</li>
+        <li><b>Presence</b>: check-in/out, break, auto-eligibility untuk menerima tugas</li>
+        <li><b>KPI</b>: utilization, procedures done, revenue allocation, NPS/feedback</li>
+        <li><b>Integrations</b>: Incident, Post-Care, Telemedicine, Billing/Finance/Accounting/Inventory</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>clinic.staff</b> — staff profile, role, grade, eligibility</li>
+        <li><b>clinic.staff.skill</b> — skill-matrix &amp; validation</li>
+        <li><b>clinic.staff.license</b> — license &amp; expiry tracking + renewal</li>
+        <li><b>clinic.staff.availability</b> — availability slots &amp; calendar</li>
+        <li><b>clinic.staff.roster</b> — shift roster (Gantt)</li>
+        <li><b>clinic.staff.assignment</b> — assignment ke room/queue/procedure</li>
+        <li><b>clinic.staff.workload</b> — workload target &amp; actual</li>
+        <li><b>clinic.staff.kpi</b> — KPI aggregates, scorecards</li>
+        <li><b>clinic.staff.presence</b> — check-in/out &amp; presence state</li>
+      </ul>
+      <p style="margin-top:8px;">Semua model mendukung <i>mail.thread</i> &amp; <i>mail.activity.mixin</i> untuk jejak audit &amp; kolaborasi.</p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Holistic Integrations (26 Modules)</h3>
+      <p>
+        Terintegrasi dengan: <i>clinic_base, clinic_patient, clinic_hr, clinic_doctor, clinic_booking, clinic_queue_room,
+        clinic_treatment, clinic_inventory, clinic_billing, clinic_ar, clinic_ap, clinic_finance, clinic_accounting,
+        clinic_pricing, clinic_package, clinic_membership, clinic_wallet, clinic_ecommerce, clinic_portal, clinic_marketing,
+        clinic_feedback, clinic_reports, clinic_dashboard, clinic_l10n_id, clinic_audit</i>.
+      </p>
+      <p style="font-size:12px;color:#666;">Integrasi via relasi, server actions, mail activities, dan analitik—tetap loosely-coupled.</p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Tambahkan addon ini ke <i>addons_path</i> Odoo Anda.</li>
+        <li>Update daftar Apps, cari <b>ClinicOne: Clinical Staff Management</b>.</li>
+        <li>Install; dependencies akan terpasang otomatis.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Definisikan <b>Grades</b> dan <b>Skills</b> sesuai kebutuhan layanan.</li>
+        <li>Masukkan <b>Licenses</b> &amp; set <i>reminder</i> untuk expiry.</li>
+        <li>Siapkan <b>Shift Templates</b> &amp; generate <b>Roster</b>.</li>
+        <li>Atur <b>Access Groups</b> (FO/Therapist/Nurse/Doctor/Manager).</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: Staff User, Roster Manager, Clinic Manager, Admin.</li>
+        <li>Record Rules: per company/branch &amp; responsibility scope.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Wizards</h3>
+      <ul>
+        <li><i>generate_roster_wizard</i> — generate roster dari template &amp; demand</li>
+        <li><i>assign_staff_wizard</i> — quick assign ke room/queue/procedure</li>
+        <li><i>swap_shift_wizard</i> — tukar shift dengan conflict validation</li>
+        <li><i>license_renewal_wizard</i> — perpanjangan lisensi &amp; aktivitas</li>
+        <li><i>workload_rebalance_wizard</i> — redistribusi workload</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Reports &amp; Dashboards</h3>
+      <ul>
+        <li>Roster Gantt &amp; Availability Calendar</li>
+        <li>License Expiry &amp; Compliance</li>
+        <li>KPI: utilization, procedures done, revenue allocation</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Assets</h3>
+      <ul>
+        <li>JS: <i>staff_dashboard.js</i></li>
+        <li>QWeb: <i>staff_dashboard_templates.xml</i></li>
+        <li>SCSS: <i>staff_styles.scss</i></li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>API Hooks</h3>
+      <ul>
+        <li>Presence → Eligibility (auto-enable assignment)</li>
+        <li>Billing → Revenue Allocation → Settlement</li>
+        <li>Incident/Post-Care/Telemedicine → Staff linking</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Upgrade &amp; Migration</h3>
+      <ul>
+        <li>Consistent model prefix <b>clinic.*</b> untuk antar-modul.</li>
+        <li>Migration helpers: sequences, analytic mapping, data loaders.</li>
+        <li>Backward-compat field aliases bila diperlukan.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distribusi di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        Ikuti panduan kontribusi ClinicOne: tulis test, patuhi gaya penulisan, dan dokumentasikan dampak migrasi.
+      </p>
+    </div>
+  </div>
+</section>

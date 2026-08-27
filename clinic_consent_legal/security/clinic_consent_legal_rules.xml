@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template ACL is inherited from clinic_treatment_catalog, its canonical owner. -->
+    <record id="rule_clinic_consent_template_company" model="ir.rule">
+        <field name="name">Consent Template: allowed companies</field>
+        <field name="model_id" ref="clinic_treatment_catalog.model_clinic_consent_template"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_consent_form_company" model="ir.rule">
+        <field name="name">Consent Form: allowed companies</field>
+        <field name="model_id" ref="model_clinic_consent_form"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_consent_signature_company" model="ir.rule">
+        <field name="name">Consent Signature: allowed companies</field>
+        <field name="model_id" ref="model_clinic_consent_signature"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_consent_attachment_company" model="ir.rule">
+        <field name="name">Consent Attachment: allowed companies</field>
+        <field name="model_id" ref="model_clinic_consent_attachment"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

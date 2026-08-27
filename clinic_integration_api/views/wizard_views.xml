@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_api_provider_credential_wizard" model="ir.ui.view"><field name="name">clinic.api.provider.credential.wizard.form</field><field name="model">clinic.api.provider.credential.wizard</field><field name="arch" type="xml"><form string="Set Provider Credential"><group><field name="provider_id" readonly="1"/><field name="secret"/></group><footer><button name="action_save" type="object" string="Save Credential" class="btn-primary"/><button string="Cancel" special="cancel"/></footer></form></field></record>
+    <record id="view_api_webhook_token_wizard" model="ir.ui.view"><field name="name">clinic.api.webhook.token.wizard.form</field><field name="model">clinic.api.webhook.token.wizard</field><field name="arch" type="xml"><form string="New Inbound Webhook Token"><div class="alert alert-warning" role="alert">Copy this token now. ClinicOne stores only its SHA-256 digest and cannot reveal it again.</div><group><field name="provider_id"/><field name="token"/></group><footer><button string="Close" special="cancel" class="btn-primary"/></footer></form></field></record>
+</odoo>

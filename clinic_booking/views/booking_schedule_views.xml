@@ -1,0 +1,784 @@
+<odoo>
+  <record id="view_booking_room_schedule_search" model="ir.ui.view">
+    <field name="name">booking.room.schedule.search</field>
+    <field name="model">booking.room.schedule</field>
+    <field name="arch" type="xml">
+      <search string="Search Room Schedule">
+        <field name="room_id"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="weekday"/>
+        <field name="hour_from"/>
+        <field name="hour_to"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_weekday" string="Weekday" context="{'group_by': 'weekday'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_room_schedule_list" model="ir.ui.view">
+    <field name="name">booking.room.schedule.list</field>
+    <field name="model">booking.room.schedule</field>
+    <field name="arch" type="xml">
+      <list string="Room Schedule">
+        <field name="room_id"/>
+        <field name="active"/>
+        <field name="weekday"/>
+        <field name="hour_from"/>
+        <field name="hour_to"/>
+        <field name="note"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_room_schedule_form" model="ir.ui.view">
+    <field name="name">booking.room.schedule.form</field>
+    <field name="model">booking.room.schedule</field>
+    <field name="arch" type="xml">
+      <form string="Room Schedule">
+        <sheet>
+          <group>
+            <group>
+              <field name="room_id"/>
+              <field name="company_id"/>
+              <field name="active"/>
+              <field name="weekday"/>
+            </group>
+            <group>
+              <field name="hour_from"/>
+              <field name="hour_to"/>
+              <field name="note"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_room_blackout_search" model="ir.ui.view">
+    <field name="name">booking.room.blackout.search</field>
+    <field name="model">booking.room.blackout</field>
+    <field name="arch" type="xml">
+      <search string="Search Room Blackout">
+        <field name="room_id"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="start_datetime"/>
+        <field name="end_datetime"/>
+        <field name="reason"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_room_blackout_list" model="ir.ui.view">
+    <field name="name">booking.room.blackout.list</field>
+    <field name="model">booking.room.blackout</field>
+    <field name="arch" type="xml">
+      <list string="Room Blackout">
+        <field name="room_id"/>
+        <field name="active"/>
+        <field name="start_datetime"/>
+        <field name="end_datetime"/>
+        <field name="reason"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_room_blackout_form" model="ir.ui.view">
+    <field name="name">booking.room.blackout.form</field>
+    <field name="model">booking.room.blackout</field>
+    <field name="arch" type="xml">
+      <form string="Room Blackout">
+        <sheet>
+          <group>
+            <group>
+              <field name="room_id"/>
+              <field name="company_id"/>
+              <field name="active"/>
+            </group>
+            <group>
+              <field name="start_datetime"/>
+              <field name="end_datetime"/>
+              <field name="reason"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Notes &amp; Details">
+              <field name="internal_notes"/>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_resource_schedule_search" model="ir.ui.view">
+    <field name="name">booking.resource.schedule.search</field>
+    <field name="model">booking.resource.schedule</field>
+    <field name="arch" type="xml">
+      <search string="Search Resource Schedule">
+        <field name="resource_id"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="weekday"/>
+        <field name="hour_from"/>
+        <field name="hour_to"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_weekday" string="Weekday" context="{'group_by': 'weekday'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_resource_schedule_list" model="ir.ui.view">
+    <field name="name">booking.resource.schedule.list</field>
+    <field name="model">booking.resource.schedule</field>
+    <field name="arch" type="xml">
+      <list string="Resource Schedule">
+        <field name="resource_id"/>
+        <field name="active"/>
+        <field name="weekday"/>
+        <field name="hour_from"/>
+        <field name="hour_to"/>
+        <field name="note"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_resource_schedule_form" model="ir.ui.view">
+    <field name="name">booking.resource.schedule.form</field>
+    <field name="model">booking.resource.schedule</field>
+    <field name="arch" type="xml">
+      <form string="Resource Schedule">
+        <sheet>
+          <group>
+            <group>
+              <field name="resource_id"/>
+              <field name="company_id"/>
+              <field name="active"/>
+              <field name="weekday"/>
+            </group>
+            <group>
+              <field name="hour_from"/>
+              <field name="hour_to"/>
+              <field name="note"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_resource_blackout_search" model="ir.ui.view">
+    <field name="name">booking.resource.blackout.search</field>
+    <field name="model">booking.resource.blackout</field>
+    <field name="arch" type="xml">
+      <search string="Search Resource Blackout">
+        <field name="resource_id"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="start_datetime"/>
+        <field name="end_datetime"/>
+        <field name="reason"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_resource_blackout_list" model="ir.ui.view">
+    <field name="name">booking.resource.blackout.list</field>
+    <field name="model">booking.resource.blackout</field>
+    <field name="arch" type="xml">
+      <list string="Resource Blackout">
+        <field name="resource_id"/>
+        <field name="active"/>
+        <field name="start_datetime"/>
+        <field name="end_datetime"/>
+        <field name="reason"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_resource_blackout_form" model="ir.ui.view">
+    <field name="name">booking.resource.blackout.form</field>
+    <field name="model">booking.resource.blackout</field>
+    <field name="arch" type="xml">
+      <form string="Resource Blackout">
+        <sheet>
+          <group>
+            <group>
+              <field name="resource_id"/>
+              <field name="company_id"/>
+              <field name="active"/>
+            </group>
+            <group>
+              <field name="start_datetime"/>
+              <field name="end_datetime"/>
+              <field name="reason"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Notes &amp; Details">
+              <field name="internal_notes"/>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_slot_search" model="ir.ui.view">
+    <field name="name">booking.slot.search</field>
+    <field name="model">booking.slot</field>
+    <field name="arch" type="xml">
+      <search string="Search Slot">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="doctor_id"/>
+        <field name="treatment_id"/>
+        <field name="channel_id"/>
+        <field name="policy_id"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_doctor_id" string="Doctor" context="{'group_by': 'doctor_id'}"/>
+          <filter name="group_by_policy_id" string="Policy" context="{'group_by': 'policy_id'}"/>
+          <filter name="group_by_channel_id" string="Channel" context="{'group_by': 'channel_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_slot_list" model="ir.ui.view">
+    <field name="name">booking.slot.list</field>
+    <field name="model">booking.slot</field>
+    <field name="arch" type="xml">
+      <list string="Slot">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="color"/>
+        <field name="doctor_id"/>
+        <field name="room_id"/>
+        <field name="resource_ids"/>
+        <field name="treatment_id"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_slot_form" model="ir.ui.view">
+    <field name="name">booking.slot.form</field>
+    <field name="model">booking.slot</field>
+    <field name="arch" type="xml">
+      <form string="Slot">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+              <field name="bookings_count" widget="statinfo" string="Bookings"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <button name="action_new_booking" type="object" string="New Booking" class="btn btn-secondary"/>
+          </div>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="code"/>
+              <field name="active"/>
+              <field name="sequence"/>
+              <field name="color"/>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+              <field name="doctor_id"/>
+              <field name="room_id"/>
+              <field name="treatment_id"/>
+              <field name="channel_id"/>
+              <field name="policy_id"/>
+            </group>
+            <group>
+              <field name="weekday"/>
+              <field name="hour_from"/>
+              <field name="hour_to"/>
+              <field name="duration_minutes"/>
+              <field name="date_start"/>
+              <field name="date_end"/>
+              <field name="capacity"/>
+              <field name="buffer_before_minutes"/>
+              <field name="buffer_after_minutes"/>
+              <field name="recurring_rule_id"/>
+              <field name="bookings_count"/>
+              <field name="last_booking_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Resource">
+              <field name="resource_ids"/>
+            </page>
+            <page string="Notes &amp; Details">
+              <field name="description"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_slot_exception_search" model="ir.ui.view">
+    <field name="name">booking.slot.exception.search</field>
+    <field name="model">booking.slot.exception</field>
+    <field name="arch" type="xml">
+      <search string="Search Slot Exception">
+        <field name="date"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="slot_id"/>
+        <field name="is_disabled"/>
+        <field name="hour_override_from"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_slot_exception_list" model="ir.ui.view">
+    <field name="name">booking.slot.exception.list</field>
+    <field name="model">booking.slot.exception</field>
+    <field name="arch" type="xml">
+      <list string="Slot Exception">
+        <field name="slot_id"/>
+        <field name="active"/>
+        <field name="date"/>
+        <field name="is_disabled"/>
+        <field name="hour_override_from"/>
+        <field name="hour_override_to"/>
+        <field name="capacity_override"/>
+        <field name="note"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_slot_exception_form" model="ir.ui.view">
+    <field name="name">booking.slot.exception.form</field>
+    <field name="model">booking.slot.exception</field>
+    <field name="arch" type="xml">
+      <form string="Slot Exception">
+        <sheet>
+          <group>
+            <group>
+              <field name="slot_id"/>
+              <field name="company_id"/>
+              <field name="active"/>
+              <field name="date"/>
+              <field name="is_disabled"/>
+            </group>
+            <group>
+              <field name="hour_override_from"/>
+              <field name="hour_override_to"/>
+              <field name="capacity_override"/>
+              <field name="note"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_recurring_rule_search" model="ir.ui.view">
+    <field name="name">booking.recurring.rule.search</field>
+    <field name="model">booking.recurring.rule</field>
+    <field name="arch" type="xml">
+      <search string="Search Recurring Rule">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="date_start"/>
+        <field name="date_end"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_recurring_rule_list" model="ir.ui.view">
+    <field name="name">booking.recurring.rule.list</field>
+    <field name="model">booking.recurring.rule</field>
+    <field name="arch" type="xml">
+      <list string="Recurring Rule">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="active"/>
+        <field name="sequence"/>
+        <field name="freq"/>
+        <field name="interval"/>
+        <field name="date_start"/>
+        <field name="date_end"/>
+        <field name="count"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_recurring_rule_form" model="ir.ui.view">
+    <field name="name">booking.recurring.rule.form</field>
+    <field name="model">booking.recurring.rule</field>
+    <field name="arch" type="xml">
+      <form string="Recurring Rule">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_slots" type="object" class="oe_stat_button" icon="fa-calendar">
+              <field name="slots_count" widget="statinfo" string="Slots"/>
+            </button>
+          </div>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="code"/>
+              <field name="active"/>
+              <field name="sequence"/>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+              <field name="freq"/>
+              <field name="interval"/>
+              <field name="date_start"/>
+            </group>
+            <group>
+              <field name="date_end"/>
+              <field name="count"/>
+              <field name="hour_from"/>
+              <field name="hour_to"/>
+              <field name="duration_minutes"/>
+              <field name="bysetpos"/>
+              <field name="slots_count"/>
+              <field name="next_occurrence_date"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Weekday">
+              <field name="weekday_ids"/>
+            </page>
+            <page string="Monthday">
+              <field name="monthday_ids"/>
+            </page>
+            <page string="Byweekday">
+              <field name="byweekday_ids"/>
+            </page>
+            <page string="Exdate">
+              <field name="exdate_ids"/>
+            </page>
+            <page string="Slot">
+              <field name="slot_ids"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_recurring_weekday_search" model="ir.ui.view">
+    <field name="name">booking.recurring.weekday.search</field>
+    <field name="model">booking.recurring.weekday</field>
+    <field name="arch" type="xml">
+      <search string="Search Recurring Weekday">
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="rule_id"/>
+        <field name="weekday"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_weekday" string="Weekday" context="{'group_by': 'weekday'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_recurring_weekday_list" model="ir.ui.view">
+    <field name="name">booking.recurring.weekday.list</field>
+    <field name="model">booking.recurring.weekday</field>
+    <field name="arch" type="xml">
+      <list string="Recurring Weekday">
+        <field name="rule_id"/>
+        <field name="active"/>
+        <field name="weekday"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_recurring_weekday_form" model="ir.ui.view">
+    <field name="name">booking.recurring.weekday.form</field>
+    <field name="model">booking.recurring.weekday</field>
+    <field name="arch" type="xml">
+      <form string="Recurring Weekday">
+        <sheet>
+          <group>
+            <group>
+              <field name="rule_id"/>
+              <field name="company_id"/>
+            </group>
+            <group>
+              <field name="active"/>
+              <field name="weekday"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_recurring_monthday_search" model="ir.ui.view">
+    <field name="name">booking.recurring.monthday.search</field>
+    <field name="model">booking.recurring.monthday</field>
+    <field name="arch" type="xml">
+      <search string="Search Recurring Monthday">
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="rule_id"/>
+        <field name="day"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_recurring_monthday_list" model="ir.ui.view">
+    <field name="name">booking.recurring.monthday.list</field>
+    <field name="model">booking.recurring.monthday</field>
+    <field name="arch" type="xml">
+      <list string="Recurring Monthday">
+        <field name="rule_id"/>
+        <field name="active"/>
+        <field name="day"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_recurring_monthday_form" model="ir.ui.view">
+    <field name="name">booking.recurring.monthday.form</field>
+    <field name="model">booking.recurring.monthday</field>
+    <field name="arch" type="xml">
+      <form string="Recurring Monthday">
+        <sheet>
+          <group>
+            <group>
+              <field name="rule_id"/>
+              <field name="company_id"/>
+            </group>
+            <group>
+              <field name="active"/>
+              <field name="day"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_recurring_byweekday_search" model="ir.ui.view">
+    <field name="name">booking.recurring.byweekday.search</field>
+    <field name="model">booking.recurring.byweekday</field>
+    <field name="arch" type="xml">
+      <search string="Search Recurring Byweekday">
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="rule_id"/>
+        <field name="weekday"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_weekday" string="Weekday" context="{'group_by': 'weekday'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_recurring_byweekday_list" model="ir.ui.view">
+    <field name="name">booking.recurring.byweekday.list</field>
+    <field name="model">booking.recurring.byweekday</field>
+    <field name="arch" type="xml">
+      <list string="Recurring Byweekday">
+        <field name="rule_id"/>
+        <field name="active"/>
+        <field name="weekday"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_recurring_byweekday_form" model="ir.ui.view">
+    <field name="name">booking.recurring.byweekday.form</field>
+    <field name="model">booking.recurring.byweekday</field>
+    <field name="arch" type="xml">
+      <form string="Recurring Byweekday">
+        <sheet>
+          <group>
+            <group>
+              <field name="rule_id"/>
+              <field name="company_id"/>
+            </group>
+            <group>
+              <field name="active"/>
+              <field name="weekday"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_recurring_exdate_search" model="ir.ui.view">
+    <field name="name">booking.recurring.exdate.search</field>
+    <field name="model">booking.recurring.exdate</field>
+    <field name="arch" type="xml">
+      <search string="Search Recurring Exdate">
+        <field name="date"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="rule_id"/>
+        <field name="reason"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_recurring_exdate_list" model="ir.ui.view">
+    <field name="name">booking.recurring.exdate.list</field>
+    <field name="model">booking.recurring.exdate</field>
+    <field name="arch" type="xml">
+      <list string="Recurring Exdate">
+        <field name="rule_id"/>
+        <field name="active"/>
+        <field name="date"/>
+        <field name="reason"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_recurring_exdate_form" model="ir.ui.view">
+    <field name="name">booking.recurring.exdate.form</field>
+    <field name="model">booking.recurring.exdate</field>
+    <field name="arch" type="xml">
+      <form string="Recurring Exdate">
+        <sheet>
+          <group>
+            <group>
+              <field name="rule_id"/>
+              <field name="company_id"/>
+              <field name="active"/>
+            </group>
+            <group>
+              <field name="date"/>
+              <field name="reason"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_doctor_schedule_search" model="ir.ui.view">
+    <field name="name">booking.doctor.schedule.search</field>
+    <field name="model">booking.doctor.schedule</field>
+    <field name="arch" type="xml">
+      <search string="Search Doctor Schedule">
+        <field name="doctor_id"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="weekday"/>
+        <field name="hour_from"/>
+        <field name="hour_to"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_doctor_id" string="Doctor" context="{'group_by': 'doctor_id'}"/>
+          <filter name="group_by_weekday" string="Weekday" context="{'group_by': 'weekday'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_doctor_schedule_list" model="ir.ui.view">
+    <field name="name">booking.doctor.schedule.list</field>
+    <field name="model">booking.doctor.schedule</field>
+    <field name="arch" type="xml">
+      <list string="Doctor Schedule">
+        <field name="doctor_id"/>
+        <field name="active"/>
+        <field name="weekday"/>
+        <field name="hour_from"/>
+        <field name="hour_to"/>
+        <field name="note"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_doctor_schedule_form" model="ir.ui.view">
+    <field name="name">booking.doctor.schedule.form</field>
+    <field name="model">booking.doctor.schedule</field>
+    <field name="arch" type="xml">
+      <form string="Doctor Schedule">
+        <sheet>
+          <group>
+            <group>
+              <field name="doctor_id"/>
+              <field name="company_id"/>
+              <field name="active"/>
+              <field name="weekday"/>
+            </group>
+            <group>
+              <field name="hour_from"/>
+              <field name="hour_to"/>
+              <field name="note"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_doctor_blackout_search" model="ir.ui.view">
+    <field name="name">booking.doctor.blackout.search</field>
+    <field name="model">booking.doctor.blackout</field>
+    <field name="arch" type="xml">
+      <search string="Search Doctor Blackout">
+        <field name="doctor_id"/>
+        <field name="active"/>
+        <field name="company_id"/>
+        <field name="start_datetime"/>
+        <field name="end_datetime"/>
+        <field name="reason"/>
+        <group>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_doctor_id" string="Doctor" context="{'group_by': 'doctor_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_doctor_blackout_list" model="ir.ui.view">
+    <field name="name">booking.doctor.blackout.list</field>
+    <field name="model">booking.doctor.blackout</field>
+    <field name="arch" type="xml">
+      <list string="Doctor Blackout">
+        <field name="doctor_id"/>
+        <field name="active"/>
+        <field name="start_datetime"/>
+        <field name="end_datetime"/>
+        <field name="reason"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_doctor_blackout_form" model="ir.ui.view">
+    <field name="name">booking.doctor.blackout.form</field>
+    <field name="model">booking.doctor.blackout</field>
+    <field name="arch" type="xml">
+      <form string="Doctor Blackout">
+        <sheet>
+          <group>
+            <group>
+              <field name="doctor_id"/>
+              <field name="company_id"/>
+              <field name="active"/>
+            </group>
+            <group>
+              <field name="start_datetime"/>
+              <field name="end_datetime"/>
+              <field name="reason"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Notes &amp; Details">
+              <field name="internal_notes"/>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+</odoo>

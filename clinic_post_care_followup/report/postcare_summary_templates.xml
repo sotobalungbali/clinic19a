@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_postcare_summary_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Post-Care Follow-up Summary</h2>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Patient:</strong> <span t-field="o.patient_id"/><br/>
+                        <strong>Plan:</strong> <span t-field="o.name"/><br/>
+                        <strong>Status:</strong> <span t-field="o.state"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Start:</strong> <span t-field="o.start_datetime"/><br/>
+                        <strong>Completed:</strong> <span t-field="o.completed_at"/><br/>
+                        <strong>Progress:</strong> <span t-out="'%.1f%%' % o.progress"/>
+                    </div>
+                </div>
+
+                <h4>Follow-up Tasks</h4>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Channel</th>
+                            <th>Due</th>
+                            <th>Assignee</th>
+                            <th>Status</th>
+                            <th>Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.task_ids" t-as="task">
+                            <td><span t-field="task.name"/></td>
+                            <td><span t-field="task.channel"/></td>
+                            <td><span t-field="task.due_datetime"/></td>
+                            <td><span t-field="task.assignee_id"/></td>
+                            <td><span t-field="task.state"/></td>
+                            <td><span t-field="task.completed_at"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="mt-4">Patient Check-ins</h4>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Wellbeing</th>
+                            <th>Pain</th>
+                            <th>Red Flag</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.checkin_ids" t-as="checkin">
+                            <td><span t-field="checkin.response_at"/></td>
+                            <td><span t-field="checkin.wellbeing"/></td>
+                            <td><span t-field="checkin.pain_score"/></td>
+                            <td><span t-field="checkin.red_flag"/></td>
+                            <td><span t-field="checkin.state"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="mt-4">Escalations</h4>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Severity</th>
+                            <th>Reason</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Resolved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.escalation_ids" t-as="esc">
+                            <td><span t-field="esc.severity"/></td>
+                            <td><span t-field="esc.reason"/></td>
+                            <td><span t-field="esc.owner_staff_id"/></td>
+                            <td><span t-field="esc.state"/></td>
+                            <td><span t-field="esc.resolved_at"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_postcare_summary">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="clinic_post_care_followup.report_postcare_summary_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

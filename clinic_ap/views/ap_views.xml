@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_clinic_ap_search" model="ir.ui.view">
+    <field name="name">clinic.ap.search</field><field name="model">clinic.ap</field>
+    <field name="arch" type="xml">
+      <search string="Accounts Payable">
+        <field name="name"/><field name="reference"/><field name="vendor_id"/><field name="purchase_id"/><field name="move_id"/><field name="owner_id"/>
+        <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+        <filter name="to_approve" string="To Approve" domain="[('state','=','to_approve')]"/>
+        <filter name="approved" string="Approved" domain="[('state','=','approved')]"/>
+        <filter name="open" string="Open Payables" domain="[('state','in',('posted','partial'))]"/>
+        <filter name="paid" string="Paid" domain="[('state','=','paid')]"/>
+        <filter name="match_warning" string="Match Issues" domain="[('match_state','in',('warning','blocked'))]"/>
+        <filter name="due" string="Due / Overdue" domain="[('invoice_date_due','&lt;=',context_today()),('state','in',('posted','partial'))]"/>
+        <group>
+          <filter name="group_vendor" string="Vendor" context="{'group_by':'vendor_id'}"/>
+          <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+          <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+          <filter name="group_owner" string="Owner" context="{'group_by':'owner_id'}"/>
+          <filter name="group_due_month" string="Due Month" context="{'group_by':'invoice_date_due:month'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="view_clinic_ap_list" model="ir.ui.view">
+    <field name="name">clinic.ap.list</field><field name="model">clinic.ap</field>
+    <field name="arch" type="xml">
+      <list string="Accounts Payable" decoration-danger="match_state == 'blocked'" decoration-warning="match_state == 'warning'" decoration-success="state == 'paid'" default_order="invoice_date desc,id desc">
+        <field name="name"/><field name="vendor_id"/><field name="reference" optional="show"/><field name="invoice_date"/><field name="invoice_date_due"/><field name="purchase_id" optional="hide"/><field name="amount_total" sum="Total"/><field name="amount_residual" sum="Due"/><field name="currency_id" column_invisible="True"/><field name="match_state" widget="badge"/><field name="state" widget="badge"/><field name="owner_id" optional="hide"/><field name="company_id" groups="base.group_multi_company" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_clinic_ap_form" model="ir.ui.view">
+    <field name="name">clinic.ap.form</field><field name="model">clinic.ap</field>
+    <field name="arch" type="xml">
+      <form string="Accounts Payable">
+        <header>
+          <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'" groups="clinic_ap.group_clinic_ap_user"/>
+          <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'to_approve'" groups="clinic_ap.group_clinic_ap_manager"/>
+          <button name="action_post" type="object" string="Post Vendor Bill" class="btn-primary" invisible="state != 'approved'" groups="clinic_ap.group_clinic_ap_accountant"/>
+          <button name="action_register_payment" type="object" string="Register Payment" invisible="state not in ('posted','partial')" groups="clinic_ap.group_clinic_ap_accountant"/>
+          <button name="action_sync_status" type="object" string="Sync Status" invisible="not move_id"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('paid','cancelled')" groups="clinic_ap.group_clinic_ap_manager"/>
+          <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state != 'cancelled'" groups="clinic_ap.group_clinic_ap_manager"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approved,posted,partial,paid,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_vendor_bill" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not move_id"><field name="move_id" string="Vendor Bill" widget="statinfo"/></button>
+            <button name="action_view_purchase" type="object" class="oe_stat_button" icon="fa-shopping-cart" invisible="not purchase_id"><field name="purchase_id" string="Purchase" widget="statinfo"/></button>
+            <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-credit-card" invisible="payment_count == 0"><field name="payment_count" string="Payments" widget="statinfo"/></button>
+            <button name="action_view_receipts" type="object" class="oe_stat_button" icon="fa-truck" invisible="receipt_count == 0"><field name="receipt_count" string="Receipts" widget="statinfo"/></button>
+            <button name="action_view_billing" type="object" class="oe_stat_button" icon="fa-money" invisible="billing_allocation_count == 0"><field name="billing_allocation_count" string="Billing" widget="statinfo"/></button>
+            <button name="action_view_events" type="object" class="oe_stat_button" icon="fa-random" invisible="integration_event_count == 0"><field name="integration_event_count" string="Events" widget="statinfo"/></button>
+          </div>
+          <div class="oe_title"><label for="name"/><h1><field name="name" readonly="state != 'draft'"/></h1><h2><field name="vendor_id" readonly="state != 'draft'" options="{'no_create_edit': False}"/></h2></div>
+          <group>
+            <group string="Supplier Document">
+              <field name="reference" readonly="state != 'draft'"/><field name="purchase_id" readonly="state != 'draft'"/><field name="invoice_date" readonly="state != 'draft'"/><field name="payment_term_id" readonly="state != 'draft'"/><field name="invoice_date_due" readonly="state != 'draft'"/>
+            </group>
+            <group string="Control">
+              <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/><field name="currency_id" readonly="state != 'draft'"/><field name="owner_id"/><field name="approval_required" readonly="1"/><field name="match_state" widget="badge" readonly="1"/><field name="match_issue_count" readonly="1"/>
+            </group>
+          </group>
+          <group>
+            <group string="Amounts"><field name="amount_untaxed" readonly="1"/><field name="amount_tax" readonly="1"/><field name="amount_total" readonly="1"/></group>
+            <group string="Settlement"><field name="amount_paid" readonly="1"/><field name="amount_residual" readonly="1"/><field name="move_state" readonly="1"/><field name="payment_state" readonly="1"/></group>
+          </group>
+          <notebook>
+            <page string="AP Lines" name="lines">
+              <field name="line_ids" readonly="state != 'draft'" context="{'default_ap_id': id}">
+                <list editable="bottom" string="AP Lines" decoration-warning="match_state in ('qty_mismatch','price_mismatch','receipt_missing')">
+                  <field name="sequence" widget="handle"/><field name="product_id" optional="show"/><field name="name"/><field name="quantity"/><field name="product_uom_id"/><field name="price_unit"/><field name="discount" optional="hide"/><field name="tax_ids" widget="many2many_tags" optional="show"/><field name="purchase_line_id" optional="hide"/><field name="stock_move_id" optional="hide"/><field name="match_state" widget="badge" optional="show"/><field name="price_subtotal" sum="Untaxed"/><field name="price_tax" sum="Tax"/><field name="price_total" sum="Total"/><field name="currency_id" column_invisible="True"/>
+                  <button name="action_view_stock_move" type="object" icon="fa-truck" string="Receipt" invisible="not stock_move_id"/>
+                  <button name="action_view_billing" type="object" icon="fa-money" string="Billing" invisible="not billing_invoice_id and not billing_line_id"/>
+                </list>
+              </field>
+            </page>
+            <page string="Clinical &amp; Billing Traceability" name="traceability">
+              <field name="line_ids" readonly="1">
+                <list string="Traceability"><field name="name"/><field name="billing_invoice_id"/><field name="billing_line_id"/><field name="treatment_id"/><field name="patient_id"/><field name="allocated_amount"/><field name="allocation_method"/><field name="allocation_locked"/></list>
+              </field>
+            </page>
+            <page string="Approval &amp; Audit" name="approval"><group><group><field name="submitted_by_id" readonly="1"/><field name="submitted_at" readonly="1"/></group><group><field name="approved_by_id" readonly="1"/><field name="approved_at" readonly="1"/></group></group><field name="notes" placeholder="Internal AP notes..."/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_clinic_ap" model="ir.actions.act_window"><field name="name">Accounts Payable</field><field name="res_model">clinic.ap</field><field name="view_mode">list,form</field><field name="search_view_id" ref="clinic_ap.view_clinic_ap_search"/><field name="context">{'search_default_open': 0}</field></record>
+</odoo>

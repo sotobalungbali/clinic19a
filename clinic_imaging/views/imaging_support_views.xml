@@ -1,0 +1,846 @@
+<odoo>
+    <record id="view_clinical_imaging_study_note_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.study.note.search</field>
+        <field name="model">clinical.imaging.study.note</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="study_id"/>
+                <field name="company_id"/>
+                <field name="author_id"/>
+                <field name="tag"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_study_note_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.study.note.list</field>
+        <field name="model">clinical.imaging.study.note</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="study_id"/>
+                <field name="company_id"/>
+                <field name="author_id"/>
+                <field name="tag"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_study_note_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.study.note.form</field>
+        <field name="model">clinical.imaging.study.note</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Study Note">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="study_id"/>
+                            <field name="author_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="tag"/>
+                            </group>
+                            <group>
+
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="note"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_param_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.param.search</field>
+        <field name="model">clinical.imaging.series.param</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="series_id"/>
+                <field name="company_id"/>
+                <field name="key"/>
+                <field name="value"/>
+                <field name="unit"/>
+                <field name="note"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_param_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.param.list</field>
+        <field name="model">clinical.imaging.series.param</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="series_id"/>
+                <field name="company_id"/>
+                <field name="key"/>
+                <field name="value"/>
+                <field name="unit"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_param_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.param.form</field>
+        <field name="model">clinical.imaging.series.param</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Series Parameter">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="series_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="key"/>
+                                <field name="value"/>
+                            </group>
+                            <group>
+                                <field name="unit"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_dose_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.dose.search</field>
+        <field name="model">clinical.imaging.series.dose</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="series_id"/>
+                <field name="company_id"/>
+                <field name="metric"/>
+                <field name="unit"/>
+                <field name="note"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_dose_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.dose.list</field>
+        <field name="model">clinical.imaging.series.dose</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="series_id"/>
+                <field name="company_id"/>
+                <field name="metric"/>
+                <field name="unit"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_series_dose_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.series.dose.form</field>
+        <field name="model">clinical.imaging.series.dose</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Series Dose/Exposure">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="series_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="metric"/>
+                                <field name="value"/>
+                            </group>
+                            <group>
+                                <field name="unit"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_tag_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.tag.search</field>
+        <field name="model">clinical.imaging.image.tag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_tag_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.tag.list</field>
+        <field name="model">clinical.imaging.image.tag</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_tag_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.tag.form</field>
+        <field name="model">clinical.imaging.image.tag</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Image Tag">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="color"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_annotation_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.annotation.search</field>
+        <field name="model">clinical.imaging.image.annotation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="result_id"/>
+                <field name="company_id"/>
+                <field name="image_id"/>
+                <field name="type"/>
+                <field name="coord_space"/>
+                <field name="unit"/>
+                <field name="color"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_annotation_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.annotation.list</field>
+        <field name="model">clinical.imaging.image.annotation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="result_id"/>
+                <field name="company_id"/>
+                <field name="image_id"/>
+                <field name="type"/>
+                <field name="coord_space"/>
+                <field name="unit"/>
+                <field name="color"/>
+                <field name="comment"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_image_annotation_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.image.annotation.form</field>
+        <field name="model">clinical.imaging.image.annotation</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Image Annotation">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="image_id"/>
+                            <field name="finding_id"/>
+                            <field name="result_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="type"/>
+                                <field name="coord_space"/>
+                                <field name="measurement_value"/>
+                                <field name="unit"/>
+                            </group>
+                            <group>
+                                <field name="color"/>
+                                <field name="comment"/>
+                                <field name="created_datetime"/>
+                                <field name="last_modified"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="geometry_json"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_tag_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.tag.search</field>
+        <field name="model">clinical.imaging.finding.tag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_tag_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.tag.list</field>
+        <field name="model">clinical.imaging.finding.tag</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_tag_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.tag.form</field>
+        <field name="model">clinical.imaging.finding.tag</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Finding Tag">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="color"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_measure_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.measure.search</field>
+        <field name="model">clinical.imaging.finding.measure</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="finding_id"/>
+                <field name="method"/>
+                <field name="unit"/>
+                <field name="related_image_id"/>
+                <field name="related_annotation_id"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_measure_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.measure.list</field>
+        <field name="model">clinical.imaging.finding.measure</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="finding_id"/>
+                <field name="method"/>
+                <field name="unit"/>
+                <field name="related_image_id"/>
+                <field name="related_annotation_id"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_finding_measure_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.finding.measure.form</field>
+        <field name="model">clinical.imaging.finding.measure</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Finding Measurement">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="finding_id"/>
+                            <field name="related_image_id"/>
+                            <field name="related_annotation_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="method"/>
+                                <field name="value"/>
+                            </group>
+                            <group>
+                                <field name="unit"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_request_line_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.request.line.search</field>
+        <field name="model">clinical.imaging.request.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="request_id"/>
+                <field name="device_id"/>
+                <field name="imaging_type_id"/>
+                <field name="priority"/>
+                <field name="company_id"/>
+                <field name="currency_id"/>
+                <field name="product_id"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_device_id" string="Preferred Device" context="{'group_by':'device_id'}"/>
+                    <filter name="group_imaging_type_id" string="Imaging Type" context="{'group_by':'imaging_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_request_line_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.request.line.list</field>
+        <field name="model">clinical.imaging.request.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="request_id"/>
+                <field name="device_id"/>
+                <field name="imaging_type_id"/>
+                <field name="priority"/>
+                <field name="company_id"/>
+                <field name="currency_id"/>
+                <field name="product_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_request_line_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.request.line.form</field>
+        <field name="model">clinical.imaging.request.line</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Request Line">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="request_id"/>
+                            <field name="currency_id"/>
+                            <field name="imaging_type_id"/>
+                            <field name="device_id"/>
+                            <field name="product_id"/>
+                            <field name="priority"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="quantity"/>
+                                <field name="duration_minutes"/>
+                                <field name="price_unit"/>
+                            </group>
+                            <group>
+                                <field name="price_subtotal"/>
+                                <field name="price_tax"/>
+                                <field name="price_total"/>
+                                <field name="imaging_count"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="tax_ids"/>
+                            <field name="imaging_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="notes"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_dose_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.dose.search</field>
+        <field name="model">clinical.imaging.result.dose</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="result_id"/>
+                <field name="metric"/>
+                <field name="unit"/>
+                <field name="series_ref"/>
+                <field name="note"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_dose_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.dose.list</field>
+        <field name="model">clinical.imaging.result.dose</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="result_id"/>
+                <field name="metric"/>
+                <field name="unit"/>
+                <field name="series_ref"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_dose_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.dose.form</field>
+        <field name="model">clinical.imaging.result.dose</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Result Dose/Exposure">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="result_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="metric"/>
+                                <field name="value"/>
+                            </group>
+                            <group>
+                                <field name="unit"/>
+                                <field name="series_ref"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_measure_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.measure.search</field>
+        <field name="model">clinical.imaging.result.measure</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="result_id"/>
+                <field name="region"/>
+                <field name="method"/>
+                <field name="unit"/>
+                <field name="note"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_measure_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.measure.list</field>
+        <field name="model">clinical.imaging.result.measure</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="result_id"/>
+                <field name="region"/>
+                <field name="method"/>
+                <field name="unit"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_result_measure_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.result.measure.form</field>
+        <field name="model">clinical.imaging.result.measure</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Result Measurement">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="result_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="region"/>
+                                <field name="method"/>
+                            </group>
+                            <group>
+                                <field name="value"/>
+                                <field name="unit"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_answer_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.answer.search</field>
+        <field name="model">clinical.imaging.consent.answer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="consent_id"/>
+                <field name="question_id"/>
+                <field name="text"/>
+                <field name="qtype"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_answer_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.answer.list</field>
+        <field name="model">clinical.imaging.consent.answer</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="consent_id"/>
+                <field name="question_id"/>
+                <field name="text"/>
+                <field name="qtype"/>
+                <field name="answer_text"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_answer_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.answer.form</field>
+        <field name="model">clinical.imaging.consent.answer</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Consent Answer">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="consent_id"/>
+                            <field name="template_id"/>
+                            <field name="question_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="text"/>
+                                <field name="qtype"/>
+                                <field name="required"/>
+                            </group>
+                            <group>
+                                <field name="critical"/>
+                                <field name="answer_boolean"/>
+                                <field name="answer_text"/>
+                                <field name="answer_selection"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="selection_options"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+</odoo>

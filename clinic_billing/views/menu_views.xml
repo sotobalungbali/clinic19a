@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_billing_root" name="Clinic Billing" sequence="35"
+              groups="clinic_billing.group_clinic_billing_user"/>
+
+    <menuitem id="menu_clinic_billing_operations" name="Operations"
+              parent="menu_clinic_billing_root" sequence="10"/>
+    <menuitem id="menu_clinic_billing_documents" name="Billing Documents"
+              parent="menu_clinic_billing_operations" action="action_clinic_billing_invoice" sequence="10"/>
+    <menuitem id="menu_clinic_billing_lines" name="Billing Lines"
+              parent="menu_clinic_billing_operations" action="action_clinic_billing_line" sequence="20"/>
+    <menuitem id="menu_clinic_billing_payments" name="Payments"
+              parent="menu_clinic_billing_operations" action="action_clinic_billing_payment" sequence="30"
+              groups="clinic_billing.group_clinic_billing_cashier"/>
+    <menuitem id="menu_clinic_billing_gateway_tx" name="Gateway Transactions"
+              parent="menu_clinic_billing_operations" action="action_clinic_billing_gateway_tx" sequence="40"
+              groups="clinic_billing.group_clinic_billing_cashier"/>
+
+    <menuitem id="menu_clinic_billing_benefits" name="Benefits &amp; Discounts"
+              parent="menu_clinic_billing_root" sequence="20"/>
+    <menuitem id="menu_clinic_billing_discount_rules" name="Discount Rules"
+              parent="menu_clinic_billing_benefits" action="action_clinic_billing_discount_rule" sequence="10"/>
+    <menuitem id="menu_clinic_billing_discount_redemptions" name="Discount Redemptions"
+              parent="menu_clinic_billing_benefits" action="action_clinic_billing_discount_redemption" sequence="20"/>
+    <menuitem id="menu_clinic_billing_voucher_programs" name="Voucher Programs"
+              parent="menu_clinic_billing_benefits" action="action_clinic_billing_voucher_program" sequence="30"/>
+    <menuitem id="menu_clinic_billing_vouchers" name="Vouchers"
+              parent="menu_clinic_billing_benefits" action="action_clinic_billing_voucher" sequence="40"/>
+    <menuitem id="menu_clinic_billing_membership_usage" name="Membership / Wallet Usage"
+              parent="menu_clinic_billing_benefits" action="action_clinic_billing_membership_usage" sequence="50"/>
+
+    <menuitem id="menu_clinic_billing_insurance" name="Insurance"
+              parent="menu_clinic_billing_root" sequence="30"/>
+    <menuitem id="menu_clinic_billing_claims" name="Claims"
+              parent="menu_clinic_billing_insurance" action="action_clinic_insurance_claim" sequence="10"/>
+    <menuitem id="menu_clinic_billing_claim_lines" name="Claim Lines"
+              parent="menu_clinic_billing_insurance" action="action_clinic_insurance_claim_line" sequence="20"/>
+
+    <menuitem id="menu_clinic_billing_commissions" name="Provider Commissions"
+              parent="menu_clinic_billing_root" sequence="40"/>
+    <menuitem id="menu_clinic_billing_commission_rules" name="Commission Rules"
+              parent="menu_clinic_billing_commissions" action="action_clinic_billing_commission_rule" sequence="10"/>
+    <menuitem id="menu_clinic_billing_commission_lines" name="Commission Lines"
+              parent="menu_clinic_billing_commissions" action="action_clinic_billing_commission_line" sequence="20"/>
+    <menuitem id="menu_clinic_billing_commission_settlements" name="Settlements"
+              parent="menu_clinic_billing_commissions" action="action_clinic_billing_commission_settlement" sequence="30"/>
+
+    <menuitem id="menu_clinic_billing_traceability" name="Traceability"
+              parent="menu_clinic_billing_root" sequence="50"
+              groups="clinic_billing.group_clinic_billing_manager"/>
+    <menuitem id="menu_clinic_billing_source_links" name="Clinical Source Links"
+              parent="menu_clinic_billing_traceability" action="action_clinic_treatment_billing_link" sequence="10"/>
+    <menuitem id="menu_clinic_billing_gateway_events" name="Gateway Events"
+              parent="menu_clinic_billing_traceability" action="action_clinic_billing_gateway_event" sequence="20"/>
+    <menuitem id="menu_clinic_billing_integration_events" name="Integration Events"
+              parent="menu_clinic_billing_traceability" action="action_clinic_billing_integration_event" sequence="30"/>
+
+    <menuitem id="menu_clinic_billing_configuration" name="Configuration"
+              parent="menu_clinic_billing_root" sequence="90"
+              groups="clinic_billing.group_clinic_billing_manager"/>
+    <menuitem id="menu_clinic_billing_settings" name="Settings"
+              parent="menu_clinic_billing_configuration" action="action_clinic_billing_settings" sequence="10"/>
+</odoo>

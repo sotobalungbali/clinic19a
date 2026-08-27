@@ -1,0 +1,197 @@
+<!--
+ClinicOne — Clinical Room & Device Management
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTE:
+- Keep README.md (root) for long-form docs; this file is for the Apps UI description.
+- Avoid using <blockquote> across the ClinicOne project (team convention).
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="ClinicOne Room & Device Icon" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Clinical Room &amp; Device Management</h1>
+      <h2 class="oe_slogan">Room Catalog • Device Inventory • Assignment • Availability • Maintenance</h2>
+      <p>
+        Kelola <b>ruangan klinik</b> dan <b>perangkat/alat medis</b> secara terpadu:
+        tipe &amp; kapasitas ruang, kategori perangkat, penempatan (assignment), jadwal &amp; ketersediaan (availability),
+        serta request <b>maintenance</b>—terintegrasi dengan modul-modul ClinicOne lainnya.
+        Kompatibel dengan <b>Odoo 18 Community Edition</b>.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Maintenance</span>
+        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Dashboards</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Overview</h3>
+      <p>
+        Modul ini memusatkan pengelolaan master <b>Ruang</b> (tipe, kapasitas, fasilitas) dan <b>Perangkat/Alat Medis</b>
+        (kategori, nomor seri, status kesiapan), termasuk <b>riwayat penempatan</b>, <b>perpindahan</b> antar-ruang,
+        <b>ketersediaan per shift</b>, serta <b>request maintenance</b>. Dirancang untuk bekerja erat
+        dengan Booking, Queue, Treatment, dan Inventory agar operasional klinik berjalan efisien.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li>Master Room: tipe (Poli, Bed, Lab, Radiologi, dsb), kapasitas, status (Ready, In Use, Cleaning, Maintenance)</li>
+        <li>Master Device: kategori, nomor seri, umur pakai, status kesiapan (Available, Reserved, Offline, Maintenance)</li>
+        <li>Assignment perangkat ke ruangan dengan validasi konflik &amp; histori perpindahan</li>
+        <li>Availability ruang &amp; perangkat per shift (pagi/siang/malam) + template</li>
+        <li>Integrasi maintenance: request dari device/room, team, SLA hint, dan histori</li>
+        <li>Integrasi Queue &amp; Booking: auto-suggest room/device sesuai treatment</li>
+        <li>Mail &amp; Activities: notifikasi perubahan status/penempatan</li>
+        <li>Dashboard backend untuk overview okupansi &amp; perangkat kritikal</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>clinic.room</b> — katalog ruangan, tipe, kapasitas, status, fasilitas</li>
+        <li><b>clinic.room.type</b> — kamus tipe ruang</li>
+        <li><b>clinic.device</b> — perangkat/alat medis, nomor seri, status kesiapan</li>
+        <li><b>clinic.device.category</b> — kategori perangkat</li>
+        <li><b>clinic.room.device.assignment</b> — penempatan perangkat ke ruangan (riwayat)</li>
+        <li><b>clinic.room.availability</b> — slot/shift ketersediaan ruangan</li>
+        <li><b>clinic.device.movement</b> — perpindahan perangkat, alasan, dan audit</li>
+      </ul>
+      <p style="margin-top:8px;">
+        Semua model dilengkapi <i>mail.thread</i> &amp; <i>mail.activity.mixin</i> untuk jejak audit &amp; kolaborasi.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Holistic Integrations (26 Modules)</h3>
+      <p>
+        Terintegrasi dengan: <i>clinic_base, clinic_patient, clinic_hr, clinic_doctor, clinic_booking, clinic_queue_room,
+        clinic_treatment, clinic_inventory, clinic_billing, clinic_ar, clinic_ap, clinic_finance, clinic_accounting,
+        clinic_pricing, clinic_package, clinic_membership, clinic_wallet, clinic_ecommerce, clinic_portal, clinic_marketing,
+        clinic_feedback, clinic_reports, clinic_dashboard, clinic_l10n_id, clinic_audit</i>.
+      </p>
+      <p style="font-size:12px;color:#666;">
+        Integrasi dilakukan via relasi, server actions, activities, dan mail templates agar modul tetap loosely-coupled.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Tambahkan addon ini ke <i>addons_path</i> Odoo Anda.</li>
+        <li>Update daftar Apps, cari <b>ClinicOne: Clinical Room &amp; Device Management</b>.</li>
+        <li>Install; dependencies akan terpasang otomatis.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Definisikan <b>Room Types</b> &amp; <b>Rooms</b> dan set kapasitas serta status awal.</li>
+        <li>Tambahkan <b>Device Categories</b> &amp; <b>Devices</b> (serial number, umur pakai, status).</li>
+        <li>Atur <b>Availability Template</b> (opsional) untuk shift ruang.</li>
+        <li>Konfigurasikan <b>Maintenance Team</b> &amp; SLA hint bila digunakan.</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: Room User, Device Technician, Room Supervisor, Admin.</li>
+        <li>Record Rules: pembatasan per company dan ruang/responsibility.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Wizards</h3>
+      <ul>
+        <li><i>wizard_device_assign</i> — assign/unassign perangkat ke ruangan</li>
+        <li><i>wizard_room_device_move</i> — pindah perangkat antar-ruang dengan validasi konflik</li>
+        <li><i>wizard_device_maintenance_request</i> — buat request maintenance langsung dari device</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Reports &amp; Dashboards</h3>
+      <ul>
+        <li>Room Utilization &amp; Occupancy</li>
+        <li>Device Readiness &amp; Maintenance History</li>
+        <li>Critical Devices Watchlist</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Assets</h3>
+      <ul>
+        <li>JS: <i>room_board.js</i>, <i>device_overview.js</i></li>
+        <li>QWeb: <i>room_board_templates.xml</i>, <i>device_overview_templates.xml</i></li>
+        <li>SCSS: <i>room_board.scss</i>, <i>device_overview.scss</i></li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>API Endpoints</h3>
+      <ul>
+        <li><i>controllers/room_api.py</i> — JSON untuk status ruang &amp; daftar okupansi</li>
+        <li><i>controllers/device_api.py</i> — JSON untuk perangkat: readiness, assignment, movement</li>
+        <li><i>controllers/portal.py</i> — status ketersediaan ruang untuk portal</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Upgrade &amp; Migration</h3>
+      <ul>
+        <li>Normalisasi prefix model menjadi <b>clinic.*</b> untuk konsistensi antar-modul.</li>
+        <li>Opsi pertahankan nama tabel lama via pengaturan <i>_table</i> pada model baru (jika migrasi).</li>
+        <li>Alias kelas dengan <i>_register = False</i> dapat disiapkan untuk kompatibilitas sementara.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distribusi di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        Ikuti panduan kontribusi ClinicOne: tulis test, patuhi gaya penulisan, dan dokumentasikan dampak migrasi.
+      </p>
+    </div>
+  </div>
+</section>

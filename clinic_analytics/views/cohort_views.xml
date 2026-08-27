@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_analytics_cohort_search" model="ir.ui.view">
+        <field name="name">clinic.analytics.cohort.search</field>
+        <field name="model">clinic.analytics.cohort</field>
+        <field name="arch" type="xml">
+            <search string="Retention Cohorts">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="cohort_start"/>
+                <filter name="ready" string="Ready" domain="[('state','=','done')]"/>
+                <filter name="failed" string="Failed" domain="[('state','=','failed')]"/>
+                <separator/>
+                <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                <filter name="group_month" string="Cohort Month" context="{'group_by':'cohort_start:month'}"/>
+                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_analytics_cohort_list" model="ir.ui.view">
+        <field name="name">clinic.analytics.cohort.list</field>
+        <field name="model">clinic.analytics.cohort</field>
+        <field name="arch" type="xml">
+            <list default_order="cohort_start desc,id desc"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'failed'">
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="cohort_start"/>
+                <field name="cohort_end"/>
+                <field name="cohort_size"/>
+                <field name="retention_30"/>
+                <field name="retention_60"/>
+                <field name="retention_90"/>
+                <field name="insight_count" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button name="action_run" type="object" string="Generate" icon="fa-play"
+                        groups="clinic_analytics.group_analytics_analyst"
+                        invisible="state not in ('draft','failed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_analytics_cohort_form" model="ir.ui.view">
+        <field name="name">clinic.analytics.cohort.form</field>
+        <field name="model">clinic.analytics.cohort</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_run" type="object" string="Generate Cohort" class="btn-primary"
+                            groups="clinic_analytics.group_analytics_analyst"
+                            invisible="state not in ('draft','failed')"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state not in ('done','failed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,running,done,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_insights" type="object" class="oe_stat_button" icon="fa-lightbulb-o">
+                            <field name="insight_count" widget="statinfo" string="Insights"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        Cohort evidence stores only aggregate counts and rates; patient identifiers are not copied into analytics tables.
+                    </div>
+
+                    <group>
+                        <group string="Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="cohort_start"/>
+                            <field name="cohort_end"/>
+                        </group>
+                        <group string="Source">
+                            <field name="source_booking_count"/>
+                            <field name="generated_at"/>
+                            <field name="generated_by_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Retention">
+                        <group>
+                            <field name="cohort_size"/>
+                            <field name="retained_30"/>
+                            <field name="retained_60"/>
+                            <field name="retained_90"/>
+                        </group>
+                        <group>
+                            <field name="retention_30" widget="percentage"/>
+                            <field name="retention_60" widget="percentage"/>
+                            <field name="retention_90" widget="percentage"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-danger" role="alert" invisible="not error_message">
+                        <field name="error_message" nolabel="1"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_analytics_cohort_graph" model="ir.ui.view">
+        <field name="name">clinic.analytics.cohort.graph</field>
+        <field name="model">clinic.analytics.cohort</field>
+        <field name="arch" type="xml">
+            <graph string="Retention Cohorts" type="line">
+                <field name="cohort_start" interval="month"/>
+                <field name="branch_id"/>
+                <field name="retention_30" type="measure"/>
+                <field name="retention_60" type="measure"/>
+                <field name="retention_90" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_analytics_cohort_pivot" model="ir.ui.view">
+        <field name="name">clinic.analytics.cohort.pivot</field>
+        <field name="model">clinic.analytics.cohort</field>
+        <field name="arch" type="xml">
+            <pivot string="Retention Cohort Analysis">
+                <field name="branch_id" type="row"/>
+                <field name="cohort_start" type="col" interval="month"/>
+                <field name="cohort_size" type="measure"/>
+                <field name="retention_30" type="measure"/>
+                <field name="retention_60" type="measure"/>
+                <field name="retention_90" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_analytics_cohort" model="ir.actions.act_window">
+        <field name="name">Retention Cohorts</field>
+        <field name="res_model">clinic.analytics.cohort</field>
+        <field name="view_mode">list,graph,pivot,form</field>
+        <field name="search_view_id" ref="view_analytics_cohort_search"/>
+    </record>
+</odoo>

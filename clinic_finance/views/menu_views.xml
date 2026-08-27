@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_clinic_finance_root" name="Clinic Finance" sequence="75" groups="clinic_finance.group_clinic_finance_user"/>
+  <menuitem id="menu_clinic_finance_operations" name="Operations" parent="menu_clinic_finance_root" sequence="10"/>
+  <menuitem id="menu_clinic_finance_transactions" name="Internal Transactions" parent="menu_clinic_finance_operations" action="action_finance_transaction" sequence="10"/>
+  <menuitem id="menu_clinic_finance_transfers" name="Internal Transfers" parent="menu_clinic_finance_operations" action="action_finance_transfer" sequence="20"/>
+  <menuitem id="menu_clinic_finance_requests" name="Fund Requests" parent="menu_clinic_finance_operations" action="action_fund_request" sequence="30"/>
+  <menuitem id="menu_clinic_finance_cash_sessions" name="Cash Sessions" parent="menu_clinic_finance_operations" action="action_cash_session" sequence="40"/>
+
+  <menuitem id="menu_clinic_finance_treasury" name="Treasury" parent="menu_clinic_finance_root" sequence="20"/>
+  <menuitem id="menu_clinic_finance_accounts" name="Finance Accounts" parent="menu_clinic_finance_treasury" action="action_finance_account" sequence="10"/>
+  <menuitem id="menu_clinic_finance_positions" name="Treasury Positions" parent="menu_clinic_finance_treasury" action="action_finance_position" sequence="20"/>
+  <menuitem id="menu_clinic_finance_journals" name="Odoo Cash &amp; Bank Journals" parent="menu_clinic_finance_treasury" action="action_finance_odoo_journals" sequence="30"/>
+  <menuitem id="menu_clinic_finance_entries" name="Finance Journal Entries" parent="menu_clinic_finance_treasury" action="action_finance_account_moves" sequence="40"/>
+
+  <menuitem id="menu_clinic_finance_configuration" name="Configuration" parent="menu_clinic_finance_root" sequence="90" groups="clinic_finance.group_clinic_finance_manager"/>
+  <menuitem id="menu_clinic_finance_categories" name="Finance Categories" parent="menu_clinic_finance_configuration" action="action_finance_category" sequence="10"/>
+  <menuitem id="menu_clinic_finance_settings" name="Settings" parent="menu_clinic_finance_configuration" action="action_clinic_finance_settings" sequence="90"/>
+</odoo>

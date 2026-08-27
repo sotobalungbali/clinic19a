@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_postcare_root"
+              name="Post-Care"
+              sequence="79"
+              groups="clinic_post_care_followup.group_postcare_user"/>
+
+    <menuitem id="menu_postcare_operations"
+              name="Operations"
+              parent="menu_postcare_root"
+              sequence="10"/>
+
+    <menuitem id="menu_postcare_plans"
+              name="Post-Care Plans"
+              parent="menu_postcare_operations"
+              action="action_postcare_plan"
+              sequence="10"/>
+
+    <menuitem id="menu_postcare_tasks"
+              name="Follow-up Tasks"
+              parent="menu_postcare_operations"
+              action="action_postcare_task"
+              sequence="20"/>
+
+    <menuitem id="menu_postcare_checkins"
+              name="Patient Check-ins"
+              parent="menu_postcare_operations"
+              action="action_postcare_checkin"
+              sequence="30"/>
+
+    <menuitem id="menu_postcare_escalations"
+              name="Escalations"
+              parent="menu_postcare_operations"
+              action="action_postcare_escalation"
+              sequence="40"/>
+
+    <menuitem id="menu_postcare_source"
+              name="Source Queues"
+              parent="menu_postcare_root"
+              sequence="20"/>
+
+    <menuitem id="menu_postcare_completed_encounters"
+              name="Completed Encounters"
+              parent="menu_postcare_source"
+              action="action_postcare_completed_encounters"
+              sequence="10"/>
+
+    <menuitem id="menu_postcare_completed_bookings"
+              name="Completed Bookings"
+              parent="menu_postcare_source"
+              action="action_postcare_completed_bookings"
+              sequence="20"/>
+
+    <menuitem id="menu_postcare_patients"
+              name="Post-Care Patients"
+              parent="menu_postcare_source"
+              action="action_postcare_patients"
+              sequence="30"/>
+
+    <menuitem id="menu_postcare_configuration"
+              name="Configuration"
+              parent="menu_postcare_root"
+              sequence="90"
+              groups="clinic_post_care_followup.group_postcare_manager"/>
+
+    <menuitem id="menu_postcare_protocols"
+              name="Post-Care Protocols"
+              parent="menu_postcare_configuration"
+              action="action_postcare_protocol"
+              sequence="10"/>
+
+    <menuitem id="menu_postcare_protocol_steps"
+              name="Protocol Follow-up Steps"
+              parent="menu_postcare_configuration"
+              action="action_postcare_protocol_step"
+              sequence="20"/>
+
+    <menuitem id="menu_postcare_settings"
+              name="Settings"
+              parent="menu_postcare_configuration"
+              action="action_postcare_settings"
+              sequence="90"/>
+</odoo>

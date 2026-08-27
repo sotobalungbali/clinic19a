@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dashboard_widget_search" model="ir.ui.view">
+        <field name="name">clinic.dashboard.widget.search</field>
+        <field name="model">clinic.dashboard.widget</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="board_id"/>
+                <field name="definition_id"/>
+                <field name="report_key"/>
+                <field name="metric_code"/>
+                <field name="company_id"/>
+                <filter name="active_widget" string="Active" domain="[('active','=',True)]"/>
+                <filter name="targeted" string="Has Target" domain="[('has_target','=',True)]"/>
+                <group>
+                    <filter name="group_board" string="Dashboard" context="{'group_by':'board_id'}"/>
+                    <filter name="group_report" string="Report" context="{'group_by':'definition_id'}"/>
+                    <filter name="group_style" string="Display Style" context="{'group_by':'display_style'}"/>
+                    <filter name="group_direction" string="Direction" context="{'group_by':'direction'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_dashboard_widget_list" model="ir.ui.view">
+        <field name="name">clinic.dashboard.widget.list</field>
+        <field name="model">clinic.dashboard.widget</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="board_id"/>
+                <field name="name"/>
+                <field name="definition_id"/>
+                <field name="report_key"/>
+                <field name="metric_code"/>
+                <field name="display_style" widget="badge"/>
+                <field name="direction"/>
+                <field name="has_target"/>
+                <field name="target_value"/>
+                <field name="active"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_definition" type="object" string="Report" icon="fa-book"/>
+                <button name="action_open_latest_report" type="object" string="Latest Run" icon="fa-external-link"/>
+                <button name="action_open_latest_metric" type="object" string="Metric" icon="fa-line-chart"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dashboard_widget_form" model="ir.ui.view">
+        <field name="name">clinic.dashboard.widget.form</field>
+        <field name="model">clinic.dashboard.widget</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_definition" type="object" class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info"><span class="o_stat_text">Report Definition</span></div>
+                        </button>
+                        <button name="action_open_latest_report" type="object" class="oe_stat_button" icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Latest Run</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Metric Source">
+                            <field name="board_id"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="definition_id"/>
+                            <field name="report_key" readonly="1"/>
+                            <field name="metric_code"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Presentation">
+                            <field name="sequence"/>
+                            <field name="icon"/>
+                            <field name="display_style"/>
+                            <field name="column_span"/>
+                            <field name="direction"/>
+                        </group>
+                    </group>
+
+                    <group string="Target &amp; Threshold Policy">
+                        <group>
+                            <field name="has_target"/>
+                            <field name="target_value" invisible="not has_target"/>
+                        </group>
+                        <group>
+                            <field name="has_warning_threshold"/>
+                            <field name="warning_threshold" invisible="not has_warning_threshold"/>
+                            <field name="has_critical_threshold"/>
+                            <field name="critical_threshold" invisible="not has_critical_threshold"/>
+                        </group>
+                    </group>
+
+                    <field name="help_text"/>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_latest_metric" type="object" string="Open Latest Metric" class="btn btn-primary"/>
+                        <button name="action_open_latest_report" type="object" string="Open Latest Report" class="btn btn-secondary"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dashboard_widget" model="ir.actions.act_window">
+        <field name="name">Dashboard Widgets</field>
+        <field name="res_model">clinic.dashboard.widget</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_dashboard_widget_search"/>
+    </record>
+</odoo>

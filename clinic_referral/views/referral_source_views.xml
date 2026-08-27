@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_referral_source_search" model="ir.ui.view">
+        <field name="name">clinic.referral.source.search</field>
+        <field name="model">clinic.referral.source</field>
+        <field name="arch" type="xml">
+            <search string="Referral Sources">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="partner_id"/>
+                <filter name="active_source" string="Active" domain="[('active','=',True)]"/>
+                <filter name="digital" string="Digital" domain="[('category','in',('social_media','online_ads'))]"/>
+                <separator/>
+                <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_referral_source_list" model="ir.ui.view">
+        <field name="name">clinic.referral.source.list</field>
+        <field name="model">clinic.referral.source</field>
+        <field name="arch" type="xml">
+            <list default_order="sequence,name">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category" widget="badge"/>
+                <field name="branch_id"/>
+                <field name="default_program_id" optional="show"/>
+                <field name="referral_count"/>
+                <field name="referral_converted_count"/>
+                <field name="referral_conversion_rate"/>
+                <field name="active"/>
+                <button name="action_open_referrals" type="object" string="Referrals" icon="fa-share-alt"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_referral_source_form" model="ir.ui.view">
+        <field name="name">clinic.referral.source.form</field>
+        <field name="model">clinic.referral.source</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_referrals" type="object" class="oe_stat_button" icon="fa-share-alt">
+                            <field name="referral_count" widget="statinfo" string="Referrals"/>
+                        </button>
+                        <button name="action_open_patients" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="patient_count" widget="statinfo" string="Patients"/>
+                        </button>
+                        <button name="action_open_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="booking_count" widget="statinfo" string="Bookings"/>
+                        </button>
+                        <button name="action_open_memberships" type="object" class="oe_stat_button" icon="fa-id-card-o">
+                            <field name="membership_count" widget="statinfo" string="Memberships"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Source Identity">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="category"/>
+                            <field name="referrer_type"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Entity">
+                            <field name="internal_doctor_id"
+                                   invisible="referrer_type != 'internal_doctor'"/>
+                            <field name="partner_id"
+                                   invisible="referrer_type == 'internal_doctor'"/>
+                            <field name="contact_name"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="address"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Attribution">
+                            <group>
+                                <group>
+                                    <field name="channel_tags"/>
+                                    <field name="campaign_name"/>
+                                    <field name="tracking_code"/>
+                                    <field name="landing_page_url"/>
+                                </group>
+                                <group>
+                                    <field name="apply_on_booking"/>
+                                    <field name="apply_on_treatment"/>
+                                    <field name="apply_on_invoice"/>
+                                    <field name="apply_on_wallet"/>
+                                    <field name="apply_on_membership"/>
+                                    <field name="apply_on_marketing"/>
+                                    <field name="apply_on_other"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Default Reward">
+                            <group>
+                                <group>
+                                    <field name="default_program_id"/>
+                                    <field name="default_reward_policy"/>
+                                    <field name="currency_id"/>
+                                </group>
+                                <group>
+                                    <field name="default_reward_value"/>
+                                    <field name="default_reward_percent"/>
+                                    <field name="default_reward_points"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Referral History">
+                            <field name="referral_ids" readonly="1">
+                                <list decoration-success="state == 'converted'"
+                                      decoration-danger="state in ('cancelled','expired')">
+                                    <field name="name"/>
+                                    <field name="patient_id"/>
+                                    <field name="program_id"/>
+                                    <field name="date_referral"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_self" type="object" string="Open" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Notes">
+                            <field name="description"/>
+                            <field name="integration_notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_referral_source" model="ir.actions.act_window">
+        <field name="name">Referral Sources</field>
+        <field name="res_model">clinic.referral.source</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_referral_source_search"/>
+    </record>
+</odoo>

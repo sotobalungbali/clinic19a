@@ -1,0 +1,1736 @@
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/AGENTS.md /mnt/data/clinic_treatment_catalog_work/AGENTS.md
+--- /mnt/data/clinic_treatment_catalog_original/AGENTS.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/AGENTS.md	2026-08-11 23:49:03.159321028 +0000
+@@ -0,0 +1,53 @@
++# AGENTS.md — ClinicOne clinic_treatment_catalog HARD GATE
++
++## ROLE
++`CODEX_ROLE = LIMITED_IMPLEMENTATION_WORKER`
++
++Codex is NOT:
++- an architect
++- a simplifier
++- a product owner
++- an autonomous refactorer
++- a model ownership decision maker
++- a dependency optimizer
++- an endless retry engine
++
++## PROJECT IDENTITY PREFLIGHT — HARD GATE 0
++Before edits, print/verify: PROJECT=ClinicOne; ADDON=clinic_treatment_catalog; PLATFORM=Odoo19CE; BASELINE=FINISHED; CHANGE_MODE=TECHNICAL_HARDENING_ONLY.
++If any identity item differs, STOP.
++
++## PRESERVATION
++Read `docs/CLINIC_TREATMENT_CATALOG_BASELINE_CONTRACT.json` before editing.
++Do not remove/rename/merge baseline models, fields, methods, files, workflow states, actions, or active imports.
++Do not modify sibling addons.
++Do not integrate Core247 here.
++Do not activate dormant engines/bridges.
++Do not change dependencies except the already-authorized `clinic_patient` repair recorded in the contract.
++Files beginning with digit `0` are user backups and must be ignored.
++
++## 15 OWNER HARD GATES
++HARD_GATE_0_PROJECT_IDENTITY_PREFLIGHT
++HARD_GATE_1_CODEX_BUKAN_ARCHITECT
++HARD_GATE_2_EXISTING_FUNCTION_PRESERVATION
++HARD_GATE_3_ENTERPRISE_COMPLETENESS
++HARD_GATE_4_FULL_STRUCTURAL_INVENTORY
++HARD_GATE_5_HUMAN_FRIENDLY_CODING_STRUCTURE
++HARD_GATE_6_PROFESSIONAL_FORM_DESIGN
++HARD_GATE_7_UI_UX_MATRIX_PER_MODEL
++HARD_GATE_8_SEARCH_VIEW_WAJIB
++HARD_GATE_9_LIST_VIEW_ENTERPRISE_QUALITY
++HARD_GATE_10_SECURITY_OVER_UI
++HARD_GATE_12_CODE_STYLE_HUMAN_FRIENDLY
++HARD_GATE_13_USEFUL_COMMENTS
++HARD_GATE_14_CODEX_RETRY_LIMIT
++HARD_GATE_15_ENTERPRISE_COMPLETENESS_MATRIX
++
++## RETRY LIMIT
++`MAX_FOCUSED_REPAIR_ATTEMPTS_PER_BLOCKER = 3`
++After three failed attempts on the same blocker/root-cause class: STOP and emit a blocker report with `MOVE_FORWARD_READY: NO`.
++
++## REQUIRED CHECK
++Run:
++`python3 tools/clinic_treatment_catalog_guardrail.py`
++
++A static PASS means only `CLINIC_TREATMENT_CATALOG_STATIC_MOVE_FORWARD_READY: YES`. Final move-forward requires Odoo 19 runtime gates on the target PC.
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/__manifest__.py /mnt/data/clinic_treatment_catalog_work/__manifest__.py
+--- /mnt/data/clinic_treatment_catalog_original/__manifest__.py	2026-08-11 23:31:41.972501969 +0000
++++ /mnt/data/clinic_treatment_catalog_work/__manifest__.py	2026-08-11 23:52:04.712677449 +0000
+@@ -1,25 +1,21 @@
+ 
+ {
+-    'name': "clinic_treatment_catalog",
++    'name': "ClinicOne - Treatment Catalog",
+ 
+-    'summary': "Short (1 phrase/line) summary of the module's purpose",
++    'summary': "Enterprise treatment catalog, bundles, pricing rules, and consent integration",
+ 
+     'description': """
+-Long description of module's purpose
++ClinicOne treatment master data, treatment bundles, attributes, pricing rules,
++and consent integration for the clinical service catalog.
+     """,
+ 
+-    'author': "My Company",
+-    'website': "https://www.yourcompany.com",
++    'author': "ClinicOne",
+ 
+-    # Categories can be used to filter modules in modules listing
+-    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
+-    # for the full list
+-    'category': 'Uncategorized',
+-    'version': '0.1',
+-
+-    # any module necessary for this one to work correctly
+-    
+-    # Minimal hard deps untuk berjalan di Odoo 18 CE. Integrasi lain bersifat optional (soft-coupled).
++    'category': 'Services/Healthcare',
++    'version': '19.0.1.0.0',
++
++    # Hard dependencies required by the active Odoo 19 runtime contract.
++    # Dormant bridges/engines remain soft-coupled and are not activated here.
+     "depends": [
+         "base",
+         "mail",
+@@ -32,15 +28,26 @@
+         "clinic_branch",
+         "clinic_staff",
+         "clinic_room_device",
++        # Active consent integration already reads clinic.patient.
++        # Make the existing runtime contract explicit instead of relying on install order.
++        "clinic_patient",
+     ],
+ 
+-    # always loaded
++    # Always loaded
+     'data': [
+-        # 'security/ir.model.access.csv',
+-        'views/views.xml',
++        'security/clinic_treatment_catalog_security.xml',
++        'security/ir.model.access.csv',
++        'data/treatment_sequences.xml',
++        'views/treatment_views.xml',
++        'views/treatment_master_views.xml',
++        'views/treatment_attribute_views.xml',
++        'views/treatment_bundle_views.xml',
++        'views/treatment_pricelist_views.xml',
++        'views/consent_views.xml',
++        'views/treatment_catalog_menus.xml',
+         'views/templates.xml',
+     ],
+-    # only loaded in demonstration mode
++    # Loaded only in demonstration mode
+     'demo': [
+         'demo/demo.xml',
+     ],
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/data/treatment_sequences.xml /mnt/data/clinic_treatment_catalog_work/data/treatment_sequences.xml
+--- /mnt/data/clinic_treatment_catalog_original/data/treatment_sequences.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/data/treatment_sequences.xml	2026-08-11 23:46:15.868581636 +0000
+@@ -0,0 +1,57 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="seq_treatment_code" model="ir.sequence">
++        <field name="name">Treatment Code</field>
++        <field name="code">clinic.treatment.catalog</field>
++        <field name="prefix">TRT/</field>
++        <field name="padding">6</field>
++    </record>
++    <record id="seq_treatment_category_code" model="ir.sequence">
++        <field name="name">Treatment Category Code</field>
++        <field name="code">clinic.treatment.category</field>
++        <field name="prefix">TCAT/</field>
++        <field name="padding">6</field>
++    </record>
++    <record id="seq_treatment_tag_code" model="ir.sequence">
++        <field name="name">Treatment Tag Code</field>
++        <field name="code">clinic.treatment.tag</field>
++        <field name="prefix">TTAG/</field>
++        <field name="padding">6</field>
++    </record>
++    <record id="seq_treatment_bundle_code" model="ir.sequence">
++        <field name="name">Treatment Bundle Code</field>
++        <field name="code">clinic.treatment.bundle</field>
++        <field name="prefix">TBND/</field>
++        <field name="padding">6</field>
++    </record>
++    <record id="seq_treatment_pricelist_code" model="ir.sequence">
++        <field name="name">Treatment Pricelist Code</field>
++        <field name="code">clinic.treatment.pricelist</field>
++        <field name="prefix">TPL/</field>
++        <field name="padding">6</field>
++    </record>
++    <record id="seq_treatment_attribute_code" model="ir.sequence">
++        <field name="name">Treatment Attribute Code</field>
++        <field name="code">clinic.treatment.attribute</field>
++        <field name="prefix">TATTR/</field>
++        <field name="padding">6</field>
++    </record>
++    <record id="seq_treatment_attribute_value_code" model="ir.sequence">
++        <field name="name">Treatment Attribute Value Code</field>
++        <field name="code">clinic.treatment.attribute.value</field>
++        <field name="prefix">TVAL/</field>
++        <field name="padding">6</field>
++    </record>
++    <record id="seq_treatment_pricelist_item_code" model="ir.sequence">
++        <field name="name">Treatment Price Rule Code</field>
++        <field name="code">clinic.treatment.pricelist.item</field>
++        <field name="prefix">TPR/</field>
++        <field name="padding">6</field>
++    </record>
++    <record id="seq_consent_request" model="ir.sequence">
++        <field name="name">Consent Request</field>
++        <field name="code">clinic.consent.request</field>
++        <field name="prefix">CONS/</field>
++        <field name="padding">6</field>
++    </record>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/demo/demo.xml /mnt/data/clinic_treatment_catalog_work/demo/demo.xml
+--- /mnt/data/clinic_treatment_catalog_original/demo/demo.xml	2026-08-11 23:31:41.972873101 +0000
++++ /mnt/data/clinic_treatment_catalog_work/demo/demo.xml	2026-08-11 23:43:16.155392823 +0000
+@@ -1,31 +1,2 @@
+-
+-<odoo>
+-    <data>
+-<!--
+-          <record id="object0" model="clinic_treatment_catalog.clinic_treatment_catalog">
+-            <field name="name">Object 0</field>
+-            <field name="value">0</field>
+-          </record>
+-
+-          <record id="object1" model="clinic_treatment_catalog.clinic_treatment_catalog">
+-            <field name="name">Object 1</field>
+-            <field name="value">10</field>
+-          </record>
+-
+-          <record id="object2" model="clinic_treatment_catalog.clinic_treatment_catalog">
+-            <field name="name">Object 2</field>
+-            <field name="value">20</field>
+-          </record>
+-
+-          <record id="object3" model="clinic_treatment_catalog.clinic_treatment_catalog">
+-            <field name="name">Object 3</field>
+-            <field name="value">30</field>
+-          </record>
+-
+-          <record id="object4" model="clinic_treatment_catalog.clinic_treatment_catalog">
+-            <field name="name">Object 4</field>
+-            <field name="value">40</field>
+-          </record>
+--->
+-    </data>
+-</odoo>
++<?xml version="1.0" encoding="utf-8"?>
++<odoo/>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/bridges/bridge_pricing.py /mnt/data/clinic_treatment_catalog_work/models/bridges/bridge_pricing.py
+--- /mnt/data/clinic_treatment_catalog_original/models/bridges/bridge_pricing.py	2026-08-11 23:31:41.975141546 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/bridges/bridge_pricing.py	2026-08-11 23:43:42.763453528 +0000
+@@ -281,10 +281,10 @@
+         product = self._service_product(treatment)
+         if pl_odoo and product:
+             try:
+-                prices = pl_odoo._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_dt)
+-                if isinstance(prices, dict):
+-                    base = float(prices.get(product.id, treatment.get_default_price()))
+-                    return base, _("Base (Odoo Pricelist)"), "base"
++                base = float(
++                    pl_odoo._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_dt)
++                )
++                return base, _("Base (Odoo Pricelist)"), "base"
+             except Exception as e:  # pragma: no cover
+                 _logger.debug("Odoo Pricelist base failed: %s", e)
+         return float(treatment.get_default_price() or 0.0), _("Base (Fallback)"), "base"
+@@ -294,10 +294,10 @@
+         product = self._service_product(bundle)
+         if pl_odoo and product:
+             try:
+-                prices = pl_odoo._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_dt)
+-                if isinstance(prices, dict):
+-                    base = float(prices.get(product.id, bundle.base_price or 0.0))
+-                    return base, _("Base (Odoo Pricelist)")
++                base = float(
++                    pl_odoo._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_dt)
++                )
++                return base, _("Base (Odoo Pricelist)")
+             except Exception as e:  # pragma: no cover
+                 _logger.debug("Odoo Pricelist base (bundle) failed: %s", e)
+ 
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/bridges/integration_consent.py /mnt/data/clinic_treatment_catalog_work/models/bridges/integration_consent.py
+--- /mnt/data/clinic_treatment_catalog_original/models/bridges/integration_consent.py	2026-08-11 23:31:41.975555675 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/bridges/integration_consent.py	2026-08-11 23:43:16.155337959 +0000
+@@ -112,10 +112,14 @@
+     treatment_id = fields.Many2one(comodel_name='clinic.treatment', 
+         string='Treatment')    
+ 
+-    _sql_constraints = [
+-        ("code_unique", "unique(code)", "Template Code must be unique."),
+-        ("validity_non_negative", "CHECK (validity_days >= 0)", "Validity (days) must be non-negative."),
+-    ]
++    _code_unique = models.Constraint(
++        "unique(code)",
++        "Template Code must be unique.",
++    )
++    _validity_non_negative = models.Constraint(
++        "CHECK (validity_days >= 0)",
++        "Validity (days) must be non-negative.",
++    )
+ 
+     @api.depends("version_ids.effective_from", "version_ids.effective_to", "version_ids.state")
+     def _compute_latest_version(self):
+@@ -161,10 +165,14 @@
+         index=True,
+     )
+ 
+-    _sql_constraints = [
+-        ("ver_unique", "unique(template_id, version)", "Version number must be unique per template."),
+-        ("date_range_valid", "CHECK (effective_to IS NULL OR effective_to > effective_from)", "Effective To must be later than Effective From."),
+-    ]
++    _version_unique = models.Constraint(
++        "unique(template_id, version)",
++        "Version number must be unique per template.",
++    )
++    _date_range_valid = models.Constraint(
++        "CHECK (effective_to IS NULL OR effective_to > effective_from)",
++        "Effective To must be later than Effective From.",
++    )
+ 
+ 
+ # =====================================================================
+@@ -180,8 +188,11 @@
+     # Identity & context
+     reference = fields.Char(string="Reference", copy=False, default="/", index=True,
+                             help="Unique consent reference generated by sequence.", tracking=True)
+-    # display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
+-    display_name = fields.Char(string="Display Name", store=True)
++    display_name = fields.Char(
++        string="Display Name",
++        compute="_compute_display_name",
++        store=True,
++    )
+ 
+     company_id = fields.Many2one("res.company", string="Company", default=lambda s: s.env.company)
+     branch_id = fields.Many2one("clinic.branch", string="Branch", help="Operational branch where consent was collected.", tracking=True)
+@@ -200,7 +211,15 @@
+     )
+ 
+     # Clinical context (keep optional to reduce hard deps; enable via other modules as needed)
+-    # patient_id = fields.Many2one("clinic.patient", string="Patient", required=True, ondelete="restrict", index=True, tracking=True)
++    # Existing active consent code already reads/searches patient_id.
++    patient_id = fields.Many2one(
++        "clinic.patient",
++        string="Patient",
++        required=True,
++        ondelete="restrict",
++        index=True,
++        tracking=True,
++    )
+     # encounter_id = fields.Many2one("clinic.encounter", string="Encounter", ondelete="set null")
+     # procedure_id = fields.Many2one("clinic.procedure", string="Procedure", ondelete="set null")
+     # emar_admin_id = fields.Many2one("clinic.emar.administration", string="Medication Administration", ondelete="set null")
+@@ -300,9 +319,10 @@
+ 
+     notes = fields.Text(string="Notes")
+ 
+-    _sql_constraints = [
+-        ("cons_ref_unique", "unique(reference)", "Consent Reference must be unique."),
+-    ]
++    _consent_reference_unique = models.Constraint(
++        "unique(reference)",
++        "Consent Reference must be unique.",
++    )
+ 
+     # ----------------------------
+     # Computes
+@@ -318,26 +338,22 @@
+         for rec in self:
+             rec.has_e_signature = bool(rec.e_sign_provider != "none" and rec.e_sign_status == "signed")
+ 
+-    # @api.depends_context("lang")
+-    # @api.depends("reference", "title", "state", "patient_id")
+-    # def _compute_display_name(self):
+-    #     """Human-friendly name without cross-model nested depends."""
+-    #     state_labels = {}
+-    #     if "state" in self._fields and getattr(self._fields["state"], "selection", None):
+-    #         state_labels = dict(self._fields["state"].selection)
+-
+-    #     for rec in self:
+-    #         parts = []
+-    #         if rec.reference and rec.reference not in ("/",):
+-    #             parts.append(f"[{rec.reference}]")
+-    #         # safe: patient_id is defined in this model; no nested depends used
+-    #         if rec.patient_id:
+-    #             parts.append(rec.patient_id.display_name)
+-    #         if rec.title:
+-    #             parts.append(f"• {rec.title}")
+-    #         if rec.state:
+-    #             parts.append(f"[{state_labels.get(rec.state, rec.state)}]")
+-    #         rec.display_name = " ".join(parts) or _("Consent")
++    @api.depends("reference", "title", "state", "patient_id")
++    def _compute_display_name(self):
++        """Build a stable human label without changing the consent workflow."""
++        selection = self._fields["state"].selection
++        state_labels = dict(selection) if isinstance(selection, list) else {}
++        for rec in self:
++            parts = []
++            if rec.reference and rec.reference != "/":
++                parts.append("[%s]" % rec.reference)
++            if rec.patient_id:
++                parts.append(rec.patient_id.display_name)
++            if rec.title:
++                parts.append("• %s" % rec.title)
++            if rec.state:
++                parts.append("[%s]" % state_labels.get(rec.state, rec.state))
++            rec.display_name = " ".join(parts) or _("Consent")
+ 
+     @api.depends("state", "signed_at", "expires_at", "revoked_at")
+     def _compute_is_valid(self):
+@@ -515,8 +531,20 @@
+             "|", ("expires_at", "=", False), ("expires_at", ">", at),
+             ("revoked_at", "=", False),
+         ]
+-        if scope == "procedure_specific" and procedure_id:
+-            dom = ["&"] + dom + [("procedure_id", "=", procedure_id)]
++        optional_scope_fields = {
++            "procedure_id": procedure_id,
++            "tele_session_id": tele_session_id,
++            "emar_admin_id": emar_admin_id,
++        }
++        for field_name, value in optional_scope_fields.items():
++            if not value:
++                continue
++            if field_name not in self._fields:
++                raise ValidationError(
++                    _("Consent integration field '%s' is not available in the current addon closure.")
++                    % field_name
++                )
++            dom.append((field_name, "=", value))
+         consent = self.search(dom, limit=1, order="signed_at desc")
+         if consent:
+             return True
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/engines/engine_insurance.py /mnt/data/clinic_treatment_catalog_work/models/engines/engine_insurance.py
+--- /mnt/data/clinic_treatment_catalog_original/models/engines/engine_insurance.py	2026-08-11 23:31:41.976317880 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/engines/engine_insurance.py	2026-08-11 23:43:42.772663661 +0000
+@@ -457,9 +457,7 @@
+                 header = self._resolve_clinic_pricelist(pricelist_id)
+                 pl = header.product_pricelist_id if header else self.env["product.pricelist"].browse(pricelist_id)
+                 if pl and pl.exists():
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_date)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, treatment.get_default_price()))
++                    return float(pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_date))
+             return float(treatment.get_default_price() or 0.0)
+         except Exception as e:  # pragma: no cover
+             _logger.debug("Insurance base price (treatment) fallback: %s", e)
+@@ -472,9 +470,7 @@
+                 header = self._resolve_clinic_pricelist(pricelist_id)
+                 pl = header.product_pricelist_id if header else self.env["product.pricelist"].browse(pricelist_id)
+                 if pl and pl.exists():
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_date)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, bundle.base_price or 0.0))
++                    return float(pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_date))
+         except Exception as e:  # pragma: no cover
+             _logger.debug("Insurance base price (bundle) PRICELIST fallback: %s", e)
+ 
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/engines/engine_membership.py /mnt/data/clinic_treatment_catalog_work/models/engines/engine_membership.py
+--- /mnt/data/clinic_treatment_catalog_original/models/engines/engine_membership.py	2026-08-11 23:31:41.976515386 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/engines/engine_membership.py	2026-08-11 23:43:42.770601850 +0000
+@@ -340,9 +340,7 @@
+                 pl_header = self._resolve_clinic_pricelist(pricelist_id)
+                 pl = pl_header.product_pricelist_id if pl_header else self.env["product.pricelist"].browse(pricelist_id)
+                 if pl and pl.exists():
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_date)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, treatment.get_default_price()))
++                    return float(pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_date))
+             return float(treatment.get_default_price() or 0.0)
+         except Exception as e:  # pragma: no cover
+             _logger.debug("Membership base price (treatment) fallback: %s", e)
+@@ -356,9 +354,7 @@
+                 pl_header = self._resolve_clinic_pricelist(pricelist_id)
+                 pl = pl_header.product_pricelist_id if pl_header else self.env["product.pricelist"].browse(pricelist_id)
+                 if pl and pl.exists():
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_date)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, bundle.base_price or 0.0))
++                    return float(pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_date))
+         except Exception as e:  # pragma: no cover
+             _logger.debug("Membership base price (bundle) PRICELIST fallback: %s", e)
+ 
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/engines/engine_promotions.py /mnt/data/clinic_treatment_catalog_work/models/engines/engine_promotions.py
+--- /mnt/data/clinic_treatment_catalog_original/models/engines/engine_promotions.py	2026-08-11 23:31:41.976719398 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/engines/engine_promotions.py	2026-08-11 23:43:42.766192335 +0000
+@@ -383,9 +383,7 @@
+                 header = self._resolve_clinic_pricelist(pricelist_id)
+                 pl = header.product_pricelist_id if header else self.env["product.pricelist"].browse(pricelist_id)
+                 if pl and pl.exists():
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_date)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, treatment.get_default_price()))
++                    return float(pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_date))
+             return float(treatment.get_default_price() or 0.0)
+         except Exception as e:  # pragma: no cover
+             _logger.debug("Promo base price (treatment) fallback: %s", e)
+@@ -398,9 +396,7 @@
+                 header = self._resolve_clinic_pricelist(pricelist_id)
+                 pl = header.product_pricelist_id if header else self.env["product.pricelist"].browse(pricelist_id)
+                 if pl and pl.exists():
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_date)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, bundle.base_price or 0.0))
++                    return float(pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_date))
+         except Exception as e:  # pragma: no cover
+             _logger.debug("Promo base price (bundle) PRICELIST fallback: %s", e)
+ 
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/engines/engine_surcharge.py /mnt/data/clinic_treatment_catalog_work/models/engines/engine_surcharge.py
+--- /mnt/data/clinic_treatment_catalog_original/models/engines/engine_surcharge.py	2026-08-11 23:31:41.976937151 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/engines/engine_surcharge.py	2026-08-11 23:43:42.768542156 +0000
+@@ -496,9 +496,7 @@
+                 header = self._resolve_clinic_pricelist(pricelist_id)
+                 pl = header.product_pricelist_id if header else self.env["product.pricelist"].browse(pricelist_id)
+                 if pl and pl.exists():
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_date)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, treatment.get_default_price()))
++                    return float(pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_date))
+             return float(treatment.get_default_price() or 0.0)
+         except Exception as e:  # pragma: no cover
+             _logger.debug("Surcharge base price (treatment) fallback: %s", e)
+@@ -511,9 +509,7 @@
+                 header = self._resolve_clinic_pricelist(pricelist_id)
+                 pl = header.product_pricelist_id if header else self.env["product.pricelist"].browse(pricelist_id)
+                 if pl and pl.exists():
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_date)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, bundle.base_price or 0.0))
++                    return float(pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_date))
+         except Exception as e:  # pragma: no cover
+             _logger.debug("Surcharge base price (bundle) PRICELIST fallback: %s", e)
+ 
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/mixin_pricing.py /mnt/data/clinic_treatment_catalog_work/models/mixin_pricing.py
+--- /mnt/data/clinic_treatment_catalog_original/models/mixin_pricing.py	2026-08-11 23:31:41.977083842 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/mixin_pricing.py	2026-08-11 23:42:32.061646609 +0000
+@@ -16,7 +16,7 @@
+ #  - Membaca konfigurasi dari res.company (diisi via res.config.settings modul ini).
+ #
+ from decimal import Decimal, ROUND_HALF_UP, ROUND_DOWN, ROUND_UP, InvalidOperation
+-from odoo import tools, _
++from odoo import fields, tools, _
+ import logging
+ 
+ _logger = logging.getLogger(__name__)
+@@ -203,10 +203,14 @@
+         try:
+             if not product or not product.exists() or not pricelist or not pricelist.exists():
+                 return default
+-            # API Odoo 18: _get_products_price(products, quantities, uom_id=False, date=False)
+-            prices = pricelist._get_products_price(products=product, quantities=qty, uom_id=uom_id, date=date)
+-            if isinstance(prices, dict):
+-                return float(prices.get(product.id, default if default is not None else 0.0))
++            uom = self.env["uom.uom"].browse(uom_id) if uom_id else product.uom_id
++            price = pricelist._get_product_price(
++                product,
++                qty or 1.0,
++                uom=uom,
++                date=date or fields.Date.context_today(self),
++            )
++            return float(price)
+         except Exception as e:
+             _logger.debug("Pricelist fallback failed: %s", e)
+         return default
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/res_config_settings.py /mnt/data/clinic_treatment_catalog_work/models/res_config_settings.py
+--- /mnt/data/clinic_treatment_catalog_original/models/res_config_settings.py	2026-08-11 23:31:41.977255668 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/res_config_settings.py	2026-08-11 23:42:32.066619221 +0000
+@@ -283,7 +283,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("ClinicOne Sequences"),
+             "res_model": "ir.sequence",
+-            "view_mode": "tree,form",
++            "view_mode": "list,form",
+             "domain": domain,
+             "context": {"search_default_group_by_company_id": 1},
+         }
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/treatment.py /mnt/data/clinic_treatment_catalog_work/models/treatment.py
+--- /mnt/data/clinic_treatment_catalog_original/models/treatment.py	2026-08-11 23:31:41.977432091 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/treatment.py	2026-08-11 23:47:14.904255543 +0000
+@@ -4,7 +4,7 @@
+ # File: models/treatment.py
+ #
+ # Integrasi holistic:
+-# - Basic Odoo 18 CE: product (service), mail.thread/activity, company, currency, website (opsional)
++# - Basic Odoo 19 CE: product (service), mail.thread/activity, company, currency, website (opsional)
+ # - ClinicOne bridges: pricing bridge, booking, billing, inventory-consumables, membership, insurance, reports
+ #
+ # Desain tanpa hard dependency:
+@@ -222,11 +222,10 @@
+     # -----------------------------
+     # Constraints
+     # -----------------------------
+-    _sql_constraints = [
+-        ("code_company_uniq",
+-         "unique(code, company_id)",
+-         "Code must be unique per company.")
+-    ]
++    _code_company_uniq = models.Constraint(
++        "unique(code, company_id)",
++        "Code must be unique per company.",
++    )
+ 
+     # =========================================================================
+     # COMPUTES
+@@ -254,12 +253,12 @@
+             for rec in self:
+                 rec.pricelist_item_count = 0
+             return
+-        data = self.env["clinic.treatment.pricelist.item"].read_group(
++        data = self.env["clinic.treatment.pricelist.item"]._read_group(
+             [("treatment_id", "in", self.ids)],
+             ["treatment_id"],
+-            ["treatment_id"]
++            ["__count"],
+         )
+-        mapped = {d["treatment_id"][0]: d["treatment_id_count"] for d in data}
++        mapped = {treatment.id: count for treatment, count in data if treatment}
+         for rec in self:
+             rec.pricelist_item_count = mapped.get(rec.id, 0)
+ 
+@@ -270,12 +269,12 @@
+             for rec in self:
+                 rec.package_item_count = 0
+             return
+-        data = self.env["clinic.treatment.bundle.line"].read_group(
++        data = self.env["clinic.treatment.bundle.line"]._read_group(
+             [("treatment_id", "in", self.ids)],
+             ["treatment_id"],
+-            ["treatment_id"]
++            ["__count"],
+         )
+-        mapped = {d["treatment_id"][0]: d["treatment_id_count"] for d in data}
++        mapped = {treatment.id: count for treatment, count in data if treatment}
+         for rec in self:
+             rec.package_item_count = mapped.get(rec.id, 0)
+ 
+@@ -364,21 +363,21 @@
+             return {}
+         # Gunakan base_price sebagai list_price awal (jika ada)
+         list_price = vals.get("base_price", 0.0)
+-        return {
++        product_vals = {
+             "name": name,
+             "type": "service",
+             "company_id": company_id,
+             "list_price": list_price,
+             "uom_id": self.env.ref("uom.product_uom_unit").id,
+-            "uom_po_id": self.env.ref("uom.product_uom_unit").id,
+-            "invoice_policy": "delivery",  # aman untuk service (penagihan saat deliver/complete)
+             "sale_ok": True,
+             "purchase_ok": False,
+-            "taxes_id": [],  # biarkan fiscal position menentukan
+-            "property_cost_method": False,  # not applicable for service
+-            # Optional website flags (tidak error jika website tidak terpasang, hanya field tak dikenal akan diabaikan):
+-            # "website_published": False,
++            "taxes_id": [],
+         }
++        # invoice_policy is supplied by the optional Sale extension in Odoo 19.
++        # Preserve the original intent only when that field is available.
++        if "invoice_policy" in self.env["product.template"]._fields:
++            product_vals["invoice_policy"] = "delivery"
++        return product_vals
+ 
+     def _audit_event(self, action, changed_fields=None):
+         """Log event audit jika model audit tersedia, selalu message_post sebagai fallback."""
+@@ -487,13 +486,10 @@
+         pl = self.env["product.pricelist"].browse(pricelist_id)
+         if not pl.exists():
+             return self.base_price or 0.0
+-        # gunakan price_get seperti v15-, namun di v18: pl._get_products_price
+-        prices = pl._get_products_price(products=product, quantities=qty, uom_id=False, date=False)
+-        # _get_products_price bisa return dict {product_id: price}
+-        if isinstance(prices, dict):
+-            return prices.get(product.id, self.base_price or 0.0)
+-        # fallback jika API berubah
+-        return self.base_price or 0.0
++        # Odoo 19 standard product.pricelist fallback
++        return float(
++            pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=False)
++        )
+ 
+     # =========================================================================
+     # ACTIONS / SMART BUTTONS
+@@ -508,7 +504,7 @@
+                 "type": "ir.actions.act_window",
+                 "name": _("Pricing Rules"),
+                 "res_model": "clinic.treatment.pricelist.item",
+-                "view_mode": "tree,form",
++                "view_mode": "list,form",
+                 "domain": [("treatment_id", "=", self.id)],
+                 "context": {"default_treatment_id": self.id},
+             }
+@@ -527,21 +523,25 @@
+     # =========================================================================
+     # NAME GET / SEARCH
+     # =========================================================================
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        return "[%s] %s" % (self.code, self.name) if self.code else self.name
++
++    @api.depends("code", "name")
++    def _compute_display_name(self):
+         for rec in self:
+-            display = rec.name
+-            if rec.code:
+-                display = "[%s] %s" % (rec.code, rec.name)
+-            res.append((rec.id, display))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=100):
+-        args = args or []
+-        domain = ["|", ("code", operator, name), ("name", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++    def name_search(self, name="", domain=None, operator="ilike", limit=100):
++        domain = domain or []
++        criteria = ["|", ("code", operator, name), ("name", operator, name)] if name else []
++        recs = self.search(criteria + domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+ 
+     # =========================================================================
+     # BOOKING / ENCOUNTER HOOKS (opsional, dipakai modul lain)
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/treatment_attribute.py /mnt/data/clinic_treatment_catalog_work/models/treatment_attribute.py
+--- /mnt/data/clinic_treatment_catalog_original/models/treatment_attribute.py	2026-08-11 23:31:41.977620729 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/treatment_attribute.py	2026-08-11 23:52:04.713130565 +0000
+@@ -12,7 +12,7 @@
+ #  - Multi-company aware & secure
+ #  - No hard dependency to other ClinicOne modules (safe fallbacks)
+ #  - Optional audit integration (clinic.audit.event), fallback to chatter
+-#  - Efficient counts via read_group
++#  - Efficient counts via _read_group
+ #
+ # Typical use cases:
+ #  - Clinical descriptors: skin type, sensitivity level, gender suitability
+@@ -149,10 +149,14 @@
+     )
+ 
+     # Constraints
+-    _sql_constraints = [
+-        ("code_company_uniq", "unique(code, company_id)", "Code must be unique per company."),
+-        ("technical_company_uniq", "unique(technical_name, company_id)", "Technical Name must be unique per company."),
+-    ]
++    _code_company_uniq = models.Constraint(
++        "unique(code, company_id)",
++        "Code must be unique per company.",
++    )
++    _technical_company_uniq = models.Constraint(
++        "unique(technical_name, company_id)",
++        "Technical Name must be unique per company.",
++    )
+ 
+     # -----------------------------
+     # Computes
+@@ -160,19 +164,19 @@
+     def _compute_counts(self):
+         if self.ids:
+             # Values
+-            groups_val = self.env["clinic.treatment.attribute.value"].read_group(
+-                domain=[("attribute_id", "in", self.ids)],
+-                fields=["attribute_id"],
+-                groupby=["attribute_id"]
++            groups_val = self.env["clinic.treatment.attribute.value"]._read_group(
++                [("attribute_id", "in", self.ids)],
++                ["attribute_id"],
++                ["__count"],
+             )
+-            val_map = {g["attribute_id"][0]: g["attribute_id_count"] for g in groups_val if g.get("attribute_id")}
++            val_map = {attribute.id: count for attribute, count in groups_val if attribute}
+             # Lines (treatment usage)
+-            groups_line = self.env["clinic.treatment.attribute.line"].read_group(
+-                domain=[("attribute_id", "in", self.ids)],
+-                fields=["attribute_id"],
+-                groupby=["attribute_id"]
++            groups_line = self.env["clinic.treatment.attribute.line"]._read_group(
++                [("attribute_id", "in", self.ids)],
++                ["attribute_id"],
++                ["__count"],
+             )
+-            line_map = {g["attribute_id"][0]: g["attribute_id_count"] for g in groups_line if g.get("attribute_id")}
++            line_map = {attribute.id: count for attribute, count in groups_line if attribute}
+         else:
+             val_map, line_map = {}, {}
+         for rec in self:
+@@ -264,28 +268,31 @@
+             "type": "ir.actions.act_window",
+             "name": name,
+             "res_model": "clinic.treatment.catalog",
+-            "view_mode": "tree,form",
++            "view_mode": "list,form",
+             "domain": domain,
+         }
+ 
+     # -----------------------------
+     # Name get / search
+     # -----------------------------
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        return "[%s] %s" % (self.code, self.name) if self.code else self.name
++
++    @api.depends("code", "name")
++    def _compute_display_name(self):
+         for rec in self:
+-            label = rec.name
+-            if rec.code:
+-                label = "[%s] %s" % (rec.code, label)
+-            res.append((rec.id, label))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=100):
+-        args = args or []
+-        domain = ["|", "|", ("code", operator, name), ("name", operator, name), ("technical_name", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++    def name_search(self, name="", domain=None, operator="ilike", limit=100):
++        domain = domain or []
++        criteria = ["|", "|", ("code", operator, name), ("name", operator, name), ("technical_name", operator, name)] if name else []
++        recs = self.search(criteria + domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+ 
+ 
+ # ============================================================================
+@@ -358,10 +365,10 @@
+     )
+ 
+     # Constraints
+-    _sql_constraints = [
+-        ("code_attr_company_uniq", "unique(code, attribute_id, company_id)",
+-         "Value code must be unique per attribute and company."),
+-    ]
++    _code_attr_company_uniq = models.Constraint(
++        "unique(code, attribute_id, company_id)",
++        "Value code must be unique per attribute and company.",
++    )
+ 
+     # -----------------------------
+     # Computes
+@@ -369,12 +376,12 @@
+     def _compute_counts(self):
+         Line = self.env["clinic.treatment.attribute.line"]
+         if self.ids:
+-            groups = Line.read_group(
+-                domain=[("value_id", "in", self.ids)],
+-                fields=["value_id"],
+-                groupby=["value_id"]
++            groups = Line._read_group(
++                [("value_id", "in", self.ids)],
++                ["value_id"],
++                ["__count"],
+             )
+-            m = {g["value_id"][0]: g["value_id_count"] for g in groups if g.get("value_id")}
++            m = {value.id: count for value, count in groups if value}
+         else:
+             m = {}
+         for rec in self:
+@@ -447,29 +454,32 @@
+             "type": "ir.actions.act_window",
+             "name": name,
+             "res_model": "clinic.treatment.catalog",
+-            "view_mode": "tree,form",
++            "view_mode": "list,form",
+             "domain": domain,
+         }
+ 
+     # -----------------------------
+     # Name get / search
+     # -----------------------------
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        label = "[%s] %s" % (self.code, self.name) if self.code else self.name
++        return "%s — %s" % (self.attribute_id.name, label)
++
++    @api.depends("code", "name", "attribute_id.name")
++    def _compute_display_name(self):
+         for rec in self:
+-            label = rec.name
+-            if rec.code:
+-                label = "[%s] %s" % (rec.code, label)
+-            label = "%s — %s" % (rec.attribute_id.name, label)
+-            res.append((rec.id, label))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=80):
+-        args = args or []
+-        domain = ["|", ("code", operator, name), ("name", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++    def name_search(self, name="", domain=None, operator="ilike", limit=80):
++        domain = domain or []
++        criteria = ["|", ("code", operator, name), ("name", operator, name)] if name else []
++        recs = self.search(criteria + domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+ 
+ 
+ # ============================================================================
+@@ -535,11 +545,11 @@
+     )
+ 
+     # Constraints
+-    _sql_constraints = [
+-        # Hindari duplikasi nilai yang sama untuk attribute SELECT mode single
+-        ("uniq_treatment_attr_value", "unique(treatment_id, attribute_id, value_id)",
+-         "Duplicate attribute value for the same treatment is not allowed."),
+-    ]
++    # Hindari duplikasi nilai yang sama untuk attribute SELECT mode single.
++    _uniq_treatment_attr_value = models.Constraint(
++        "unique(treatment_id, attribute_id, value_id)",
++        "Duplicate attribute value for the same treatment is not allowed.",
++    )
+ 
+     # -----------------------------
+     # Computes
+@@ -643,9 +653,14 @@
+     # -----------------------------
+     # Name get
+     # -----------------------------
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        return "%s: %s" % (self.attribute_id.name, self.display_value or "-")
++
++    @api.depends("attribute_id.name", "display_value")
++    def _compute_display_name(self):
+         for rec in self:
+-            label = "%s: %s" % (rec.attribute_id.name, rec.display_value or "-")
+-            res.append((rec.id, label))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/treatment_bundle.py /mnt/data/clinic_treatment_catalog_work/models/treatment_bundle.py
+--- /mnt/data/clinic_treatment_catalog_original/models/treatment_bundle.py	2026-08-11 23:31:41.977848531 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/treatment_bundle.py	2026-08-11 23:43:42.762752109 +0000
+@@ -182,9 +182,10 @@
+     # -----------------------------
+     # Constraints
+     # -----------------------------
+-    _sql_constraints = [
+-        ("code_company_uniq", "unique(code, company_id)", "Code must be unique per company."),
+-    ]
++    _code_company_uniq = models.Constraint(
++        "unique(code, company_id)",
++        "Code must be unique per company.",
++    )
+ 
+     # =========================================================================
+     # COMPUTES
+@@ -289,19 +290,19 @@
+         if not name:
+             return {}
+         list_price = vals.get("base_price", 0.0)
+-        return {
++        product_vals = {
+             "name": name,
+             "type": "service",
+             "company_id": company_id,
+             "list_price": list_price,
+             "uom_id": self.env.ref("uom.product_uom_unit").id,
+-            "uom_po_id": self.env.ref("uom.product_uom_unit").id,
+-            "invoice_policy": "order",  # paket biasanya ditagih saat order (prepaid)
+             "sale_ok": True,
+             "purchase_ok": False,
+             "taxes_id": [],
+-            # "website_published": False,  # field opsional jika website terpasang
+         }
++        if "invoice_policy" in self.env["product.template"]._fields:
++            product_vals["invoice_policy"] = "order"
++        return product_vals
+ 
+     def _audit_event(self, action, changed_fields=None):
+         """Audit ke clinic.audit.event bila ada; fallback message_post."""
+@@ -377,10 +378,13 @@
+         if pricelist_id and self.get_service_product().id:
+             try:
+                 pl = self.env["product.pricelist"].browse(pricelist_id)
+-                pl_prices = pl._get_products_price(self.get_service_product(), quantity or 1.0, uom_id=False, date=False)
+-                if isinstance(pl_prices, dict):
+-                    price = pl_prices.get(self.get_service_product().id, price)
+-                    expl.append(_("Odoo Pricelist applied."))
++                service_product = self.get_service_product()
++                price = float(
++                    pl._get_product_price(
++                        service_product, quantity or 1.0, uom=service_product.uom_id, date=False
++                    )
++                )
++                expl.append(_("Odoo Pricelist applied."))
+             except Exception as e:  # pragma: no cover
+                 _logger.debug("Pricelist fallback skipped: %s", e)
+ 
+@@ -422,28 +426,31 @@
+             "type": "ir.actions.act_window",
+             "name": name,
+             "res_model": "clinic.treatment.catalog",
+-            "view_mode": "tree,form",
++            "view_mode": "list,form",
+             "domain": domain,
+         }
+ 
+     # =========================================================================
+     # NAME GET / SEARCH
+     # =========================================================================
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        return "[%s] %s" % (self.code, self.name) if self.code else self.name
++
++    @api.depends("code", "name")
++    def _compute_display_name(self):
+         for rec in self:
+-            display = rec.name
+-            if rec.code:
+-                display = "[%s] %s" % (rec.code, display)
+-            res.append((rec.id, display))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=100):
+-        args = args or []
+-        domain = ["|", ("code", operator, name), ("name", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++    def name_search(self, name="", domain=None, operator="ilike", limit=100):
++        domain = domain or []
++        criteria = ["|", ("code", operator, name), ("name", operator, name)] if name else []
++        recs = self.search(criteria + domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+ 
+ 
+ # =============================================================================
+@@ -635,17 +642,21 @@
+     # =========================================================================
+     # NAME GET
+     # =========================================================================
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        if self.line_type == "treatment" and self.treatment_id:
++            return "%s × %s" % (self.treatment_id.name, self.quantity)
++        parts = []
++        if self.category_id:
++            parts.append(_("Category: %s") % self.category_id.complete_name)
++        if self.tag_ids:
++            parts.append(_("Tags: %s") % ", ".join(self.tag_ids.mapped("name")))
++        return "%s × %s" % ("; ".join(parts) if parts else _("Scoped"), self.quantity)
++
++    @api.depends("line_type", "treatment_id.name", "category_id.complete_name", "tag_ids.name", "quantity")
++    def _compute_display_name(self):
+         for rec in self:
+-            if rec.line_type == "treatment" and rec.treatment_id:
+-                label = "%s × %s" % (rec.treatment_id.name, rec.quantity)
+-            else:
+-                parts = []
+-                if rec.category_id:
+-                    parts.append(_("Category: %s") % rec.category_id.complete_name)
+-                if rec.tag_ids:
+-                    parts.append(_("Tags: %s") % ", ".join(rec.tag_ids.mapped("name")))
+-                label = "%s × %s" % ("; ".join(parts) if parts else _("Scoped"), rec.quantity)
+-            res.append((rec.id, label))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/treatment_category.py /mnt/data/clinic_treatment_catalog_work/models/treatment_category.py
+--- /mnt/data/clinic_treatment_catalog_original/models/treatment_category.py	2026-08-11 23:31:41.977956233 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/treatment_category.py	2026-08-11 23:52:04.713363236 +0000
+@@ -122,9 +122,10 @@
+     # -------------------------------------------------------------------------
+     # Constraints
+     # -------------------------------------------------------------------------
+-    _sql_constraints = [
+-        ("code_company_uniq", "unique(code, company_id)", "Code must be unique per company."),
+-    ]
++    _code_company_uniq = models.Constraint(
++        "unique(code, company_id)",
++        "Code must be unique per company.",
++    )
+ 
+     # =========================================================================
+     # COMPUTES
+@@ -139,14 +140,14 @@
+ 
+     def _compute_counts(self):
+         Treatment = self.env["clinic.treatment.catalog"]
+-        # Direct counts via read_group
++        # Direct counts via _read_group
+         if self.ids:
+-            groups = Treatment.read_group(
+-                domain=[("category_id", "in", self.ids)],
+-                fields=["category_id"],
+-                groupby=["category_id"]
++            groups = Treatment._read_group(
++                [("category_id", "in", self.ids)],
++                ["category_id"],
++                ["__count"],
+             )
+-            direct_map = {g["category_id"][0]: g["category_id_count"] for g in groups if g.get("category_id")}
++            direct_map = {category.id: count for category, count in groups if category}
+         else:
+             direct_map = {}
+ 
+@@ -270,18 +271,22 @@
+     # =========================================================================
+     # NAME GET / SEARCH
+     # =========================================================================
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        label = self.complete_name or self.name
++        return "[%s] %s" % (self.code, label) if self.code else label
++
++    @api.depends("code", "name", "complete_name")
++    def _compute_display_name(self):
+         for rec in self:
+-            display = rec.complete_name or rec.name
+-            if rec.code:
+-                display = "[%s] %s" % (rec.code, display)
+-            res.append((rec.id, display))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=100):
+-        args = args or []
+-        domain = ["|", "|", ("code", operator, name), ("name", operator, name), ("complete_name", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++    def name_search(self, name="", domain=None, operator="ilike", limit=100):
++        domain = domain or []
++        criteria = ["|", "|", ("code", operator, name), ("name", operator, name), ("complete_name", operator, name)] if name else []
++        recs = self.search(criteria + domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/treatment_pricelist.py /mnt/data/clinic_treatment_catalog_work/models/treatment_pricelist.py
+--- /mnt/data/clinic_treatment_catalog_original/models/treatment_pricelist.py	2026-08-11 23:31:41.978098478 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/treatment_pricelist.py	2026-08-11 23:43:42.762901197 +0000
+@@ -171,9 +171,10 @@
+     # -------------------------------------------------------------------------
+     # Constraints
+     # -------------------------------------------------------------------------
+-    _sql_constraints = [
+-        ("code_company_uniq", "unique(code, company_id)", "Code must be unique per company."),
+-    ]
++    _code_company_uniq = models.Constraint(
++        "unique(code, company_id)",
++        "Code must be unique per company.",
++    )
+ 
+     # =========================================================================
+     # COMPUTES
+@@ -277,8 +278,7 @@
+                 "active": rec.active,
+                 "company_id": rec.company_id.id,
+                 "currency_id": rec.currency_id.id,
+-                # Catatan: validity di Odoo berada di item, bukan header; simpan di header klinik saja
+-                "discount_policy": "without_discount",  # default aman, bisa diedit di UI
++                # Validity tetap dikelola oleh header/rules ClinicOne.
+             }
+             pl = self.env["product.pricelist"].create(pl_vals)
+             # Link balik
+@@ -322,7 +322,7 @@
+             "type": "ir.actions.act_window",
+             "name": _("Treatment Price Rules"),
+             "res_model": "clinic.treatment.pricelist.item",
+-            "view_mode": "tree,form",
++            "view_mode": "list,form",
+             "domain": domain,
+             "context": {"default_pricelist_id": self.id},
+         }
+@@ -367,10 +367,10 @@
+         product = Treatment.get_service_product()
+         if pl and pl.exists() and product and product.exists():
+             try:
+-                prices = pl._get_products_price(product, quantity or 1.0, uom_id=False, date=False)
+-                if isinstance(prices, dict):
+-                    price = prices.get(product.id, price)
+-                    expl.append(_("Odoo Pricelist applied."))
++                price = float(
++                    pl._get_product_price(product, quantity or 1.0, uom=product.uom_id, date=False)
++                )
++                expl.append(_("Odoo Pricelist applied."))
+             except Exception as e:  # pragma: no cover
+                 _logger.debug("Odoo pricelist fallback skipped: %s", e)
+ 
+@@ -383,21 +383,24 @@
+     # =========================================================================
+     # NAME GET / SEARCH
+     # =========================================================================
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        return "[%s] %s" % (self.code, self.name) if self.code else self.name
++
++    @api.depends("code", "name")
++    def _compute_display_name(self):
+         for rec in self:
+-            label = rec.name
+-            if rec.code:
+-                label = "[%s] %s" % (rec.code, label)
+-            res.append((rec.id, label))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=100):
+-        args = args or []
+-        domain = ["|", ("code", operator, name), ("name", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++    def name_search(self, name="", domain=None, operator="ilike", limit=100):
++        domain = domain or []
++        criteria = ["|", ("code", operator, name), ("name", operator, name)] if name else []
++        recs = self.search(criteria + domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+ 
+ 
+ # =============================================================================
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/treatment_pricelist_item.py /mnt/data/clinic_treatment_catalog_work/models/treatment_pricelist_item.py
+--- /mnt/data/clinic_treatment_catalog_original/models/treatment_pricelist_item.py	2026-08-11 23:31:41.978295815 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/treatment_pricelist_item.py	2026-08-11 23:43:42.763090269 +0000
+@@ -567,9 +567,9 @@
+             pl = header.product_pricelist_id if (header and "product_pricelist_id" in header._fields) else None
+             if pl and product:
+                 try:
+-                    prices = pl._get_products_price(products=product, quantities=qty or 1.0, uom_id=False, date=at_dt)
+-                    if isinstance(prices, dict):
+-                        return float(prices.get(product.id, 0.0))
++                    return float(
++                        pl._get_product_price(product, qty or 1.0, uom=product.uom_id, date=at_dt)
++                    )
+                 except Exception as e:
+                     _logger.debug("Pricelist price failed: %s", e)
+         # Fallback Treatment base
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/treatment_public.py /mnt/data/clinic_treatment_catalog_work/models/treatment_public.py
+--- /mnt/data/clinic_treatment_catalog_original/models/treatment_public.py	2026-08-11 23:31:41.978411449 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/treatment_public.py	2026-08-11 23:43:16.154684507 +0000
+@@ -71,9 +71,10 @@
+     )
+ 
+     # Ensure strict 1-1 between public and catalog (one public per catalog)
+-    _sql_constraints = [
+-        ("catalog_unique", "unique(catalog_id)", "Each Catalog record can be linked to only one Treatment."),
+-    ]
++    _catalog_unique = models.Constraint(
++        "unique(catalog_id)",
++        "Each Catalog record can be linked to only one Treatment.",
++    )
+ 
+     # -------------------------------------------------------------------------
+     # CREATE / WRITE: route delegated fields safely to the catalog
+@@ -180,22 +181,21 @@
+     # -------------------------------------------------------------------------
+     # NAME GET / SEARCH (delegate to catalog for consistent UX)
+     # -------------------------------------------------------------------------
+-    def name_get(self):
+-        res = []
++    @api.depends("catalog_id.display_name")
++    def _compute_display_name(self):
+         for rec in self:
+-            # Use catalog's display (already includes code if any)
+-            name = rec.catalog_id.name_get()[0][1] if rec.catalog_id else _("(No Catalog)")
+-            res.append((rec.id, name))
+-        return res
++            rec.display_name = rec.catalog_id.display_name if rec.catalog_id else _("(No Catalog)")
++
++    def name_get(self):
++        return [(rec.id, rec.display_name) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=100):
+-        args = args or []
++    def name_search(self, name="", domain=None, operator="ilike", limit=100):
++        domain = domain or []
+         Catalog = self.env["clinic.treatment.catalog"]
+-        # Search on catalog; then fetch public records pointing to those catalogs
+-        domain = ["|", ("code", operator, name), ("name", operator, name)]
+-        cats = Catalog.search(domain, limit=limit)
++        criteria = ["|", ("code", operator, name), ("name", operator, name)] if name else []
++        cats = Catalog.search(criteria, limit=limit) if criteria else Catalog.search([], limit=limit)
+         if not cats:
+             return []
+-        pubs = self.search([("catalog_id", "in", cats.ids)] + args, limit=limit)
+-        return pubs.name_get()
++        pubs = self.search([("catalog_id", "in", cats.ids)] + domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in pubs.sudo()]
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/models/treatment_tag.py /mnt/data/clinic_treatment_catalog_work/models/treatment_tag.py
+--- /mnt/data/clinic_treatment_catalog_original/models/treatment_tag.py	2026-08-11 23:31:41.978518502 +0000
++++ /mnt/data/clinic_treatment_catalog_work/models/treatment_tag.py	2026-08-11 23:43:16.153696759 +0000
+@@ -127,9 +127,10 @@
+     # -------------------------------------------------------------------------
+     # Constraints
+     # -------------------------------------------------------------------------
+-    _sql_constraints = [
+-        ("code_company_uniq", "unique(code, company_id)", "Code must be unique per company."),
+-    ]
++    _code_company_uniq = models.Constraint(
++        "unique(code, company_id)",
++        "Code must be unique per company.",
++    )
+ 
+     @api.constrains("name")
+     def _check_name_not_empty(self):
+@@ -219,27 +220,29 @@
+             "type": "ir.actions.act_window",
+             "name": name,
+             "res_model": "clinic.treatment.catalog",
+-            "view_mode": "tree,form",
++            "view_mode": "list,form",
+             "domain": domain,
+         }
+ 
+     # =========================================================================
+     # NAME GET / SEARCH
+     # =========================================================================
+-    def name_get(self):
+-        res = []
++    def _clinic_display_label(self):
++        self.ensure_one()
++        label = "%s %s" % (self.emoji, self.name) if self.emoji else self.name
++        return "[%s] %s" % (self.code, label) if self.code else label
++
++    @api.depends("code", "name", "emoji")
++    def _compute_display_name(self):
+         for rec in self:
+-            label = rec.name
+-            if rec.emoji:
+-                label = "%s %s" % (rec.emoji, label)
+-            if rec.code:
+-                label = "[%s] %s" % (rec.code, label)
+-            res.append((rec.id, label))
+-        return res
++            rec.display_name = rec._clinic_display_label()
++
++    def name_get(self):
++        return [(rec.id, rec._clinic_display_label()) for rec in self]
+ 
+     @api.model
+-    def name_search(self, name, args=None, operator="ilike", limit=100):
+-        args = args or []
+-        domain = ["|", ("code", operator, name), ("name", operator, name)]
+-        recs = self.search(domain + args, limit=limit)
+-        return recs.name_get()
++    def name_search(self, name="", domain=None, operator="ilike", limit=100):
++        domain = domain or []
++        criteria = ["|", ("code", operator, name), ("name", operator, name)] if name else []
++        recs = self.search(criteria + domain, limit=limit)
++        return [(rec.id, rec.display_name) for rec in recs.sudo()]
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/security/clinic_treatment_catalog_security.xml /mnt/data/clinic_treatment_catalog_work/security/clinic_treatment_catalog_security.xml
+--- /mnt/data/clinic_treatment_catalog_original/security/clinic_treatment_catalog_security.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/security/clinic_treatment_catalog_security.xml	2026-08-11 23:46:15.868767048 +0000
+@@ -0,0 +1,81 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="rule_clinic_treatment_catalog_company" model="ir.rule">
++        <field name="name">clinic.treatment.catalog: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_catalog"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_category_company" model="ir.rule">
++        <field name="name">clinic.treatment.category: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_category"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_tag_company" model="ir.rule">
++        <field name="name">clinic.treatment.tag: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_tag"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_attribute_company" model="ir.rule">
++        <field name="name">clinic.treatment.attribute: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_attribute"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_attribute_value_company" model="ir.rule">
++        <field name="name">clinic.treatment.attribute.value: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_attribute_value"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_attribute_line_company" model="ir.rule">
++        <field name="name">clinic.treatment.attribute.line: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_attribute_line"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_bundle_company" model="ir.rule">
++        <field name="name">clinic.treatment.bundle: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_bundle"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_bundle_line_company" model="ir.rule">
++        <field name="name">clinic.treatment.bundle.line: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_bundle_line"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_pricelist_company" model="ir.rule">
++        <field name="name">clinic.treatment.pricelist: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_pricelist"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_pricelist_item_company" model="ir.rule">
++        <field name="name">clinic.treatment.pricelist.item: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment_pricelist_item"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_treatment_company" model="ir.rule">
++        <field name="name">clinic.treatment: allowed companies</field>
++        <field name="model_id" ref="model_clinic_treatment"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_consent_request_company" model="ir.rule">
++        <field name="name">clinic.consent.request: allowed companies</field>
++        <field name="model_id" ref="model_clinic_consent_request"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++    <record id="rule_clinic_consent_request_item_company" model="ir.rule">
++        <field name="name">clinic.consent.request.item: allowed companies</field>
++        <field name="model_id" ref="model_clinic_consent_request_item"/>
++        <field name="domain_force">[('request_id.company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
++    </record>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/security/ir.model.access.csv /mnt/data/clinic_treatment_catalog_work/security/ir.model.access.csv
+--- /mnt/data/clinic_treatment_catalog_original/security/ir.model.access.csv	2026-08-11 23:31:41.978663913 +0000
++++ /mnt/data/clinic_treatment_catalog_work/security/ir.model.access.csv	2026-08-11 23:46:15.868648941 +0000
+@@ -1,3 +1,17 @@
+-
+ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+-access_clinic_treatment_catalog_clinic_treatment_catalog,clinic_treatment_catalog.clinic_treatment_catalog,model_clinic_treatment_catalog_clinic_treatment_catalog,base.group_user,1,1,1,1
++access_clinic_treatment_catalog_user,clinic.treatment.catalog internal user,model_clinic_treatment_catalog,base.group_user,1,1,1,1
++access_clinic_treatment_category_user,clinic.treatment.category internal user,model_clinic_treatment_category,base.group_user,1,1,1,1
++access_clinic_treatment_tag_user,clinic.treatment.tag internal user,model_clinic_treatment_tag,base.group_user,1,1,1,1
++access_clinic_treatment_attribute_user,clinic.treatment.attribute internal user,model_clinic_treatment_attribute,base.group_user,1,1,1,1
++access_clinic_treatment_attribute_value_user,clinic.treatment.attribute.value internal user,model_clinic_treatment_attribute_value,base.group_user,1,1,1,1
++access_clinic_treatment_attribute_line_user,clinic.treatment.attribute.line internal user,model_clinic_treatment_attribute_line,base.group_user,1,1,1,1
++access_clinic_treatment_bundle_user,clinic.treatment.bundle internal user,model_clinic_treatment_bundle,base.group_user,1,1,1,1
++access_clinic_treatment_bundle_line_user,clinic.treatment.bundle.line internal user,model_clinic_treatment_bundle_line,base.group_user,1,1,1,1
++access_clinic_treatment_pricelist_user,clinic.treatment.pricelist internal user,model_clinic_treatment_pricelist,base.group_user,1,1,1,1
++access_clinic_treatment_pricelist_item_user,clinic.treatment.pricelist.item internal user,model_clinic_treatment_pricelist_item,base.group_user,1,1,1,1
++access_clinic_treatment_user,clinic.treatment internal user,model_clinic_treatment,base.group_user,1,1,1,1
++access_clinic_consent_template_user,clinic.consent.template internal user,model_clinic_consent_template,base.group_user,1,1,1,1
++access_clinic_consent_template_item_user,clinic.consent.template.item internal user,model_clinic_consent_template_item,base.group_user,1,1,1,1
++access_clinic_consent_template_version_user,clinic.consent.template.version internal user,model_clinic_consent_template_version,base.group_user,1,1,1,1
++access_clinic_consent_request_user,clinic.consent.request internal user,model_clinic_consent_request,base.group_user,1,1,1,1
++access_clinic_consent_request_item_user,clinic.consent.request.item internal user,model_clinic_consent_request_item,base.group_user,1,1,1,1
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/views/consent_views.xml /mnt/data/clinic_treatment_catalog_work/views/consent_views.xml
+--- /mnt/data/clinic_treatment_catalog_original/views/consent_views.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/views/consent_views.xml	2026-08-11 23:46:28.074234403 +0000
+@@ -0,0 +1,40 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_consent_template_search" model="ir.ui.view"><field name="name">clinic.consent.template.search</field><field name="model">clinic.consent.template</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="scope"/><field name="category"/><field name="treatment_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/></search></field></record>
++    <record id="view_consent_template_list" model="ir.ui.view"><field name="name">clinic.consent.template.list</field><field name="model">clinic.consent.template</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="scope"/><field name="category"/><field name="treatment_id"/><field name="latest_version_id"/><field name="active"/></list></field></record>
++    <record id="view_consent_template_form" model="ir.ui.view"><field name="name">clinic.consent.template.form</field><field name="model">clinic.consent.template</field><field name="arch" type="xml"><form><sheet><div class="oe_title"><h1><field name="name"/></h1><field name="code"/></div><group><group><field name="scope"/><field name="category"/><field name="treatment_id"/><field name="validity_days"/></group><group><field name="requires_guardian"/><field name="requires_witness"/><field name="allow_reuse"/><field name="active"/></group></group><notebook><page string="Default Acknowledgements"><field name="default_item_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="label"/><field name="required"/><field name="default_value"/></list></field></page><page string="Versions"><field name="version_ids"><list><field name="version"/><field name="title"/><field name="effective_from"/><field name="effective_to"/><field name="state"/></list></field></page><page string="Notes"><field name="notes"/></page></notebook></sheet></form></field></record>
++    <record id="action_consent_template" model="ir.actions.act_window"><field name="name">Consent Templates</field><field name="res_model">clinic.consent.template</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_consent_template_item_search" model="ir.ui.view"><field name="name">clinic.consent.template.item.search</field><field name="model">clinic.consent.template.item</field><field name="arch" type="xml"><search><field name="template_id"/><field name="label"/><filter name="required" string="Required" domain="[('required','=',True)]"/></search></field></record>
++    <record id="view_consent_template_item_list" model="ir.ui.view"><field name="name">clinic.consent.template.item.list</field><field name="model">clinic.consent.template.item</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="template_id"/><field name="label"/><field name="required"/><field name="default_value"/></list></field></record>
++    <record id="view_consent_template_item_form" model="ir.ui.view"><field name="name">clinic.consent.template.item.form</field><field name="model">clinic.consent.template.item</field><field name="arch" type="xml"><form><sheet><group><field name="template_id"/><field name="sequence"/><field name="label"/><field name="required"/><field name="default_value"/><field name="notes"/></group></sheet></form></field></record>
++    <record id="action_consent_template_item" model="ir.actions.act_window"><field name="name">Consent Template Items</field><field name="res_model">clinic.consent.template.item</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_consent_version_search" model="ir.ui.view"><field name="name">clinic.consent.template.version.search</field><field name="model">clinic.consent.template.version</field><field name="arch" type="xml"><search><field name="template_id"/><field name="title"/><field name="state"/><filter name="published" string="Published" domain="[('state','=','published')]"/><filter name="group_template" string="Template" context="{'group_by':'template_id'}"/></search></field></record>
++    <record id="view_consent_version_list" model="ir.ui.view"><field name="name">clinic.consent.template.version.list</field><field name="model">clinic.consent.template.version</field><field name="arch" type="xml"><list><field name="template_id"/><field name="version"/><field name="title"/><field name="effective_from"/><field name="effective_to"/><field name="state"/></list></field></record>
++    <record id="view_consent_version_form" model="ir.ui.view"><field name="name">clinic.consent.template.version.form</field><field name="model">clinic.consent.template.version</field><field name="arch" type="xml"><form><header><field name="state" widget="statusbar" statusbar_visible="draft,published,archived"/></header><sheet><div class="oe_title"><h1><field name="title" placeholder="Consent version title"/></h1></div><group><field name="template_id"/><field name="version"/><field name="effective_from"/><field name="effective_to"/></group><notebook><page string="Consent Text"><field name="body_html"/></page><page string="Changelog"><field name="changelog"/></page></notebook></sheet></form></field></record>
++    <record id="action_consent_version" model="ir.actions.act_window"><field name="name">Consent Versions</field><field name="res_model">clinic.consent.template.version</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_consent_request_search" model="ir.ui.view"><field name="name">clinic.consent.request.search</field><field name="model">clinic.consent.request</field><field name="arch" type="xml"><search><field name="reference"/><field name="patient_id"/><field name="template_id"/><field name="scope"/><field name="state"/><field name="branch_id"/><field name="company_id"/><filter name="signed" string="Signed" domain="[('state','=','signed')]"/><filter name="valid" string="Valid" domain="[('is_valid','=',True)]"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_template" string="Template" context="{'group_by':'template_id'}"/></search></field></record>
++    <record id="view_consent_request_list" model="ir.ui.view"><field name="name">clinic.consent.request.list</field><field name="model">clinic.consent.request</field><field name="arch" type="xml"><list><field name="reference"/><field name="patient_id"/><field name="template_id"/><field name="scope"/><field name="state"/><field name="is_valid"/><field name="signed_at"/><field name="expires_at"/><field name="branch_id"/><field name="company_id" groups="base.group_multi_company"/></list></field></record>
++    <record id="view_consent_request_form" model="ir.ui.view"><field name="name">clinic.consent.request.form</field><field name="model">clinic.consent.request</field><field name="arch" type="xml"><form>
++        <header>
++            <button name="action_request" type="object" string="Request" class="btn-primary" invisible="state not in ['draft','cancelled','expired']"/>
++            <button name="action_mark_signed" type="object" string="Mark Signed" class="btn-primary" invisible="state not in ['requested','draft']"/>
++            <button name="action_revoke" type="object" string="Revoke" invisible="state != 'signed'"/>
++            <button name="action_expire" type="object" string="Expire" invisible="state != 'signed'"/>
++            <button name="action_cancel" type="object" string="Cancel" invisible="state == 'signed'"/>
++            <field name="state" widget="statusbar" statusbar_visible="draft,requested,signed,revoked,expired,cancelled"/>
++        </header>
++        <sheet><div class="oe_title"><h1><field name="display_name" readonly="1"/></h1><field name="reference" readonly="1"/></div>
++            <group><group string="Consent"><field name="patient_id"/><field name="template_id"/><field name="version_id"/><field name="title"/><field name="scope" readonly="1"/></group><group string="Context"><field name="branch_id"/><field name="staff_assignment_id"/><field name="created_by_id"/><field name="requested_by_id"/><field name="witness_staff_id"/><field name="company_id" groups="base.group_multi_company"/></group></group>
++            <notebook><page string="Consent Content"><field name="content_html"/></page><page string="Acknowledgements"><field name="item_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="label"/><field name="required"/><field name="value"/><field name="notes"/></list></field></page><page string="Signatures"><group><field name="guardian_required"/><field name="guardian_name" invisible="not guardian_required"/><field name="guardian_relation" invisible="not guardian_required"/><field name="guardian_id_no" invisible="not guardian_required"/><field name="patient_signature"/><field name="guardian_signature" invisible="not guardian_required"/><field name="witness_signature"/></group></page><page string="E-Sign"><group><field name="e_sign_provider"/><field name="e_sign_status"/><field name="e_sign_reference"/><field name="e_sign_url"/><field name="e_sign_last_sync" readonly="1"/><field name="has_e_signature" readonly="1"/></group></page><page string="Validity"><group><field name="signed_at"/><field name="expires_at"/><field name="revoked_at"/><field name="revoke_reason"/><field name="is_valid" readonly="1"/><field name="validity_days" readonly="1"/></group></page><page string="Billing &amp; Files"><group><field name="invoice_id"/><field name="pdf_attachment_id"/><field name="attachment_count" readonly="1"/></group></page><page string="Notes"><field name="notes"/></page></notebook>
++        </sheet><chatter/>
++    </form></field></record>
++    <record id="action_consent_request" model="ir.actions.act_window"><field name="name">Consent Requests</field><field name="res_model">clinic.consent.request</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_consent_request_item_search" model="ir.ui.view"><field name="name">clinic.consent.request.item.search</field><field name="model">clinic.consent.request.item</field><field name="arch" type="xml"><search><field name="request_id"/><field name="label"/><field name="value"/><filter name="required" string="Required" domain="[('required','=',True)]"/></search></field></record>
++    <record id="view_consent_request_item_list" model="ir.ui.view"><field name="name">clinic.consent.request.item.list</field><field name="model">clinic.consent.request.item</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="request_id"/><field name="label"/><field name="required"/><field name="value"/></list></field></record>
++    <record id="view_consent_request_item_form" model="ir.ui.view"><field name="name">clinic.consent.request.item.form</field><field name="model">clinic.consent.request.item</field><field name="arch" type="xml"><form><sheet><group><field name="request_id"/><field name="sequence"/><field name="label"/><field name="required"/><field name="value"/><field name="notes"/></group></sheet></form></field></record>
++    <record id="action_consent_request_item" model="ir.actions.act_window"><field name="name">Consent Request Items</field><field name="res_model">clinic.consent.request.item</field><field name="view_mode">list,form</field></record>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/views/treatment_attribute_views.xml /mnt/data/clinic_treatment_catalog_work/views/treatment_attribute_views.xml
+--- /mnt/data/clinic_treatment_catalog_original/views/treatment_attribute_views.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/views/treatment_attribute_views.xml	2026-08-11 23:46:15.868837407 +0000
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_treatment_attribute_search" model="ir.ui.view"><field name="name">clinic.treatment.attribute.search</field><field name="model">clinic.treatment.attribute</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="technical_name"/><field name="value_type"/><field name="scope"/><field name="company_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/></search></field></record>
++    <record id="view_treatment_attribute_list" model="ir.ui.view"><field name="name">clinic.treatment.attribute.list</field><field name="model">clinic.treatment.attribute</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="technical_name"/><field name="value_type"/><field name="scope"/><field name="value_count"/><field name="treatment_count"/><field name="active" optional="hide"/></list></field></record>
++    <record id="view_treatment_attribute_form" model="ir.ui.view"><field name="name">clinic.treatment.attribute.form</field><field name="model">clinic.treatment.attribute</field><field name="arch" type="xml"><form><sheet><div class="oe_button_box" name="button_box"><button name="action_open_treatments" type="object" class="oe_stat_button" icon="fa-medkit"><field name="treatment_count" widget="statinfo" string="Treatments"/></button></div><field name="image_1920" widget="image" class="oe_avatar"/><div class="oe_title"><h1><field name="name"/></h1><field name="code" readonly="1"/></div><group><group><field name="technical_name"/><field name="value_type"/><field name="selection_mode" invisible="value_type != 'select'"/><field name="scope"/></group><group><field name="sequence"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group></group><notebook><page string="Values" invisible="value_type != 'select'"><field name="value_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="delta_price"/><field name="delta_duration_minutes"/><button name="action_open_treatments" type="object" string="Treatments" icon="fa-medkit"/></list></field></page><page string="Description"><field name="description"/></page></notebook></sheet><chatter/></form></field></record>
++    <record id="action_treatment_attribute" model="ir.actions.act_window"><field name="name">Treatment Attributes</field><field name="res_model">clinic.treatment.attribute</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_treatment_attribute_value_search" model="ir.ui.view"><field name="name">clinic.treatment.attribute.value.search</field><field name="model">clinic.treatment.attribute.value</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="attribute_id"/><field name="company_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/><filter name="group_attribute" string="Attribute" context="{'group_by':'attribute_id'}"/></search></field></record>
++    <record id="view_treatment_attribute_value_list" model="ir.ui.view"><field name="name">clinic.treatment.attribute.value.list</field><field name="model">clinic.treatment.attribute.value</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="attribute_id"/><field name="delta_price"/><field name="delta_duration_minutes"/><field name="treatment_count"/><field name="active" optional="hide"/></list></field></record>
++    <record id="view_treatment_attribute_value_form" model="ir.ui.view"><field name="name">clinic.treatment.attribute.value.form</field><field name="model">clinic.treatment.attribute.value</field><field name="arch" type="xml"><form><sheet><div class="oe_button_box" name="button_box"><button name="action_open_treatments" type="object" class="oe_stat_button" icon="fa-medkit"><field name="treatment_count" widget="statinfo" string="Treatments"/></button></div><div class="oe_title"><h1><field name="name"/></h1><field name="code" readonly="1"/></div><group><group><field name="attribute_id"/><field name="sequence"/><field name="color"/></group><group><field name="delta_price"/><field name="delta_duration_minutes"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group></group></sheet><chatter/></form></field></record>
++    <record id="action_treatment_attribute_value" model="ir.actions.act_window"><field name="name">Attribute Values</field><field name="res_model">clinic.treatment.attribute.value</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_treatment_attribute_line_search" model="ir.ui.view"><field name="name">clinic.treatment.attribute.line.search</field><field name="model">clinic.treatment.attribute.line</field><field name="arch" type="xml"><search><field name="treatment_id"/><field name="attribute_id"/><field name="value_id"/><field name="company_id"/><filter name="group_treatment" string="Treatment" context="{'group_by':'treatment_id'}"/><filter name="group_attribute" string="Attribute" context="{'group_by':'attribute_id'}"/></search></field></record>
++    <record id="view_treatment_attribute_line_list" model="ir.ui.view"><field name="name">clinic.treatment.attribute.line.list</field><field name="model">clinic.treatment.attribute.line</field><field name="arch" type="xml"><list><field name="treatment_id"/><field name="attribute_id"/><field name="display_value"/><field name="company_id" groups="base.group_multi_company"/></list></field></record>
++    <record id="view_treatment_attribute_line_form" model="ir.ui.view"><field name="name">clinic.treatment.attribute.line.form</field><field name="model">clinic.treatment.attribute.line</field><field name="arch" type="xml"><form><sheet><group><group><field name="treatment_id"/><field name="attribute_id"/><field name="value_id"/></group><group><field name="display_value" readonly="1"/><field name="company_id" groups="base.group_multi_company" readonly="1"/></group></group><group string="Typed Value"><field name="value_text"/><field name="value_number"/><field name="value_boolean"/><field name="value_date"/><field name="value_datetime"/><field name="value_range_min"/><field name="value_range_max"/></group></sheet></form></field></record>
++    <record id="action_treatment_attribute_line" model="ir.actions.act_window"><field name="name">Treatment Attribute Assignments</field><field name="res_model">clinic.treatment.attribute.line</field><field name="view_mode">list,form</field></record>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/views/treatment_bundle_views.xml /mnt/data/clinic_treatment_catalog_work/views/treatment_bundle_views.xml
+--- /mnt/data/clinic_treatment_catalog_original/views/treatment_bundle_views.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/views/treatment_bundle_views.xml	2026-08-11 23:46:47.672929895 +0000
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_treatment_bundle_search" model="ir.ui.view"><field name="name">clinic.treatment.bundle.search</field><field name="model">clinic.treatment.bundle</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="pricing_policy"/><field name="company_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/><filter name="current" string="Currently Valid" domain="[('is_currently_valid','=',True)]"/></search></field></record>
++    <record id="view_treatment_bundle_list" model="ir.ui.view"><field name="name">clinic.treatment.bundle.list</field><field name="model">clinic.treatment.bundle</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="pricing_policy"/><field name="base_price"/><field name="computed_sum_price" optional="show"/><field name="line_count"/><field name="total_sessions"/><field name="company_id" groups="base.group_multi_company"/><field name="active" optional="hide"/></list></field></record>
++    <record id="view_treatment_bundle_form" model="ir.ui.view"><field name="name">clinic.treatment.bundle.form</field><field name="model">clinic.treatment.bundle</field><field name="arch" type="xml"><form><sheet><div class="oe_button_box" name="button_box"><button name="action_open_treatments" type="object" class="oe_stat_button" icon="fa-medkit"><field name="treatment_count" widget="statinfo" string="Treatments"/></button></div><field name="image_1920" widget="image" class="oe_avatar"/><div class="oe_title"><h1><field name="name"/></h1><field name="code" readonly="1"/></div><group><group><field name="pricing_policy"/><field name="base_price"/><field name="minimum_price"/><field name="computed_sum_price" readonly="1"/></group><group><field name="valid_from"/><field name="valid_to"/><field name="is_currently_valid" readonly="1"/><field name="allow_online_sale"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group></group><notebook><page string="Bundle Lines"><field name="line_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="line_type"/><field name="treatment_id" invisible="line_type != 'treatment'"/><field name="category_id" invisible="line_type != 'category'"/><field name="tag_ids" widget="many2many_tags" invisible="line_type != 'category'"/><field name="quantity"/><field name="price_policy"/><field name="effective_unit_price"/><field name="subtotal"/></list></field></page><page string="Service Product"><group><field name="product_tmpl_id"/><field name="product_id"/></group></page><page string="Description"><field name="description"/></page></notebook></sheet><chatter/></form></field></record>
++    <record id="action_treatment_bundle" model="ir.actions.act_window"><field name="name">Treatment Bundles</field><field name="res_model">clinic.treatment.bundle</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_treatment_bundle_line_search" model="ir.ui.view"><field name="name">clinic.treatment.bundle.line.search</field><field name="model">clinic.treatment.bundle.line</field><field name="arch" type="xml"><search><field name="bundle_id"/><field name="line_type"/><field name="treatment_id"/><field name="category_id"/><field name="company_id"/><filter name="group_bundle" string="Bundle" context="{'group_by':'bundle_id'}"/></search></field></record>
++    <record id="view_treatment_bundle_line_list" model="ir.ui.view"><field name="name">clinic.treatment.bundle.line.list</field><field name="model">clinic.treatment.bundle.line</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="bundle_id"/><field name="line_type"/><field name="treatment_id"/><field name="category_id"/><field name="quantity"/><field name="effective_unit_price"/><field name="subtotal"/></list></field></record>
++    <record id="view_treatment_bundle_line_form" model="ir.ui.view"><field name="name">clinic.treatment.bundle.line.form</field><field name="model">clinic.treatment.bundle.line</field><field name="arch" type="xml"><form><sheet><group><group><field name="bundle_id"/><field name="line_type"/><field name="treatment_id" invisible="line_type != 'treatment'"/><field name="category_id" invisible="line_type != 'category'"/><field name="tag_ids" widget="many2many_tags" invisible="line_type != 'category'"/></group><group><field name="quantity"/><field name="per_visit_limit"/><field name="allow_overage"/><field name="overage_unit_price" invisible="not allow_overage"/><field name="company_id" groups="base.group_multi_company" readonly="1"/></group></group><group string="Pricing"><field name="price_policy"/><field name="unit_price"/><field name="effective_unit_price" readonly="1"/><field name="subtotal" readonly="1"/></group><field name="notes"/></sheet></form></field></record>
++    <record id="action_treatment_bundle_line" model="ir.actions.act_window"><field name="name">Bundle Lines</field><field name="res_model">clinic.treatment.bundle.line</field><field name="view_mode">list,form</field></record>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/views/treatment_catalog_menus.xml /mnt/data/clinic_treatment_catalog_work/views/treatment_catalog_menus.xml
+--- /mnt/data/clinic_treatment_catalog_original/views/treatment_catalog_menus.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/views/treatment_catalog_menus.xml	2026-08-11 23:46:15.868918980 +0000
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <menuitem id="menu_treatment_catalog" name="Treatment Catalog" parent="clinic_base.menu_root" sequence="30" groups="base.group_user"/>
++    <menuitem id="menu_treatment_catalog_services" name="Services" parent="menu_treatment_catalog" sequence="10"/>
++    <menuitem id="menu_treatments" name="Treatments" parent="menu_treatment_catalog_services" action="action_treatment_tree" sequence="10"/>
++    <menuitem id="menu_bundles" name="Bundles" parent="menu_treatment_catalog_services" action="action_treatment_bundle" sequence="20"/>
++    <menuitem id="menu_pricing" name="Pricing" parent="menu_treatment_catalog" sequence="20"/>
++    <menuitem id="menu_pricelists" name="Pricelists" parent="menu_pricing" action="action_treatment_pricelist" sequence="10"/>
++    <menuitem id="menu_price_rules" name="Price Rules" parent="menu_pricing" action="action_treatment_pricelist_item" sequence="20"/>
++    <menuitem id="menu_consent" name="Consent" parent="menu_treatment_catalog" sequence="30"/>
++    <menuitem id="menu_consent_requests" name="Requests" parent="menu_consent" action="action_consent_request" sequence="10"/>
++    <menuitem id="menu_consent_templates" name="Templates" parent="menu_consent" action="action_consent_template" sequence="20"/>
++    <menuitem id="menu_master_data" name="Configuration" parent="menu_treatment_catalog" sequence="90"/>
++    <menuitem id="menu_categories" name="Categories" parent="menu_master_data" action="action_treatment_category" sequence="10"/>
++    <menuitem id="menu_tags" name="Tags" parent="menu_master_data" action="action_treatment_tag" sequence="20"/>
++    <menuitem id="menu_attributes" name="Attributes" parent="menu_master_data" action="action_treatment_attribute" sequence="30"/>
++    <menuitem id="menu_attribute_values" name="Attribute Values" parent="menu_master_data" action="action_treatment_attribute_value" sequence="40"/>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/views/treatment_master_views.xml /mnt/data/clinic_treatment_catalog_work/views/treatment_master_views.xml
+--- /mnt/data/clinic_treatment_catalog_original/views/treatment_master_views.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/views/treatment_master_views.xml	2026-08-11 23:47:45.805291627 +0000
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_treatment_category_search" model="ir.ui.view"><field name="name">clinic.treatment.category.search</field><field name="model">clinic.treatment.category</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="parent_id"/><field name="company_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/><filter name="group_parent" string="Parent" context="{'group_by':'parent_id'}"/></search></field></record>
++    <record id="view_treatment_category_list" model="ir.ui.view"><field name="name">clinic.treatment.category.list</field><field name="model">clinic.treatment.category</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="code"/><field name="complete_name"/><field name="treatment_count"/><field name="child_count"/><field name="company_id" groups="base.group_multi_company"/><field name="active" optional="hide"/></list></field></record>
++    <record id="view_treatment_category_form" model="ir.ui.view"><field name="name">clinic.treatment.category.form</field><field name="model">clinic.treatment.category</field><field name="arch" type="xml"><form><sheet><div class="oe_button_box" name="button_box"><button name="action_open_treatments" type="object" class="oe_stat_button" icon="fa-medkit"><field name="treatment_count" widget="statinfo" string="Treatments"/></button></div><field name="image_1920" widget="image" class="oe_avatar"/><div class="oe_title"><h1><field name="name"/></h1><field name="code" readonly="1"/></div><group><group><field name="parent_id"/><field name="sequence"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group><group><field name="complete_name" readonly="1"/><field name="treatment_count" readonly="1"/><field name="child_count" readonly="1"/></group></group><notebook><page string="Subcategories"><field name="child_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="name"/><field name="code"/><field name="active"/></list></field></page><page string="Description"><field name="description"/></page></notebook></sheet><chatter/></form></field></record>
++    <record id="action_treatment_category" model="ir.actions.act_window"><field name="name">Treatment Categories</field><field name="res_model">clinic.treatment.category</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_treatment_tag_search" model="ir.ui.view"><field name="name">clinic.treatment.tag.search</field><field name="model">clinic.treatment.tag</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="scope"/><field name="company_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/><filter name="group_scope" string="Scope" context="{'group_by':'scope'}"/></search></field></record>
++    <record id="view_treatment_tag_list" model="ir.ui.view"><field name="name">clinic.treatment.tag.list</field><field name="model">clinic.treatment.tag</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="emoji"/><field name="code"/><field name="name"/><field name="scope"/><field name="treatment_count"/><field name="company_id" groups="base.group_multi_company"/><field name="active" optional="hide"/></list></field></record>
++    <record id="view_treatment_tag_form" model="ir.ui.view"><field name="name">clinic.treatment.tag.form</field><field name="model">clinic.treatment.tag</field><field name="arch" type="xml"><form><sheet><div class="oe_button_box" name="button_box"><button name="action_open_treatments" type="object" class="oe_stat_button" icon="fa-medkit"><field name="treatment_count" widget="statinfo" string="Treatments"/></button></div><field name="image_1920" widget="image" class="oe_avatar"/><div class="oe_title"><h1><field name="name"/></h1><field name="code" readonly="1"/></div><group><group><field name="emoji"/><field name="scope"/><field name="sequence"/></group><group><field name="color"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group></group><field name="description"/></sheet><chatter/></form></field></record>
++    <record id="action_treatment_tag" model="ir.actions.act_window"><field name="name">Treatment Tags</field><field name="res_model">clinic.treatment.tag</field><field name="view_mode">list,form</field></record>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/views/treatment_pricelist_views.xml /mnt/data/clinic_treatment_catalog_work/views/treatment_pricelist_views.xml
+--- /mnt/data/clinic_treatment_catalog_original/views/treatment_pricelist_views.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/views/treatment_pricelist_views.xml	2026-08-11 23:46:28.072864030 +0000
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_treatment_pricelist_search" model="ir.ui.view"><field name="name">clinic.treatment.pricelist.search</field><field name="model">clinic.treatment.pricelist</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="channel"/><field name="company_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/><filter name="current" string="Currently Valid" domain="[('is_currently_valid','=',True)]"/><filter name="group_channel" string="Channel" context="{'group_by':'channel'}"/></search></field></record>
++    <record id="view_treatment_pricelist_list" model="ir.ui.view"><field name="name">clinic.treatment.pricelist.list</field><field name="model">clinic.treatment.pricelist</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="channel"/><field name="currency_id"/><field name="item_count"/><field name="treatment_count"/><field name="valid_from"/><field name="valid_to"/><field name="company_id" groups="base.group_multi_company"/><field name="active" optional="hide"/></list></field></record>
++    <record id="view_treatment_pricelist_form" model="ir.ui.view"><field name="name">clinic.treatment.pricelist.form</field><field name="model">clinic.treatment.pricelist</field><field name="arch" type="xml"><form><sheet><div class="oe_button_box" name="button_box"><button name="action_open_items" type="object" class="oe_stat_button" icon="fa-list"><field name="item_count" widget="statinfo" string="Rules"/></button></div><div class="oe_title"><h1><field name="name"/></h1><field name="code" readonly="1"/></div><group><group><field name="channel"/><field name="valid_from"/><field name="valid_to"/><field name="is_currently_valid" readonly="1"/><field name="tag_ids" widget="many2many_tags"/></group><group><field name="currency_id"/><field name="rounding_policy"/><field name="tax_included"/><field name="product_pricelist_id"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group></group><group string="Pricing Engines"><field name="apply_membership"/><field name="apply_promotions"/><field name="apply_surcharge"/><field name="apply_insurance"/></group><notebook><page string="Rules"><field name="item_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="scope"/><field name="treatment_id"/><field name="method"/><field name="fixed_price"/><field name="percent"/><field name="active"/></list></field></page><page string="Notes"><field name="notes"/></page></notebook></sheet><chatter/></form></field></record>
++    <record id="action_treatment_pricelist" model="ir.actions.act_window"><field name="name">Treatment Pricelists</field><field name="res_model">clinic.treatment.pricelist</field><field name="view_mode">list,form</field></record>
++
++    <record id="view_treatment_pricelist_item_search" model="ir.ui.view"><field name="name">clinic.treatment.pricelist.item.search</field><field name="model">clinic.treatment.pricelist.item</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="pricelist_id"/><field name="scope"/><field name="treatment_id"/><field name="category_id"/><field name="channel"/><field name="company_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/><filter name="group_pricelist" string="Pricelist" context="{'group_by':'pricelist_id'}"/><filter name="group_scope" string="Scope" context="{'group_by':'scope'}"/></search></field></record>
++    <record id="view_treatment_pricelist_item_list" model="ir.ui.view"><field name="name">clinic.treatment.pricelist.item.list</field><field name="model">clinic.treatment.pricelist.item</field><field name="arch" type="xml"><list><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="pricelist_id"/><field name="scope"/><field name="treatment_id"/><field name="method"/><field name="fixed_price"/><field name="percent"/><field name="channel"/><field name="active"/></list></field></record>
++    <record id="view_treatment_pricelist_item_form" model="ir.ui.view"><field name="name">clinic.treatment.pricelist.item.form</field><field name="model">clinic.treatment.pricelist.item</field><field name="arch" type="xml"><form><sheet><div class="oe_title"><h1><field name="name"/></h1><field name="code" readonly="1"/></div><group><group string="Scope"><field name="pricelist_id"/><field name="scope"/><field name="treatment_id" invisible="scope != 'treatment'"/><field name="category_id" invisible="scope != 'category'"/><field name="tag_ids" widget="many2many_tags"/><field name="exclude_tag_ids" widget="many2many_tags"/></group><group string="Applicability"><field name="channel"/><field name="min_qty"/><field name="max_qty"/><field name="min_amount"/><field name="valid_from"/><field name="valid_to"/><field name="active"/></group></group><notebook><page string="Price Calculation"><group><field name="base"/><field name="method"/><field name="fixed_price" invisible="method != 'fixed'"/><field name="percent" invisible="method != 'percent'"/><field name="amount_off"/><field name="surcharge"/><field name="markup_percent"/><field name="rounding_policy"/><field name="enforce_minimum_price"/></group></page><page string="Audience &amp; Timing"><group><field name="partner_category_ids" widget="many2many_tags"/><field name="weekdays_only"/><field name="weekend_only"/><field name="time_from"/><field name="time_to"/></group></page></notebook><group><field name="company_id" groups="base.group_multi_company" readonly="1"/><field name="currency_id" readonly="1"/><field name="treatment_count" readonly="1"/></group></sheet></form></field></record>
++    <record id="action_treatment_pricelist_item" model="ir.actions.act_window"><field name="name">Treatment Price Rules</field><field name="res_model">clinic.treatment.pricelist.item</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_treatment_pricelist_item_search"/></record>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/views/treatment_views.xml /mnt/data/clinic_treatment_catalog_work/views/treatment_views.xml
+--- /mnt/data/clinic_treatment_catalog_original/views/treatment_views.xml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/clinic_treatment_catalog_work/views/treatment_views.xml	2026-08-11 23:46:15.868797307 +0000
+@@ -0,0 +1,61 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_clinic_treatment_catalog_search" model="ir.ui.view">
++        <field name="name">clinic.treatment.catalog.search</field>
++        <field name="model">clinic.treatment.catalog</field>
++        <field name="arch" type="xml">
++            <search string="Treatments">
++                <field name="code"/><field name="name"/><field name="category_id"/><field name="tag_ids"/><field name="company_id"/>
++                <filter name="active" string="Active" domain="[('active','=',True)]"/>
++                <filter name="current" string="Currently Valid" domain="[('is_currently_valid','=',True)]"/>
++                <filter name="online" string="Online Booking" domain="[('allow_online_booking','=',True)]"/>
++                <separator/>
++                <filter name="group_category" string="Category" context="{'group_by':'category_id'}"/>
++                <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
++                <filter name="group_policy" string="Pricing Policy" context="{'group_by':'pricing_policy'}"/>
++            </search>
++        </field>
++    </record>
++    <record id="view_clinic_treatment_catalog_list" model="ir.ui.view">
++        <field name="name">clinic.treatment.catalog.list</field><field name="model">clinic.treatment.catalog</field>
++        <field name="arch" type="xml"><list string="Treatments" default_order="sequence,name">
++            <field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="category_id"/><field name="duration_minutes"/>
++            <field name="base_price"/><field name="minimum_price" optional="hide"/><field name="pricing_policy"/><field name="allow_online_booking" optional="hide"/>
++            <field name="company_id" groups="base.group_multi_company"/><field name="active" optional="hide"/>
++        </list></field>
++    </record>
++    <record id="view_clinic_treatment_catalog_form" model="ir.ui.view">
++        <field name="name">clinic.treatment.catalog.form</field><field name="model">clinic.treatment.catalog</field>
++        <field name="arch" type="xml"><form string="Treatment">
++            <sheet>
++                <div class="oe_button_box" name="button_box">
++                    <button name="action_open_pricelist_items" type="object" class="oe_stat_button" icon="fa-money">
++                        <field name="pricelist_item_count" widget="statinfo" string="Pricing Rules"/>
++                    </button>
++                </div>
++                <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image':'image_1920'}"/>
++                <div class="oe_title"><label for="name"/><h1><field name="name" placeholder="Treatment name"/></h1><div><field name="code" readonly="1"/></div></div>
++                <group><group string="Classification"><field name="category_id"/><field name="tag_ids" widget="many2many_tags"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group>
++                <group string="Scheduling"><field name="duration_value"/><field name="duration_uom"/><field name="duration_minutes" readonly="1"/><field name="allow_online_booking"/><field name="valid_from"/><field name="valid_to"/><field name="is_currently_valid" readonly="1"/></group></group>
++                <notebook>
++                    <page string="Pricing"><group><group><field name="pricing_policy"/><field name="base_price"/><field name="minimum_price"/></group><group><field name="surcharge_applicable"/><field name="insurance_applicable"/><field name="currency_id" readonly="1"/></group></group></page>
++                    <page string="Service Product"><group><field name="product_tmpl_id"/><field name="product_id"/></group></page>
++                    <page string="Description"><field name="description" placeholder="Treatment description, preparation, and service notes..."/></page>
++                </notebook>
++            </sheet><chatter/>
++        </form></field>
++    </record>
++    <record id="action_treatment_tree" model="ir.actions.act_window">
++        <field name="name">Treatments</field><field name="res_model">clinic.treatment.catalog</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_clinic_treatment_catalog_search"/>
++    </record>
++
++    <record id="view_clinic_treatment_public_search" model="ir.ui.view"><field name="name">clinic.treatment.search</field><field name="model">clinic.treatment</field><field name="arch" type="xml"><search><field name="code"/><field name="name"/><field name="category_id"/><field name="company_id"/><filter name="active" string="Active" domain="[('active','=',True)]"/></search></field></record>
++    <record id="view_clinic_treatment_public_list" model="ir.ui.view"><field name="name">clinic.treatment.list</field><field name="model">clinic.treatment</field><field name="arch" type="xml"><list><field name="code"/><field name="name"/><field name="category_id"/><field name="base_price"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></list></field></record>
++    <record id="view_clinic_treatment_public_form" model="ir.ui.view"><field name="name">clinic.treatment.form</field><field name="model">clinic.treatment</field><field name="arch" type="xml"><form string="Treatment Public Facade"><sheet>
++        <div class="oe_button_box" name="button_box"><button name="action_open_pricelist_items" type="object" class="oe_stat_button" icon="fa-money"><field name="pricelist_item_count" widget="statinfo" string="Pricing Rules"/></button></div>
++        <div class="oe_title"><h1><field name="name"/></h1><field name="code" readonly="1"/></div>
++        <group><group><field name="catalog_id"/><field name="category_id"/><field name="tag_ids" widget="many2many_tags"/></group><group><field name="base_price"/><field name="duration_minutes"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group></group>
++        <button name="action_open_catalog_record" type="object" string="Open Canonical Catalog Record" class="btn-secondary" icon="fa-external-link"/>
++    </sheet></form></field></record>
++    <record id="action_treatment_public" model="ir.actions.act_window"><field name="name">Public Treatment Facades</field><field name="res_model">clinic.treatment</field><field name="view_mode">list,form</field></record>
++</odoo>
+diff -ruN '--exclude=0*' '--exclude=__pycache__' '--exclude=docs' '--exclude=tools' /mnt/data/clinic_treatment_catalog_original/views/views.xml /mnt/data/clinic_treatment_catalog_work/views/views.xml
+--- /mnt/data/clinic_treatment_catalog_original/views/views.xml	2026-08-11 23:31:41.978999671 +0000
++++ /mnt/data/clinic_treatment_catalog_work/views/views.xml	2026-08-11 23:46:15.868941936 +0000
+@@ -1,61 +1,2 @@
+-
+-<odoo>
+-  <data>
+-    <!-- explicit list view definition -->
+-<!--
+-    <record model="ir.ui.view" id="clinic_treatment_catalog.list">
+-      <field name="name">clinic_treatment_catalog list</field>
+-      <field name="model">clinic_treatment_catalog.clinic_treatment_catalog</field>
+-      <field name="arch" type="xml">
+-        <list>
+-          <field name="name"/>
+-          <field name="value"/>
+-          <field name="value2"/>
+-        </list>
+-      </field>
+-    </record>
+--->
+-
+-    <!-- actions opening views on models -->
+-<!--
+-    <record model="ir.actions.act_window" id="clinic_treatment_catalog.action_window">
+-      <field name="name">clinic_treatment_catalog window</field>
+-      <field name="res_model">clinic_treatment_catalog.clinic_treatment_catalog</field>
+-      <field name="view_mode">list,form</field>
+-    </record>
+--->
+-
+-    <!-- server action to the one above -->
+-<!--
+-    <record model="ir.actions.server" id="clinic_treatment_catalog.action_server">
+-      <field name="name">clinic_treatment_catalog server</field>
+-      <field name="model_id" ref="model_clinic_treatment_catalog_clinic_treatment_catalog"/>
+-      <field name="state">code</field>
+-      <field name="code">
+-        action = {
+-          "type": "ir.actions.act_window",
+-          "view_mode": "list,form",
+-          "res_model": model._name,
+-        }
+-      </field>
+-    </record>
+--->
+-
+-    <!-- Top menu item -->
+-<!--
+-    <menuitem name="clinic_treatment_catalog" id="clinic_treatment_catalog.menu_root"/>
+--->
+-    <!-- menu categories -->
+-<!--
+-    <menuitem name="Menu 1" id="clinic_treatment_catalog.menu_1" parent="clinic_treatment_catalog.menu_root"/>
+-    <menuitem name="Menu 2" id="clinic_treatment_catalog.menu_2" parent="clinic_treatment_catalog.menu_root"/>
+--->
+-    <!-- actions -->
+-<!--
+-    <menuitem name="List" id="clinic_treatment_catalog.menu_1_list" parent="clinic_treatment_catalog.menu_1"
+-              action="clinic_treatment_catalog.action_window"/>
+-    <menuitem name="Server to list" id="clinic_treatment_catalog" parent="clinic_treatment_catalog.menu_2"
+-              action="clinic_treatment_catalog.action_server"/>
+--->
+-  </data>
+-</odoo>
++<?xml version="1.0" encoding="utf-8"?>
++<odoo/>
+

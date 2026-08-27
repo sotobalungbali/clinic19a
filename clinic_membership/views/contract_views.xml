@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="view_membership_contract_search" model="ir.ui.view">
+    <field name="name">membership.contract.search</field>
+    <field name="model">membership.contract</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="patient_id"/>
+        <field name="plan_id"/>
+        <field name="responsible_id"/>
+        <filter string="Active" name="active" domain="[('state','=','active')]"/>
+        <filter string="On Hold" name="hold" domain="[('state','=','on_hold')]"/>
+        <filter string="Awaiting Payment" name="awaiting" domain="[('state','=','awaiting_payment')]"/>
+        <filter string="Expired by Date" name="expired_date" domain="[('is_expired','=',True)]"/>
+        <group>
+          <filter string="Plan" context="{'group_by':'plan_id'}" name="group_plan_id"/>
+          <filter string="State" context="{'group_by':'state'}" name="group_state"/>
+          <filter string="Account Manager" context="{'group_by':'responsible_id'}" name="group_responsible_id"/>
+          <filter string="Company" context="{'group_by':'company_id'}" name="group_company_id"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_membership_contract_list" model="ir.ui.view">
+    <field name="name">membership.contract.list</field>
+    <field name="model">membership.contract</field>
+    <field name="arch" type="xml">
+      <list decoration-success="state == 'active'" decoration-warning="state in ('awaiting_payment','on_hold')" decoration-muted="state in ('expired','cancelled','renewed')">
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="plan_id"/>
+        <field name="start_date"/>
+        <field name="end_date"/>
+        <field name="remaining_days"/>
+        <field name="contract_value" sum="Total"/>
+        <field name="point_balance"/>
+        <field name="state" widget="badge"/>
+        <field name="responsible_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_membership_contract_form" model="ir.ui.view">
+    <field name="name">membership.contract.form</field>
+    <field name="model">membership.contract</field>
+    <field name="arch" type="xml">
+      <form string="Membership Contract">
+        <header>
+          <button name="action_confirm" type="object" string="Confirm" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_create_invoice" type="object" string="Create Invoice" invisible="state not in ('draft','awaiting_payment') or invoice_id"/>
+          <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state not in ('draft','awaiting_payment')"/>
+          <button name="action_set_on_hold" type="object" string="Put on Hold" invisible="state != 'active'"/>
+          <button name="action_resume" type="object" string="Resume" invisible="state != 'on_hold'"/>
+          <button name="action_open_renew_wizard" type="object" string="Renew" invisible="state not in ('active','on_hold','expired')"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('cancelled','renewed')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,awaiting_payment,active,on_hold,expired,renewed,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not invoice_id">
+              <div class="o_stat_info">
+                <span class="o_stat_text">Invoice</span>
+              </div>
+            </button>
+            <button name="action_open_entitlements" type="object" class="oe_stat_button" icon="fa-gift">
+              <field name="benefit_count" widget="statinfo" string="Entitlements"/>
+            </button>
+            <button name="action_open_usages" type="object" class="oe_stat_button" icon="fa-check-square-o">
+              <field name="usage_count" widget="statinfo" string="Usage"/>
+            </button>
+            <button name="action_open_vouchers" type="object" class="oe_stat_button" icon="fa-ticket">
+              <field name="voucher_count" widget="statinfo" string="Vouchers"/>
+            </button>
+            <button name="action_open_points" type="object" class="oe_stat_button" icon="fa-star">
+              <field name="point_tx_count" widget="statinfo" string="Point Tx"/>
+            </button>
+            <button name="action_open_holds" type="object" class="oe_stat_button" icon="fa-pause">
+              <field name="hold_count" widget="statinfo" string="Holds"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <label for="name"/>
+            <h1>
+              <field name="name"/>
+            </h1>
+          </div>
+          <div class="oe_button_box" name="membership_body_actions">
+            <button name="action_open_hold_wizard" type="object" string="Request Hold" class="btn btn-secondary" invisible="state != 'active'"/>
+            <button name="action_open_point_adjust_wizard" type="object" string="Adjust Points" class="btn btn-secondary" groups="clinic_membership.group_clinic_membership_manager" invisible="state not in ('active','on_hold')"/>
+          </div>
+          <group>
+            <group string="Membership">
+              <field name="partner_id"/>
+              <field name="patient_id"/>
+              <field name="plan_id"/>
+              <field name="referral_id"/>
+              <field name="responsible_id"/>
+            </group>
+            <group string="Term">
+              <field name="start_date"/>
+              <field name="end_date"/>
+              <field name="remaining_days" readonly="1"/>
+              <field name="auto_renew"/>
+              <field name="renewal_policy"/>
+              <field name="renewal_plan_id" invisible="renewal_policy != 'custom_plan'"/>
+            </group>
+          </group>
+          <group>
+            <group string="Commercial Snapshot">
+              <field name="currency_id"/>
+              <field name="list_price"/>
+              <field name="join_fee"/>
+              <field name="renewal_fee"/>
+              <field name="contract_value" readonly="1"/>
+              <field name="invoice_id"/>
+              <field name="payment_state" readonly="1"/>
+            </group>
+            <group string="Member Value">
+              <field name="point_balance" readonly="1"/>
+              <field name="savings_total" readonly="1"/>
+              <field name="active_voucher_count" readonly="1"/>
+              <field name="total_hold_days" readonly="1"/>
+              <field name="renewed_from_id" readonly="1"/>
+              <field name="renewed_to_id" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Entitlements">
+              <field name="benefit_snapshot_ids" readonly="1">
+                <list>
+                  <field name="name"/>
+                  <field name="benefit_type"/>
+                  <field name="remaining_quota"/>
+                  <field name="consumed_discount"/>
+                  <field name="usage_count"/>
+                  <field name="is_depleted" widget="boolean_toggle"/>
+                  <button name="action_view_usages" type="object" icon="fa-list" string="Usage"/>
+                </list>
+              </field>
+            </page>
+            <page string="Usage">
+              <field name="usage_ids" readonly="1">
+                <list>
+                  <field name="date"/>
+                  <field name="treatment_id"/>
+                  <field name="benefit_type"/>
+                  <field name="discount_amount"/>
+                  <field name="quota_consumed"/>
+                  <field name="state" widget="badge"/>
+                  <button name="action_view_contract" type="object" icon="fa-external-link" string="Contract"/>
+                </list>
+              </field>
+            </page>
+            <page string="Vouchers">
+              <field name="voucher_ids" readonly="1">
+                <list>
+                  <field name="name"/>
+                  <field name="voucher_type"/>
+                  <field name="pretty_value"/>
+                  <field name="expiry_date"/>
+                  <field name="state" widget="badge"/>
+                </list>
+              </field>
+            </page>
+            <page string="Points">
+              <field name="point_tx_ids" readonly="1">
+                <list>
+                  <field name="date"/>
+                  <field name="tx_type"/>
+                  <field name="points" sum="Points"/>
+                  <field name="running_balance"/>
+                  <field name="state" widget="badge"/>
+                </list>
+              </field>
+            </page>
+            <page string="Hold History">
+              <field name="hold_ids" readonly="1">
+                <list>
+                  <field name="name"/>
+                  <field name="date_from"/>
+                  <field name="date_to"/>
+                  <field name="days"/>
+                  <field name="state" widget="badge"/>
+                </list>
+              </field>
+            </page>
+            <page string="Notes">
+              <field name="notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="action_membership_contracts" model="ir.actions.act_window">
+    <field name="name">Membership Contracts</field>
+    <field name="res_model">membership.contract</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+  </record>
+</odoo>
+

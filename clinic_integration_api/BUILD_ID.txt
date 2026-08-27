@@ -1,0 +1,6 @@
+clinic_integration_api 19.0.1.0.0 FULL_CORRECTED
+ClinicOne development order: 37/39
+Baseline: clinic19a(20260822-081053).md
+Build date: 2026-08-22
+Source/static status: PASS
+Runtime Odoo status: PENDING

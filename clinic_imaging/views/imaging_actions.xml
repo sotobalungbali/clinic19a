@@ -1,0 +1,260 @@
+<odoo>
+    <record id="action_clinical_imaging_type_tag" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Type Tag</field>
+        <field name="res_model">clinical.imaging.type.tag</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_type" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Type</field>
+        <field name="res_model">clinical.imaging.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_protocol" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Protocol</field>
+        <field name="res_model">clinical.imaging.protocol</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_type_prep" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Type Preparation</field>
+        <field name="res_model">clinical.imaging.type.prep</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_type_contra" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Type Contraindication</field>
+        <field name="res_model">clinical.imaging.type.contra</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_device" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Device</field>
+        <field name="res_model">clinical.imaging.device</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_device_downtime" model="ir.actions.act_window">
+        <field name="name">Imaging Device Downtime</field>
+        <field name="res_model">clinical.imaging.device.downtime</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_device_calibration" model="ir.actions.act_window">
+        <field name="name">Imaging Device Calibration / QC</field>
+        <field name="res_model">clinical.imaging.device.calibration</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_device_connectivity" model="ir.actions.act_window">
+        <field name="name">Imaging Device Connectivity</field>
+        <field name="res_model">clinical.imaging.device.connectivity</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging</field>
+        <field name="res_model">clinical.imaging</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_study" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Study</field>
+        <field name="res_model">clinical.imaging.study</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_study_note" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Study Note</field>
+        <field name="res_model">clinical.imaging.study.note</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_series" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Series</field>
+        <field name="res_model">clinical.imaging.series</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_series_param" model="ir.actions.act_window">
+        <field name="name">Imaging Series Parameter</field>
+        <field name="res_model">clinical.imaging.series.param</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_series_dose" model="ir.actions.act_window">
+        <field name="name">Imaging Series Dose/Exposure</field>
+        <field name="res_model">clinical.imaging.series.dose</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_image_tag" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Image Tag</field>
+        <field name="res_model">clinical.imaging.image.tag</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_image" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Image</field>
+        <field name="res_model">clinical.imaging.image</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_image_annotation" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Image Annotation</field>
+        <field name="res_model">clinical.imaging.image.annotation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_finding_tag" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Finding Tag</field>
+        <field name="res_model">clinical.imaging.finding.tag</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_finding" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Finding</field>
+        <field name="res_model">clinical.imaging.finding</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_finding_measure" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Finding Measurement</field>
+        <field name="res_model">clinical.imaging.finding.measure</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_report_template" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Report Template</field>
+        <field name="res_model">clinical.imaging.report.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_report_template_section" model="ir.actions.act_window">
+        <field name="name">Imaging Report Template Section</field>
+        <field name="res_model">clinical.imaging.report.template.section</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_report_template_variable" model="ir.actions.act_window">
+        <field name="name">Imaging Report Template Variable</field>
+        <field name="res_model">clinical.imaging.report.template.variable</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_report_template_asset" model="ir.actions.act_window">
+        <field name="name">Imaging Report Template Asset</field>
+        <field name="res_model">clinical.imaging.report.template.asset</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_request" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Request</field>
+        <field name="res_model">clinical.imaging.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_request_line" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Request Line</field>
+        <field name="res_model">clinical.imaging.request.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_result" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Result</field>
+        <field name="res_model">clinical.imaging.result</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_result_dose" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Result Dose/Exposure</field>
+        <field name="res_model">clinical.imaging.result.dose</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_result_measure" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging Result Measurement</field>
+        <field name="res_model">clinical.imaging.result.measure</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_kpi_snapshot" model="ir.actions.act_window">
+        <field name="name">Clinical Imaging KPI Snapshot</field>
+        <field name="res_model">clinical.imaging.kpi.snapshot</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_kpi_modality_line" model="ir.actions.act_window">
+        <field name="name">Imaging KPI Modality Line</field>
+        <field name="res_model">clinical.imaging.kpi.modality.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_kpi_device_line" model="ir.actions.act_window">
+        <field name="name">Imaging KPI Device Line</field>
+        <field name="res_model">clinical.imaging.kpi.device.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_kpi_radiologist_line" model="ir.actions.act_window">
+        <field name="name">Imaging KPI Radiologist Line</field>
+        <field name="res_model">clinical.imaging.kpi.radiologist.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_modality_tag" model="ir.actions.act_window">
+        <field name="name">Imaging Modality Tag</field>
+        <field name="res_model">clinical.imaging.modality.tag</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_staff_credential" model="ir.actions.act_window">
+        <field name="name">Imaging Staff Credential</field>
+        <field name="res_model">clinical.imaging.staff.credential</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinic_treatment_imaging_plan" model="ir.actions.act_window">
+        <field name="name">Treatment Imaging Plan</field>
+        <field name="res_model">clinic.treatment.imaging.plan</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_encounter_screening" model="ir.actions.act_window">
+        <field name="name">Encounter Imaging Screening</field>
+        <field name="res_model">clinical.imaging.encounter.screening</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_encounter_note" model="ir.actions.act_window">
+        <field name="name">Encounter Imaging Note</field>
+        <field name="res_model">clinical.imaging.encounter.note</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_premed_protocol" model="ir.actions.act_window">
+        <field name="name">Imaging Contrast Premedication Protocol</field>
+        <field name="res_model">clinical.imaging.premed.protocol</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_consent_template" model="ir.actions.act_window">
+        <field name="name">Imaging Consent Template</field>
+        <field name="res_model">clinical.imaging.consent.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_consent_template_question" model="ir.actions.act_window">
+        <field name="name">Imaging Consent Template Question</field>
+        <field name="res_model">clinical.imaging.consent.template.question</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_clinical_imaging_consent_answer" model="ir.actions.act_window">
+        <field name="name">Imaging Consent Answer</field>
+        <field name="res_model">clinical.imaging.consent.answer</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

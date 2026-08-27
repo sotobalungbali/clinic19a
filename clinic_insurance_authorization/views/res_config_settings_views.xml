@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_insurance_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Insurance Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_insurance_authorization', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_clinic_insurance" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.insurance</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Insurance"
+                     name="clinic_insurance_authorization"
+                     groups="clinic_insurance_authorization.group_clinic_insurance_manager">
+                    <block title="Policy &amp; Authorization Governance">
+                        <setting string="Default Insurance Plan">
+                            <field name="clinic_insurance_default_plan_id" options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Require Eligibility Before Authorization">
+                            <field name="clinic_insurance_require_eligibility_before_authorization"/>
+                        </setting>
+                        <setting string="Default Authorization Validity">
+                            <field name="clinic_insurance_default_authorization_valid_days"/>
+                        </setting>
+                    </block>
+
+                    <block title="Billing &amp; Claims">
+                        <setting string="Require Valid Authorization for Policy Claims"
+                                 help="Applied when the Patient Policy itself requires pre-authorization.">
+                            <field name="clinic_insurance_claim_require_authorization"/>
+                        </setting>
+                        <setting string="Auto-Link Policy from Booking / Encounter to Billing">
+                            <field name="clinic_insurance_auto_link_policy_to_billing"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

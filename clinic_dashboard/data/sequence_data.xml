@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_dashboard_snapshot" model="ir.sequence">
+        <field name="name">Clinic Dashboard Snapshot</field>
+        <field name="code">clinic.dashboard.snapshot</field>
+        <field name="prefix">DASH/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

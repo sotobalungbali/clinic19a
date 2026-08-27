@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_dashboard_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Dashboard Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_dashboard', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_dashboard" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.dashboard</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Dashboard"
+                     name="clinic_dashboard"
+                     groups="clinic_dashboard.group_dashboard_manager">
+                    <block title="Dashboard Defaults">
+                        <setting string="Default Dashboard">
+                            <field name="clinic_dashboard_default_board_id"
+                                   domain="[('company_id', '=', company_id), ('state', '=', 'active')]"/>
+                        </setting>
+                        <setting string="Snapshot Retention"
+                                 help="Old Ready snapshots are archived, never deleted.">
+                            <field name="clinic_dashboard_snapshot_retention_days"/>
+                        </setting>
+                    </block>
+
+                    <block title="Dashboard Setup">
+                        <setting string="Built-in Dashboard Configuration"
+                                 help="Idempotently creates missing built-in Boards and Widgets for the current company.">
+                            <button name="action_ensure_clinic_dashboards"
+                                    type="object"
+                                    string="Ensure Default Dashboards"
+                                    class="btn-primary"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

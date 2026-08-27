@@ -1,0 +1,1904 @@
+--- a/__manifest__.py
++++ b/__manifest__.py
+@@ -1,39 +1,33 @@
+-
+ # -*- coding: utf-8 -*-
+ {
+     "name": "ClinicOne: Inventory & Stock",
+-    "summary": "Inventory for aesthetic clinics — FEFO, shelf-life, pharmacy/treatment rooms, quarantine, clinical consumption, scoped reordering.",
++    "version": "19.0.1.0.0",
++    "summary": "Clinic inventory, clinical stock consumption, adjustments, traceability, and governance",
+     "description": """
+-ClinicOne — Inventory & Stock for Aesthetic Clinics
+-===================================================
+-- Product clinical extensions (medical/cosmetic/device/package)
+-- FEFO & minimum shelf-life hints
+-- Pharmacy / Treatment Rooms Root / Quarantine locations
+-- Clinical consumption document → stock moves with lots/serials
+-- Doctor allowed/denied products & patient product history
+-- Scope-aware reorder points (pharmacy/rooms/both) with buffer & rounding
+-- Inventory adjustment with snapshot & governance
+-- Soft-coupled integration hooks across the ClinicOne suite
+-""",
+-    "version": "19.0.1.0.0",
+-    "category": "Inventory/Clinic",
++ClinicOne Inventory & Stock
++===========================
++Extends Odoo 19 stock/product capabilities with clinic-specific inventory
++classification, treatment consumption, patient product traceability,
++inventory adjustments, expiry/quality governance, and doctor product rules.
++
++This addon is an existing ClinicOne functional baseline. Changes in this
++version are limited to Odoo 19 hardening and enterprise presentation/security
++completeness; the business scope is preserved.
++    """,
++    "author": "PT Dua Empat Tujuh Open Source",
++    "website": "https://odoocamp.net",
++    "category": "ClinicOne/Inventory",
+     "license": "LGPL-3",
+-    "website": "https://example.com/clinicone",  # adjust if needed
+-    "author": "ClinicOne Team",
+-    "maintainers": ["ClinicOne Team"],
+-    "application": True,
+-    "installable": True,
+     "depends": [
+-        # Odoo core
+         "base",
+         "mail",
+         "contacts",
+         "hr",
+-        "product", "product_expiry",
++        "product",
++        "product_expiry",
+         "uom",
+         "stock",
+-        "portal",  # for optional portal/website templates & controller
+-        # ClinicOne base (only base to avoid circular deps; other modules integrate via hooks)
++        "portal",
+         "clinic_base",
+         "clinic_audit",
+         "clinic_branch",
+@@ -44,15 +38,23 @@
+         "clinic_doctor",
+         "clinic_queue_room",
+     ],
+-    # always loaded
+-    'data': [
+-        # 'security/ir.model.access.csv',
+-        'views/views.xml',
+-        'views/templates.xml',
++    "data": [
++        "security/clinic_inventory_rules.xml",
++        "security/ir.model.access.csv",
++        "data/clinic_inventory_sequence.xml",
++        "views/treatment_product_usage_views.xml",
++        "views/inventory_adjustment_views.xml",
++        "views/patient_product_history_views.xml",
++        "views/doctor_allowed_product_views.xml",
++        "views/integration_event_log_views.xml",
++        "views/core_inventory_extension_views.xml",
++        "views/clinic_inventory_menus.xml",
++        "views/templates.xml",
+     ],
+-    # only loaded in demonstration mode
+-    'demo': [
+-        'demo/demo.xml',
++    "demo": [
++        "demo/demo.xml",
+     ],
++    "installable": True,
++    "application": True,
++    "auto_install": False,
+ }
+-
+
+--- a/data/clinic_inventory_sequence.xml
++++ b/data/clinic_inventory_sequence.xml
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo noupdate="1">
++    <!-- Sequence codes are already called by the existing business models. -->
++    <record id="seq_clinic_treatment_product_usage" model="ir.sequence">
++        <field name="name">Clinic Treatment Product Usage</field>
++        <field name="code">clinic.treatment.product.usage</field>
++        <field name="prefix">CPU/%(year)s/</field>
++        <field name="padding">5</field>
++        <field name="company_id" eval="False"/>
++    </record>
++
++    <record id="seq_clinic_inventory_adjustment" model="ir.sequence">
++        <field name="name">Clinic Inventory Adjustment</field>
++        <field name="code">clinic.inventory.adjustment</field>
++        <field name="prefix">CIA/%(year)s/</field>
++        <field name="padding">5</field>
++        <field name="company_id" eval="False"/>
++    </record>
++</odoo>
+
+--- a/models/doctor_allowed_products.py
++++ b/models/doctor_allowed_products.py
+@@ -169,20 +169,14 @@
+             if r.date_start and r.date_end and r.date_end < r.date_start:
+                 raise ValidationError(_("Valid Until cannot be earlier than Valid From."))
+ 
+-    _sql_constraints = [
+-        # Avoid duplicate product rules per doctor+company (action can differ; priority resolves)
+-        (
+-            "uniq_doctor_product_company",
+-            "unique(doctor_id, company_id, product_id)",
+-            "Duplicate PRODUCT rule detected for the same doctor, company, and product."
+-        ),
+-        # Avoid duplicate category rules per doctor+company
+-        (
+-            "uniq_doctor_category_company",
+-            "unique(doctor_id, company_id, category_id)",
+-            "Duplicate CATEGORY rule detected for the same doctor, company, and category."
+-        ),
+-    ]
++    _uniq_doctor_product_company = models.Constraint(
++        "UNIQUE(doctor_id, company_id, product_id)",
++        "Duplicate PRODUCT rule detected for the same doctor, company, and product.",
++    )
++    _uniq_doctor_category_company = models.Constraint(
++        "UNIQUE(doctor_id, company_id, category_id)",
++        "Duplicate CATEGORY rule detected for the same doctor, company, and category.",
++    )
+ 
+     # -------------------------------------------------------------------------
+     # Core matching logic
+@@ -348,14 +342,16 @@
+     # -------------------------------------------------------------------------
+     # NAME / DISPLAY
+     # -------------------------------------------------------------------------
++    @api.depends("name", "archived")
++    def _compute_display_name(self):
++        """Odoo 19 display label, preserving the existing archived marker."""
++        for rec in self:
++            label = rec.name or _("Rule")
++            rec.display_name = f"{label} [ARCHIVED]" if rec.archived else label
++
+     def name_get(self):
+-        res = []
+-        for r in self:
+-            label = r.name or r.display_name or _("Rule")
+-            if r.archived:
+-                label = f"{label} [ARCHIVED]"
+-            res.append((r.id, label))
+-        return res
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+ 
+ 
+ # ============================================================================
+@@ -384,13 +380,13 @@
+     def action_view_allowed_rules(self):
+         """Open the rules list for this doctor."""
+         self.ensure_one()
+-        action = self.env.ref("base.action_rule").sudo() if False else None  # placeholder; fall back to generic tree
+-        # Fallback to our own model's tree/form
++        action = self.env.ref("base.action_rule").sudo() if False else None  # placeholder; fall back to generic list
++        # Fallback to our own model's list/form
+         action = self.env["ir.actions.act_window"]._for_xml_id("base.action_partner_form") if False else {
+             "name": _("Allowed Products"),
+             "type": "ir.actions.act_window",
+             "res_model": "clinic.doctor.allowed.product",
+-            "view_mode": "tree,form",
++            "view_mode": "list,form",
+             "target": "current",
+             "domain": [("doctor_id", "=", self.id)],
+             "context": {"default_doctor_id": self.id, "search_default_archived": 0},
+
+--- a/models/inventory_adjustment.py
++++ b/models/inventory_adjustment.py
+@@ -226,6 +226,18 @@
+     # -------------------------------------------------------------------------
+     # PREPARE & STATE
+     # -------------------------------------------------------------------------
++    def action_view_moves(self):
++        """Open stock moves generated by this inventory adjustment."""
++        self.ensure_one()
++        return {
++            "type": "ir.actions.act_window",
++            "name": _("Generated Stock Moves"),
++            "res_model": "stock.move",
++            "view_mode": "list,form",
++            "domain": [("id", "in", self.move_ids.ids)],
++            "context": {"create": False},
++        }
++
+     def action_prepare_lines(self):
+         """Snapshot expected quantities and (optionally) auto-build lines from quants within scope."""
+         Quant = self.env["stock.quant"]
+@@ -385,7 +397,7 @@
+                     "move_id": move.id,
+                     "product_id": line.product_id.id,
+                     "product_uom_id": line.product_uom.id,
+-                    "qty_done": abs(diff),
++                    "quantity": abs(diff),
+                     "location_id": src.id,
+                     "location_dest_id": dst.id,
+                 }
+@@ -615,6 +627,18 @@
+     # -------------------------------------------------------------------------
+     # SNAPSHOT
+     # -------------------------------------------------------------------------
++    def action_open_adjustment(self):
++        """Open the parent adjustment from an embedded One2many line."""
++        self.ensure_one()
++        return {
++            "type": "ir.actions.act_window",
++            "name": _("Inventory Adjustment"),
++            "res_model": "clinic.inventory.adjustment",
++            "view_mode": "form",
++            "res_id": self.adjustment_id.id,
++            "target": "current",
++        }
++
+     def _snapshot_expected(self):
+         """Write current expected value into snapshot."""
+         for line in self:
+
+--- a/models/patient_product_history.py
++++ b/models/patient_product_history.py
+@@ -308,7 +308,7 @@
+             # Sum done qty on move lines; fall back to product_uom_qty
+             if move.move_line_ids:
+                 for ml in move.move_line_ids:
+-                    final_qty += ml.qty_done or 0.0
++                    final_qty += ml.quantity or 0.0
+             if final_qty <= 0.0:
+                 final_qty = move.product_uom_qty or 0.0
+ 
+@@ -375,7 +375,7 @@
+         for ml in picking.move_line_ids:
+             key = (ml.product_id.id, ml.lot_id.id if ml.lot_id else False, ml.product_uom_id.id)
+             groups.setdefault(key, 0.0)
+-            groups[key] += ml.qty_done or 0.0
++            groups[key] += ml.quantity or 0.0
+ 
+         records = self.browse()
+         if not groups:
+
+--- a/models/product_category.py
++++ b/models/product_category.py
+@@ -268,18 +268,39 @@
+         self.ensure_one()
+         vals = {}
+ 
+-        # Usage type & tracking defaults
++        # Usage type & tracking defaults.
++        # Category values predate the current product.template taxonomy, so translate
++        # them explicitly instead of writing an invalid selection value.
+         if self.clinic_default_usage_type:
+-            vals["usage_type"] = self.clinic_default_usage_type
+-            # Commonly align Odoo product 'type' & tracking with our usage type
++            usage_map = {
++                "service": "service",
++                "consumable": "retail",
++                "equipment": "device",
++                "medication": "medical",
++                "skincare": "cosmetic",
++                "package": "package",
++            }
++            vals["usage_type"] = usage_map[self.clinic_default_usage_type]
++
+             if self.clinic_default_usage_type in ("service", "package"):
+-                vals.update({"type": "service", "tracking": "none", "has_expiration": False})
+-            elif self.clinic_default_usage_type in ("consumable", "skincare"):
+-                vals.update({"type": "consu", "tracking": "lot"})
+-            elif self.clinic_default_usage_type == "medication":
+-                vals.update({"type": "product", "tracking": "lot"})
++                vals.update({
++                    "type": "service",
++                    "is_storable": False,
++                    "tracking": "none",
++                    "has_expiration": False,
++                })
++            elif self.clinic_default_usage_type in ("consumable", "skincare", "medication"):
++                vals.update({
++                    "type": "consu",
++                    "is_storable": True,
++                    "tracking": "lot",
++                })
+             elif self.clinic_default_usage_type == "equipment":
+-                vals.update({"type": "product", "tracking": "serial"})
++                vals.update({
++                    "type": "consu",
++                    "is_storable": True,
++                    "tracking": "serial",
++                })
+ 
+         if self.clinic_default_tracking:
+             vals["tracking"] = self.clinic_default_tracking
+
+--- a/models/product_product.py
++++ b/models/product_product.py
+@@ -317,17 +317,17 @@
+     # =========================================================================
+     # NAME & DISPLAY
+     # =========================================================================
++    @api.depends("name", "default_code", "usage_type", "dosage_strength")
++    def _compute_display_name(self):
++        """Extend Odoo 19 variant labels with ClinicOne dosage strength."""
++        super()._compute_display_name()
++        for rec in self:
++            if rec.usage_type in ("medical", "cosmetic") and rec.dosage_strength:
++                rec.display_name = f"{rec.display_name} ({rec.dosage_strength})"
++
+     def name_get(self):
+-        """Include SKU and dosage strength (for medication/skincare) in display name."""
+-        result = []
+-        for rec in self:
+-            name = rec.display_name or rec.name or ""
+-            if rec.default_code:
+-                name = f"[{rec.default_code}] {name}"
+-            if rec.usage_type in ("medication", "skincare") and rec.dosage_strength:
+-                name = f"{name} ({rec.dosage_strength})"
+-            result.append((rec.id, name))
+-        return result
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+ 
+     # =========================================================================
+     # PUBLIC SERVICE APIS (variant-level) — bridge addons can override
+
+--- a/models/product_template.py
++++ b/models/product_template.py
+@@ -248,28 +248,29 @@
+     # =========================================================================
+     # SQL Constraints
+     # =========================================================================
+-    _sql_constraints = [
+-        ("default_code_unique", "unique(default_code)", "Internal Reference (SKU) must be unique."),
+-    ]
++    _default_code_unique = models.Constraint(
++        "UNIQUE(default_code)",
++        "Internal Reference (SKU) must be unique.",
++    )
+ 
+     # =========================================================================
+     # COMPUTES
+     # =========================================================================
+-    # (opsional) validasi sederhana, contoh:
+-    @api.constrains("usage_type", "type")
++    @api.constrains("usage_type", "type", "is_storable")
+     def _check_usage_type_vs_type(self):
+-        for rec in self:
+-            # contoh aturan: device biasanya 'product' (stockable)
+-            if rec.usage_type == "device" and rec.type not in ("product", "consu"):
+-                raise ValidationError(_("Devices should be stockable or consumable products."))
+-    
+-    @api.depends("usage_type", "type")
++        """Keep ClinicOne classification aligned with Odoo 19 stock semantics."""
++        for rec in self:
++            if rec.usage_type == "device" and (rec.type != "consu" or not rec.is_storable):
++                raise ValidationError(_("Medical devices must be configured as inventory-tracked goods."))
++
++    @api.depends("usage_type", "type", "is_storable")
+     def _compute_flags(self):
+-        for rec in self:
+-            rec.is_medication = rec.usage_type == "medication"
+-            rec.is_cosmetic = rec.usage_type == "skincare"
++        """Expose stable convenience flags from the existing ClinicOne usage taxonomy."""
++        for rec in self:
++            rec.is_medication = rec.usage_type == "medical"
++            rec.is_cosmetic = rec.usage_type == "cosmetic"
+             rec.is_service_flag = rec.usage_type in ("service", "package")
+-            rec.is_stockable_flag = rec.usage_type in ("consumable", "equipment", "medication", "skincare")
++            rec.is_stockable_flag = rec.type == "consu" and rec.is_storable
+ 
+     def _get_expiration_field_name(self):
+         """Return the lot field used as product's end-of-life date."""
+@@ -309,31 +310,36 @@
+     # =========================================================================
+     @api.onchange("usage_type")
+     def _onchange_usage_type(self):
+-        for rec in self:
+-            # Map clinical classification to Odoo product type & tracking
++        """Map the existing ClinicOne usage taxonomy to Odoo 19 product stock fields."""
++        for rec in self:
+             if rec.usage_type in ("service", "package"):
+                 rec.type = "service"
++                rec.is_storable = False
+                 rec.tracking = "none"
+                 rec.has_expiration = False
+-            elif rec.usage_type in ("consumable", "skincare"):
++            elif rec.usage_type == "medical":
+                 rec.type = "consu"
++                rec.is_storable = True
+                 if rec.tracking in (False, "none"):
+                     rec.tracking = "lot"
+-                if rec.has_expiration is False:
+-                    rec.has_expiration = True
+-            elif rec.usage_type == "medication":
+-                rec.type = "product"
++                rec.has_expiration = True
++                if not rec.expiration_alert_days:
++                    rec.expiration_alert_days = 90
++            elif rec.usage_type == "cosmetic":
++                rec.type = "consu"
++                rec.is_storable = True
+                 if rec.tracking in (False, "none"):
+                     rec.tracking = "lot"
+-                if rec.has_expiration is False:
+-                    rec.has_expiration = True
+-                if not rec.expiration_alert_days:
+-                    rec.expiration_alert_days = 90
+-            elif rec.usage_type == "equipment":
+-                rec.type = "product"
++                rec.has_expiration = True
++            elif rec.usage_type == "device":
++                rec.type = "consu"
++                rec.is_storable = True
+                 if rec.tracking in (False, "none", "lot"):
+                     rec.tracking = "serial"
+                 rec.has_expiration = False
++            elif rec.usage_type == "retail":
++                rec.type = "consu"
++                rec.is_storable = True
+ 
+     @api.onchange("has_expiration")
+     def _onchange_has_expiration(self):
+@@ -361,13 +367,14 @@
+             if rec.has_expiration and (rec.shelf_life_days is None or rec.shelf_life_days <= 0):
+                 raise ValidationError(_("Shelf Life (Days) must be a positive integer when expiration tracking is enabled."))
+ 
+-    @api.constrains("usage_type", "type")
++    @api.constrains("usage_type", "type", "is_storable")
+     def _check_usage_type_vs_product_type(self):
+         for rec in self:
+             if rec.usage_type in ("service", "package") and rec.type != "service":
+                 raise ValidationError(_("Treatment packages and services must use Product Type = Service."))
+-            if rec.usage_type in ("equipment", "medication") and rec.type == "service":
+-                raise ValidationError(_("Equipment and medications cannot be configured as service type."))
++            if rec.usage_type in ("medical", "cosmetic", "device", "retail"):
++                if rec.type != "consu" or not rec.is_storable:
++                    raise ValidationError(_("Clinical goods must use Odoo 19 inventory-tracked Goods configuration."))
+ 
+     # =========================================================================
+     # WRITE-AUDIT & TRACKING
+@@ -418,17 +425,17 @@
+     # =========================================================================
+     # NAME & DISPLAY
+     # =========================================================================
++    @api.depends("name", "default_code", "usage_type", "dosage_strength")
++    def _compute_display_name(self):
++        """Extend Odoo 19 product labels with ClinicOne dosage strength."""
++        super()._compute_display_name()
++        for rec in self:
++            if rec.usage_type in ("medical", "cosmetic") and rec.dosage_strength:
++                rec.display_name = f"{rec.display_name} ({rec.dosage_strength})"
++
+     def name_get(self):
+-        """Enhance display name with SKU, and strength for medication/skincare."""
+-        result = []
+-        for rec in self:
+-            name = rec.name or ""
+-            if rec.default_code:
+-                name = f"[{rec.default_code}] {name}"
+-            if rec.usage_type in ("medication", "skincare") and rec.dosage_strength:
+-                name = f"{name} ({rec.dosage_strength})"
+-            result.append((rec.id, name))
+-        return result
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+ 
+     # =========================================================================
+     # HOOKS for Cross-Module Integrations (override in bridge addons)
+
+--- a/models/stock_location.py
++++ b/models/stock_location.py
+@@ -262,22 +262,34 @@
+     # =========================================================================
+     # Name & Display
+     # =========================================================================
++
++    @api.depends(
++        "name",
++        "complete_name",
++        "clinic_location_code",
++        "clinic_is_treatment_room",
++        "clinic_is_pharmacy",
++        "clinic_is_quarantine",
++    )
++    def _compute_display_name(self):
++        """Preserve ClinicOne location labels using the Odoo 19 display-name API."""
++        super()._compute_display_name()
++        for loc in self:
++            label = loc.display_name or loc.name or ""
++            code = (loc.clinic_location_code or "").strip()
++            if code and not label.startswith(f"[{code}]"):
++                label = f"[{code}] {label}"
++            if loc.clinic_is_treatment_room:
++                label = f"{label} (Treatment Room)"
++            elif loc.clinic_is_pharmacy:
++                label = f"{label} (Pharmacy)"
++            elif loc.clinic_is_quarantine:
++                label = f"{label} (Quarantine)"
++            loc.display_name = label
++
+     def name_get(self):
+-        res = []
+-        for loc in self:
+-            name = loc.display_name or loc.name or ""
+-            code = (loc.clinic_location_code or "").strip()
+-            if code:
+-                name = f"[{code}] {name}"
+-            if loc.clinic_is_treatment_room:
+-                name = f"{name} (Treatment Room)"
+-            elif loc.clinic_is_pharmacy:
+-                name = f"{name} (Pharmacy)"
+-            elif loc.clinic_is_quarantine:
+-                name = f"{name} (Quarantine)"
+-            res.append((loc.id, name))
+-        return res
+-
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+     # =========================================================================
+     # Expiration & Temperature Policies
+     # =========================================================================
+
+--- a/models/stock_lot.py
++++ b/models/stock_lot.py
+@@ -297,23 +297,33 @@
+     # -------------------------------------------------------------------------
+     # NAME / PUBLIC APIS / HOOKS
+     # -------------------------------------------------------------------------
+-    def name_get(self):
+-        res = []
+-        exp_field = self._get_expiration_field_name()
+-        for lot in self:
+-            base = lot.name or lot.display_name or ""
+-            parts = [base]
++
++    @api.depends(
++        "name",
++        "product_id",
++        "clinic_expiration_state",
++        "life_date",
++    )
++    def _compute_display_name(self):
++        """Show lot identity, product and expiry status in Odoo 19."""
++        super()._compute_display_name()
++        for lot in self:
++            parts = [lot.name or ""]
+             if lot.product_id:
+                 parts.append(lot.product_id.display_name)
+-            if exp_field and getattr(lot, exp_field, False):
+-                parts.append(_("exp: %s") % fields.Date.to_string(getattr(lot, exp_field)))
++            exp_field = lot._get_expiration_field_name()
++            exp_value = getattr(lot, exp_field, False) if exp_field else False
++            if exp_value:
++                parts.append(_("exp: %s") % fields.Date.to_string(exp_value))
+             if lot.clinic_expiration_state == "expired":
+                 parts.append("[EXPIRED]")
+             elif lot.clinic_expiration_state == "soon":
+                 parts.append("[SOON]")
+-            res.append((lot.id, " | ".join(parts)))
+-        return res
+-
++            lot.display_name = " | ".join(part for part in parts if part)
++
++    def name_get(self):
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+     def clinic_is_expired(self):
+         self.ensure_one()
+         return bool(self.clinic_is_expired)
+
+--- a/models/stock_picking.py
++++ b/models/stock_picking.py
+@@ -297,15 +297,18 @@
+     # =========================================================================
+     # NAME / DISPLAY
+     # =========================================================================
++
++    @api.depends("name", "clinic_is_quarantine_transfer")
++    def _compute_display_name(self):
++        """Preserve the ClinicOne quarantine marker in Odoo 19."""
++        super()._compute_display_name()
++        for picking in self:
++            if picking.clinic_is_quarantine_transfer:
++                picking.display_name = f"{picking.display_name} [Quarantine]"
++
+     def name_get(self):
+-        res = []
+-        for p in self:
+-            name = p.name or p.display_name or ""
+-            if p.clinic_is_quarantine_transfer:
+-                name = f"{name} [Quarantine]"
+-            res.append((p.id, name))
+-        return res
+-
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+     # =========================================================================
+     # PUBLIC APIS
+     # =========================================================================
+
+--- a/models/stock_quant.py
++++ b/models/stock_quant.py
+@@ -301,40 +301,36 @@
+     # =========================================================================
+     # NAME / DISPLAY
+     # =========================================================================
++
++    @api.depends(
++        "product_id",
++        "lot_id",
++        "location_id",
++        "quantity",
++        "clinic_expiration_state",
++    )
++    def _compute_display_name(self):
++        """Provide a human-friendly quant label for ClinicOne inventory screens."""
++        for quant in self:
++            parts = []
++            if quant.product_id:
++                parts.append(quant.product_id.display_name)
++            if quant.lot_id:
++                parts.append(quant.lot_id.display_name)
++            if quant.location_id:
++                parts.append(quant.location_id.display_name)
++            parts.append(_("qty: %s %s") % (quant.quantity, quant.product_uom_id.name))
++            if quant.clinic_expiration_state == "expired":
++                parts.append("[EXPIRED]")
++            elif quant.clinic_expiration_state == "soon":
++                parts.append("[SOON]")
++            elif quant.clinic_expiration_state == "ok":
++                parts.append("[OK]")
++            quant.display_name = " | ".join(part for part in parts if part)
++
+     def name_get(self):
+-        res = []
+-        exp_field = self._get_expiration_field_name()
+-        for q in self:
+-            parts = []
+-            # Product
+-            if q.product_id:
+-                pname = q.product_id.display_name or q.product_id.name or ""
+-                parts.append(pname)
+-            # Lot
+-            if q.lot_id:
+-                parts.append(q.lot_id.display_name)
+-                if exp_field:
+-                    ld = getattr(q.lot_id, exp_field, False)
+-                    if ld:
+-                        parts.append(_("exp: %s") % fields.Date.to_string(ld))
+-            # Location code/name
+-            loc_label = q.location_id.display_name
+-            if getattr(q.location_id, "clinic_location_code", False):
+-                loc_label = "[%s] %s" % (q.location_id.clinic_location_code, q.location_id.display_name)
+-            parts.append(loc_label)
+-            # Qty
+-            parts.append(_("qty: %s %s") % (q.quantity, q.product_uom_id.name))
+-            # State
+-            if q.clinic_expiration_state == "expired":
+-                parts.append("[EXPIRED]")
+-            elif q.clinic_expiration_state == "soon":
+-                parts.append("[SOON]")
+-            elif q.clinic_expiration_state == "ok":
+-                parts.append("[OK]")
+-            name = " | ".join(parts)
+-            res.append((q.id, name))
+-        return res
+-
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+     # =========================================================================
+     # PUBLIC APIS
+     # =========================================================================
+
+--- a/models/stock_reorderpoint.py
++++ b/models/stock_reorderpoint.py
+@@ -432,24 +432,31 @@
+     # =========================================================================
+     # Name / Display
+     # =========================================================================
++
++    @api.depends(
++        "product_id",
++        "clinic_scope",
++        "clinic_min_shelf_life_days",
++        "clinic_buffer_percent",
++        "clinic_rounding_mode",
++    )
++    def _compute_display_name(self):
++        """Append ClinicOne replenishment policy hints to the Odoo 19 label."""
++        super()._compute_display_name()
++        for rec in self:
++            label = rec.display_name or rec.product_id.display_name
++            tags = [f"scope={(rec.clinic_scope or 'warehouse_default').replace('_', '-')}"]
++            if rec.clinic_min_shelf_life_days:
++                tags.append(f"minSL={rec.clinic_min_shelf_life_days}d")
++            if rec.clinic_buffer_percent:
++                tags.append(f"buf={int(rec.clinic_buffer_percent)}%")
++            if rec.clinic_rounding_mode and rec.clinic_rounding_mode != "none":
++                tags.append(rec.clinic_rounding_mode)
++            rec.display_name = f"{label} [{' | '.join(tags)}]"
++
+     def name_get(self):
+-        res = []
+-        for r in self:
+-            name = r.display_name or r.product_id.display_name
+-            tags = []
+-            scope = r.clinic_scope or "warehouse_default"
+-            tags.append("scope=%s" % scope.replace("_", "-"))
+-            if r.clinic_min_shelf_life_days:
+-                tags.append("minSL=%sd" % r.clinic_min_shelf_life_days)
+-            if r.clinic_buffer_percent:
+-                tags.append("buf=%s%%" % (int(r.clinic_buffer_percent)))
+-            if r.clinic_rounding_mode and r.clinic_rounding_mode != "none":
+-                tags.append(r.clinic_rounding_mode)
+-            if tags:
+-                name = f"{name} [{' | '.join(tags)}]"
+-            res.append((r.id, name))
+-        return res
+-
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+     # =========================================================================
+     # Public APIs (for other modules)
+     # =========================================================================
+
+--- a/models/stock_scrap.py
++++ b/models/stock_scrap.py
+@@ -314,21 +314,23 @@
+     # =========================================================================
+     # NAME / DISPLAY
+     # =========================================================================
+-    def name_get(self):
+-        res = []
+-        for rec in self:
+-            name = rec.name or _("Scrap")
+-            # Add disposition & reason hints
++
++    @api.depends("name", "clinic_disposition", "clinic_scrap_reason")
++    def _compute_display_name(self):
++        """Expose ClinicOne disposition/reason hints in Odoo 19 record labels."""
++        super()._compute_display_name()
++        for rec in self:
+             tags = []
+             if rec.clinic_disposition:
+-                tags.append(dict(self._fields["clinic_disposition"].selection).get(rec.clinic_disposition))
++                tags.append(dict(rec._fields["clinic_disposition"].selection).get(rec.clinic_disposition))
+             if rec.clinic_scrap_reason:
+-                tags.append(dict(self._fields["clinic_scrap_reason"].selection).get(rec.clinic_scrap_reason))
++                tags.append(dict(rec._fields["clinic_scrap_reason"].selection).get(rec.clinic_scrap_reason))
+             if tags:
+-                name = f"{name} [{' / '.join(t for t in tags if t)}]"
+-            res.append((rec.id, name))
+-        return res
+-
++                rec.display_name = f"{rec.display_name} [{' / '.join(tag for tag in tags if tag)}]"
++
++    def name_get(self):
++        """Compatibility wrapper for older ClinicOne callers."""
++        return [(rec.id, rec.display_name) for rec in self]
+     # =========================================================================
+     # HOOKS (override in bridge addons)
+     # =========================================================================
+
+--- a/models/treatment_product_usage.py
++++ b/models/treatment_product_usage.py
+@@ -144,6 +144,12 @@
+         readonly=True,
+         help="Stock moves created by this usage document (if any)."
+     )
++    generated_move_count = fields.Integer(
++        string="# Moves",
++        compute="_compute_totals",
++        store=False,
++        help="Number of stock moves generated by this usage document.",
++    )
+ 
+     # Security / audit --------------------------------------------------------
+     responsible_id = fields.Many2one(
+@@ -156,11 +162,12 @@
+     # -----------------------------------------------------------------------
+     # COMPUTES
+     # -----------------------------------------------------------------------
+-    @api.depends("line_ids", "line_ids.product_uom_qty")
++    @api.depends("line_ids", "line_ids.product_uom_qty", "move_ids")
+     def _compute_totals(self):
+         for rec in self:
+             rec.total_lines = len(rec.line_ids)
+             rec.total_qty = sum(l.product_uom_qty for l in rec.line_ids)
++            rec.generated_move_count = len(rec.move_ids)
+ 
+     # -----------------------------------------------------------------------
+     # DEFAULTS & ONCHANGE
+@@ -331,7 +338,7 @@
+                     "move_id": mv.id,
+                     "product_id": mv.product_id.id,
+                     "product_uom_id": mv.product_uom.id,
+-                    "qty_done": line.product_uom_qty,
++                    "quantity": line.product_uom_qty,
+                     "location_id": self.src_location_id.id,
+                     "location_dest_id": self.dest_location_id.id,
+                 }
+@@ -342,11 +349,23 @@
+                 # If already created by core reservation, just set done qty/lot
+                 ml = mls[0]
+                 ml.write({
+-                    "qty_done": line.product_uom_qty,
++                    "quantity": line.product_uom_qty,
+                     "location_id": self.src_location_id.id,
+                     "location_dest_id": self.dest_location_id.id,
+                     "lot_id": line.lot_id.id if line.lot_id else ml.lot_id.id,
+                 })
++
++    def action_view_moves(self):
++        """Open stock moves generated by this usage document."""
++        self.ensure_one()
++        return {
++            "type": "ir.actions.act_window",
++            "name": _("Generated Stock Moves"),
++            "res_model": "stock.move",
++            "view_mode": "list,form",
++            "domain": [("id", "in", self.move_ids.ids)],
++            "context": {"create": False},
++        }
+ 
+     # -----------------------------------------------------------------------
+     # RESOLUTION HELPERS
+@@ -557,6 +576,18 @@
+         ], ["quantity:sum"], []):
+             qty += row.get("quantity", 0.0) or 0.0
+         return qty >= (self.product_uom_qty or 0.0)
++
++    def action_open_usage(self):
++        """Open the parent usage document from an embedded One2many line."""
++        self.ensure_one()
++        return {
++            "type": "ir.actions.act_window",
++            "name": _("Treatment Product Usage"),
++            "res_model": "clinic.treatment.product.usage",
++            "view_mode": "form",
++            "res_id": self.usage_id.id,
++            "target": "current",
++        }
+ 
+     def _prepare_consumption_move_vals(self, usage, src_location, dest_location):
+         """Build stock.move values for this usage line.
+
+--- a/security/clinic_inventory_rules.xml
++++ b/security/clinic_inventory_rules.xml
+@@ -0,0 +1,52 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <!-- ORM security is authoritative. UI visibility is never a substitute. -->
++    <record id="rule_clinic_doctor_allowed_product_company" model="ir.rule">
++        <field name="name">Clinic Doctor Product Rules: Allowed Companies</field>
++        <field name="model_id" ref="model_clinic_doctor_allowed_product"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
++    </record>
++
++    <record id="rule_clinic_integration_event_log_company" model="ir.rule">
++        <field name="name">Clinic Integration Event Log: Allowed Companies</field>
++        <field name="model_id" ref="model_clinic_integration_event_log"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
++    </record>
++
++    <record id="rule_clinic_inventory_adjustment_company" model="ir.rule">
++        <field name="name">Clinic Inventory Adjustment: Allowed Companies</field>
++        <field name="model_id" ref="model_clinic_inventory_adjustment"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
++    </record>
++
++    <record id="rule_clinic_inventory_adjustment_line_company" model="ir.rule">
++        <field name="name">Clinic Inventory Adjustment Lines: Allowed Companies</field>
++        <field name="model_id" ref="model_clinic_inventory_adjustment_line"/>
++        <field name="domain_force">[('adjustment_id.company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
++    </record>
++
++    <record id="rule_clinic_patient_product_history_company" model="ir.rule">
++        <field name="name">Clinic Patient Product History: Allowed Companies</field>
++        <field name="model_id" ref="model_clinic_patient_product_history"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
++    </record>
++
++    <record id="rule_clinic_treatment_product_usage_company" model="ir.rule">
++        <field name="name">Clinic Treatment Product Usage: Allowed Companies</field>
++        <field name="model_id" ref="model_clinic_treatment_product_usage"/>
++        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
++    </record>
++
++    <record id="rule_clinic_treatment_product_usage_line_company" model="ir.rule">
++        <field name="name">Clinic Treatment Product Usage Lines: Allowed Companies</field>
++        <field name="model_id" ref="model_clinic_treatment_product_usage_line"/>
++        <field name="domain_force">[('usage_id.company_id', 'in', company_ids)]</field>
++        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
++    </record>
++</odoo>
+
+--- a/security/ir.model.access.csv
++++ b/security/ir.model.access.csv
+@@ -1,3 +1,14 @@
+-
+ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+-access_clinic_inventory_clinic_inventory,clinic_inventory.clinic_inventory,model_clinic_inventory_clinic_inventory,base.group_user,1,1,1,1
++access_clinic_doctor_allowed_product_user,clinic.doctor.allowed.product user,model_clinic_doctor_allowed_product,stock.group_stock_user,1,0,0,0
++access_clinic_doctor_allowed_product_manager,clinic.doctor.allowed.product manager,model_clinic_doctor_allowed_product,stock.group_stock_manager,1,1,1,1
++access_clinic_integration_event_log_manager,clinic.integration.event.log manager,model_clinic_integration_event_log,stock.group_stock_manager,1,0,0,0
++access_clinic_inventory_adjustment_user,clinic.inventory.adjustment user,model_clinic_inventory_adjustment,stock.group_stock_user,1,1,1,0
++access_clinic_inventory_adjustment_manager,clinic.inventory.adjustment manager,model_clinic_inventory_adjustment,stock.group_stock_manager,1,1,1,1
++access_clinic_inventory_adjustment_line_user,clinic.inventory.adjustment.line user,model_clinic_inventory_adjustment_line,stock.group_stock_user,1,1,1,0
++access_clinic_inventory_adjustment_line_manager,clinic.inventory.adjustment.line manager,model_clinic_inventory_adjustment_line,stock.group_stock_manager,1,1,1,1
++access_clinic_patient_product_history_user,clinic.patient.product.history user,model_clinic_patient_product_history,stock.group_stock_user,1,0,1,0
++access_clinic_patient_product_history_manager,clinic.patient.product.history manager,model_clinic_patient_product_history,stock.group_stock_manager,1,1,1,0
++access_clinic_treatment_product_usage_user,clinic.treatment.product.usage user,model_clinic_treatment_product_usage,stock.group_stock_user,1,1,1,0
++access_clinic_treatment_product_usage_manager,clinic.treatment.product.usage manager,model_clinic_treatment_product_usage,stock.group_stock_manager,1,1,1,1
++access_clinic_treatment_product_usage_line_user,clinic.treatment.product.usage.line user,model_clinic_treatment_product_usage_line,stock.group_stock_user,1,1,1,0
++access_clinic_treatment_product_usage_line_manager,clinic.treatment.product.usage.line manager,model_clinic_treatment_product_usage_line,stock.group_stock_manager,1,1,1,1
+
+--- a/views/clinic_inventory_menus.xml
++++ b/views/clinic_inventory_menus.xml
+@@ -0,0 +1,50 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <menuitem id="menu_clinic_inventory_root"
++              name="Clinic Inventory"
++              sequence="60"
++              groups="stock.group_stock_user"/>
++
++    <menuitem id="menu_clinic_inventory_operations"
++              name="Operations"
++              parent="menu_clinic_inventory_root"
++              sequence="10"/>
++
++    <menuitem id="menu_clinic_treatment_product_usage"
++              name="Treatment Product Usage"
++              parent="menu_clinic_inventory_operations"
++              action="action_clinic_treatment_product_usage"
++              sequence="10"/>
++
++    <menuitem id="menu_clinic_inventory_adjustment"
++              name="Inventory Adjustments"
++              parent="menu_clinic_inventory_operations"
++              action="action_clinic_inventory_adjustment"
++              sequence="20"/>
++
++    <menuitem id="menu_clinic_patient_product_history"
++              name="Patient Product History"
++              parent="menu_clinic_inventory_operations"
++              action="action_clinic_patient_product_history"
++              sequence="30"/>
++
++    <menuitem id="menu_clinic_inventory_configuration"
++              name="Configuration"
++              parent="menu_clinic_inventory_root"
++              sequence="90"
++              groups="stock.group_stock_manager"/>
++
++    <menuitem id="menu_clinic_doctor_allowed_product"
++              name="Doctor Product Rules"
++              parent="menu_clinic_inventory_configuration"
++              action="action_clinic_doctor_allowed_product"
++              sequence="10"
++              groups="stock.group_stock_manager"/>
++
++    <menuitem id="menu_clinic_integration_event_log"
++              name="Integration Event Log"
++              parent="menu_clinic_inventory_configuration"
++              action="action_clinic_integration_event_log"
++              sequence="90"
++              groups="stock.group_stock_manager"/>
++</odoo>
+
+--- a/views/core_inventory_extension_views.xml
++++ b/views/core_inventory_extension_views.xml
+@@ -0,0 +1,184 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <!-- Product Template: expose ClinicOne inventory semantics on the native product form. -->
++    <record id="view_product_template_form_clinic_inventory" model="ir.ui.view">
++        <field name="name">product.template.form.clinic.inventory</field>
++        <field name="model">product.template</field>
++        <field name="inherit_id" ref="product.product_template_form_view"/>
++        <field name="arch" type="xml">
++            <xpath expr="//div[@name='button_box']" position="inside">
++                <button name="action_view_expiring_lots" type="object" class="oe_stat_button"
++                        icon="fa-calendar-times-o" invisible="not has_expiration">
++                    <div class="o_stat_info"><span class="o_stat_text">Expiring Lots</span></div>
++                </button>
++                <button name="action_view_stock_moves" type="object" class="oe_stat_button"
++                        icon="fa-exchange">
++                    <div class="o_stat_info"><span class="o_stat_text">Stock Moves</span></div>
++                </button>
++            </xpath>
++            <xpath expr="//notebook" position="inside">
++                <page string="Clinic Inventory" name="clinic_inventory">
++                    <group>
++                        <group string="Clinical Classification">
++                            <field name="usage_type"/>
++                            <field name="brand_partner_id"/>
++                            <field name="regulatory_class"/>
++                            <field name="is_medication" readonly="1"/>
++                            <field name="is_cosmetic" readonly="1"/>
++                            <field name="is_service_flag" readonly="1"/>
++                            <field name="is_stockable_flag" readonly="1"/>
++                        </group>
++                        <group string="Dosage / Presentation">
++                            <field name="dosage_form"/>
++                            <field name="active_ingredients"/>
++                            <field name="dosage_strength"/>
++                            <field name="volume_ml"/>
++                            <field name="weight_g"/>
++                        </group>
++                    </group>
++                    <group>
++                        <group string="Expiry &amp; Storage">
++                            <field name="has_expiration"/>
++                            <field name="shelf_life_days" invisible="not has_expiration"/>
++                            <field name="expiration_alert_days" invisible="not has_expiration"/>
++                            <field name="next_expiration_date" readonly="1" invisible="not has_expiration"/>
++                            <field name="storage_requirement"/>
++                            <field name="storage_min_c"/>
++                            <field name="storage_max_c"/>
++                        </group>
++                        <group string="Clinic Policies">
++                            <field name="membership_pricing_policy"/>
++                            <field name="ecommerce_is_sellable"/>
++                            <field name="additional_barcodes"/>
++                        </group>
++                    </group>
++                    <group string="Clinical Guidance">
++                        <field name="contraindications"/>
++                        <field name="instructions"/>
++                    </group>
++                </page>
++            </xpath>
++        </field>
++    </record>
++
++    <!-- Warehouse: ClinicOne locations, expiry policy and monitoring. -->
++    <record id="view_stock_warehouse_form_clinic_inventory" model="ir.ui.view">
++        <field name="name">stock.warehouse.form.clinic.inventory</field>
++        <field name="model">stock.warehouse</field>
++        <field name="inherit_id" ref="stock.view_warehouse"/>
++        <field name="arch" type="xml">
++            <xpath expr="//div[@name='button_box']" position="inside">
++                <button name="action_view_internal_locations" type="object" class="oe_stat_button"
++                        icon="fa-map-marker">
++                    <field name="clinic_count_internal_locations" widget="statinfo" string="Clinic Locations"/>
++                </button>
++                <button name="action_view_quants" type="object" class="oe_stat_button"
++                        icon="fa-cubes">
++                    <div class="o_stat_info"><span class="o_stat_text">On Hand</span></div>
++                </button>
++            </xpath>
++            <xpath expr="//notebook" position="inside">
++                <page string="Clinic Inventory" name="clinic_inventory">
++                    <group>
++                        <group string="Warehouse Role">
++                            <field name="is_clinic_warehouse"/>
++                            <field name="clinic_pharmacy_location_id"/>
++                            <field name="clinic_treatment_root_location_id"/>
++                            <field name="clinic_quarantine_location_id"/>
++                            <field name="clinic_auto_create_room_locations"/>
++                        </group>
++                        <group string="Governance">
++                            <field name="clinic_expiry_blocking_policy"/>
++                            <field name="clinic_replenishment_scope"/>
++                            <field name="clinic_temperature_monitoring"/>
++                        </group>
++                    </group>
++                    <group string="Operational Counters">
++                        <field name="clinic_count_internal_locations" readonly="1"/>
++                        <field name="clinic_count_treatment_rooms" readonly="1"/>
++                        <field name="clinic_count_quarantine_stock" readonly="1"/>
++                    </group>
++                </page>
++            </xpath>
++        </field>
++    </record>
++
++    <!-- Location: operational classification remains on Odoo's canonical stock.location. -->
++    <record id="view_stock_location_form_clinic_inventory" model="ir.ui.view">
++        <field name="name">stock.location.form.clinic.inventory</field>
++        <field name="model">stock.location</field>
++        <field name="inherit_id" ref="stock.view_location_form"/>
++        <field name="arch" type="xml">
++            <xpath expr="//div[@name='button_box']" position="inside">
++                <button name="action_view_quants" type="object" class="oe_stat_button" icon="fa-cubes">
++                    <div class="o_stat_info"><span class="o_stat_text">Clinic Stock</span></div>
++                </button>
++                <button name="action_view_moves" type="object" class="oe_stat_button" icon="fa-exchange">
++                    <div class="o_stat_info"><span class="o_stat_text">Moves</span></div>
++                </button>
++            </xpath>
++            <xpath expr="//sheet/group[1]" position="after">
++                <group string="Clinic Inventory">
++                    <group>
++                        <field name="clinic_location_code"/>
++                        <field name="clinic_warehouse_id"/>
++                        <field name="clinic_is_treatment_room"/>
++                        <field name="clinic_is_pharmacy"/>
++                        <field name="clinic_is_quarantine"/>
++                        <field name="clinic_room_capacity" invisible="not clinic_is_treatment_room"/>
++                        <field name="clinic_room_notes" invisible="not clinic_is_treatment_room"/>
++                    </group>
++                    <group>
++                        <field name="clinic_expiry_policy"/>
++                        <field name="clinic_temperature_monitoring"/>
++                        <field name="clinic_temp_min_c" invisible="not clinic_temperature_monitoring"/>
++                        <field name="clinic_temp_max_c" invisible="not clinic_temperature_monitoring"/>
++                        <field name="clinic_restrict_to_allowed_categories"/>
++                        <field name="clinic_allowed_categ_ids" widget="many2many_tags"
++                               invisible="not clinic_restrict_to_allowed_categories"/>
++                    </group>
++                </group>
++            </xpath>
++        </field>
++    </record>
++
++    <!-- Lot/Serial: expose ClinicOne quality and expiry state on native lot form. -->
++    <record id="view_stock_lot_form_clinic_inventory" model="ir.ui.view">
++        <field name="name">stock.lot.form.clinic.inventory</field>
++        <field name="model">stock.lot</field>
++        <field name="inherit_id" ref="stock.view_production_lot_form"/>
++        <field name="arch" type="xml">
++            <xpath expr="//div[@name='button_box']" position="inside">
++                <button name="action_view_quants" type="object" class="oe_stat_button" icon="fa-cubes">
++                    <field name="clinic_quants_count" widget="statinfo" string="Clinic Quants"/>
++                </button>
++                <button name="action_view_moves" type="object" class="oe_stat_button" icon="fa-exchange">
++                    <div class="o_stat_info"><span class="o_stat_text">Moves</span></div>
++                </button>
++            </xpath>
++            <xpath expr="//group[@name='main_group']" position="after">
++                <group string="Clinic Quality &amp; Expiry">
++                    <group>
++                        <field name="clinic_supplier_batch"/>
++                        <field name="clinic_manufacture_date"/>
++                        <field name="clinic_received_date"/>
++                        <field name="clinic_quality_state"/>
++                        <field name="clinic_quarantine_reason" invisible="clinic_quality_state != 'quarantine'"/>
++                    </group>
++                    <group>
++                        <field name="clinic_expiration_alert_days"/>
++                        <field name="clinic_days_to_expiry" readonly="1"/>
++                        <field name="clinic_expiration_state" readonly="1"/>
++                        <field name="clinic_is_expired" readonly="1"/>
++                        <field name="clinic_onhand_qty" readonly="1"/>
++                        <field name="clinic_primary_location_id" readonly="1"/>
++                    </group>
++                </group>
++                <group string="Clinic Actions" groups="stock.group_stock_manager">
++                    <button name="action_suggest_quarantine_transfer" type="object"
++                            string="Suggest Quarantine Transfer" class="btn-secondary"/>
++                </group>
++            </xpath>
++        </field>
++    </record>
++</odoo>
+
+--- a/views/doctor_allowed_product_views.xml
++++ b/views/doctor_allowed_product_views.xml
+@@ -0,0 +1,95 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_clinic_doctor_allowed_product_search" model="ir.ui.view">
++        <field name="name">clinic.doctor.allowed.product.search</field>
++        <field name="model">clinic.doctor.allowed.product</field>
++        <field name="arch" type="xml">
++            <search string="Doctor Product Rules">
++                <field name="name"/>
++                <field name="doctor_id"/>
++                <field name="product_id"/>
++                <field name="category_id"/>
++                <filter name="filter_active" string="Active" domain="[('is_active','=',True)]"/>
++                <filter name="filter_archived" string="Archived" domain="[('archived','=',True)]"/>
++                <filter name="filter_allow" string="Allow" domain="[('action','=','allow')]"/>
++                <filter name="filter_deny" string="Deny" domain="[('action','=','deny')]"/>
++                <group expand="0" string="Group By">
++                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
++                    <filter name="group_action" string="Action" context="{'group_by':'action'}"/>
++                    <filter name="group_type" string="Rule Type" context="{'group_by':'rule_type'}"/>
++                </group>
++            </search>
++        </field>
++    </record>
++
++    <record id="view_clinic_doctor_allowed_product_list" model="ir.ui.view">
++        <field name="name">clinic.doctor.allowed.product.list</field>
++        <field name="model">clinic.doctor.allowed.product</field>
++        <field name="arch" type="xml">
++            <list string="Doctor Product Rules"
++                  decoration-muted="archived"
++                  decoration-danger="action == 'deny'"
++                  decoration-success="action == 'allow'">
++                <field name="priority"/>
++                <field name="doctor_id"/>
++                <field name="rule_type"/>
++                <field name="product_id" optional="show"/>
++                <field name="category_id" optional="show"/>
++                <field name="action" widget="badge"/>
++                <field name="date_start" optional="hide"/>
++                <field name="date_end" optional="hide"/>
++                <field name="is_active"/>
++                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
++            </list>
++        </field>
++    </record>
++
++    <record id="view_clinic_doctor_allowed_product_form" model="ir.ui.view">
++        <field name="name">clinic.doctor.allowed.product.form</field>
++        <field name="model">clinic.doctor.allowed.product</field>
++        <field name="arch" type="xml">
++            <form string="Doctor Product Rule">
++                <sheet>
++                    <div class="oe_button_box" name="button_box">
++                        <button name="action_view_allowed_products" type="object" class="oe_stat_button"
++                                icon="fa-cubes">
++                            <div class="o_stat_info"><span class="o_stat_text">Allowed Products</span></div>
++                        </button>
++                    </div>
++                    <div class="oe_title">
++                        <label for="name"/>
++                        <h1><field name="name" readonly="1"/></h1>
++                    </div>
++                    <group>
++                        <group string="Rule">
++                            <field name="doctor_id"/>
++                            <field name="rule_type"/>
++                            <field name="product_id" invisible="rule_type != 'product'"/>
++                            <field name="category_id" invisible="rule_type != 'category'"/>
++                            <field name="action"/>
++                            <field name="priority"/>
++                        </group>
++                        <group string="Validity">
++                            <field name="date_start"/>
++                            <field name="date_end"/>
++                            <field name="archived"/>
++                            <field name="is_active" readonly="1"/>
++                            <field name="company_id" groups="base.group_multi_company"/>
++                        </group>
++                    </group>
++                    <group string="Notes">
++                        <field name="note"/>
++                    </group>
++                </sheet>
++                <chatter/>
++            </form>
++        </field>
++    </record>
++
++    <record id="action_clinic_doctor_allowed_product" model="ir.actions.act_window">
++        <field name="name">Doctor Product Rules</field>
++        <field name="res_model">clinic.doctor.allowed.product</field>
++        <field name="view_mode">list,form</field>
++        <field name="search_view_id" ref="view_clinic_doctor_allowed_product_search"/>
++    </record>
++</odoo>
+
+--- a/views/integration_event_log_views.xml
++++ b/views/integration_event_log_views.xml
+@@ -0,0 +1,81 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <!-- Technical audit surface: manager-only through ACL and menu group. -->
++    <record id="view_clinic_integration_event_log_search" model="ir.ui.view">
++        <field name="name">clinic.integration.event.log.search</field>
++        <field name="model">clinic.integration.event.log</field>
++        <field name="arch" type="xml">
++            <search string="Inventory Integration Events">
++                <field name="event_code"/>
++                <field name="ctx_model"/>
++                <field name="handled_by"/>
++                <field name="user_id"/>
++                <filter name="filter_queued" string="Queued" domain="[('status','=','queued')]"/>
++                <filter name="filter_dispatched" string="Dispatched" domain="[('status','=','dispatched')]"/>
++                <filter name="filter_error" string="Error" domain="[('status','=','error')]"/>
++                <group expand="0" string="Group By">
++                    <filter name="group_status" string="Status" context="{'group_by':'status'}"/>
++                    <filter name="group_event" string="Event" context="{'group_by':'event_code'}"/>
++                    <filter name="group_model" string="Context Model" context="{'group_by':'ctx_model'}"/>
++                </group>
++            </search>
++        </field>
++    </record>
++
++    <record id="view_clinic_integration_event_log_list" model="ir.ui.view">
++        <field name="name">clinic.integration.event.log.list</field>
++        <field name="model">clinic.integration.event.log</field>
++        <field name="arch" type="xml">
++            <list string="Inventory Integration Events"
++                  create="0" edit="0" delete="0"
++                  decoration-danger="status == 'error'"
++                  decoration-success="status == 'dispatched'">
++                <field name="event_code"/>
++                <field name="status" widget="badge"/>
++                <field name="ctx_model"/>
++                <field name="ctx_res_id"/>
++                <field name="handled_by"/>
++                <field name="user_id"/>
++                <field name="company_id" groups="base.group_multi_company"/>
++            </list>
++        </field>
++    </record>
++
++    <record id="view_clinic_integration_event_log_form" model="ir.ui.view">
++        <field name="name">clinic.integration.event.log.form</field>
++        <field name="model">clinic.integration.event.log</field>
++        <field name="arch" type="xml">
++            <form string="Inventory Integration Event" create="0" edit="0" delete="0">
++                <header>
++                    <field name="status" widget="statusbar" statusbar_visible="queued,dispatched,error"/>
++                </header>
++                <sheet>
++                    <group>
++                        <group>
++                            <field name="event_code"/>
++                            <field name="ctx_model"/>
++                            <field name="ctx_res_id"/>
++                            <field name="handled_by"/>
++                        </group>
++                        <group>
++                            <field name="user_id"/>
++                            <field name="company_id" groups="base.group_multi_company"/>
++                            <field name="message"/>
++                        </group>
++                    </group>
++                    <group string="Payload">
++                        <field name="payload_json" nolabel="1"/>
++                    </group>
++                </sheet>
++            </form>
++        </field>
++    </record>
++
++    <record id="action_clinic_integration_event_log" model="ir.actions.act_window">
++        <field name="name">Integration Event Log</field>
++        <field name="res_model">clinic.integration.event.log</field>
++        <field name="view_mode">list,form</field>
++        <field name="search_view_id" ref="view_clinic_integration_event_log_search"/>
++        <field name="context">{'create': False}</field>
++    </record>
++</odoo>
+
+--- a/views/inventory_adjustment_views.xml
++++ b/views/inventory_adjustment_views.xml
+@@ -0,0 +1,214 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_clinic_inventory_adjustment_search" model="ir.ui.view">
++        <field name="name">clinic.inventory.adjustment.search</field>
++        <field name="model">clinic.inventory.adjustment</field>
++        <field name="arch" type="xml">
++            <search string="Inventory Adjustments">
++                <field name="name"/>
++                <field name="warehouse_id"/>
++                <field name="root_location_id"/>
++                <field name="responsible_id"/>
++                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
++                <filter name="filter_confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
++                <filter name="filter_applied" string="Applied" domain="[('state','=','applied')]"/>
++                <filter name="filter_cancel" string="Cancelled" domain="[('state','=','cancel')]"/>
++                <group expand="0" string="Group By">
++                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
++                    <filter name="group_warehouse" string="Warehouse" context="{'group_by':'warehouse_id'}"/>
++                    <filter name="group_date" string="Date" context="{'group_by':'date:day'}"/>
++                </group>
++            </search>
++        </field>
++    </record>
++
++    <record id="view_clinic_inventory_adjustment_list" model="ir.ui.view">
++        <field name="name">clinic.inventory.adjustment.list</field>
++        <field name="model">clinic.inventory.adjustment</field>
++        <field name="arch" type="xml">
++            <list string="Inventory Adjustments"
++                  decoration-muted="state == 'cancel'"
++                  decoration-success="state == 'applied'"
++                  decoration-info="state == 'confirmed'">
++                <field name="name"/>
++                <field name="date"/>
++                <field name="state" widget="badge"/>
++                <field name="warehouse_id"/>
++                <field name="root_location_id"/>
++                <field name="total_lines"/>
++                <field name="total_diff_qty"/>
++                <field name="generated_move_count"/>
++                <field name="responsible_id" optional="hide"/>
++                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
++            </list>
++        </field>
++    </record>
++
++    <record id="view_clinic_inventory_adjustment_form" model="ir.ui.view">
++        <field name="name">clinic.inventory.adjustment.form</field>
++        <field name="model">clinic.inventory.adjustment</field>
++        <field name="arch" type="xml">
++            <form string="Inventory Adjustment">
++                <header>
++                    <button name="action_prepare_lines" type="object" string="Prepare Lines"
++                            invisible="state != 'draft'"/>
++                    <button name="action_confirm" type="object" string="Confirm"
++                            class="btn-primary" invisible="state != 'draft'"/>
++                    <button name="action_apply" type="object" string="Apply Adjustment"
++                            class="btn-primary" invisible="state != 'confirmed'"/>
++                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
++                            invisible="state not in ['confirmed', 'cancel']"/>
++                    <button name="action_cancel" type="object" string="Cancel"
++                            invisible="state in ['applied', 'cancel']"/>
++                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,applied,cancel"/>
++                </header>
++                <sheet>
++                    <div class="oe_button_box" name="button_box">
++                        <button name="action_view_moves" type="object" class="oe_stat_button"
++                                icon="fa-exchange" invisible="generated_move_count == 0">
++                            <field name="generated_move_count" widget="statinfo" string="Stock Moves"/>
++                        </button>
++                    </div>
++                    <div class="oe_title">
++                        <label for="name"/>
++                        <h1><field name="name" readonly="1"/></h1>
++                    </div>
++                    <group>
++                        <group string="Scope">
++                            <field name="date"/>
++                            <field name="warehouse_id"/>
++                            <field name="root_location_id"/>
++                            <field name="responsible_id"/>
++                            <field name="company_id" groups="base.group_multi_company"/>
++                        </group>
++                        <group string="Counting Policy">
++                            <field name="include_zero_expected"/>
++                            <field name="use_snapshot"/>
++                            <field name="snapshot_at" readonly="1"/>
++                            <field name="route_expired_to_quarantine"/>
++                            <field name="enforce_governance"/>
++                        </group>
++                    </group>
++                    <notebook>
++                        <page string="Count Lines" name="count_lines">
++                            <field name="line_ids" readonly="state not in ['draft', 'confirmed']">
++                                <list editable="bottom">
++                                    <field name="sequence" widget="handle"/>
++                                    <field name="product_id"/>
++                                    <field name="product_uom"/>
++                                    <field name="lot_id" optional="show"/>
++                                    <field name="location_id"/>
++                                    <field name="expected_qty_current" readonly="1"/>
++                                    <field name="snapshot_qty" readonly="1" optional="hide"/>
++                                    <field name="counted_qty"/>
++                                    <field name="diff_qty_current" readonly="1"/>
++                                    <field name="is_expired" readonly="1" optional="show"/>
++                                    <field name="note" optional="hide"/>
++                                    <button name="action_open_adjustment" type="object" icon="fa-external-link"
++                                            title="Open Adjustment"/>
++                                </list>
++                            </field>
++                        </page>
++                        <page string="Generated Moves" name="moves">
++                            <field name="move_ids" readonly="1">
++                                <list>
++                                    <field name="reference"/>
++                                    <field name="product_id"/>
++                                    <field name="product_uom_qty"/>
++                                    <field name="location_id"/>
++                                    <field name="location_dest_id"/>
++                                    <field name="state"/>
++                                </list>
++                            </field>
++                        </page>
++                        <page string="Notes" name="notes">
++                            <field name="note"/>
++                        </page>
++                    </notebook>
++                </sheet>
++                <chatter/>
++            </form>
++        </field>
++    </record>
++
++    <record id="action_clinic_inventory_adjustment" model="ir.actions.act_window">
++        <field name="name">Inventory Adjustments</field>
++        <field name="res_model">clinic.inventory.adjustment</field>
++        <field name="view_mode">list,form</field>
++        <field name="search_view_id" ref="view_clinic_inventory_adjustment_search"/>
++    </record>
++
++    <record id="view_clinic_inventory_adjustment_line_search" model="ir.ui.view">
++        <field name="name">clinic.inventory.adjustment.line.search</field>
++        <field name="model">clinic.inventory.adjustment.line</field>
++        <field name="arch" type="xml">
++            <search string="Inventory Adjustment Lines">
++                <field name="adjustment_id"/>
++                <field name="product_id"/>
++                <field name="lot_id"/>
++                <field name="location_id"/>
++                <filter name="filter_expired" string="Expired" domain="[('is_expired','=',True)]"/>
++            </search>
++        </field>
++    </record>
++
++    <record id="view_clinic_inventory_adjustment_line_list" model="ir.ui.view">
++        <field name="name">clinic.inventory.adjustment.line.list</field>
++        <field name="model">clinic.inventory.adjustment.line</field>
++        <field name="arch" type="xml">
++            <list string="Inventory Adjustment Lines" decoration-danger="is_expired">
++                <field name="adjustment_id"/>
++                <field name="product_id"/>
++                <field name="lot_id"/>
++                <field name="location_id"/>
++                <field name="expected_qty_current"/>
++                <field name="counted_qty"/>
++                <field name="diff_qty_current"/>
++                <field name="is_expired"/>
++                <button name="action_open_adjustment" type="object" icon="fa-external-link"
++                        title="Open Adjustment"/>
++            </list>
++        </field>
++    </record>
++
++    <record id="view_clinic_inventory_adjustment_line_form" model="ir.ui.view">
++        <field name="name">clinic.inventory.adjustment.line.form</field>
++        <field name="model">clinic.inventory.adjustment.line</field>
++        <field name="arch" type="xml">
++            <form string="Inventory Adjustment Line">
++                <sheet>
++                    <div class="oe_button_box" name="button_box">
++                        <button name="action_open_adjustment" type="object" class="oe_stat_button"
++                                icon="fa-external-link">
++                            <div class="o_stat_info"><span class="o_stat_text">Adjustment</span></div>
++                        </button>
++                    </div>
++                    <group>
++                        <field name="adjustment_id"/>
++                        <field name="sequence"/>
++                        <field name="product_id"/>
++                        <field name="product_uom"/>
++                        <field name="lot_id"/>
++                        <field name="location_id"/>
++                    </group>
++                    <group string="Quantities">
++                        <field name="expected_qty_current" readonly="1"/>
++                        <field name="snapshot_qty" readonly="1"/>
++                        <field name="counted_qty"/>
++                        <field name="diff_qty_current" readonly="1"/>
++                        <field name="diff_qty_snapshot" readonly="1"/>
++                        <field name="is_expired" readonly="1"/>
++                    </group>
++                    <field name="note"/>
++                </sheet>
++            </form>
++        </field>
++    </record>
++
++    <record id="action_clinic_inventory_adjustment_line" model="ir.actions.act_window">
++        <field name="name">Inventory Adjustment Lines</field>
++        <field name="res_model">clinic.inventory.adjustment.line</field>
++        <field name="view_mode">list,form</field>
++        <field name="search_view_id" ref="view_clinic_inventory_adjustment_line_search"/>
++    </record>
++</odoo>
+
+--- a/views/patient_product_history_views.xml
++++ b/views/patient_product_history_views.xml
+@@ -0,0 +1,107 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <record id="view_clinic_patient_product_history_search" model="ir.ui.view">
++        <field name="name">clinic.patient.product.history.search</field>
++        <field name="model">clinic.patient.product.history</field>
++        <field name="arch" type="xml">
++            <search string="Patient Product History">
++                <field name="patient_id"/>
++                <field name="product_id"/>
++                <field name="lot_id"/>
++                <field name="doctor_id"/>
++                <field name="warehouse_id"/>
++                <field name="responsible_id"/>
++                <filter name="filter_out" string="Consumed / Out" domain="[('direction','=','out')]"/>
++                <filter name="filter_in" string="Returned / In" domain="[('direction','=','in')]"/>
++                <group expand="0" string="Group By">
++                    <filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/>
++                    <filter name="group_product" string="Product" context="{'group_by':'product_id'}"/>
++                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
++                    <filter name="group_date" string="Date" context="{'group_by':'date_use:day'}"/>
++                </group>
++            </search>
++        </field>
++    </record>
++
++    <record id="view_clinic_patient_product_history_list" model="ir.ui.view">
++        <field name="name">clinic.patient.product.history.list</field>
++        <field name="model">clinic.patient.product.history</field>
++        <field name="arch" type="xml">
++            <list string="Patient Product History">
++                <field name="date_use"/>
++                <field name="patient_id"/>
++                <field name="product_id"/>
++                <field name="lot_id" optional="show"/>
++                <field name="qty"/>
++                <field name="uom_id"/>
++                <field name="direction" widget="badge"/>
++                <field name="purpose"/>
++                <field name="doctor_id" optional="show"/>
++                <field name="warehouse_id" optional="hide"/>
++                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
++            </list>
++        </field>
++    </record>
++
++    <record id="view_clinic_patient_product_history_form" model="ir.ui.view">
++        <field name="name">clinic.patient.product.history.form</field>
++        <field name="model">clinic.patient.product.history</field>
++        <field name="arch" type="xml">
++            <form string="Patient Product History">
++                <sheet>
++                    <div class="oe_button_box" name="button_box">
++                        <button name="action_view_picking" type="object" class="oe_stat_button"
++                                icon="fa-truck" invisible="not picking_id">
++                            <div class="o_stat_info"><span class="o_stat_text">Picking</span></div>
++                        </button>
++                        <button name="action_view_move" type="object" class="oe_stat_button"
++                                icon="fa-exchange" invisible="not move_id">
++                            <div class="o_stat_info"><span class="o_stat_text">Stock Move</span></div>
++                        </button>
++                    </div>
++                    <div class="oe_title">
++                        <h1><field name="display_name" readonly="1"/></h1>
++                    </div>
++                    <group>
++                        <group string="Patient &amp; Product">
++                            <field name="date_use"/>
++                            <field name="patient_id"/>
++                            <field name="product_id"/>
++                            <field name="product_tmpl_id" readonly="1"/>
++                            <field name="lot_id"/>
++                            <field name="qty"/>
++                            <field name="uom_id"/>
++                            <field name="direction"/>
++                            <field name="signed_qty" readonly="1"/>
++                            <field name="purpose"/>
++                        </group>
++                        <group string="Clinical &amp; Inventory Traceability">
++                            <field name="doctor_id"/>
++                            <field name="treatment_ref"/>
++                            <field name="usage_id"/>
++                            <field name="picking_id"/>
++                            <field name="move_id"/>
++                            <field name="warehouse_id"/>
++                            <field name="location_id"/>
++                            <field name="location_dest_id"/>
++                            <field name="responsible_id"/>
++                            <field name="company_id" groups="base.group_multi_company"/>
++                        </group>
++                    </group>
++                    <group string="Notes">
++                        <field name="note"/>
++                    </group>
++                </sheet>
++                <chatter/>
++            </form>
++        </field>
++    </record>
++
++    <record id="action_clinic_patient_product_history" model="ir.actions.act_window">
++        <field name="name">Patient Product History</field>
++        <field name="res_model">clinic.patient.product.history</field>
++        <field name="view_mode">list,form</field>
++        <field name="search_view_id" ref="view_clinic_patient_product_history_search"/>
++        <field name="context">{'create': False}</field>
++    </record>
++</odoo>
+
+--- a/views/treatment_product_usage_views.xml
++++ b/views/treatment_product_usage_views.xml
+@@ -0,0 +1,204 @@
++<?xml version="1.0" encoding="utf-8"?>
++<odoo>
++    <!-- ============================================================
++         Treatment Product Usage
++         Existing business states/methods are surfaced; no new workflow.
++         ============================================================ -->
++    <record id="view_clinic_treatment_product_usage_search" model="ir.ui.view">
++        <field name="name">clinic.treatment.product.usage.search</field>
++        <field name="model">clinic.treatment.product.usage</field>
++        <field name="arch" type="xml">
++            <search string="Treatment Product Usage">
++                <field name="name"/>
++                <field name="patient_id"/>
++                <field name="doctor_id"/>
++                <field name="warehouse_id"/>
++                <field name="responsible_id"/>
++                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
++                <filter name="filter_confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
++                <filter name="filter_done" string="Consumed" domain="[('state','=','done')]"/>
++                <filter name="filter_cancel" string="Cancelled" domain="[('state','=','cancel')]"/>
++                <separator/>
++                <group expand="0" string="Group By">
++                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
++                    <filter name="group_warehouse" string="Warehouse" context="{'group_by':'warehouse_id'}"/>
++                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
++                    <filter name="group_date" string="Usage Date" context="{'group_by':'date_usage:day'}"/>
++                </group>
++            </search>
++        </field>
++    </record>
++
++    <record id="view_clinic_treatment_product_usage_list" model="ir.ui.view">
++        <field name="name">clinic.treatment.product.usage.list</field>
++        <field name="model">clinic.treatment.product.usage</field>
++        <field name="arch" type="xml">
++            <list string="Treatment Product Usage"
++                  decoration-muted="state == 'cancel'"
++                  decoration-success="state == 'done'"
++                  decoration-info="state == 'confirmed'">
++                <field name="name"/>
++                <field name="date_usage"/>
++                <field name="state" widget="badge"/>
++                <field name="patient_id"/>
++                <field name="doctor_id"/>
++                <field name="warehouse_id"/>
++                <field name="total_lines"/>
++                <field name="total_qty"/>
++                <field name="responsible_id" optional="hide"/>
++                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
++            </list>
++        </field>
++    </record>
++
++    <record id="view_clinic_treatment_product_usage_form" model="ir.ui.view">
++        <field name="name">clinic.treatment.product.usage.form</field>
++        <field name="model">clinic.treatment.product.usage</field>
++        <field name="arch" type="xml">
++            <form string="Treatment Product Usage">
++                <header>
++                    <button name="action_confirm" type="object" string="Confirm"
++                            class="btn-primary" invisible="state != 'draft'"/>
++                    <button name="action_consume" type="object" string="Consume Stock"
++                            class="btn-primary" invisible="state != 'confirmed'"/>
++                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
++                            invisible="state not in ['confirmed', 'cancel']"/>
++                    <button name="action_cancel" type="object" string="Cancel"
++                            invisible="state in ['done', 'cancel']"/>
++                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done,cancel"/>
++                </header>
++                <sheet>
++                    <div class="oe_button_box" name="button_box">
++                        <button name="action_view_moves" type="object" class="oe_stat_button"
++                                icon="fa-exchange" invisible="generated_move_count == 0">
++                            <field name="generated_move_count" widget="statinfo" string="Stock Moves"/>
++                        </button>
++                    </div>
++                    <div class="oe_title">
++                        <label for="name"/>
++                        <h1><field name="name" readonly="1"/></h1>
++                    </div>
++                    <group>
++                        <group string="Clinical Context">
++                            <field name="date_usage"/>
++                            <field name="patient_id"/>
++                            <field name="doctor_id"/>
++                            <field name="treatment_ref"/>
++                        </group>
++                        <group string="Inventory Context">
++                            <field name="warehouse_id"/>
++                            <field name="src_location_id"/>
++                            <field name="dest_location_id"/>
++                            <field name="responsible_id"/>
++                            <field name="company_id" groups="base.group_multi_company"/>
++                        </group>
++                    </group>
++                    <notebook>
++                        <page string="Products" name="products">
++                            <field name="line_ids" readonly="state != 'draft'">
++                                <list editable="bottom">
++                                    <field name="sequence" widget="handle"/>
++                                    <field name="product_id"/>
++                                    <field name="product_uom"/>
++                                    <field name="product_uom_qty"/>
++                                    <field name="lot_id" optional="show"/>
++                                    <field name="qty_onhand_at_source" readonly="1" optional="show"/>
++                                    <field name="note" optional="hide"/>
++                                    <button name="action_open_usage" type="object" icon="fa-external-link"
++                                            title="Open Usage"/>
++                                </list>
++                            </field>
++                        </page>
++                        <page string="Generated Moves" name="moves">
++                            <field name="move_ids" readonly="1">
++                                <list>
++                                    <field name="reference"/>
++                                    <field name="product_id"/>
++                                    <field name="product_uom_qty"/>
++                                    <field name="location_id"/>
++                                    <field name="location_dest_id"/>
++                                    <field name="state"/>
++                                </list>
++                            </field>
++                        </page>
++                        <page string="Notes" name="notes">
++                            <field name="notes" placeholder="Operational or clinical consumption notes..."/>
++                        </page>
++                    </notebook>
++                </sheet>
++                <chatter/>
++            </form>
++        </field>
++    </record>
++
++    <record id="action_clinic_treatment_product_usage" model="ir.actions.act_window">
++        <field name="name">Treatment Product Usage</field>
++        <field name="res_model">clinic.treatment.product.usage</field>
++        <field name="view_mode">list,form</field>
++        <field name="search_view_id" ref="view_clinic_treatment_product_usage_search"/>
++    </record>
++
++    <!-- Standalone line views exist for diagnostics and enterprise completeness.
++         Normal users work with the embedded One2many on the parent. -->
++    <record id="view_clinic_treatment_product_usage_line_search" model="ir.ui.view">
++        <field name="name">clinic.treatment.product.usage.line.search</field>
++        <field name="model">clinic.treatment.product.usage.line</field>
++        <field name="arch" type="xml">
++            <search string="Treatment Product Usage Lines">
++                <field name="usage_id"/>
++                <field name="product_id"/>
++                <field name="lot_id"/>
++            </search>
++        </field>
++    </record>
++
++    <record id="view_clinic_treatment_product_usage_line_list" model="ir.ui.view">
++        <field name="name">clinic.treatment.product.usage.line.list</field>
++        <field name="model">clinic.treatment.product.usage.line</field>
++        <field name="arch" type="xml">
++            <list string="Treatment Product Usage Lines">
++                <field name="usage_id"/>
++                <field name="sequence"/>
++                <field name="product_id"/>
++                <field name="product_uom"/>
++                <field name="product_uom_qty"/>
++                <field name="lot_id"/>
++                <field name="qty_onhand_at_source"/>
++                <button name="action_open_usage" type="object" icon="fa-external-link" title="Open Usage"/>
++            </list>
++        </field>
++    </record>
++
++    <record id="view_clinic_treatment_product_usage_line_form" model="ir.ui.view">
++        <field name="name">clinic.treatment.product.usage.line.form</field>
++        <field name="model">clinic.treatment.product.usage.line</field>
++        <field name="arch" type="xml">
++            <form string="Treatment Product Usage Line">
++                <sheet>
++                    <div class="oe_button_box" name="button_box">
++                        <button name="action_open_usage" type="object" class="oe_stat_button" icon="fa-external-link">
++                            <div class="o_stat_info"><span class="o_stat_text">Usage</span></div>
++                        </button>
++                    </div>
++                    <group>
++                        <field name="usage_id"/>
++                        <field name="sequence"/>
++                        <field name="product_id"/>
++                        <field name="product_uom"/>
++                        <field name="product_uom_qty"/>
++                        <field name="lot_id"/>
++                        <field name="qty_onhand_at_source" readonly="1"/>
++                        <field name="note"/>
++                    </group>
++                </sheet>
++            </form>
++        </field>
++    </record>
++
++    <record id="action_clinic_treatment_product_usage_line" model="ir.actions.act_window">
++        <field name="name">Treatment Product Usage Lines</field>
++        <field name="res_model">clinic.treatment.product.usage.line</field>
++        <field name="view_mode">list,form</field>
++        <field name="search_view_id" ref="view_clinic_treatment_product_usage_line_search"/>
++    </record>
++</odoo>
+

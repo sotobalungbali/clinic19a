@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sequence_clinic_ap" model="ir.sequence">
+        <field name="name">Clinic AP</field>
+        <field name="code">clinic.ap</field>
+        <field name="prefix">AP/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,24 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_emar_profile_user,eMAR medication profile user,model_clinic_emar_medication_profile,clinic_emar.group_emar_user,1,0,0,0
+access_emar_profile_manager,eMAR medication profile manager,model_clinic_emar_medication_profile,clinic_emar.group_emar_manager,1,1,1,1
+access_emar_prescription_user,eMAR prescription user,model_clinic_emar_prescription,clinic_emar.group_emar_user,1,0,0,0
+access_emar_prescription_prescriber,eMAR prescription prescriber,model_clinic_emar_prescription,clinic_emar.group_emar_prescriber,1,1,1,0
+access_emar_prescription_manager,eMAR prescription manager,model_clinic_emar_prescription,clinic_emar.group_emar_manager,1,1,1,0
+access_emar_order_user,eMAR order user,model_clinic_emar_order,clinic_emar.group_emar_user,1,0,0,0
+access_emar_order_prescriber,eMAR order prescriber,model_clinic_emar_order,clinic_emar.group_emar_prescriber,1,1,1,0
+access_emar_order_nurse,eMAR order medication administrator,model_clinic_emar_order,clinic_emar.group_emar_nurse,1,0,0,0
+access_emar_order_manager,eMAR order manager,model_clinic_emar_order,clinic_emar.group_emar_manager,1,1,1,0
+access_emar_line_user,eMAR medication line user,model_clinic_emar_medication_line,clinic_emar.group_emar_user,1,0,0,0
+access_emar_line_prescriber,eMAR medication line prescriber,model_clinic_emar_medication_line,clinic_emar.group_emar_prescriber,1,1,1,0
+access_emar_line_manager,eMAR medication line manager,model_clinic_emar_medication_line,clinic_emar.group_emar_manager,1,1,1,0
+access_emar_schedule_user,eMAR schedule user,model_clinic_emar_schedule,clinic_emar.group_emar_user,1,0,0,0
+access_emar_schedule_nurse,eMAR schedule medication administrator,model_clinic_emar_schedule,clinic_emar.group_emar_nurse,1,1,1,0
+access_emar_schedule_manager,eMAR schedule manager,model_clinic_emar_schedule,clinic_emar.group_emar_manager,1,1,1,0
+access_emar_administration_user,eMAR administration user,model_clinic_emar_administration,clinic_emar.group_emar_user,1,0,0,0
+access_emar_administration_nurse,eMAR administration medication administrator,model_clinic_emar_administration,clinic_emar.group_emar_nurse,1,1,1,0
+access_emar_administration_manager,eMAR administration manager,model_clinic_emar_administration,clinic_emar.group_emar_manager,1,1,1,0
+access_emar_alert_user,eMAR alert user,model_clinic_emar_alert,clinic_emar.group_emar_user,1,0,0,0
+access_emar_alert_prescriber,eMAR alert prescriber,model_clinic_emar_alert,clinic_emar.group_emar_prescriber,1,1,1,0
+access_emar_alert_nurse,eMAR alert medication administrator,model_clinic_emar_alert,clinic_emar.group_emar_nurse,1,1,1,0
+access_emar_alert_manager,eMAR alert manager,model_clinic_emar_alert,clinic_emar.group_emar_manager,1,1,1,0
+access_emar_reschedule_wizard,eMAR reschedule wizard,model_clinic_emar_reschedule_wizard,clinic_emar.group_emar_nurse,1,1,1,1

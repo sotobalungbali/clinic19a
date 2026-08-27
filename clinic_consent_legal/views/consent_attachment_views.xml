@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_consent_attachment_search" model="ir.ui.view">
+        <field name="name">clinic.consent.attachment.search</field>
+        <field name="model">clinic.consent.attachment</field>
+        <field name="arch" type="xml">
+            <search string="Consent Attachments">
+                <field name="name"/>
+                <field name="form_id"/>
+                <field name="patient_id"/>
+                <field name="category"/>
+                <field name="confidentiality"/>
+                <filter name="filter_portal" string="Visible on Portal"
+                        domain="[('show_on_portal','=',True)]"/>
+                <filter name="filter_redaction" string="Requires Redaction"
+                        domain="[('requires_redaction','=',True)]"/>
+                <group>
+                    <filter name="group_by_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_by_confidentiality" string="Confidentiality"
+                            context="{'group_by':'confidentiality'}"/>
+                    <filter name="group_by_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_by_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_consent_attachment_list" model="ir.ui.view">
+        <field name="name">clinic.consent.attachment.list</field>
+        <field name="model">clinic.consent.attachment</field>
+        <field name="arch" type="xml">
+            <list string="Consent Attachments"
+                  decoration-warning="requires_redaction"
+                  decoration-success="show_on_portal">
+                <field name="sequence" optional="hide"/>
+                <field name="name"/>
+                <field name="form_id"/>
+                <field name="patient_id"/>
+                <field name="category"/>
+                <field name="confidentiality"/>
+                <field name="show_on_portal"/>
+                <field name="file_name" optional="show"/>
+                <field name="mimetype" optional="hide"/>
+                <field name="uploaded_by" optional="show"/>
+                <field name="uploaded_on" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_consent_attachment_form" model="ir.ui.view">
+        <field name="name">clinic.consent.attachment.form</field>
+        <field name="model">clinic.consent.attachment</field>
+        <field name="arch" type="xml">
+            <form string="Consent Attachment">
+                <header>
+                    <button name="action_mark_portal_visible" type="object"
+                            string="Show on Portal" class="btn-primary"
+                            invisible="show_on_portal"/>
+                    <button name="action_mark_portal_hidden" type="object"
+                            string="Hide from Portal"
+                            invisible="not show_on_portal"/>
+                    <button name="action_open_attachment_record" type="object"
+                            string="Open Attachment" invisible="not attachment_id"/>
+                    <button name="action_open_in_portal" type="object"
+                            string="Portal Preview"
+                            invisible="not show_on_portal"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Document">
+                            <field name="form_id"/>
+                            <field name="category"/>
+                            <field name="attachment_id"/>
+                            <field name="external_url"/>
+                            <field name="redacted_attachment_id"
+                                   invisible="not requires_redaction"/>
+                        </group>
+                        <group string="Confidentiality">
+                            <field name="confidentiality"/>
+                            <field name="show_on_portal"/>
+                            <field name="requires_redaction"/>
+                            <field name="origin"/>
+                            <field name="uploaded_by" readonly="1"/>
+                            <field name="uploaded_on" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="File Metadata">
+                        <field name="file_name" readonly="1"/>
+                        <field name="mimetype" readonly="1"/>
+                        <field name="file_size" readonly="1"/>
+                        <field name="checksum" readonly="1"/>
+                    </group>
+
+                    <group string="Clinical Context">
+                        <field name="patient_id" readonly="1"/>
+                        <field name="doctor_id" readonly="1"/>
+                        <field name="treatment_id" readonly="1"/>
+                        <field name="booking_id"/>
+                        <field name="room_session_id"/>
+                        <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                    </group>
+
+                    <field name="note" placeholder="Internal notes for this legal attachment..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_consent_attachment" model="ir.actions.act_window">
+        <field name="name">Legal Attachments</field>
+        <field name="res_model">clinic.consent.attachment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_consent_attachment_search"/>
+    </record>
+</odoo>

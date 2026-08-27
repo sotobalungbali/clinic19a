@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_telemedicine_message_search" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.message.search</field>
+        <field name="model">clinic.telemedicine.message</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="thread_id"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="author_kind"/>
+                <field name="sender_display_name"/>
+                <field name="company_id"/>
+                <filter name="patient_inbound" string="Patient → Clinic" domain="[('direction','=','patient_to_clinic')]"/>
+                <filter name="clinic_outbound" string="Clinic → Patient" domain="[('direction','=','clinic_to_patient')]"/>
+                <filter name="clinic_unread" string="Clinic Unread" domain="[('author_kind','=','patient'),('clinic_read_at','=',False)]"/>
+                <filter name="patient_unread" string="Patient Unread" domain="[('author_kind','!=','patient'),('patient_read_at','=',False)]"/>
+                <group>
+                    <filter name="group_thread" string="Thread" context="{'group_by':'thread_id'}"/>
+                    <filter name="group_author" string="Author Type" context="{'group_by':'author_kind'}"/>
+                    <filter name="group_direction" string="Direction" context="{'group_by':'direction'}"/>
+                    <filter name="group_day" string="Sent Day" context="{'group_by':'sent_at:day'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_message_list" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.message.list</field>
+        <field name="model">clinic.telemedicine.message</field>
+        <field name="arch" type="xml">
+            <list edit="0" delete="0"
+                  decoration-warning="author_kind == 'patient' and not clinic_read_at">
+                <field name="sent_at"/>
+                <field name="thread_id"/>
+                <field name="patient_id"/>
+                <field name="sender_display_name"/>
+                <field name="author_kind" widget="badge"/>
+                <field name="body"/>
+                <field name="attachment_count"/>
+                <field name="patient_read_at"/>
+                <field name="clinic_read_at"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_mark_clinic_read" type="object" string="Mark Read" icon="fa-check"
+                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                        invisible="author_kind != 'patient' or clinic_read_at"/>
+                <button name="action_open_thread" type="object" string="Thread" icon="fa-comments"/>
+                <button name="action_open_attachments" type="object" string="Files" icon="fa-paperclip"
+                        invisible="attachment_count == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_message_form" model="ir.ui.view">
+        <field name="name">clinic.telemedicine.message.form</field>
+        <field name="model">clinic.telemedicine.message</field>
+        <field name="arch" type="xml">
+            <form edit="0" delete="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_thread" type="object" class="oe_stat_button" icon="fa-comments">
+                            <div class="o_stat_info"><span class="o_stat_text">Thread</span></div>
+                        </button>
+                        <button name="action_open_attachments" type="object" class="oe_stat_button" icon="fa-paperclip"
+                                invisible="attachment_count == 0">
+                            <field name="attachment_count" widget="statinfo" string="Files"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>Secure Message</h1>
+                        <div class="text-muted"><field name="sent_at"/></div>
+                    </div>
+                    <group>
+                        <group string="Conversation">
+                            <field name="thread_id" readonly="id"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="doctor_id" readonly="1"/>
+                        </group>
+                        <group string="Author Evidence">
+                            <field name="author_kind" readonly="1"/>
+                            <field name="sender_display_name" readonly="1"/>
+                            <field name="author_user_id" readonly="1"/>
+                            <field name="author_staff_id" readonly="1"/>
+                            <field name="direction" readonly="1"/>
+                            <field name="patient_read_at" readonly="1"/>
+                            <field name="clinic_read_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="body" readonly="id" placeholder="Write a secure message..."/>
+                    <div class="d-flex gap-2 my-3" invisible="not id">
+                        <button name="action_mark_clinic_read" type="object" string="Mark Patient Message Read"
+                                class="btn btn-secondary"
+                                groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                                invisible="author_kind != 'patient' or clinic_read_at"/>
+                        <button name="action_open_attachments" type="object" string="Open / Add Secure Files"
+                                class="btn btn-primary"/>
+                    </div>
+                    <field name="attachment_ids" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="uploaded_at"/>
+                            <field name="name"/>
+                            <field name="mimetype"/>
+                            <field name="size_bytes"/>
+                            <field name="uploader_kind" widget="badge"/>
+                            <button name="action_download" type="object" string="Download" icon="fa-download"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_telemedicine_message" model="ir.actions.act_window">
+        <field name="name">Secure Messages</field>
+        <field name="res_model">clinic.telemedicine.message</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_telemedicine_message_search"/>
+    </record>
+</odoo>
+

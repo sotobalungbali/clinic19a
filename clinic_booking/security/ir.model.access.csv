@@ -1,0 +1,25 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_booking_tag_user,booking.tag internal user,model_booking_tag,base.group_user,1,1,1,1
+access_booking_channel_user,booking.channel internal user,model_booking_channel,base.group_user,1,1,1,1
+access_booking_policy_user,booking.policy internal user,model_booking_policy,base.group_user,1,1,1,1
+access_booking_policy_exception_user,booking.policy.exception internal user,model_booking_policy_exception,base.group_user,1,1,1,1
+access_booking_room_tag_user,booking.room.tag internal user,model_booking_room_tag,base.group_user,1,1,1,1
+access_booking_room_user,booking.room internal user,model_booking_room,base.group_user,1,1,1,1
+access_booking_room_schedule_user,booking.room.schedule internal user,model_booking_room_schedule,base.group_user,1,1,1,1
+access_booking_room_blackout_user,booking.room.blackout internal user,model_booking_room_blackout,base.group_user,1,1,1,1
+access_booking_resource_tag_user,booking.resource.tag internal user,model_booking_resource_tag,base.group_user,1,1,1,1
+access_booking_resource_user,booking.resource internal user,model_booking_resource,base.group_user,1,1,1,1
+access_booking_resource_schedule_user,booking.resource.schedule internal user,model_booking_resource_schedule,base.group_user,1,1,1,1
+access_booking_resource_blackout_user,booking.resource.blackout internal user,model_booking_resource_blackout,base.group_user,1,1,1,1
+access_booking_slot_user,booking.slot internal user,model_booking_slot,base.group_user,1,1,1,1
+access_booking_slot_exception_user,booking.slot.exception internal user,model_booking_slot_exception,base.group_user,1,1,1,1
+access_booking_recurring_rule_user,booking.recurring.rule internal user,model_booking_recurring_rule,base.group_user,1,1,1,1
+access_booking_recurring_weekday_user,booking.recurring.weekday internal user,model_booking_recurring_weekday,base.group_user,1,1,1,1
+access_booking_recurring_monthday_user,booking.recurring.monthday internal user,model_booking_recurring_monthday,base.group_user,1,1,1,1
+access_booking_recurring_byweekday_user,booking.recurring.byweekday internal user,model_booking_recurring_byweekday,base.group_user,1,1,1,1
+access_booking_recurring_exdate_user,booking.recurring.exdate internal user,model_booking_recurring_exdate,base.group_user,1,1,1,1
+access_booking_booking_user,booking.booking internal user,model_booking_booking,base.group_user,1,1,1,1
+access_booking_line_user,booking.line internal user,model_booking_line,base.group_user,1,1,1,1
+access_booking_feedback_link_user,booking.feedback.link internal user,model_booking_feedback_link,base.group_user,1,1,1,1
+access_booking_doctor_schedule_user,booking.doctor.schedule internal user,model_booking_doctor_schedule,base.group_user,1,1,1,1
+access_booking_doctor_blackout_user,booking.doctor.blackout internal user,model_booking_doctor_blackout,base.group_user,1,1,1,1

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_quality_sop_version_search" model="ir.ui.view">
+        <field name="name">clinic.quality.sop.version.search</field>
+        <field name="model">clinic.quality.sop.version</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="sop_id"/>
+                <field name="version_no"/>
+                <field name="approved_by_id"/>
+                <field name="company_id"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="review" string="In Review" domain="[('state','=','in_review')]"/>
+                <filter name="approved" string="Approved" domain="[('state','=','approved')]"/>
+                <filter name="superseded" string="Superseded" domain="[('state','=','superseded')]"/>
+                <filter name="review_due" string="Review Due"
+                        domain="[('review_due_date','!=',False),('review_due_date','&lt;',context_today())]"/>
+                <filter name="effective" string="Effective Date" date="effective_date"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_sop" string="SOP" context="{'group_by':'sop_id'}"/>
+                    <filter name="group_approver" string="Approved By" context="{'group_by':'approved_by_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_quality_sop_version_list" model="ir.ui.view">
+        <field name="name">clinic.quality.sop.version.list</field>
+        <field name="model">clinic.quality.sop.version</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'approved'"
+                  decoration-muted="state in ('superseded','withdrawn')">
+                <field name="sop_id"/>
+                <field name="version_no"/>
+                <field name="effective_date"/>
+                <field name="review_due_date"/>
+                <field name="submitted_by_id"/>
+                <field name="approved_by_id"/>
+                <field name="acknowledgement_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_submit_review" type="object" string="Submit" icon="fa-send"
+                        groups="clinic_quality.group_quality_inspector"
+                        invisible="state != 'draft'"/>
+                <button name="action_approve" type="object" string="Approve" icon="fa-check"
+                        groups="clinic_quality.group_quality_approver"
+                        invisible="state != 'in_review'"/>
+                <button name="action_open_sop" type="object" string="SOP" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_quality_sop_version_form" model="ir.ui.view">
+        <field name="name">clinic.quality.sop.version.form</field>
+        <field name="model">clinic.quality.sop.version</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_review" type="object" string="Submit for Review" class="btn-primary"
+                            groups="clinic_quality.group_quality_inspector"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve Version" class="btn-primary"
+                            groups="clinic_quality.group_quality_approver"
+                            invisible="state != 'in_review'"/>
+                    <button name="action_return_to_draft" type="object" string="Return to Draft"
+                            groups="clinic_quality.group_quality_approver"
+                            invisible="state != 'in_review'"/>
+                    <button name="action_withdraw" type="object" string="Withdraw"
+                            groups="clinic_quality.group_quality_manager"
+                            invisible="state not in ('approved','superseded')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,in_review,approved,superseded,withdrawn"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sop" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info"><span class="o_stat_text">SOP</span></div>
+                        </button>
+                        <button name="action_open_acknowledgements" type="object"
+                                class="oe_stat_button" icon="fa-check">
+                            <field name="acknowledgement_count" widget="statinfo" string="Acknowledged"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="sop_id" readonly="state != 'draft'"/>
+                            <span class="text-muted"> / </span>
+                            <field name="version_no" readonly="state != 'draft'"/>
+                        </h1>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="state not in ('approved','superseded','withdrawn')">
+                        Governed SOP content is immutable after approval. Create a new Draft Version for changes.
+                    </div>
+
+                    <group>
+                        <group string="Version Control">
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="effective_date" readonly="state in ('approved','superseded','withdrawn')"/>
+                            <field name="review_due_date" readonly="state in ('approved','superseded','withdrawn')"/>
+                            <field name="change_summary" readonly="state in ('approved','superseded','withdrawn')"/>
+                        </group>
+                        <group string="Approval Evidence">
+                            <field name="submitted_at" readonly="1"/>
+                            <field name="submitted_by_id" readonly="1"/>
+                            <field name="approved_at" readonly="1"/>
+                            <field name="approved_by_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Controlled Procedure">
+                        <field name="content" readonly="state in ('approved','superseded','withdrawn')"/>
+                        <field name="attachment_ids" widget="many2many_binary"
+                               readonly="state in ('approved','superseded','withdrawn')"/>
+                    </group>
+
+                    <group string="Withdrawal Evidence"
+                           invisible="state not in ('approved','superseded','withdrawn')">
+                        <field name="withdrawal_reason" readonly="state == 'withdrawn'"/>
+                        <field name="withdrawn_at" readonly="1"/>
+                        <field name="withdrawn_by_id" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quality_sop_version" model="ir.actions.act_window">
+        <field name="name">SOP Versions</field>
+        <field name="res_model">clinic.quality.sop.version</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_quality_sop_version_search"/>
+    </record>
+</odoo>

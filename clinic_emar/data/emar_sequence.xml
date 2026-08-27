@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_emar_prescription" model="ir.sequence">
+        <field name="name">eMAR Prescription</field><field name="code">clinic.emar.prescription</field><field name="prefix">RX/%(year)s/</field><field name="padding">5</field><field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_emar_order" model="ir.sequence">
+        <field name="name">eMAR Order</field><field name="code">clinic.emar.order</field><field name="prefix">EMO/%(year)s/</field><field name="padding">5</field><field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_emar_administration" model="ir.sequence">
+        <field name="name">eMAR Administration</field><field name="code">clinic.emar.administration</field><field name="prefix">MAR/%(year)s/</field><field name="padding">6</field><field name="company_id" eval="False"/>
+    </record>
+</odoo>

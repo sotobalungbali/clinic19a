@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend the canonical Odoo contact form; do not replace res.partner. -->
+    <record id="view_partner_form_clinic_patient" model="ir.ui.view">
+        <field name="name">res.partner.form.clinic.patient</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_patient"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-id-card"
+                        string="Patient Card"
+                        invisible="not patient_id"/>
+                <button name="action_open_invoices"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-text-o"
+                        invisible="not patient_id or not invoice_count">
+                    <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                </button>
+                <button name="action_open_attachments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-paperclip"
+                        invisible="not patient_id">
+                    <field name="attachment_count" widget="statinfo" string="Attachments"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="ClinicOne Patient" name="clinicone_patient">
+                    <group>
+                        <group string="Patient Link">
+                            <field name="is_patient"/>
+                            <field name="patient_id"/>
+                            <field name="patient_code" readonly="1"/>
+                            <field name="patient_stage_id" readonly="1"/>
+                            <field name="patient_registered_date" readonly="1"/>
+                            <field name="patient_last_seen" readonly="1"/>
+                            <field name="is_vip_patient"/>
+                            <button name="action_create_patient"
+                                    type="object"
+                                    string="Create Patient Card"
+                                    class="btn-primary"
+                                    invisible="not is_patient or patient_id"/>
+                        </group>
+                        <group string="Medical Identity">
+                            <field name="patient_birth_date"/>
+                            <field name="patient_age_display" readonly="1"/>
+                            <field name="patient_gender"/>
+                            <field name="nik"/>
+                            <field name="bpjs_no"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Clinical Summary">
+                            <field name="medical_allergy_note"/>
+                            <field name="medical_condition_note"/>
+                        </group>
+                        <group string="Integration Counters">
+                            <field name="booking_count" readonly="1"/>
+                            <field name="encounter_count" readonly="1"/>
+                            <field name="invoice_count" readonly="1"/>
+                            <field name="coverage_count" readonly="1"/>
+                            <field name="wallet_balance" readonly="1"/>
+                            <field name="has_active_consent" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

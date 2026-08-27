@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_quality_check_line_search" model="ir.ui.view">
+        <field name="name">clinic.quality.check.line.search</field>
+        <field name="model">clinic.quality.check.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="control_code"/>
+                <field name="requirement"/>
+                <field name="check_id"/>
+                <field name="template_line_id"/>
+                <field name="company_id"/>
+                <filter name="failed" string="Failed" domain="[('result','=','fail')]"/>
+                <filter name="critical_failed" string="Critical Failure"
+                        domain="[('result','=','fail'),('critical','=',True)]"/>
+                <filter name="passed" string="Passed" domain="[('result','=','pass')]"/>
+                <filter name="observation" string="Observation" domain="[('result','=','observation')]"/>
+                <filter name="pending" string="Pending" domain="[('result','=','pending')]"/>
+                <filter name="with_incident" string="With Incident"
+                        domain="[('incident_ids','!=',False)]"/>
+                <group>
+                    <filter name="group_result" string="Result" context="{'group_by':'result'}"/>
+                    <filter name="group_check" string="Quality Check" context="{'group_by':'check_id'}"/>
+                    <filter name="group_critical" string="Critical" context="{'group_by':'critical'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_quality_check_line_list" model="ir.ui.view">
+        <field name="name">clinic.quality.check.line.list</field>
+        <field name="model">clinic.quality.check.line</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0"
+                  decoration-danger="result == 'fail' and critical"
+                  decoration-warning="result in ('fail','observation')"
+                  decoration-success="result == 'pass'"
+                  decoration-muted="result == 'not_applicable'">
+                <field name="check_id"/>
+                <field name="sequence"/>
+                <field name="control_code"/>
+                <field name="requirement"/>
+                <field name="critical"/>
+                <field name="weight"/>
+                <field name="result" widget="badge"/>
+                <field name="incident_count"/>
+                <field name="branch_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_create_incident" type="object" string="Create Incident" icon="fa-exclamation-triangle"
+                        groups="clinic_quality.group_quality_approver"
+                        invisible="result != 'fail' or incident_count != 0"/>
+                <button name="action_open_incidents" type="object" string="Incidents" icon="fa-external-link"
+                        invisible="incident_count == 0"/>
+                <button name="action_open_check" type="object" string="Check" icon="fa-check-square-o"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_quality_check_line_form" model="ir.ui.view">
+        <field name="name">clinic.quality.check.line.form</field>
+        <field name="model">clinic.quality.check.line</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_check" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <div class="o_stat_info"><span class="o_stat_text">Quality Check</span></div>
+                        </button>
+                        <button name="action_open_incidents" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="incident_count" widget="statinfo" string="Incidents"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="control_code" readonly="1"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert"
+                         invisible="result != 'fail' or not critical">
+                        Critical Quality Control Failure.
+                    </div>
+
+                    <group>
+                        <group string="Control Snapshot">
+                            <field name="check_id" readonly="1"/>
+                            <field name="template_line_id" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="branch_id" readonly="1"/>
+                            <field name="sequence" readonly="1"/>
+                            <field name="critical" readonly="1"/>
+                            <field name="weight" readonly="1"/>
+                        </group>
+                        <group string="Result">
+                            <field name="result"/>
+                            <field name="evidence_required" readonly="1"/>
+                            <field name="incident_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Requirement">
+                        <field name="requirement" readonly="1"/>
+                        <field name="guidance" readonly="1"/>
+                    </group>
+
+                    <group string="Evidence">
+                        <field name="evidence_note"/>
+                        <field name="evidence_attachment_ids" widget="many2many_binary"/>
+                        <field name="reviewer_note"/>
+                    </group>
+
+                    <div class="d-flex gap-2 flex-wrap my-3">
+                        <button name="action_create_incident" type="object"
+                                string="Create Incident"
+                                class="btn btn-primary"
+                                groups="clinic_quality.group_quality_approver"
+                                invisible="result != 'fail' or incident_count != 0"/>
+                        <button name="action_open_incidents" type="object"
+                                string="Open Incident"
+                                class="btn btn-secondary"
+                                invisible="incident_count == 0"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quality_check_line" model="ir.actions.act_window">
+        <field name="name">Quality Control Results</field>
+        <field name="res_model">clinic.quality.check.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_quality_check_line_search"/>
+    </record>
+</odoo>

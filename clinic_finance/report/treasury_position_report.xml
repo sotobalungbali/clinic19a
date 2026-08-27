@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="action_report_treasury_position" model="ir.actions.report">
+    <field name="name">Treasury Position</field><field name="model">clinic.finance.position</field>
+    <field name="report_type">qweb-pdf</field><field name="report_name">clinic_finance.report_treasury_position</field><field name="report_file">clinic_finance.report_treasury_position</field>
+    <field name="binding_model_id" ref="model_clinic_finance_position"/><field name="binding_type">report</field>
+    <field name="print_report_name">'Treasury Position - %s' % (object.name)</field>
+  </record>
+</odoo>

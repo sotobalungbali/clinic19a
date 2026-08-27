@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_api_scope_operator,clinic.api.scope operator,model_clinic_api_scope,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_scope_manager,clinic.api.scope manager,model_clinic_api_scope,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_client_operator,clinic.api.client operator,model_clinic_api_client,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_client_manager,clinic.api.client manager,model_clinic_api_client,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_provider_operator,clinic.api.provider operator,model_clinic_api_provider,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_provider_manager,clinic.api.provider manager,model_clinic_api_provider,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_request_operator,clinic.api.request.log operator,model_clinic_api_request_log,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_request_manager,clinic.api.request.log manager,model_clinic_api_request_log,clinic_integration_api.group_api_manager,1,0,0,1
+access_api_idempotency_operator,clinic.api.idempotency operator,model_clinic_api_idempotency,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_idempotency_manager,clinic.api.idempotency manager,model_clinic_api_idempotency,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_event_type_operator,clinic.api.event.type operator,model_clinic_api_event_type,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_event_type_manager,clinic.api.event.type manager,model_clinic_api_event_type,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_event_operator,clinic.api.event operator,model_clinic_api_event,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_event_manager,clinic.api.event manager,model_clinic_api_event,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_subscription_operator,clinic.api.webhook.subscription operator,model_clinic_api_webhook_subscription,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_subscription_manager,clinic.api.webhook.subscription manager,model_clinic_api_webhook_subscription,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_delivery_operator,clinic.api.webhook.delivery operator,model_clinic_api_webhook_delivery,clinic_integration_api.group_api_operator,1,0,0,0
+access_api_delivery_manager,clinic.api.webhook.delivery manager,model_clinic_api_webhook_delivery,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_credential_wizard_manager,clinic.api.provider.credential.wizard manager,model_clinic_api_provider_credential_wizard,clinic_integration_api.group_api_manager,1,1,1,1
+access_api_token_wizard_manager,clinic.api.webhook.token.wizard manager,model_clinic_api_webhook_token_wizard,clinic_integration_api.group_api_manager,1,1,1,1

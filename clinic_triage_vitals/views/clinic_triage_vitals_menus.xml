@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_triage_root"
+              name="Triage &amp; Vitals"
+              sequence="35"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_clinic_triage_operations"
+              name="Operations"
+              parent="menu_clinic_triage_root"
+              sequence="10"/>
+
+    <menuitem id="menu_clinic_triage_sessions"
+              name="Triage Sessions"
+              parent="menu_clinic_triage_operations"
+              action="action_clinic_triage_session"
+              sequence="10"/>
+
+    <menuitem id="menu_clinic_vitals_intake"
+              name="Vitals Intake"
+              parent="menu_clinic_triage_operations"
+              action="action_clinic_vitals_intake"
+              sequence="20"/>
+
+    <menuitem id="menu_clinic_triage_configuration"
+              name="Configuration"
+              parent="menu_clinic_triage_root"
+              sequence="90"/>
+
+    <menuitem id="menu_clinic_triage_levels"
+              name="Triage Levels"
+              parent="menu_clinic_triage_configuration"
+              action="action_clinic_triage_level"
+              sequence="10"/>
+
+    <menuitem id="menu_clinic_triage_tags"
+              name="Triage Tags"
+              parent="menu_clinic_triage_configuration"
+              action="action_clinic_triage_tag"
+              sequence="20"/>
+</odoo>

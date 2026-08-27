@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_employee_form_clinic_queue_room" model="ir.ui.view">
+        <field name="name">hr.employee.form.clinic.queue.room</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_queues" type="object" class="oe_stat_button"
+                        icon="fa-list" invisible="not is_doctor">
+                    <div class="o_stat_info">
+                        <span class="o_stat_value"><field name="queue_active_count"/></span>
+                        <span class="o_stat_text">Active Queues</span>
+                    </div>
+                </button>
+                <button name="action_view_room_assignments" type="object" class="oe_stat_button"
+                        icon="fa-hospital-o" invisible="not is_doctor">
+                    <div class="o_stat_info">
+                        <span class="o_stat_value"><field name="assignment_active_count"/></span>
+                        <span class="o_stat_text">Room Assignments</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Queue Operations" name="clinic_queue_operations" invisible="not is_doctor">
+                    <group>
+                        <group string="Queue Availability">
+                            <field name="is_doctor"/>
+                            <field name="doctor_code"/>
+                            <field name="availability_status"/>
+                            <field name="is_available_for_queue" readonly="1"/>
+                            <field name="allow_auto_assignment"/>
+                            <field name="max_parallel_cases"/>
+                            <field name="default_appointment_slot_min"/>
+                        </group>
+                        <group string="Current Workload">
+                            <field name="queue_active_count" readonly="1"/>
+                            <field name="queue_today_count" readonly="1"/>
+                            <field name="queue_waiting_count" readonly="1"/>
+                            <field name="assignment_active_count" readonly="1"/>
+                            <field name="next_appointment_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Queue Controls">
+                        <button name="action_set_on_duty" type="object" string="On Duty" class="btn-primary"/>
+                        <button name="action_set_on_call" type="object" string="On Call"/>
+                        <button name="action_set_in_service" type="object" string="In Service"/>
+                        <button name="action_set_on_break" type="object" string="On Break"/>
+                        <button name="action_set_off_duty" type="object" string="Off Duty"/>
+                    </group>
+                    <group>
+                        <group string="Clinical Scope">
+                            <field name="specialty_ids" widget="many2many_tags"/>
+                            <field name="preferred_room_type_ids" widget="many2many_tags"/>
+                            <field name="qualified_device_ids" widget="many2many_tags"/>
+                            <field name="service_calendar_id"/>
+                        </group>
+                        <group string="Commercial">
+                            <field name="analytic_account_id"/>
+                            <field name="commission_percent"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_clinic_appointment_form" model="ir.actions.act_window">
+        <field name="name">Clinic Appointment</field>
+        <field name="res_model">clinic.appointment</field>
+        <field name="view_mode">form,list</field>
+    </record>
+</odoo>

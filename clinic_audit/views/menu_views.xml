@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_audit_root" name="Audit &amp; Compliance" sequence="90" groups="clinic_audit.group_audit_user"/>
+  <menuitem id="menu_audit_operations" name="Operations" parent="menu_audit_root" sequence="10"/>
+  <menuitem id="menu_audit_events" name="Audit Events" parent="menu_audit_operations" action="action_audit_events" sequence="10"/>
+  <menuitem id="menu_audit_reviews" name="Compliance Reviews" parent="menu_audit_operations" action="action_audit_reviews" sequence="20"/>
+  <menuitem id="menu_audit_verifications" name="Integrity Verification" parent="menu_audit_operations" action="action_audit_verifications" sequence="30"/>
+
+  <menuitem id="menu_audit_governance" name="Governance" parent="menu_audit_root" sequence="20" groups="clinic_audit.group_audit_manager"/>
+  <menuitem id="menu_audit_policies" name="Audit Policies" parent="menu_audit_governance" action="action_audit_policies" sequence="10"/>
+  <menuitem id="menu_audit_tags" name="Review Tags" parent="menu_audit_governance" action="action_audit_review_tags" sequence="20"/>
+  <menuitem id="menu_audit_settings" name="Settings" parent="menu_audit_governance" action="action_audit_settings" sequence="30"/>
+
+  <menuitem id="menu_audit_evidence_tools" name="Evidence Tools" parent="menu_audit_root" sequence="30"/>
+  <menuitem id="menu_audit_export" name="Export Evidence" parent="menu_audit_evidence_tools" action="action_audit_evidence_export" sequence="10"/>
+  <menuitem id="menu_audit_import_legacy" name="Import Legacy Evidence" parent="menu_audit_evidence_tools" action="action_audit_legacy_import" sequence="20" groups="clinic_audit.group_audit_manager"/>
+
+  <menuitem id="menu_audit_technical" name="Technical Evidence" parent="menu_audit_root" sequence="90" groups="clinic_audit.group_audit_manager"/>
+  <menuitem id="menu_audit_event_lines" name="Event Field Changes" parent="menu_audit_technical" action="action_audit_event_lines" sequence="10"/>
+  <menuitem id="menu_audit_review_lines" name="Review Timeline" parent="menu_audit_technical" action="action_audit_review_lines" sequence="20"/>
+  <menuitem id="menu_audit_legacy_logs" name="Legacy Audit Logs" parent="menu_audit_technical" action="action_audit_legacy_logs" sequence="30"/>
+  <menuitem id="menu_audit_legacy_lines" name="Legacy Audit Lines" parent="menu_audit_technical" action="action_audit_legacy_lines" sequence="40"/>
+</odoo>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_telemedicine_portal_access_search" model="ir.ui.view">
+        <field name="name">clinic.portal.profile.telemedicine.search</field>
+        <field name="model">clinic.portal.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="portal_user_id"/>
+                <field name="company_id"/>
+                <filter name="active_portal" string="Active Portal" domain="[('state','=','active')]"/>
+                <filter name="telemedicine" string="Teleconsultation Enabled" domain="[('allow_telemedicine_access','=',True)]"/>
+                <filter name="messaging" string="Secure Messaging Enabled" domain="[('allow_secure_messaging','=',True)]"/>
+                <filter name="both_disabled" string="Telemedicine Features Disabled"
+                        domain="[('allow_telemedicine_access','=',False),('allow_secure_messaging','=',False)]"/>
+                <group>
+                    <filter name="group_state" string="Portal Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_portal_access_list" model="ir.ui.view">
+        <field name="name">clinic.portal.profile.telemedicine.list</field>
+        <field name="model">clinic.portal.profile</field>
+        <field name="arch" type="xml">
+            <list create="0"
+                  decoration-success="state == 'active' and allow_telemedicine_access"
+                  decoration-warning="state == 'active' and not allow_telemedicine_access and not allow_secure_messaging"
+                  decoration-muted="state != 'active'">
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="portal_user_id"/>
+                <field name="state" widget="badge"/>
+                <field name="allow_telemedicine_access"/>
+                <field name="allow_secure_messaging"/>
+                <field name="telemedicine_session_count"/>
+                <field name="secure_thread_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_telemedicine_sessions" type="object" string="Sessions" icon="fa-video-camera"
+                        invisible="not allow_telemedicine_access"/>
+                <button name="action_open_secure_threads" type="object" string="Messages" icon="fa-comments"
+                        invisible="not allow_secure_messaging"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_telemedicine_portal_access_form" model="ir.ui.view">
+        <field name="name">clinic.portal.profile.telemedicine.form</field>
+        <field name="model">clinic.portal.profile</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_enable_telemedicine_access" type="object" string="Enable Teleconsultation" class="btn-primary"
+                            invisible="allow_telemedicine_access"/>
+                    <button name="action_disable_telemedicine_access" type="object" string="Disable Teleconsultation"
+                            invisible="not allow_telemedicine_access"/>
+                    <button name="action_enable_secure_messaging" type="object" string="Enable Secure Messaging" class="btn-primary"
+                            invisible="allow_secure_messaging"/>
+                    <button name="action_disable_secure_messaging" type="object" string="Disable Secure Messaging"
+                            invisible="not allow_secure_messaging"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,suspended,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_patient" type="object" class="oe_stat_button" icon="fa-user">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient</span></div>
+                        </button>
+                        <button name="action_open_portal_user" type="object" class="oe_stat_button" icon="fa-user-circle"
+                                invisible="not portal_user_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Portal User</span></div>
+                        </button>
+                        <button name="action_open_telemedicine_sessions" type="object" class="oe_stat_button" icon="fa-video-camera">
+                            <field name="telemedicine_session_count" widget="statinfo" string="Sessions"/>
+                        </button>
+                        <button name="action_open_secure_threads" type="object" class="oe_stat_button" icon="fa-comments">
+                            <field name="secure_thread_count" widget="statinfo" string="Threads"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="partner_id" readonly="1"/></h1>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert" invisible="state == 'active'">
+                        Telemedicine and Secure Messaging portal routes require an Active Clinic Portal Profile.
+                    </div>
+
+                    <group>
+                        <group string="Portal Identity">
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="portal_user_id" readonly="1"/>
+                            <field name="is_portal_user" readonly="1"/>
+                        </group>
+                        <group string="Clinical Communication Grants">
+                            <field name="allow_telemedicine_access"/>
+                            <field name="allow_secure_messaging"/>
+                            <field name="telemedicine_session_count" readonly="1"/>
+                            <field name="secure_thread_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert">
+                        These are explicit addon-33 feature grants. Native Odoo Portal authentication and the base Clinic Portal profile remain owned by clinic_portal.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_telemedicine_portal_access" model="ir.actions.act_window">
+        <field name="name">Patient Telemedicine Access</field>
+        <field name="res_model">clinic.portal.profile</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_telemedicine_portal_access_search"/>
+        <field name="context">{'active_test': False}</field>
+        <field name="domain">[('partner_id.is_patient','=',True)]</field>
+    </record>
+</odoo>
+

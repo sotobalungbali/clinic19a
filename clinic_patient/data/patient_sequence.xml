@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Existing create() logic calls this exact sequence code. -->
+    <record id="seq_clinic_patient_code" model="ir.sequence">
+        <field name="name">Clinic Patient Code</field>
+        <field name="code">clinic_patient.seq_patient_code</field>
+        <field name="prefix">PAT/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

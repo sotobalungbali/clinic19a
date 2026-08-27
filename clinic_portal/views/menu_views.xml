@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_patient_portal_root"
+              name="Patient Portal"
+              sequence="83"
+              groups="clinic_portal.group_patient_portal_operator"/>
+
+    <menuitem id="menu_patient_portal_profiles"
+              name="Portal Profiles"
+              parent="menu_patient_portal_root"
+              action="action_portal_profile"
+              sequence="10"/>
+
+    <menuitem id="menu_patient_portal_settings"
+              name="Settings"
+              parent="menu_patient_portal_root"
+              action="action_portal_settings"
+              sequence="90"
+              groups="clinic_portal.group_patient_portal_manager"/>
+</odoo>

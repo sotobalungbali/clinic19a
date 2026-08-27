@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_wallet" name="My Clinic Wallet">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Clinic Wallet</t>
+            </t>
+            <div class="container py-3">
+                <div t-if="error" class="alert alert-danger" role="alert"><t t-out="error"/></div>
+                <div t-if="not wallet" class="alert alert-info">
+                    No wallet is available for your patient account in the current company. Please contact the clinic.
+                </div>
+                <t t-if="wallet">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4"><div class="card h-100"><div class="card-body"><div class="text-muted">Wallet</div><h4><t t-out="wallet.name"/></h4><span class="badge text-bg-success" t-if="wallet.state == 'open'">Active</span><span class="badge text-bg-warning" t-else=""><t t-out="wallet.state"/></span></div></div></div>
+                        <div class="col-md-4"><div class="card h-100"><div class="card-body"><div class="text-muted">Available Balance</div><h3><span t-field="wallet.balance" t-options="{'widget': 'monetary', 'display_currency': wallet.currency_id}"/></h3></div></div></div>
+                        <div class="col-md-4"><div class="card h-100"><div class="card-body"><div class="text-muted">Reserved</div><h3><span t-field="wallet.reserved_amount" t-options="{'widget': 'monetary', 'display_currency': wallet.currency_id}"/></h3><div t-if="wallet.expiry_date" class="small text-muted">Expiry: <span t-field="wallet.expiry_date"/></div></div></div></div>
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-header"><strong>Request Top-Up / Refund</strong></div>
+                        <div class="card-body">
+                            <form action="/my/clinic-wallet/request" method="post" class="row g-3">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="col-md-3"><label class="form-label">Request</label><select name="request_type" class="form-select" required="required"><option value="topup">Top-Up</option><option value="refund">Refund</option></select></div>
+                                <div class="col-md-3"><label class="form-label">Amount</label><input name="amount" type="number" min="0.01" step="0.01" class="form-control" required="required"/></div>
+                                <div class="col-md-4"><label class="form-label">Note</label><input name="note" type="text" class="form-control" placeholder="Transfer reference / reason"/></div>
+                                <div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Submit</button></div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-header"><strong>Recent Transactions</strong></div>
+                        <div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Date</th><th>Number</th><th>Type</th><th>Status</th><th class="text-end">Amount</th></tr></thead><tbody>
+                            <tr t-foreach="transactions" t-as="tx"><td><span t-field="tx.date"/></td><td><t t-out="tx.name"/></td><td><t t-out="tx.transaction_type"/></td><td><t t-out="tx.state"/></td><td class="text-end"><span t-field="tx.amount" t-options="{'widget': 'monetary', 'display_currency': tx.currency_id}"/></td></tr>
+                            <tr t-if="not transactions"><td colspan="5" class="text-muted text-center">No wallet transactions yet.</td></tr>
+                        </tbody></table></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><strong>Requests</strong></div>
+                        <div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Request</th><th>Type</th><th>Status</th><th class="text-end">Amount</th></tr></thead><tbody>
+                            <tr t-foreach="wallet_requests" t-as="wr"><td><t t-out="wr.name"/></td><td><t t-out="wr.request_type"/></td><td><t t-out="wr.state"/></td><td class="text-end"><span t-field="wr.amount" t-options="{'widget': 'monetary', 'display_currency': wr.currency_id}"/></td></tr>
+                            <tr t-if="not wallet_requests"><td colspan="4" class="text-muted text-center">No requests yet.</td></tr>
+                        </tbody></table></div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+
+
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_postcare_instructions_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Post-Care Instructions</h2>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Patient:</strong> <span t-field="o.patient_id"/><br/>
+                        <strong>Reference:</strong> <span t-field="o.name"/><br/>
+                        <strong>Protocol:</strong> <span t-field="o.protocol_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Start:</strong> <span t-field="o.start_datetime"/><br/>
+                        <strong>Expected End:</strong> <span t-field="o.expected_end_date"/><br/>
+                        <strong>Coordinator:</strong> <span t-field="o.responsible_staff_id"/>
+                    </div>
+                </div>
+
+                <div t-if="o.instruction_html">
+                    <h4>Care Instructions</h4>
+                    <div t-field="o.instruction_html"/>
+                </div>
+
+                <div t-if="o.warning_signs_html" class="mt-4">
+                    <h4>Warning Signs / When to Contact the Clinic</h4>
+                    <div t-field="o.warning_signs_html"/>
+                </div>
+
+                <div t-if="o.emergency_instruction_html" class="mt-4">
+                    <h4>Urgent / Emergency Guidance</h4>
+                    <div t-field="o.emergency_instruction_html"/>
+                </div>
+
+                <div class="mt-4">
+                    <p>
+                        These instructions support follow-up after treatment and do not replace
+                        emergency assessment or individualized medical advice.
+                    </p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_postcare_instructions">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="clinic_post_care_followup.report_postcare_instructions_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

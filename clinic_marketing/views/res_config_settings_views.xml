@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_marketing_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Marketing Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_marketing', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_marketing" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.marketing</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Marketing"
+                     name="clinic_marketing"
+                     groups="clinic_marketing.group_marketing_manager">
+                    <block title="Consent &amp; Audience Governance">
+                        <setting string="Require Explicit Marketing Opt-In"
+                                 help="When enabled, a patient must explicitly opt in to each Email/WhatsApp channel before inclusion.">
+                            <field name="clinic_marketing_require_explicit_consent"/>
+                        </setting>
+                        <setting string="Maximum Campaign Audience"
+                                 help="Hard safety ceiling before an audience snapshot can be generated.">
+                            <field name="clinic_marketing_max_audience"/>
+                        </setting>
+                    </block>
+
+                    <block title="WhatsApp Transport">
+                        <setting string="WhatsApp Delivery Mode"
+                                 help="Manual uses wa.me handoff. Provider Extension Hook is reserved for a future integration connector.">
+                            <field name="clinic_marketing_whatsapp_transport"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

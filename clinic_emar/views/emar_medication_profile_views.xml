@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_emar_medication_profile_search" model="ir.ui.view">
+        <field name="name">clinic.emar.medication.profile.search</field>
+        <field name="model">clinic.emar.medication.profile</field>
+        <field name="arch" type="xml">
+            <search string="Medication Profiles">
+                <field name="name"/><field name="product_id"/><field name="medication_code"/><field name="medication_class"/>
+                <filter name="high_alert" string="High-alert" domain="[('high_alert','=',True)]"/>
+                <filter name="controlled" string="Controlled" domain="[('controlled_level','!=','none')]"/>
+                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+                <separator/>
+                <filter name="group_class" string="Medication Class" context="{'group_by':'medication_class'}"/>
+                <filter name="group_controlled" string="Control Level" context="{'group_by':'controlled_level'}"/>
+                <filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_emar_medication_profile_list" model="ir.ui.view">
+        <field name="name">clinic.emar.medication.profile.list</field><field name="model">clinic.emar.medication.profile</field>
+        <field name="arch" type="xml">
+            <list string="Medication Profiles" decoration-danger="high_alert" decoration-warning="controlled_level != 'none'">
+                <field name="active" column_invisible="True"/><field name="medication_code" optional="show"/><field name="product_id"/>
+                <field name="medication_class" optional="show"/><field name="controlled_level" widget="badge"/><field name="high_alert"/>
+                <field name="default_route" optional="show"/><field name="default_frequency" optional="show"/>
+                <field name="requires_double_check" optional="hide"/><field name="requires_lot" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_emar_medication_profile_form" model="ir.ui.view">
+        <field name="name">clinic.emar.medication.profile.form</field><field name="model">clinic.emar.medication.profile</field>
+        <field name="arch" type="xml">
+            <form string="Medication Clinical Profile">
+                <header><button name="action_open_product" type="object" string="Open Product" class="btn-secondary"/><button name="action_view_orders" type="object" string="Usage in Orders" class="btn-secondary"/></header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"><button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-medkit"><span class="o_stat_text">Orders</span></button></div>
+                    <widget name="web_ribbon" text="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title"><label for="product_id"/><h1><field name="product_id"/></h1><field name="active" invisible="1"/></div>
+                    <group><group string="Clinical Classification"><field name="medication_code"/><field name="medication_class"/><field name="controlled_level"/><field name="high_alert"/></group><group string="Default Administration"><field name="default_route"/><field name="default_frequency"/><field name="dose_uom_id"/><field name="allow_substitution"/></group></group>
+                    <notebook>
+                        <page string="Safety Guardrails"><group><group><field name="requires_double_check"/><field name="requires_patient_scan"/><field name="requires_product_scan"/><field name="requires_lot"/></group><group><field name="max_single_dose"/><field name="max_daily_dose"/><field name="company_id" groups="base.group_multi_company"/></group></group></page>
+                        <page string="Clinical Notes"><field name="notes" placeholder="Clinical administration guidance, handling notes, monitoring requirements..."/></page>
+                    </notebook>
+                </sheet><chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_emar_medication_profiles" model="ir.actions.act_window"><field name="name">Medication Profiles</field><field name="res_model">clinic.emar.medication.profile</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_emar_medication_profile_search"/></record>
+</odoo>

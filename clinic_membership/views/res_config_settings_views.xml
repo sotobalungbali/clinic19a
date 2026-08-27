@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="view_res_config_settings_membership" model="ir.ui.view">
+    <field name="name">res.config.settings.membership</field>
+    <field name="model">res.config.settings</field>
+    <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//form" position="inside">
+        <app string="Clinic Membership" name="clinic_membership">
+          <block title="Membership Governance">
+            <setting string="Require Paid Invoice Before Activation" help="Block paid memberships from activation until the linked accounting invoice is paid.">
+              <field name="membership_require_paid_before_activation"/>
+            </setting>
+            <setting string="Default Points Expiry" help="Default validity period for earned loyalty points.">
+              <field name="membership_default_points_expiry_days"/>
+              <span class="ms-2">days</span>
+            </setting>
+            <setting string="Points per Currency Unit">
+              <field name="membership_points_per_currency"/>
+            </setting>
+            <setting string="Allow Negative Point Balance">
+              <field name="membership_allow_negative_points"/>
+            </setting>
+            <setting string="Automatic Expiry">
+              <div class="content-group"><field name="membership_auto_expire_contracts"/> Automatically expire membership contracts<br/><field name="membership_auto_expire_vouchers"/> Automatically expire membership vouchers</div>
+            </setting>
+          </block>
+        </app>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="action_membership_settings" model="ir.actions.act_window">
+    <field name="name">Membership Settings</field>
+    <field name="res_model">res.config.settings</field>
+    <field name="view_mode">form</field>
+    <field name="target">current</field>
+    <field name="context">{'module': 'clinic_membership', 'bin_size': False}</field>
+  </record>
+</odoo>
+

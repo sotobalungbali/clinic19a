@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_portal_profile_search" model="ir.ui.view">
+        <field name="name">clinic.portal.profile.search</field>
+        <field name="model">clinic.portal.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="company_id"/>
+                <field name="last_access_at"/>
+                <filter name="active_access" string="Active Access" domain="[('state','=','active')]"/>
+                <filter name="suspended" string="Suspended" domain="[('state','=','suspended')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_last_page" string="Last Portal Page" context="{'group_by':'last_access_page'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_portal_profile_list" model="ir.ui.view">
+        <field name="name">clinic.portal.profile.list</field>
+        <field name="model">clinic.portal.profile</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'"
+                  decoration-warning="state == 'suspended'"
+                  decoration-muted="state == 'archived'">
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="portal_user_id"/>
+                <field name="is_portal_user"/>
+                <field name="allow_booking_view"/>
+                <field name="allow_invoice_view"/>
+                <field name="allow_treatment_history_view"/>
+                <field name="booking_count"/>
+                <field name="invoice_count"/>
+                <field name="treatment_count"/>
+                <field name="last_access_at"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_portal_home" type="object" string="Portal" icon="fa-external-link"
+                        invisible="state != 'active'"/>
+                <button name="action_open_portal_access_management" type="object" string="Access" icon="fa-key"
+                        groups="clinic_portal.group_patient_portal_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_portal_profile_form" model="ir.ui.view">
+        <field name="name">clinic.portal.profile.form</field>
+        <field name="model">clinic.portal.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate Clinic Portal" class="btn-primary"
+                            groups="clinic_portal.group_patient_portal_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_suspend" type="object" string="Suspend Clinic Portal"
+                            groups="clinic_portal.group_patient_portal_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_portal.group_patient_portal_manager"
+                            invisible="state not in ('suspended','archived')"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_portal.group_patient_portal_manager"
+                            invisible="state == 'archived'"/>
+                    <button name="action_open_portal_home" type="object" string="Open Patient Portal"
+                            invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,suspended,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_partner" type="object" class="oe_stat_button" icon="fa-address-card">
+                            <div class="o_stat_info"><span class="o_stat_text">Contact</span></div>
+                        </button>
+                        <button name="action_open_patient" type="object" class="oe_stat_button" icon="fa-user-md">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient Card</span></div>
+                        </button>
+                        <button name="action_open_portal_user" type="object" class="oe_stat_button" icon="fa-user-circle"
+                                invisible="not portal_user_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Portal User</span></div>
+                        </button>
+                        <button name="action_open_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="booking_count" widget="statinfo" string="Bookings"/>
+                        </button>
+                        <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                        <button name="action_open_treatments" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="treatment_count" widget="statinfo" string="Treatments"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert" invisible="is_portal_user or state == 'archived'">
+                        Native Odoo Portal access is not active for this patient.
+                        Use Portal Access Management before activating the Clinic Portal Profile.
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="state != 'suspended'">
+                        ClinicOne patient pages are suspended. Native Odoo portal access may still exist;
+                        use Portal Access Management if the account itself must also be revoked.
+                    </div>
+
+                    <group>
+                        <group string="Patient Identity">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="partner_id"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="portal_user_id" readonly="1"/>
+                            <field name="is_portal_user" readonly="1"/>
+                        </group>
+                        <group string="Portal Telemetry">
+                            <field name="last_access_at" readonly="1"/>
+                            <field name="last_access_page" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_portal_access_management"
+                                type="object"
+                                string="Portal Access Management"
+                                class="btn btn-primary"
+                                groups="clinic_portal.group_patient_portal_manager"/>
+                        <button name="action_open_portal_home"
+                                type="object"
+                                string="Open Clinic Portal"
+                                class="btn btn-secondary"
+                                invisible="state != 'active'"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Core Patient Portal">
+                            <group>
+                                <group string="Official Addon 31 Scope">
+                                    <field name="allow_booking_view"/>
+                                    <field name="allow_invoice_view"/>
+                                    <field name="allow_treatment_history_view"/>
+                                </group>
+                                <group string="Companion Shortcuts">
+                                    <field name="show_wallet_link"/>
+                                    <field name="show_consent_link"/>
+                                    <field name="show_order_link"/>
+                                    <field name="show_shop_link"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Governance Notes">
+                            <div class="alert alert-info" role="alert">
+                                This profile controls ClinicOne portal presentation only.
+                                Odoo Portal owns authentication and invitations; Booking, Billing,
+                                Accounting, and Encounter modules remain transaction owners.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_portal_profile" model="ir.actions.act_window">
+        <field name="name">Patient Portal Profiles</field>
+        <field name="res_model">clinic.portal.profile</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_portal_profile_search"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+</odoo>

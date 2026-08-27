@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mail_tmpl_wallet_expiry" model="mail.template">
+        <field name="name">Clinic Wallet: Expiry Reminder</field>
+        <field name="model_id" ref="model_clinic_wallet"/>
+        <field name="subject">Wallet {{ object.name }} expiry reminder</field>
+        <field name="email_to">{{ object.partner_id.email or '' }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.partner_id.name or 'Patient'"/>,</p>
+                <p>
+                    Your ClinicOne wallet <strong><t t-out="object.name"/></strong>
+                    has an expiry date of <strong><t t-out="object.expiry_date"/></strong>.
+                </p>
+                <p>
+                    Available balance:
+                    <strong><t t-out="format_amount(object.balance, object.currency_id)"/></strong>.
+                </p>
+                <p>Please contact the clinic if you need assistance.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>
+
+
+

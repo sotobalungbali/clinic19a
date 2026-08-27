@@ -1,0 +1,660 @@
+{
+  "project": "ClinicOne",
+  "addon": "clinic_patient",
+  "target_path": "/mnt/d/projects/odoo19v/clinic19a/clinic_patient",
+  "functional_status": "FINISHED_BASELINE",
+  "review_policy": "TECHNICAL_HARDENING_AND_ENTERPRISE_PRESENTATION_COMPLETION_ONLY",
+  "ignore_backup_filename_prefix": "0",
+  "baseline_manifest": {
+    "name": "ClinicOne - Patient Management",
+    "version": "19.0.1.0.0",
+    "depends": [
+      "base",
+      "mail",
+      "contacts",
+      "uom",
+      "product",
+      "clinic_base"
+    ]
+  },
+  "baseline_source_files": [
+    "__init__.py",
+    "__manifest__.py",
+    "controllers/__init__.py",
+    "controllers/controllers.py",
+    "demo/demo.xml",
+    "models/__init__.py",
+    "models/models.py",
+    "models/patient.py",
+    "models/patient_allergy.py",
+    "models/patient_condition.py",
+    "models/patient_identifier.py",
+    "models/patient_vital.py",
+    "models/res_partner_inherit.py",
+    "models/res_users_inherit.py",
+    "security/ir.model.access.csv",
+    "static/description/index.html",
+    "views/templates.xml",
+    "views/views.xml"
+  ],
+  "baseline_entities": [
+    {
+      "key": "clinic.patient.stage",
+      "class": "ClinicPatientStage",
+      "file": "models/patient.py",
+      "model": "clinic.patient.stage",
+      "inherit": null,
+      "fields": [
+        "name",
+        "sequence",
+        "fold",
+        "is_default_new",
+        "is_registered",
+        "is_inactive",
+        "is_deceased"
+      ],
+      "methods": []
+    },
+    {
+      "key": "clinic.patient.tag",
+      "class": "ClinicPatientTag",
+      "file": "models/patient.py",
+      "model": "clinic.patient.tag",
+      "inherit": null,
+      "fields": [
+        "name",
+        "color"
+      ],
+      "methods": []
+    },
+    {
+      "key": "clinic.patient",
+      "class": "ClinicPatient",
+      "file": "models/patient.py",
+      "model": "clinic.patient",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "company_id",
+        "active",
+        "patient_code",
+        "name",
+        "display_name",
+        "image_1920",
+        "partner_id",
+        "is_vip",
+        "tag_ids",
+        "gender",
+        "birth_date",
+        "age_years",
+        "age_display",
+        "blood_type",
+        "rh_factor",
+        "is_deceased",
+        "deceased_date",
+        "phone",
+        "email",
+        "mobile",
+        "street",
+        "street2",
+        "city",
+        "state_id",
+        "zip",
+        "country_id",
+        "emergency_contact_id",
+        "emergency_phone",
+        "stage_id",
+        "stage_fold",
+        "registered_date",
+        "last_seen_date",
+        "identifier_ids",
+        "allergy_ids",
+        "condition_ids",
+        "vital_ids",
+        "currency_id"
+      ],
+      "methods": [
+        "_default_stage",
+        "_compute_display_name",
+        "_compute_age",
+        "_safe_domain_partner",
+        "_onchange_partner_id",
+        "_check_birth_date",
+        "_check_deceased_date",
+        "create",
+        "write",
+        "_action_open_generic",
+        "action_open_invoices",
+        "action_open_attachments",
+        "action_set_registered",
+        "action_print_patient_card",
+        "name_get",
+        "_name_search"
+      ]
+    },
+    {
+      "key": "clinic.allergen.category",
+      "class": "ClinicAllergenCategory",
+      "file": "models/patient_allergy.py",
+      "model": "clinic.allergen.category",
+      "inherit": null,
+      "fields": [
+        "name",
+        "code",
+        "sequence",
+        "active"
+      ],
+      "methods": []
+    },
+    {
+      "key": "clinic.allergen",
+      "class": "ClinicAllergen",
+      "file": "models/patient_allergy.py",
+      "model": "clinic.allergen",
+      "inherit": null,
+      "fields": [
+        "name",
+        "category_id",
+        "active",
+        "commonness",
+        "synonyms",
+        "product_id",
+        "barcode_symbology"
+      ],
+      "methods": [
+        "_onchange_product_id"
+      ]
+    },
+    {
+      "key": "clinic.allergy.reaction.type",
+      "class": "ClinicAllergyReactionType",
+      "file": "models/patient_allergy.py",
+      "model": "clinic.allergy.reaction.type",
+      "inherit": null,
+      "fields": [
+        "name",
+        "code",
+        "sequence",
+        "active"
+      ],
+      "methods": []
+    },
+    {
+      "key": "clinic.patient.allergy",
+      "class": "ClinicPatientAllergy",
+      "file": "models/patient_allergy.py",
+      "model": "clinic.patient.allergy",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "patient_id",
+        "company_id",
+        "allergen_id",
+        "category_id",
+        "allergen_name",
+        "product_id",
+        "status",
+        "verification_status",
+        "severity",
+        "criticality",
+        "is_critical",
+        "reaction_summary",
+        "reaction_ids",
+        "worst_reaction",
+        "recorded_date",
+        "recorded_by",
+        "onset_date",
+        "last_occurrence_date",
+        "source",
+        "display_name",
+        "attachment_count",
+        "notes"
+      ],
+      "methods": [
+        "_compute_display_name",
+        "_compute_worst_reaction",
+        "_compute_is_critical",
+        "_compute_attachment_count",
+        "_onchange_allergen_id",
+        "_onchange_product_id",
+        "_check_dates",
+        "_check_resolved_has_last_occurrence",
+        "create",
+        "write",
+        "_sync_patient_flags",
+        "_maybe_map_allergy_note_to_partner",
+        "action_open_attachments",
+        "action_mark_resolved",
+        "name_get"
+      ]
+    },
+    {
+      "key": "clinic.patient.allergy.reaction",
+      "class": "ClinicPatientAllergyReaction",
+      "file": "models/patient_allergy.py",
+      "model": "clinic.patient.allergy.reaction",
+      "inherit": [
+        "mail.thread"
+      ],
+      "fields": [
+        "allergy_id",
+        "patient_id",
+        "company_id",
+        "reaction_type_id",
+        "reaction_text",
+        "description",
+        "severity",
+        "onset_datetime",
+        "exposure_route",
+        "exposure_dose",
+        "outcome",
+        "recorded_date",
+        "recorded_by",
+        "attachment_count"
+      ],
+      "methods": [
+        "_check_onset_datetime",
+        "_compute_attachment_count",
+        "action_open_attachments"
+      ]
+    },
+    {
+      "key": "clinic.condition.category",
+      "class": "ClinicConditionCategory",
+      "file": "models/patient_condition.py",
+      "model": "clinic.condition.category",
+      "inherit": null,
+      "fields": [
+        "name",
+        "code",
+        "sequence",
+        "active"
+      ],
+      "methods": []
+    },
+    {
+      "key": "clinic.condition",
+      "class": "ClinicCondition",
+      "file": "models/patient_condition.py",
+      "model": "clinic.condition",
+      "inherit": null,
+      "fields": [
+        "name",
+        "category_id",
+        "active",
+        "chronic",
+        "default_severity",
+        "synonyms",
+        "code_ids"
+      ],
+      "methods": []
+    },
+    {
+      "key": "clinic.condition.code",
+      "class": "ClinicConditionCode",
+      "file": "models/patient_condition.py",
+      "model": "clinic.condition.code",
+      "inherit": null,
+      "fields": [
+        "condition_id",
+        "system",
+        "code",
+        "description"
+      ],
+      "methods": [
+        "name_get"
+      ]
+    },
+    {
+      "key": "clinic.patient.condition",
+      "class": "ClinicPatientCondition",
+      "file": "models/patient_condition.py",
+      "model": "clinic.patient.condition",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "patient_id",
+        "company_id",
+        "condition_id",
+        "category_id",
+        "condition_name",
+        "code_id",
+        "code_system",
+        "code_value",
+        "status",
+        "verification_status",
+        "severity",
+        "stage",
+        "stage_text",
+        "body_site",
+        "laterality",
+        "onset_date",
+        "abatement_date",
+        "last_review_date",
+        "is_chronic",
+        "chronic_threshold_days",
+        "chronic_override",
+        "display_name",
+        "notes",
+        "attachment_count",
+        "episode_ids",
+        "worst_episode_severity",
+        "active"
+      ],
+      "methods": [
+        "_compute_display_name",
+        "_compute_is_chronic",
+        "_compute_attachment_count",
+        "_compute_worst_episode_severity",
+        "_onchange_condition_id",
+        "_onchange_code_id",
+        "_check_dates",
+        "_check_status_logic",
+        "create",
+        "write",
+        "_map_condition_summary_to_partner",
+        "_action_open_generic",
+        "action_open_attachments",
+        "action_mark_resolved",
+        "name_get",
+        "_name_search"
+      ]
+    },
+    {
+      "key": "clinic.patient.condition.episode",
+      "class": "ClinicPatientConditionEpisode",
+      "file": "models/patient_condition.py",
+      "model": "clinic.patient.condition.episode",
+      "inherit": [
+        "mail.thread"
+      ],
+      "fields": [
+        "condition_id",
+        "patient_id",
+        "company_id",
+        "episode_datetime",
+        "description",
+        "severity",
+        "outcome",
+        "attachment_count"
+      ],
+      "methods": [
+        "_compute_attachment_count",
+        "action_open_attachments"
+      ]
+    },
+    {
+      "key": "clinic.patient.identifier.type",
+      "class": "ClinicPatientIdentifierType",
+      "file": "models/patient_identifier.py",
+      "model": "clinic.patient.identifier.type",
+      "inherit": null,
+      "fields": [
+        "name",
+        "code",
+        "active",
+        "sequence",
+        "validation_regex",
+        "validation_help",
+        "force_case",
+        "use_sequence",
+        "sequence_id",
+        "is_mrn",
+        "is_national_id",
+        "is_passport",
+        "is_tax_id",
+        "is_insurance_member",
+        "single_primary_per_patient",
+        "partner_mapping",
+        "barcode_symbology"
+      ],
+      "methods": [
+        "name_get"
+      ]
+    },
+    {
+      "key": "clinic.patient.identifier",
+      "class": "ClinicPatientIdentifier",
+      "file": "models/patient_identifier.py",
+      "model": "clinic.patient.identifier",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "patient_id",
+        "company_id",
+        "type_id",
+        "value",
+        "is_primary",
+        "active",
+        "issue_date",
+        "expiry_date",
+        "issuing_authority",
+        "place_of_issue",
+        "status",
+        "revoked",
+        "display_name",
+        "notes"
+      ],
+      "methods": [
+        "_compute_display_name",
+        "_compute_status",
+        "_onchange_type_force_case",
+        "_apply_force_case",
+        "_validate_against_regex",
+        "_validate_known_formats",
+        "_ensure_single_primary",
+        "_sync_with_patient_mrn",
+        "_map_to_partner_if_configured",
+        "_check_dates",
+        "_check_value_constraints",
+        "_check_single_primary_flag",
+        "create",
+        "write",
+        "action_set_primary",
+        "name_get"
+      ]
+    },
+    {
+      "key": "clinic.patient.vital",
+      "class": "ClinicPatientVital",
+      "file": "models/patient_vital.py",
+      "model": "clinic.patient.vital",
+      "inherit": [
+        "mail.thread",
+        "mail.activity.mixin"
+      ],
+      "fields": [
+        "patient_id",
+        "company_id",
+        "measured_datetime",
+        "measured_by",
+        "device_name",
+        "device_serial",
+        "device_type",
+        "bp_systolic",
+        "bp_diastolic",
+        "bp_map",
+        "heart_rate",
+        "respiratory_rate",
+        "temperature_c",
+        "spo2",
+        "height_cm",
+        "weight_kg",
+        "bmi",
+        "bsa",
+        "muac_cm",
+        "head_circumference_cm",
+        "pain_scale",
+        "gcs_eye",
+        "gcs_verbal",
+        "gcs_motor",
+        "gcs_total",
+        "blood_glucose_mgdl",
+        "is_latest",
+        "display_name",
+        "notes",
+        "attachment_count",
+        "bp_flag",
+        "hr_flag",
+        "rr_flag",
+        "temp_flag",
+        "spo2_flag",
+        "glucose_flag"
+      ],
+      "methods": [
+        "_compute_derivatives",
+        "_compute_flags",
+        "_compute_is_latest",
+        "_compute_display_name",
+        "_compute_attachment_count",
+        "_check_plausible_ranges",
+        "create",
+        "write",
+        "_action_open_generic",
+        "action_open_patient",
+        "action_open_attachments",
+        "name_get",
+        "_name_search"
+      ]
+    },
+    {
+      "key": "inherit:res.partner",
+      "class": "ResPartner",
+      "file": "models/res_partner_inherit.py",
+      "model": null,
+      "inherit": "res.partner",
+      "fields": [
+        "is_patient",
+        "patient_id",
+        "patient_code",
+        "patient_stage_id",
+        "patient_registered_date",
+        "patient_last_seen",
+        "is_vip_patient",
+        "patient_birth_date",
+        "patient_age_years",
+        "patient_age_display",
+        "patient_gender",
+        "nik",
+        "bpjs_no",
+        "medical_allergy_note",
+        "medical_condition_note",
+        "booking_count",
+        "encounter_count",
+        "invoice_count",
+        "attachment_count",
+        "coverage_count",
+        "wallet_balance",
+        "has_active_consent",
+        "currency_id"
+      ],
+      "methods": [
+        "_check_patient_link_consistency",
+        "_onchange_is_patient",
+        "create",
+        "write",
+        "_ensure_patient_card_created",
+        "_compute_integration_counters",
+        "_action_open_generic",
+        "action_open_patient",
+        "action_create_patient",
+        "action_open_invoices",
+        "action_open_attachments"
+      ]
+    },
+    {
+      "key": "inherit:res.users",
+      "class": "ResUsers",
+      "file": "models/res_users_inherit.py",
+      "model": null,
+      "inherit": "res.users",
+      "fields": [
+        "patient_id",
+        "is_patient_user",
+        "patient_company_id",
+        "partner_is_patient",
+        "patient_code",
+        "patient_stage_id",
+        "patient_last_seen",
+        "wallet_balance",
+        "booking_count",
+        "encounter_count",
+        "invoice_count",
+        "coverage_count",
+        "attachment_count",
+        "has_active_consent",
+        "currency_id"
+      ],
+      "methods": [
+        "_compute_is_patient_user",
+        "_compute_patient_company",
+        "_compute_integration_counters",
+        "_check_patient_partner_alignment",
+        "_check_patient_company_membership",
+        "create",
+        "write",
+        "_ensure_patient_link_post_create",
+        "_ensure_patient_link_from_partner",
+        "_action_open_generic",
+        "action_open_patient",
+        "action_open_invoices",
+        "action_open_patient_attachments"
+      ]
+    }
+  ],
+  "legacy_sql_constraint_assignment_count": 12,
+  "authorized_compatibility_migrations": {
+    "_name_search": "name_search",
+    "_sql_constraints": "models.Constraint",
+    "legacy_tree_view_mode": "list",
+    "legacy_name_get_display_contract": "_compute_display_name"
+  },
+  "authorized_additive_completeness": {
+    "security": [
+      "ACL for 16 custom models",
+      "company record rules for 7 company-scoped clinical models"
+    ],
+    "data": [
+      "patient sequence used by existing create()",
+      "patient stages used by existing stage automation"
+    ],
+    "ui": [
+      "search/list/form for all 16 custom models",
+      "professional patient form",
+      "safe buttons calling existing methods"
+    ],
+    "report": [
+      "patient card report used by existing action_print_patient_card()"
+    ],
+    "guardrail": [
+      "AGENTS.md",
+      "baseline contract",
+      "static validator",
+      "inventory/UI/completeness matrices"
+    ],
+    "presentation_method": [
+      "clinic.patient.action_open_contact"
+    ]
+  },
+  "forbidden_changes": [
+    "remove_or_rename_existing_model",
+    "remove_or_rename_existing_field",
+    "remove_existing_business_method_except_authorized_api_migration",
+    "simplify_or_remove_existing_workflow",
+    "change_model_ownership",
+    "edit_sibling_addon",
+    "change_manifest_dependency_set",
+    "activate_filename_prefix_0_backup",
+    "introduce_core247_dependency"
+  ],
+  "max_focused_repair_attempts_per_blocker": 3,
+  "legacy_sql_constraint_total_count": 15
+}

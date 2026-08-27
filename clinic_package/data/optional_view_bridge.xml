@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Idempotent, runtime-safe cross-addon form integration.
+        The private model method resolves each parent view using
+        raise_if_not_found=False and isolates incompatible view architecture
+        inside a database savepoint.
+    -->
+    <function model="clinic.package"
+              name="_ensure_optional_cross_addon_views"/>
+</odoo>

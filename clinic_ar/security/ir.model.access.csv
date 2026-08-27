@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ar_invoice_user,AR Invoice User,model_clinic_ar_invoice,clinic_ar.group_clinic_ar_user,1,1,1,0
+access_ar_invoice_manager,AR Invoice Manager,model_clinic_ar_invoice,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_invoice_line_user,AR Invoice Line User,model_clinic_ar_invoice_line,clinic_ar.group_clinic_ar_user,1,1,1,1
+access_ar_invoice_line_manager,AR Invoice Line Manager,model_clinic_ar_invoice_line,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_payment_user,AR Receipt User,model_clinic_ar_payment,clinic_ar.group_clinic_ar_user,1,1,1,0
+access_ar_payment_manager,AR Receipt Manager,model_clinic_ar_payment,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_allocation_user,AR Allocation User,model_clinic_ar_allocation,clinic_ar.group_clinic_ar_user,1,1,1,0
+access_ar_allocation_manager,AR Allocation Manager,model_clinic_ar_allocation,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_allocation_line_user,AR Allocation Line User,model_clinic_ar_allocation_line,clinic_ar.group_clinic_ar_user,1,1,1,1
+access_ar_allocation_line_manager,AR Allocation Line Manager,model_clinic_ar_allocation_line,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_followup_level_user,AR Follow-up Level User,model_clinic_ar_followup_level,clinic_ar.group_clinic_ar_user,1,0,0,0
+access_ar_followup_level_manager,AR Follow-up Level Manager,model_clinic_ar_followup_level,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_followup_user,AR Follow-up User,model_clinic_ar_followup,clinic_ar.group_clinic_ar_user,1,1,1,0
+access_ar_followup_manager,AR Follow-up Manager,model_clinic_ar_followup,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_statement_user,AR Statement User,model_clinic_ar_statement,clinic_ar.group_clinic_ar_user,1,1,1,0
+access_ar_statement_manager,AR Statement Manager,model_clinic_ar_statement,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_statement_line_user,AR Statement Line User,model_clinic_ar_statement_line,clinic_ar.group_clinic_ar_user,1,1,1,1
+access_ar_statement_line_manager,AR Statement Line Manager,model_clinic_ar_statement_line,clinic_ar.group_clinic_ar_manager,1,1,1,1
+access_ar_integration_event_manager,AR Integration Event Manager,model_clinic_ar_integration_event,clinic_ar.group_clinic_ar_manager,1,1,1,1
+

@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_clinic_billing_payment_search" model="ir.ui.view">
+        <field name="name">clinic.billing.payment.search</field>
+        <field name="model">clinic.billing.payment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="invoice_id"/>
+                <field name="partner_id"/>
+                <field name="date"/>
+                <field name="state"/>
+                <field name="amount_total"/>
+                <field name="amount_fee"/>
+                <field name="amount_net"/>
+                <filter name="active_state" string="Active States" domain="[('state','not in',('cancelled','canceled','failed','ignored'))]"/>
+                <group><filter string="Status" context="{'group_by':'state'}" name="group_state"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_payment_list" model="ir.ui.view">
+        <field name="name">clinic.billing.payment.list</field>
+        <field name="model">clinic.billing.payment</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('cancelled','canceled','ignored')">
+                <field name="name" optional="show"/>
+                <field name="invoice_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="date" optional="show"/>
+                <field name="state" optional="show"/>
+                <field name="amount_total" optional="show"/>
+                <field name="amount_fee" optional="show"/>
+                <field name="amount_net" optional="show"/>
+                <field name="allow_overpayment" optional="hide"/>
+                <field name="allow_underpayment" optional="hide"/>
+                <field name="narration" optional="hide"/>
+                <field name="payments_generated_ids" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_payment_form" model="ir.ui.view">
+        <field name="name">clinic.billing.payment.form</field>
+        <field name="model">clinic.billing.payment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                    <button name="action_post" type="object" string="Post" class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Cancel"/>
+                    <button name="action_view_account_payments" type="object" string="View Account Payments"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="invoice_id"/>
+                            <field name="partner_id"/>
+                            <field name="date"/>
+                            <field name="state"/>
+                            <field name="amount_total"/>
+                            <field name="amount_fee"/>
+                        </group>
+                        <group>
+                            <field name="amount_net"/>
+                            <field name="allow_overpayment"/>
+                            <field name="allow_underpayment"/>
+                            <field name="narration"/>
+                            <field name="payments_generated_ids"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_payment" model="ir.actions.act_window">
+        <field name="name">Payment</field>
+        <field name="res_model">clinic.billing.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_payment_search"/>
+    </record>
+
+    <record id="view_clinic_billing_payment_line_search" model="ir.ui.view">
+        <field name="name">clinic.billing.payment.line.search</field>
+        <field name="model">clinic.billing.payment.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="payment_id"/>
+                <field name="method"/>
+                <field name="journal_id"/>
+                <field name="amount"/>
+                <field name="fee_amount"/>
+                <field name="net_amount"/>
+                <field name="reference"/>
+                <field name="gateway_provider"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_payment_line_list" model="ir.ui.view">
+        <field name="name">clinic.billing.payment.line.list</field>
+        <field name="model">clinic.billing.payment.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="payment_id" optional="show"/>
+                <field name="method" optional="show"/>
+                <field name="journal_id" optional="show"/>
+                <field name="amount" optional="show"/>
+                <field name="fee_amount" optional="show"/>
+                <field name="net_amount" optional="show"/>
+                <field name="reference" optional="show"/>
+                <field name="gateway_provider" optional="show"/>
+                <field name="gateway_tx_id" optional="hide"/>
+                <field name="ewallet_channel" optional="hide"/>
+                <field name="card_scheme" optional="hide"/>
+                <field name="authorization_code" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_payment_line_form" model="ir.ui.view">
+        <field name="name">clinic.billing.payment.line.form</field>
+        <field name="model">clinic.billing.payment.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="payment_id"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="payment_id"/>
+                            <field name="method"/>
+                            <field name="journal_id"/>
+                            <field name="amount"/>
+                            <field name="fee_amount"/>
+                            <field name="net_amount"/>
+                            <field name="reference"/>
+                            <field name="gateway_provider"/>
+                        </group>
+                        <group>
+                            <field name="gateway_tx_id"/>
+                            <field name="ewallet_channel"/>
+                            <field name="card_scheme"/>
+                            <field name="authorization_code"/>
+                            <field name="membership_reference"/>
+                            <field name="insurance_policy_number"/>
+                            <field name="account_payment_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_payment_line" model="ir.actions.act_window">
+        <field name="name">Line</field>
+        <field name="res_model">clinic.billing.payment.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_payment_line_search"/>
+    </record>
+</odoo>

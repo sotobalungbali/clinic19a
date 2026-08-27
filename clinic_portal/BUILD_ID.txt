@@ -1,0 +1,6 @@
+CLINIC_PORTAL_BUILD_20260821_V19.0.1.0.0
+Project: ClinicOne
+Addon: clinic_portal
+Official sequence: 31 of 39
+Authoritative upstream baseline: clinic_ecommerce 19.0.1.0.0
+Runtime status: PENDING

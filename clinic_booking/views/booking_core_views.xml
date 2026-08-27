@@ -1,0 +1,172 @@
+<odoo>
+  <record id="view_booking_booking_search" model="ir.ui.view">
+    <field name="name">booking.booking.search</field>
+    <field name="model">booking.booking</field>
+    <field name="arch" type="xml">
+      <search string="Search Bookings">
+        <field name="name"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="treatment_id"/>
+        <field name="room_id"/>
+        <field name="channel_id"/>
+        <field name="policy_id"/>
+        <field name="state"/>
+        <field name="start_datetime"/>
+        <filter name="filter_today" string="Today" domain="[('start_datetime', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('start_datetime', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+        <filter name="filter_active_work" string="Open" domain="[('state', 'in', ['draft', 'confirmed', 'in_progress'])]"/>
+        <filter name="filter_no_show" string="No-show" domain="[('is_no_show', '=', True)]"/>
+        <group>
+          <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+          <filter name="group_doctor" string="Doctor" context="{'group_by': 'doctor_id'}"/>
+          <filter name="group_treatment" string="Treatment" context="{'group_by': 'treatment_id'}"/>
+          <filter name="group_channel" string="Channel" context="{'group_by': 'channel_id'}"/>
+          <filter name="group_date" string="Start Date" context="{'group_by': 'start_datetime:day'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="view_booking_booking_list" model="ir.ui.view">
+    <field name="name">booking.booking.list</field>
+    <field name="model">booking.booking</field>
+    <field name="arch" type="xml">
+      <list string="Bookings" decoration-success="state == 'done'" decoration-muted="state == 'cancelled'" decoration-warning="is_no_show">
+        <field name="name"/>
+        <field name="start_datetime"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="treatment_id"/>
+        <field name="room_id"/>
+        <field name="channel_id"/>
+        <field name="state"/>
+        <field name="deposit_status"/>
+        <field name="amount_total"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_booking_booking_calendar" model="ir.ui.view">
+    <field name="name">booking.booking.calendar</field>
+    <field name="model">booking.booking</field>
+    <field name="arch" type="xml">
+      <calendar string="Booking Calendar" date_start="start_datetime" date_stop="end_datetime" color="doctor_id">
+        <field name="name"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="treatment_id"/>
+        <field name="room_id"/>
+        <field name="state"/>
+      </calendar>
+    </field>
+  </record>
+
+  <record id="view_booking_booking_form" model="ir.ui.view">
+    <field name="name">booking.booking.form</field>
+    <field name="model">booking.booking</field>
+    <field name="arch" type="xml">
+      <form string="Booking">
+        <header>
+          <button name="action_confirm" type="object" string="Confirm" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'confirmed'"/>
+          <button name="action_done" type="object" string="Done" class="btn-primary" invisible="state != 'in_progress'"/>
+          <button name="action_mark_no_show" type="object" string="Mark No-show" invisible="state != 'confirmed' or is_no_show"/>
+          <button name="action_create_invoice" type="object" string="Create Invoice" invisible="invoice_id or state == 'draft' or state == 'cancelled'"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state == 'done' or state == 'cancelled'"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,done,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not invoice_id">
+              <div class="o_stat_info"><span class="o_stat_text">Invoice</span></div>
+            </button>
+            <button name="action_view_appointment" type="object" class="oe_stat_button" icon="fa-calendar-check-o" invisible="not appointment_id">
+              <div class="o_stat_info"><span class="o_stat_text">Appointment</span></div>
+            </button>
+          </div>
+          <div class="oe_title">
+            <label for="name"/>
+            <h1><field name="name" readonly="1"/></h1>
+          </div>
+          <group>
+            <group string="Patient &amp; Clinical">
+              <field name="patient_id"/>
+              <field name="doctor_id"/>
+              <field name="treatment_id"/>
+              <field name="room_id"/>
+              <field name="resource_ids" widget="many2many_tags"/>
+              <field name="tag_ids" widget="many2many_tags"/>
+            </group>
+            <group string="Schedule">
+              <field name="start_datetime"/>
+              <field name="end_datetime"/>
+              <field name="duration_minutes"/>
+              <field name="slot_id"/>
+              <field name="channel_id"/>
+              <field name="policy_id"/>
+              <field name="company_id" groups="base.group_multi_company"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Booking Lines">
+              <field name="line_ids">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="display_type" optional="hide"/>
+                  <field name="product_id"/>
+                  <field name="treatment_id"/>
+                  <field name="name"/>
+                  <field name="product_uom_qty"/>
+                  <field name="product_uom"/>
+                  <field name="price_unit"/>
+                  <field name="discount"/>
+                  <field name="tax_ids" widget="many2many_tags"/>
+                  <field name="price_subtotal" readonly="1"/>
+                  <button name="action_view_booking" type="object" string="Open Booking"/>
+                </list>
+              </field>
+              <group class="oe_subtotal_footer">
+                <field name="amount_untaxed" readonly="1"/>
+                <field name="amount_tax" readonly="1"/>
+                <field name="amount_total" readonly="1"/>
+              </group>
+            </page>
+            <page string="Deposit">
+              <group>
+                <field name="allow_prepaid_deposit"/>
+                <field name="deposit_is_required"/>
+                <field name="deposit_fixed_amount"/>
+                <field name="deposit_percent"/>
+                <field name="deposit_amount" readonly="1"/>
+                <field name="deposit_status"/>
+              </group>
+            </page>
+            <page string="Integration &amp; Automation">
+              <group>
+                <field name="auto_create_appointment"/>
+                <field name="lock_slot_on_confirm"/>
+                <field name="appointment_id" readonly="1"/>
+                <field name="invoice_id" readonly="1"/>
+                <field name="is_no_show"/>
+                <field name="checkin_time"/>
+                <field name="checkout_time"/>
+              </group>
+            </page>
+            <page string="Notes">
+              <field name="notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_booking_list" model="ir.actions.act_window">
+    <field name="name">Bookings</field>
+    <field name="res_model">booking.booking</field>
+    <field name="view_mode">list,calendar,form</field>
+    <field name="search_view_id" ref="view_booking_booking_search"/>
+  </record>
+</odoo>

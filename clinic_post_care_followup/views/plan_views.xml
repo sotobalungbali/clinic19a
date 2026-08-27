@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_postcare_plan_search" model="ir.ui.view">
+        <field name="name">clinic.postcare.plan.search</field>
+        <field name="model">clinic.postcare.plan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="protocol_id"/>
+                <field name="doctor_id"/>
+                <field name="responsible_staff_id"/>
+                <field name="encounter_id"/>
+                <field name="booking_id"/>
+                <field name="company_id"/>
+                <filter name="open_plan" string="Open" domain="[('state','in',('draft','active','escalated'))]"/>
+                <filter name="active_plan" string="Active" domain="[('state','=','active')]"/>
+                <filter name="escalated" string="Escalated" domain="[('state','=','escalated')]"/>
+                <filter name="with_next_due" string="Has Next Follow-up" domain="[('next_due_at','!=',False)]"/>
+                <filter name="instructions_not_ack" string="Instructions Not Acknowledged" domain="[('instruction_acknowledged','=',False),('state','in',('active','escalated'))]"/>
+                <group>
+                    <filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_protocol" string="Protocol" context="{'group_by':'protocol_id'}"/>
+                    <filter name="group_staff" string="Coordinator" context="{'group_by':'responsible_staff_id'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by':'source_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_postcare_plan_list" model="ir.ui.view">
+        <field name="name">clinic.postcare.plan.list</field>
+        <field name="model">clinic.postcare.plan</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'active'" decoration-danger="state == 'escalated'" decoration-success="state in ('completed','closed')" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="protocol_id"/>
+                <field name="source_type" widget="badge"/>
+                <field name="responsible_staff_id"/>
+                <field name="start_datetime"/>
+                <field name="expected_end_date"/>
+                <field name="next_due_at"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="task_count"/>
+                <field name="overdue_task_count"/>
+                <field name="open_escalation_count"/>
+                <field name="red_flag_count"/>
+                <field name="instruction_acknowledged"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_postcare_plan_form" model="ir.ui.view">
+        <field name="name">clinic.postcare.plan.form</field>
+        <field name="model">clinic.postcare.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_tasks" type="object" string="Generate Tasks"
+                            groups="clinic_post_care_followup.group_postcare_coordinator"
+                            invisible="state not in ('draft','active')"/>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_coordinator"
+                            invisible="state != 'draft'"/>
+                    <button name="action_acknowledge_instructions" type="object" string="Acknowledge Instructions"
+                            groups="clinic_post_care_followup.group_postcare_user"
+                            invisible="instruction_acknowledged or state not in ('active','escalated')"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-primary"
+                            groups="clinic_post_care_followup.group_postcare_clinician"
+                            invisible="state not in ('active','escalated')"/>
+                    <button name="action_close" type="object" string="Close"
+                            groups="clinic_post_care_followup.group_postcare_manager"
+                            invisible="state != 'completed'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_post_care_followup.group_postcare_manager"
+                            invisible="state in ('closed','cancelled')"/>
+                    <button name="action_print_instructions" type="object" string="Print Instructions"/>
+                    <button name="action_print_summary" type="object" string="Print Follow-up Summary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,escalated,completed,closed,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_tasks" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="task_count" widget="statinfo" string="Tasks"/>
+                        </button>
+                        <button name="action_view_checkins" type="object" class="oe_stat_button" icon="fa-comments">
+                            <field name="checkin_count" widget="statinfo" string="Check-ins"/>
+                        </button>
+                        <button name="action_view_escalations" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="escalation_count" widget="statinfo" string="Escalations"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="state != 'escalated'">
+                        This Post-Care Plan has an open clinical escalation requiring attention.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="overdue_task_count == 0">
+                        One or more follow-up tasks are overdue.
+                    </div>
+
+                    <group>
+                        <group string="Patient &amp; Clinical Ownership">
+                            <field name="patient_id" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="doctor_id"/>
+                            <field name="responsible_staff_id"/>
+                            <field name="protocol_id" readonly="state != 'draft'"/>
+                            <field name="priority"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            <field name="branch_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Follow-up Window">
+                            <field name="start_datetime" readonly="state != 'draft'"/>
+                            <field name="expected_end_date"/>
+                            <field name="next_due_at" readonly="1"/>
+                            <field name="progress" widget="progressbar" readonly="1"/>
+                            <field name="instruction_acknowledged" readonly="1"/>
+                            <field name="acknowledged_at" readonly="1"/>
+                            <field name="acknowledged_by_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_source" type="object" string="Open Source Record" class="btn btn-secondary" invisible="source_type == 'manual'"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Patient Instructions">
+                            <field name="instruction_html"/>
+                            <group string="Warning Signs">
+                                <field name="warning_signs_html"/>
+                            </group>
+                            <group string="Urgent / Emergency Guidance">
+                                <field name="emergency_instruction_html"/>
+                            </group>
+                        </page>
+
+                        <page string="Follow-up Tasks">
+                            <field name="task_ids">
+                                <list decoration-danger="state in ('overdue','escalated')" decoration-success="state == 'completed'" decoration-muted="state == 'cancelled'">
+                                    <field name="reference"/>
+                                    <field name="name"/>
+                                    <field name="task_type"/>
+                                    <field name="channel"/>
+                                    <field name="assignee_id"/>
+                                    <field name="due_datetime"/>
+                                    <field name="response_required"/>
+                                    <field name="checkin_count"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_send_reminder" type="object" string="Send Email" icon="fa-envelope" groups="clinic_post_care_followup.group_postcare_coordinator" invisible="channel != 'email' or state in ('completed','cancelled')"/>
+                                    <button name="action_new_checkin" type="object" string="Check-in" icon="fa-comments" groups="clinic_post_care_followup.group_postcare_coordinator" invisible="state in ('completed','cancelled')"/>
+                                    <button name="action_complete" type="object" string="Complete" icon="fa-check" groups="clinic_post_care_followup.group_postcare_clinician" invisible="state in ('completed','cancelled')"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Check-ins">
+                            <field name="checkin_ids" readonly="1">
+                                <list decoration-danger="red_flag" decoration-success="state in ('reviewed','closed')">
+                                    <field name="name"/>
+                                    <field name="response_at"/>
+                                    <field name="channel"/>
+                                    <field name="wellbeing" widget="badge"/>
+                                    <field name="pain_score"/>
+                                    <field name="red_flag"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_plan" type="object" string="Plan" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Escalations">
+                            <field name="escalation_ids" readonly="1">
+                                <list decoration-danger="severity == 'critical' and state not in ('resolved','cancelled')" decoration-warning="state in ('open','acknowledged','in_progress')">
+                                    <field name="name"/>
+                                    <field name="severity" widget="badge"/>
+                                    <field name="reason"/>
+                                    <field name="owner_staff_id"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_source" type="object" string="Open Source" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Source &amp; Audit">
+                            <group>
+                                <field name="source_type"/>
+                                <field name="encounter_id" invisible="source_type != 'encounter'"/>
+                                <field name="booking_id" invisible="source_type != 'booking'"/>
+                                <field name="care_plan_id" invisible="source_type != 'care_plan'"/>
+                                <field name="treatment_id" invisible="source_type != 'treatment'"/>
+                                <field name="completed_at" readonly="1"/>
+                                <field name="closed_at" readonly="1"/>
+                            </group>
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_postcare_plan" model="ir.actions.act_window">
+        <field name="name">Post-Care Plans</field>
+        <field name="res_model">clinic.postcare.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_postcare_plan_search"/>
+    </record>
+</odoo>

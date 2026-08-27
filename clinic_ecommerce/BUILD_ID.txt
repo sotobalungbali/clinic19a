@@ -1,0 +1,6 @@
+CLINIC_ECOMMERCE_BUILD_20260821_V19.0.1.0.0
+Project: ClinicOne
+Addon: clinic_ecommerce
+Official sequence: 30 of 39
+Authoritative upstream baseline: clinic_dashboard 19.0.1.0.0
+Runtime status: PENDING

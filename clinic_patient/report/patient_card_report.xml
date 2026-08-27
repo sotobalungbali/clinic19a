@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Existing action_print_patient_card() resolves this exact XML ID. -->
+    <record id="action_report_patient_card" model="ir.actions.report">
+        <field name="name">Patient Card</field>
+        <field name="model">clinic.patient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_patient.report_patient_card</field>
+        <field name="report_file">clinic_patient.report_patient_card</field>
+        <field name="binding_model_id" ref="model_clinic_patient"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Patient Card - %s' % (object.patient_code or object.name)</field>
+    </record>
+
+    <template id="report_patient_card">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="patient">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>ClinicOne Patient Card</h2>
+                        <div class="row mt16">
+                            <div class="col-3">
+                                <img t-if="patient.image_1920"
+                                     t-att-src="image_data_uri(patient.image_1920)"
+                                     style="max-width: 120px; max-height: 120px;"
+                                     alt="Patient Photo"/>
+                            </div>
+                            <div class="col-9">
+                                <h3 t-field="patient.name"/>
+                                <p>
+                                    <strong>Patient Code:</strong>
+                                    <span t-field="patient.patient_code"/>
+                                </p>
+                                <p>
+                                    <strong>Date of Birth:</strong>
+                                    <span t-field="patient.birth_date"/>
+                                    <span t-if="patient.age_display">
+                                        · <span t-field="patient.age_display"/>
+                                    </span>
+                                </p>
+                                <p>
+                                    <strong>Gender:</strong>
+                                    <span t-field="patient.gender"/>
+                                </p>
+                                <p t-if="patient.blood_type">
+                                    <strong>Blood Group:</strong>
+                                    <span t-field="patient.blood_type"/>
+                                    <span t-field="patient.rh_factor"/>
+                                </p>
+                                <p t-if="patient.phone or patient.mobile">
+                                    <strong>Contact:</strong>
+                                    <span t-field="patient.phone"/>
+                                    <span t-if="patient.mobile"> · <span t-field="patient.mobile"/></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt32 text-muted">
+                            Generated from ClinicOne patient registry.
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

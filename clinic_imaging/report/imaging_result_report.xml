@@ -1,0 +1,37 @@
+<odoo>
+    <record id="report_clinical_imaging_result" model="ir.actions.report">
+        <field name="name">Clinical Imaging Result</field>
+        <field name="model">clinical.imaging.result</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_imaging.report_clinical_imaging_result_document</field>
+        <field name="report_file">clinic_imaging.report_clinical_imaging_result_document</field>
+        <field name="binding_model_id" ref="model_clinical_imaging_result"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_clinical_imaging_result_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Clinical Imaging Result</h2>
+                        <table class="table table-sm table-borderless">
+                            <tr><th>Result</th><td><span t-field="o.name"/></td></tr>
+                            <tr><th>Patient</th><td><span t-field="o.patient_id"/></td></tr>
+                            <tr><th>Imaging</th><td><span t-field="o.imaging_id"/></td></tr>
+                            <tr><th>Author</th><td><span t-field="o.author_doctor_id"/></td></tr>
+                            <tr><th>Status</th><td><span t-field="o.state"/></td></tr>
+                            <tr><th>Result Date</th><td><span t-field="o.result_datetime"/></td></tr>
+                        </table>
+                        <h4>Technique</h4><p t-esc="o.technique or ''"/>
+                        <h4>Comparison</h4><p t-esc="o.comparison or ''"/>
+                        <h4>Findings</h4><p t-esc="o.findings or ''"/>
+                        <h4>Impression</h4><p t-esc="o.impression or ''"/>
+                        <h4>Recommendations</h4><p t-esc="o.recommendations or ''"/>
+                        <p t-if="o.signed_datetime"><strong>Signed:</strong> <span t-field="o.signed_datetime"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

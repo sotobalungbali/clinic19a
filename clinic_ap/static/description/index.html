@@ -1,0 +1,188 @@
+<!--
+ClinicONe — Accounts Payable
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTES:
+- Keep README.rst (root) for long-form docs; this file is for the Odoo Apps UI description.
+- Do NOT use <blockquote> across the ClinicONe project (team convention).
+-->
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span3">
+        <img src="icon.png" alt="ClinicONe Accounts Payable Icon" style="width:100%; border-radius:16px;">
+      </div>
+      <div class="oe_span9">
+        <h1 class="oe_slogan">ClinicONe — Accounts Payable</h1>
+        <h2 class="oe_slogan">Vendor Bills • Approvals • Posting • Payments • Aging</h2>
+        <p>
+          A production-ready Accounts Payable module to manage <b>vendor bills → approvals → posting → payments → aging</b>,
+          fully integrated with the ClinicONe suite. Compatible with <b>Odoo 18 Community Edition</b>.
+        </p>
+        <p>
+          <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+          <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+          <span style="display:inline-block;background:#2962ff;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-currency</span>
+          <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Approval Workflow</span>
+          <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Payments</span>
+          <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Aging &amp; Analytics</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Overview</h3>
+        <p>
+          Streamline vendor liabilities from bill intake to settlement. Enforce <b>multi-level approvals</b>, post to
+          <b>General Ledger</b>, reconcile <b>partial/full payments</b>, and monitor <b>aging buckets</b>. Deep links to
+          Purchase, Inventory valuation, Billing, AR, and Finance keep financial data consistent and auditable.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Key Features</h3>
+        <ul>
+          <li>Vendor bill lifecycle: <i>Draft → To Approve → Approved → Posted → Partially Paid → Paid → Cancelled</i></li>
+          <li>Multi-level approval (role-based) with chatter &amp; activities</li>
+          <li>Partial / full payments, residual tracking, payment state</li>
+          <li>Aging buckets (Not Due, 0–30, 31–60, 61–90, 90+ days)</li>
+          <li>Payment terms &amp; due date computation</li>
+          <li>Analytic account/tags for cost attribution</li>
+          <li>Email reminders for upcoming/overdue payments</li>
+          <li>Soft-coupled integrations with Purchase, Inventory, Billing, AR, Finance</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Core Models</h3>
+        <ul>
+          <li><b>clinicone.account.payable</b> — AP master document (header)</li>
+          <li><b>clinicone.account.payable.line</b> — AP lines (amounts, taxes, analytic)</li>
+          <li><b>account.move</b> (inherit) — vendor bill posting</li>
+          <li><b>account.payment</b> (inherit) — vendor payments &amp; reconciliations</li>
+        </ul>
+        <p style="margin-top:8px;font-size:12px;color:#666;">
+          Notes: model aliases for <i>clinic.account.*</i> can be provided during namespace normalization.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Holistic Integrations (ClinicONe)</h3>
+        <p>
+          Works seamlessly with:
+          <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment, clinic_billing,
+          clinic_ar, clinic_finance, clinic_accounting, clinic_inventory, clinic_ecommerce, clinic_membership,
+          clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet, clinic_package, clinic_pricing,
+          clinic_room_device, clinic_hr, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit</i>.
+        </p>
+        <p style="font-size:12px;color:#666;">
+          Integrations are decoupled via relations, activities, server actions, and mail templates to keep modules independently deployable.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span4">
+        <h3>Installation</h3>
+        <ol>
+          <li>Add this addon to your Odoo <i>addons_path</i>.</li>
+          <li>Update Apps list, search <b>ClinicONe: Accounts Payable</b>.</li>
+          <li>Install; dependencies resolve automatically.</li>
+        </ol>
+      </div>
+      <div class="oe_span4">
+        <h3>Configuration</h3>
+        <ul>
+          <li>Set default <b>AP Journal</b> and <b>Sequences</b>.</li>
+          <li>Define <b>Payment Terms</b> and vendor-specific preferences.</li>
+          <li>Review <b>Email Templates</b> for due reminders.</li>
+          <li>Enable <b>Cron</b> for aging refresh &amp; notifications.</li>
+        </ul>
+      </div>
+      <div class="oe_span4">
+        <h3>Security</h3>
+        <ul>
+          <li>Groups: AP Accountant, AP Manager, Finance Admin</li>
+          <li>Record Rules: company / branch scoping</li>
+          <li>Auditable approvals via chatter &amp; activities</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Reports</h3>
+        <ul>
+          <li>AP Aging (by bucket, vendor, company)</li>
+          <li>Vendor Payables Summary</li>
+          <li>Cashflow (AR &amp; AP consolidated)</li>
+          <li>Vendor Bill print (QWeb)</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Performance Notes</h3>
+        <ul>
+          <li>Index frequently filtered fields: vendor, state, due date, company</li>
+          <li>Prefer computed stored fields for list views</li>
+          <li>Archive settled AP documents periodically in high-volume setups</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Assets</h3>
+        <ul>
+          <li>JS: <i>ap_dashboard.js</i>, <i>ap_list_improvements.js</i></li>
+          <li>QWeb: <i>report_aging_templates.xml</i>, <i>payable_summary_templates.xml</i></li>
+          <li>SCSS: <i>ap_dashboard.scss</i></li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Support &amp; Contribution</h3>
+        <p>
+          Please follow the ClinicONe contribution guide: write tests, follow code style, and document migration impacts.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <img src="banner.png" alt="ClinicONe Accounts Payable Banner" style="width:100%; border-radius:16px;">
+        <p style="margin-top:8px;font-size:12px;color:#666;">Images: place your 1600×900 banner and a square icon in this folder.</p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>License</h3>
+        <p>Distributed under the <b>LGPL-3.0</b> license. See <i>LICENSE</i> file.</p>
+      </div>
+      <div class="oe_span6">
+        <h3>Version</h3>
+        <p>Tested on <b>Odoo 18.0</b> (Community Edition).</p>
+      </div>
+    </div>
+  </section>
+  

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mail_template_feedback_request" model="mail.template">
+        <field name="name">ClinicOne Patient Feedback Invitation</field>
+        <field name="model_id" ref="model_clinic_feedback_request"/>
+        <field name="subject">We value your feedback - {{ object.company_id.name }}</field>
+        <field name="email_from">{{ user.email or '' }}</field>
+        <field name="email_to">{{ object.patient_id.email or '' }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Dear <t t-out="object.patient_id.name"/>,</p>
+                <p>
+                    Thank you for visiting <t t-out="object.company_id.name"/>.
+                    We would appreciate your feedback about your experience.
+                </p>
+                <p>
+                    <a t-att-href="object.access_url"
+                       style="display:inline-block;padding:10px 18px;background:#714B67;color:white;text-decoration:none;border-radius:4px;">
+                        Share Feedback
+                    </a>
+                </p>
+                <p>
+                    This link is valid until <t t-out="object.expires_at"/>.
+                </p>
+                <p>Reference: <t t-out="object.name"/></p>
+            </div>
+        </field>
+    </record>
+</odoo>

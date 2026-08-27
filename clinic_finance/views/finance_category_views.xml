@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_finance_category_search" model="ir.ui.view">
+    <field name="name">clinic.finance.category.search</field><field name="model">clinic.finance.category</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="code"/><field name="company_id"/><field name="counterpart_account_id"/>
+      <filter name="active" string="Active" domain="[('active','=',True)]"/>
+      <filter name="approval" string="Approval Required" domain="[('approval_required','=',True)]"/>
+      <group>
+        <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+        <filter name="group_direction" string="Direction" context="{'group_by':'direction'}"/>
+      </group>
+    </search></field>
+  </record>
+  <record id="view_finance_category_list" model="ir.ui.view">
+    <field name="name">clinic.finance.category.list</field><field name="model">clinic.finance.category</field>
+    <field name="arch" type="xml"><list decoration-muted="not active">
+      <field name="sequence" widget="handle"/><field name="code"/><field name="name"/>
+      <field name="direction"/><field name="counterpart_account_id"/><field name="approval_required"/>
+      <field name="approval_limit" sum="Approval Limits"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/>
+    </list></field>
+  </record>
+  <record id="view_finance_category_form" model="ir.ui.view">
+    <field name="name">clinic.finance.category.form</field><field name="model">clinic.finance.category</field>
+    <field name="arch" type="xml"><form><sheet>
+      <div class="oe_button_box" name="button_box">
+        <button name="action_view_transactions" type="object" class="oe_stat_button" icon="fa-exchange">
+          <field name="transaction_count" widget="statinfo" string="Transactions"/>
+        </button>
+      </div>
+      <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+      <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+      <group>
+        <group><field name="code"/><field name="direction"/><field name="counterpart_account_id" options="{'no_create_edit':True}"/><field name="active"/></group>
+        <group><field name="company_id" groups="base.group_multi_company"/><field name="approval_required"/><field name="approval_limit"/><field name="analytic_required"/></group>
+      </group>
+      <notebook><page string="Governance"><field name="notes" placeholder="Usage and approval policy..."/></page></notebook>
+    </sheet></form></field>
+  </record>
+  <record id="action_finance_category" model="ir.actions.act_window">
+    <field name="name">Finance Categories</field><field name="res_model">clinic.finance.category</field>
+    <field name="view_mode">list,form</field><field name="search_view_id" ref="view_finance_category_search"/>
+  </record>
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        The Referral root is valid on its own as a native Odoo <menuitem>.
+        No parent attribute means it loads as a top-level app. Runtime UI
+        bridge code reparents it below a compatible Patient/ClinicOne root
+        when available.
+    -->
+<menuitem id="menu_referral_root"
+              name="Referrals"
+              sequence="42"
+              groups="clinic_referral.group_referral_user"/>
+
+    
+<menuitem id="menu_referral_operations" name="Operations" parent="menu_referral_root" sequence="10" />
+
+    
+<menuitem id="menu_referrals" name="Referrals" parent="menu_referral_operations" action="action_referral" sequence="10" />
+
+    
+<menuitem id="menu_referral_analysis" name="Referral Analytics" parent="menu_referral_operations" action="action_referral_analysis" sequence="20" />
+
+    
+<menuitem id="menu_referral_configuration" name="Configuration" parent="menu_referral_root" sequence="30" groups="clinic_referral.group_referral_manager" />
+
+    
+<menuitem id="menu_referral_programs" name="Programs" parent="menu_referral_configuration" action="action_referral_program" sequence="10" />
+
+    
+<menuitem id="menu_referral_sources" name="Sources" parent="menu_referral_configuration" action="action_referral_source" sequence="20" />
+
+    
+<menuitem id="menu_referral_settings" name="Referral Settings" parent="menu_referral_configuration" action="action_referral_settings" sequence="90" />
+
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Company isolation is enforced at ORM level.
+        UI visibility is never used as a substitute for record security.
+    -->
+    <record id="rule_clinic_patient_company" model="ir.rule">
+        <field name="name">Clinic Patient: company access</field>
+        <field name="model_id" ref="model_clinic_patient"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_patient_identifier_company" model="ir.rule">
+        <field name="name">Patient Identifier: company access</field>
+        <field name="model_id" ref="model_clinic_patient_identifier"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_patient_allergy_company" model="ir.rule">
+        <field name="name">Patient Allergy: company access</field>
+        <field name="model_id" ref="model_clinic_patient_allergy"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_patient_allergy_reaction_company" model="ir.rule">
+        <field name="name">Patient Allergy Reaction: company access</field>
+        <field name="model_id" ref="model_clinic_patient_allergy_reaction"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_patient_condition_company" model="ir.rule">
+        <field name="name">Patient Condition: company access</field>
+        <field name="model_id" ref="model_clinic_patient_condition"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_patient_condition_episode_company" model="ir.rule">
+        <field name="name">Patient Condition Episode: company access</field>
+        <field name="model_id" ref="model_clinic_patient_condition_episode"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_patient_vital_company" model="ir.rule">
+        <field name="name">Patient Vital: company access</field>
+        <field name="model_id" ref="model_clinic_patient_vital"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+</odoo>

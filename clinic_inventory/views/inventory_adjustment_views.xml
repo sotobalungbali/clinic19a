@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_inventory_adjustment_search" model="ir.ui.view">
+        <field name="name">clinic.inventory.adjustment.search</field>
+        <field name="model">clinic.inventory.adjustment</field>
+        <field name="arch" type="xml">
+            <search string="Inventory Adjustments">
+                <field name="name"/>
+                <field name="warehouse_id"/>
+                <field name="root_location_id"/>
+                <field name="responsible_id"/>
+                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="filter_confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                <filter name="filter_applied" string="Applied" domain="[('state','=','applied')]"/>
+                <filter name="filter_cancel" string="Cancelled" domain="[('state','=','cancel')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_warehouse" string="Warehouse" context="{'group_by':'warehouse_id'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by':'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_inventory_adjustment_list" model="ir.ui.view">
+        <field name="name">clinic.inventory.adjustment.list</field>
+        <field name="model">clinic.inventory.adjustment</field>
+        <field name="arch" type="xml">
+            <list string="Inventory Adjustments"
+                  decoration-muted="state == 'cancel'"
+                  decoration-success="state == 'applied'"
+                  decoration-info="state == 'confirmed'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="state" widget="badge"/>
+                <field name="warehouse_id"/>
+                <field name="root_location_id"/>
+                <field name="total_lines"/>
+                <field name="total_diff_qty"/>
+                <field name="generated_move_count"/>
+                <field name="responsible_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_inventory_adjustment_form" model="ir.ui.view">
+        <field name="name">clinic.inventory.adjustment.form</field>
+        <field name="model">clinic.inventory.adjustment</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Adjustment">
+                <header>
+                    <button name="action_prepare_lines" type="object" string="Prepare Lines"
+                            invisible="state != 'draft'"/>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_apply" type="object" string="Apply Adjustment"
+                            class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state not in ['confirmed', 'cancel']"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ['applied', 'cancel']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,applied,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_moves" type="object" class="oe_stat_button"
+                                icon="fa-exchange" invisible="generated_move_count == 0">
+                            <field name="generated_move_count" widget="statinfo" string="Stock Moves"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Scope">
+                            <field name="date"/>
+                            <field name="warehouse_id"/>
+                            <field name="root_location_id"/>
+                            <field name="responsible_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Counting Policy">
+                            <field name="include_zero_expected"/>
+                            <field name="use_snapshot"/>
+                            <field name="snapshot_at" readonly="1"/>
+                            <field name="route_expired_to_quarantine"/>
+                            <field name="enforce_governance"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Count Lines" name="count_lines">
+                            <field name="line_ids" readonly="state not in ['draft', 'confirmed']">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom"/>
+                                    <field name="lot_id" optional="show"/>
+                                    <field name="location_id"/>
+                                    <field name="expected_qty_current" readonly="1"/>
+                                    <field name="snapshot_qty" readonly="1" optional="hide"/>
+                                    <field name="counted_qty"/>
+                                    <field name="diff_qty_current" readonly="1"/>
+                                    <field name="is_expired" readonly="1" optional="show"/>
+                                    <field name="note" optional="hide"/>
+                                    <button name="action_open_adjustment" type="object" icon="fa-external-link"
+                                            title="Open Adjustment"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Generated Moves" name="moves">
+                            <field name="move_ids" readonly="1">
+                                <list>
+                                    <field name="reference"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_inventory_adjustment" model="ir.actions.act_window">
+        <field name="name">Inventory Adjustments</field>
+        <field name="res_model">clinic.inventory.adjustment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_inventory_adjustment_search"/>
+    </record>
+
+    <record id="view_clinic_inventory_adjustment_line_search" model="ir.ui.view">
+        <field name="name">clinic.inventory.adjustment.line.search</field>
+        <field name="model">clinic.inventory.adjustment.line</field>
+        <field name="arch" type="xml">
+            <search string="Inventory Adjustment Lines">
+                <field name="adjustment_id"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="location_id"/>
+                <filter name="filter_expired" string="Expired" domain="[('is_expired','=',True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_inventory_adjustment_line_list" model="ir.ui.view">
+        <field name="name">clinic.inventory.adjustment.line.list</field>
+        <field name="model">clinic.inventory.adjustment.line</field>
+        <field name="arch" type="xml">
+            <list string="Inventory Adjustment Lines" decoration-danger="is_expired">
+                <field name="adjustment_id"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="location_id"/>
+                <field name="expected_qty_current"/>
+                <field name="counted_qty"/>
+                <field name="diff_qty_current"/>
+                <field name="is_expired"/>
+                <button name="action_open_adjustment" type="object" icon="fa-external-link"
+                        title="Open Adjustment"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_inventory_adjustment_line_form" model="ir.ui.view">
+        <field name="name">clinic.inventory.adjustment.line.form</field>
+        <field name="model">clinic.inventory.adjustment.line</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Adjustment Line">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_adjustment" type="object" class="oe_stat_button"
+                                icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Adjustment</span></div>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="adjustment_id"/>
+                        <field name="sequence"/>
+                        <field name="product_id"/>
+                        <field name="product_uom"/>
+                        <field name="lot_id"/>
+                        <field name="location_id"/>
+                    </group>
+                    <group string="Quantities">
+                        <field name="expected_qty_current" readonly="1"/>
+                        <field name="snapshot_qty" readonly="1"/>
+                        <field name="counted_qty"/>
+                        <field name="diff_qty_current" readonly="1"/>
+                        <field name="diff_qty_snapshot" readonly="1"/>
+                        <field name="is_expired" readonly="1"/>
+                    </group>
+                    <field name="note"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_inventory_adjustment_line" model="ir.actions.act_window">
+        <field name="name">Inventory Adjustment Lines</field>
+        <field name="res_model">clinic.inventory.adjustment.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_inventory_adjustment_line_search"/>
+    </record>
+</odoo>
+

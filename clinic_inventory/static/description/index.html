@@ -1,0 +1,197 @@
+<!--
+ClinicOne — Inventory & Stock for Aesthetic Clinics
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTE:
+- Keep README.md (root) for long-form docs; this file is for the Apps UI description.
+- Avoid using <blockquote> across the ClinicOne project (team convention).
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="ClinicOne Inventory Icon" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Inventory &amp; Stock for Aesthetic Clinics</h1>
+      <h2 class="oe_slogan">FEFO • Shelf-life Control • Pharmacy &amp; Treatment Rooms • Quarantine • Replenishment</h2>
+      <p>
+        End-to-end inventory tailored for clinical workflows: <b>products, lots/serials, expiry, room-level control, internal transfers, consumption</b>,
+        and <b>replenishment</b> — all integrated across the ClinicOne suite. Compatible with <b>Odoo 18 Community Edition</b>.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Expiry Control</span>
+        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Dashboards</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <img src="banner.png" alt="ClinicOne Inventory Banner" style="width:100%;border-radius:12px;margin:8px 0 24px 0;">
+      <h3>Overview</h3>
+      <p>
+        This module extends Odoo stock to meet the needs of aesthetic clinics. It introduces <b>pharmacy</b> and <b>treatment room</b> concepts,
+        <b>FEFO enforcement hints</b>, <b>minimum shelf-life</b> policies, <b>quarantine flows</b>, and <b>clinical consumption</b> tied to treatments — with soft-coupled hooks
+        to patient, doctor, booking, billing, and reporting modules.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li>Product extensions for clinical attributes (medical, cosmetic, device, package/bundle)</li>
+        <li>FEFO &amp; shelf-life hints; min remaining shelf-life filter at reservation</li>
+        <li>Warehouse roles: <b>Pharmacy</b>, <b>Treatment Rooms Root</b>, <b>Quarantine</b></li>
+        <li>Clinical consumption document → auto stock moves (with lots/serials)</li>
+        <li>Doctor-allowed products (allow/deny by product/category)</li>
+        <li>Patient product history (consume/deliver/return/quarantine)</li>
+        <li>Reorder points (scope-aware) with buffer &amp; rounding policy</li>
+        <li>Inventory adjustment with snapshot, governance, and expired routing</li>
+        <li>Portal-ready summaries (optional), dashboards, and printable reports</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>product.template</b>/<b>product.product</b> — clinical fields &amp; helpers</li>
+        <li><b>stock.location</b> — pharmacy/treatment/quarantine flags &amp; policies</li>
+        <li><b>stock.rule</b> — clinic FEFO/shelf-life &amp; destination policy hints</li>
+        <li><b>stock.warehouse.orderpoint</b> — scope metrics &amp; suggestions</li>
+        <li><b>clinic.treatment.product.usage</b> — clinical consumption</li>
+        <li><b>clinic.patient.product.history</b> — patient-level usage log</li>
+        <li><b>clinic.doctor.allowed.product</b> — allow/deny matrix</li>
+        <li><b>clinic.inventory.adjustment</b> — snapshot-driven adjustments</li>
+        <li><b>procurement.group</b> (extended) — clinical context propagation</li>
+      </ul>
+      <p style="margin-top:8px;">
+        Hooks &amp; events: <i>integration service</i> enables soft-coupled behaviors across the ClinicOne ecosystem.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Holistic Integrations (26 Modules)</h3>
+      <p>
+        Seamless with: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment, clinic_billing,
+        clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_ecommerce, clinic_membership,
+        clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet, clinic_package, clinic_pricing, clinic_room_device,
+        clinic_hr, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit, clinic_insurance, clinic_telemedicine</i>.
+      </p>
+      <p style="font-size:12px;color:#666;">
+        Integrations are soft-coupled using relations, server actions, activities, and an internal event bus to keep modules independently deployable.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Add this addon to your Odoo <i>addons_path</i>.</li>
+        <li>Update Apps list, search <b>ClinicOne: Inventory &amp; Stock</b>.</li>
+        <li>Install; dependencies will auto-resolve.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Settings → ClinicOne → Inventory: define FEFO, min shelf-life, scope, expiration policy</li>
+        <li>On Warehouse: set Pharmacy, Treatment Rooms Root, and Quarantine locations</li>
+        <li>Define Reorder Points; tune buffer &amp; rounding</li>
+        <li>Optionally enable doctor allowlist and patient history</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: Inventory User, Inventory Manager, Pharmacy Manager, Clinic Admin</li>
+        <li>Record Rules: company scope, treatment room visibility, quarantine controls</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Demo &amp; Testing</h3>
+      <ul>
+        <li>Demo data: <i>product_demo.xml</i>, <i>lot_batch_demo.xml</i>, <i>stock_quant_demo.xml</i></li>
+        <li>Unit tests: product models, reservations, wizards, security, integration flows</li>
+        <li>UAT scenarios: FEFO conflict, expiring lots, treatment consumption, quarantine routing</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Performance Notes</h3>
+      <ul>
+        <li>Index heavily filtered fields: company_id, product_id, location_id, lot_id, state, date</li>
+        <li>Use domains in dashboards; avoid heavy computes in list views</li>
+        <li>Archive historical movements periodically in high-volume environments</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Reports</h3>
+      <ul>
+        <li>Inventory Balance, Stock Card, Batch Expiry, Treatment Consumption</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>API Endpoints</h3>
+      <ul>
+        <li><i>controllers/portal_inventory.py</i> — limited portal views (optional)</li>
+        <li><i>controllers/webhook.py</i> — inbound webhooks for scanners or IoT</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Upgrade &amp; Migration</h3>
+      <ul>
+        <li>Model prefix normalized from <i>clinicone.*</i> → <b>clinic.*</b></li>
+        <li>Data migration scripts under <i>migration/</i> preserve stock history</li>
+        <li>Legacy alias classes may be used during transition (if needed)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distributed under the <b>LGPL-3.0</b> license. See <i>LICENSE</i> file.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        For issues or enhancements, follow the ClinicOne contribution guide:
+        write tests, follow code style, and document migration impacts.
+      </p>
+    </div>
+  </div>
+</section>
+

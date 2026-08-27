@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="kpi_revenue_total" model="clinic.analytics.kpi">
+        <field name="name">Revenue</field>
+        <field name="code">REVENUE_TOTAL</field>
+        <field name="sequence">10</field>
+        <field name="family">financial</field>
+        <field name="source_key">revenue_total</field>
+        <field name="unit">amount</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_fin_revenue"/>
+        <field name="description">Posted/paid Clinic Billing revenue in the selected scope and period.</field>
+        <field name="methodology" type="html"><p>Sum of <code>clinic.billing.invoice.amount_total</code> for Posted/Paid records. Branch scope follows the invoice patient contact branch.</p></field>
+    </record>
+
+    <record id="kpi_revenue_paid" model="clinic.analytics.kpi">
+        <field name="name">Fully Paid Revenue</field>
+        <field name="code">REVENUE_PAID</field>
+        <field name="sequence">20</field>
+        <field name="family">financial</field>
+        <field name="source_key">revenue_paid</field>
+        <field name="unit">amount</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_fin_revenue"/>
+    </record>
+
+    <record id="kpi_booking_count" model="clinic.analytics.kpi">
+        <field name="name">Booking Volume</field>
+        <field name="code">BOOKING_COUNT</field>
+        <field name="sequence">30</field>
+        <field name="family">operational</field>
+        <field name="source_key">booking_count</field>
+        <field name="unit">count</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_ops_booking"/>
+    </record>
+
+    <record id="kpi_booking_completion_rate" model="clinic.analytics.kpi">
+        <field name="name">Booking Completion Rate</field>
+        <field name="code">BOOKING_COMPLETION_RATE</field>
+        <field name="sequence">40</field>
+        <field name="family">operational</field>
+        <field name="source_key">booking_completion_rate</field>
+        <field name="unit">percentage</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">70</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">50</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_ops_booking"/>
+    </record>
+
+    <record id="kpi_booking_no_show_rate" model="clinic.analytics.kpi">
+        <field name="name">Booking No-Show Rate</field>
+        <field name="code">BOOKING_NO_SHOW_RATE</field>
+        <field name="sequence">50</field>
+        <field name="family">operational</field>
+        <field name="source_key">booking_no_show_rate</field>
+        <field name="unit">percentage</field>
+        <field name="direction">lower</field>
+        <field name="forecastable">True</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">10</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">20</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_ops_booking"/>
+    </record>
+
+    <record id="kpi_unique_patients" model="clinic.analytics.kpi">
+        <field name="name">Unique Completed Patients</field>
+        <field name="code">UNIQUE_PATIENTS</field>
+        <field name="sequence">60</field>
+        <field name="family">retention</field>
+        <field name="source_key">unique_patients</field>
+        <field name="unit">count</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="kpi_repeat_patient_rate" model="clinic.analytics.kpi">
+        <field name="name">Repeat Patient Rate</field>
+        <field name="code">REPEAT_PATIENT_RATE</field>
+        <field name="sequence">70</field>
+        <field name="family">retention</field>
+        <field name="source_key">repeat_patient_rate</field>
+        <field name="unit">percentage</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">30</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">15</field>
+        <field name="state">active</field>
+        <field name="description">Completed-booking patients who had an earlier completed booking.</field>
+    </record>
+
+    <record id="kpi_membership_active" model="clinic.analytics.kpi">
+        <field name="name">Active Membership Contracts</field>
+        <field name="code">MEMBERSHIP_ACTIVE</field>
+        <field name="sequence">80</field>
+        <field name="family">retention</field>
+        <field name="source_key">membership_active</field>
+        <field name="unit">count</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">False</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_ops_membership"/>
+    </record>
+
+    <record id="kpi_membership_renewal_rate" model="clinic.analytics.kpi">
+        <field name="name">Membership Renewal Rate</field>
+        <field name="code">MEMBERSHIP_RENEWAL_RATE</field>
+        <field name="sequence">90</field>
+        <field name="family">retention</field>
+        <field name="source_key">membership_renewal_rate</field>
+        <field name="unit">percentage</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">50</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">30</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_ops_membership"/>
+    </record>
+
+    <record id="kpi_wallet_balance" model="clinic.analytics.kpi">
+        <field name="name">Active Wallet Balance</field>
+        <field name="code">WALLET_BALANCE</field>
+        <field name="sequence">100</field>
+        <field name="family">financial</field>
+        <field name="source_key">wallet_balance</field>
+        <field name="unit">amount</field>
+        <field name="direction">neutral</field>
+        <field name="forecastable">False</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_ops_wallet"/>
+    </record>
+
+    <record id="kpi_feedback_nps" model="clinic.analytics.kpi">
+        <field name="name">Net Promoter Score</field>
+        <field name="code">FEEDBACK_NPS</field>
+        <field name="sequence">110</field>
+        <field name="family">experience</field>
+        <field name="source_key">feedback_nps</field>
+        <field name="unit">score</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">0</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">-20</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_clinical_feedback"/>
+    </record>
+
+    <record id="kpi_feedback_avg_rating" model="clinic.analytics.kpi">
+        <field name="name">Average Patient Rating</field>
+        <field name="code">FEEDBACK_AVG_RATING</field>
+        <field name="sequence">120</field>
+        <field name="family">experience</field>
+        <field name="source_key">feedback_avg_rating</field>
+        <field name="unit">score</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">3.5</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">3.0</field>
+        <field name="state">active</field>
+        <field name="report_definition_id" ref="clinic_reports.report_definition_clinical_feedback"/>
+    </record>
+
+    <record id="kpi_quality_score" model="clinic.analytics.kpi">
+        <field name="name">Quality Compliance Score</field>
+        <field name="code">QUALITY_SCORE</field>
+        <field name="sequence">130</field>
+        <field name="family">quality</field>
+        <field name="source_key">quality_score</field>
+        <field name="unit">percentage</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">90</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">75</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="kpi_incident_count" model="clinic.analytics.kpi">
+        <field name="name">Incident Volume</field>
+        <field name="code">INCIDENT_COUNT</field>
+        <field name="sequence">140</field>
+        <field name="family">quality</field>
+        <field name="source_key">incident_count</field>
+        <field name="unit">count</field>
+        <field name="direction">lower</field>
+        <field name="forecastable">True</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="kpi_critical_incident_count" model="clinic.analytics.kpi">
+        <field name="name">Critical Incident Volume</field>
+        <field name="code">CRITICAL_INCIDENT_COUNT</field>
+        <field name="sequence">150</field>
+        <field name="family">quality</field>
+        <field name="source_key">critical_incident_count</field>
+        <field name="unit">count</field>
+        <field name="direction">lower</field>
+        <field name="forecastable">False</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">1</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">3</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="kpi_marketing_reach" model="clinic.analytics.kpi">
+        <field name="name">Marketing Reach</field>
+        <field name="code">MARKETING_REACH</field>
+        <field name="sequence">160</field>
+        <field name="family">marketing</field>
+        <field name="source_key">marketing_reach</field>
+        <field name="unit">count</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="kpi_marketing_delivery_rate" model="clinic.analytics.kpi">
+        <field name="name">Marketing Delivery Rate</field>
+        <field name="code">MARKETING_DELIVERY_RATE</field>
+        <field name="sequence">170</field>
+        <field name="family">marketing</field>
+        <field name="source_key">marketing_delivery_rate</field>
+        <field name="unit">percentage</field>
+        <field name="direction">higher</field>
+        <field name="forecastable">True</field>
+        <field name="has_warning_threshold">True</field>
+        <field name="warning_threshold">80</field>
+        <field name="has_critical_threshold">True</field>
+        <field name="critical_threshold">60</field>
+        <field name="state">active</field>
+    </record>
+</odoo>

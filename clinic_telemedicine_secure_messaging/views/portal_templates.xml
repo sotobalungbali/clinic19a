@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_telemedicine"
+              name="ClinicOne Telemedicine Portal Cards"
+              inherit_id="portal.portal_my_home"
+              priority="55">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <xpath expr="//div[@id='portal_client_category']" position="inside">
+            <t t-if="clinic_telemedicine_enabled">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/clinic_telemedicine_secure_messaging/static/src/img/video.svg'"/>
+                    <t t-set="title">Teleconsultations</t>
+                    <t t-set="text">View scheduled virtual consultations and join during the authorized window</t>
+                    <t t-set="url" t-value="'/my/clinic/telemedicine'"/>
+                    <t t-set="placeholder_count" t-value="'clinic_telemedicine_session_count'"/>
+                </t>
+            </t>
+
+            <t t-if="clinic_secure_messaging_enabled">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/clinic_telemedicine_secure_messaging/static/src/img/chat.svg'"/>
+                    <t t-set="title">Secure Messages</t>
+                    <t t-set="text">Private doctor-patient conversations and governed file sharing</t>
+                    <t t-set="url" t-value="'/my/clinic/messages'"/>
+                    <t t-set="placeholder_count" t-value="'clinic_secure_thread_count'"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_telemedicine"
+              name="ClinicOne Telemedicine Breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs"
+              priority="55">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name in ('clinic_telemedicine_sessions','clinic_telemedicine_session')"
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'clinic_telemedicine_sessions' else ''}">
+                <a t-if="page_name == 'clinic_telemedicine_session'" href="/my/clinic/telemedicine">Teleconsultations</a>
+                <t t-else="">Teleconsultations</t>
+            </li>
+            <li t-if="page_name == 'clinic_telemedicine_session'" class="breadcrumb-item active">
+                <t t-out="telemedicine_session.name"/>
+            </li>
+
+            <li t-if="page_name in ('clinic_secure_threads','clinic_secure_thread','clinic_secure_thread_new')"
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'clinic_secure_threads' else ''}">
+                <a t-if="page_name != 'clinic_secure_threads'" href="/my/clinic/messages">Secure Messages</a>
+                <t t-else="">Secure Messages</t>
+            </li>
+            <li t-if="page_name == 'clinic_secure_thread'" class="breadcrumb-item active">
+                <t t-out="thread.subject"/>
+            </li>
+            <li t-if="page_name == 'clinic_secure_thread_new'" class="breadcrumb-item active">
+                New Conversation
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_telemedicine_sessions" name="My Teleconsultations">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4 o_clinic_telemedicine_portal">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+                    <div>
+                        <h2 class="mb-1">Teleconsultations</h2>
+                        <p class="text-muted mb-0">
+                            Virtual consultations linked only to your ClinicOne Patient Card.
+                        </p>
+                    </div>
+                    <a href="/my/clinic" class="btn btn-outline-secondary">My Clinic</a>
+                </div>
+
+                <div class="alert alert-info">
+                    Join becomes available only during the clinic-configured time window.
+                    If you have urgent or emergency symptoms, use the clinic's emergency-care process instead of portal messaging.
+                </div>
+
+                <t t-if="telemedicine_sessions">
+                    <div class="table-responsive card border-0 shadow-sm">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Session</th>
+                                    <th>Doctor</th>
+                                    <th>Schedule</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="telemedicine_sessions" t-as="session">
+                                    <td>
+                                        <strong t-out="session.name"/>
+                                    </td>
+                                    <td t-field="session.doctor_id"/>
+                                    <td>
+                                        <div t-field="session.scheduled_start"/>
+                                        <div class="small text-muted" t-field="session.scheduled_end"/>
+                                    </td>
+                                    <td><span class="badge text-bg-light" t-field="session.state"/></td>
+                                    <td class="text-end">
+                                        <a t-att-href="'/my/clinic/telemedicine/%s' % session.id"
+                                           class="btn btn-sm btn-outline-primary">View</a>
+                                        <a t-if="session.patient_can_join"
+                                           t-att-href="'/my/clinic/telemedicine/%s/join' % session.id"
+                                           class="btn btn-sm btn-primary ms-1">Join</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <t t-call="portal.pager"/>
+                </t>
+                <div t-else="" class="card border-0 shadow-sm">
+                    <div class="card-body p-5 text-center text-muted">
+                        No teleconsultations are available for this patient account.
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_telemedicine_session" name="Teleconsultation Detail">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4 o_clinic_telemedicine_portal">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+                    <div>
+                        <div class="text-muted small">Teleconsultation</div>
+                        <h2 class="mb-1" t-out="telemedicine_session.name"/>
+                    </div>
+                    <a href="/my/clinic/telemedicine" class="btn btn-outline-secondary">Back to Sessions</a>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between gap-3 flex-wrap">
+                                    <div>
+                                        <div class="text-muted small">Doctor</div>
+                                        <div class="fs-5" t-field="telemedicine_session.doctor_id"/>
+                                    </div>
+                                    <span class="badge text-bg-light align-self-start"
+                                          t-field="telemedicine_session.state"/>
+                                </div>
+
+                                <hr/>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="text-muted small">Starts</div>
+                                        <div t-field="telemedicine_session.scheduled_start"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-muted small">Ends</div>
+                                        <div t-field="telemedicine_session.scheduled_end"/>
+                                    </div>
+                                    <div class="col-md-6" t-if="telemedicine_session.branch_id">
+                                        <div class="text-muted small">Branch</div>
+                                        <div t-field="telemedicine_session.branch_id"/>
+                                    </div>
+                                    <div class="col-md-6" t-if="telemedicine_session.encounter_id">
+                                        <div class="text-muted small">Clinical Encounter</div>
+                                        <div t-field="telemedicine_session.encounter_id"/>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <a t-if="telemedicine_session.patient_can_join"
+                                       t-att-href="'/my/clinic/telemedicine/%s/join' % telemedicine_session.id"
+                                       class="btn btn-primary btn-lg">
+                                        <i class="fa fa-video-camera me-2"/>Join Teleconsultation
+                                    </a>
+                                    <div t-else="" class="alert alert-secondary mb-0">
+                                        The secure Join button is not currently available.
+                                        It appears only when the Session is Ready/In Progress and inside the authorized join window.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm mb-3">
+                            <div class="card-body">
+                                <h5>Secure Conversation</h5>
+                                <p class="text-muted small">
+                                    Message the clinic inside the authenticated Patient Portal.
+                                </p>
+                                <a t-if="secure_thread and clinic_secure_messaging_enabled"
+                                   t-att-href="'/my/clinic/messages/%s' % secure_thread.id"
+                                   class="btn btn-outline-primary w-100">Open Secure Chat</a>
+                                <a t-elif="clinic_secure_messaging_enabled"
+                                   href="/my/clinic/messages"
+                                   class="btn btn-outline-primary w-100">Secure Messages</a>
+                                <div t-else="" class="text-muted small">
+                                    Secure Messaging is not enabled for this Portal Profile.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            Teleconsultation and Secure Messaging are not emergency services.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_secure_threads" name="My Secure Messages">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4 o_clinic_telemedicine_portal">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+                    <div>
+                        <h2 class="mb-1">Secure Messages</h2>
+                        <p class="text-muted mb-0">
+                            Private conversations scoped to your exact ClinicOne Patient Card.
+                        </p>
+                    </div>
+                    <a t-if="allow_new_thread" href="/my/clinic/messages/new" class="btn btn-primary">
+                        New Conversation
+                    </a>
+                </div>
+
+                <div class="alert alert-info">
+                    Secure Messaging is for non-emergency communication. Messages are not copied into ordinary email or generic chatter.
+                </div>
+
+                <t t-if="secure_threads">
+                    <div class="row g-3">
+                        <div class="col-12" t-foreach="secure_threads" t-as="secure_thread">
+                            <a t-att-href="'/my/clinic/messages/%s' % secure_thread.id"
+                               class="text-decoration-none text-reset">
+                                <div class="card border-0 shadow-sm o_clinic_secure_thread_card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between gap-3">
+                                            <div>
+                                                <h5 class="mb-1" t-out="secure_thread.subject"/>
+                                                <div class="text-muted small">
+                                                    <span t-field="secure_thread.doctor_id"/>
+                                                    <t t-if="secure_thread.last_message_at">
+                                                        · <span t-field="secure_thread.last_message_at"/>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge text-bg-light" t-field="secure_thread.state"/>
+                                                <span t-if="secure_thread.patient_unread_count"
+                                                      class="badge text-bg-primary ms-1">
+                                                    <t t-out="secure_thread.patient_unread_count"/> unread
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <t t-call="portal.pager"/>
+                </t>
+                <div t-else="" class="card border-0 shadow-sm">
+                    <div class="card-body p-5 text-center text-muted">
+                        No secure conversations are available.
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_secure_thread_new" name="New Secure Conversation">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4 o_clinic_telemedicine_portal">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="mb-0">New Secure Conversation</h2>
+                            <a href="/my/clinic/messages" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+
+                        <div t-if="error_message" class="alert alert-danger" t-out="error_message"/>
+
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <form action="/my/clinic/messages/new" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Doctor</label>
+                                        <select name="doctor_id" class="form-select" required="required">
+                                            <option value="">Select a Telemedicine Doctor</option>
+                                            <option t-foreach="telemedicine_doctors"
+                                                    t-as="doctor"
+                                                    t-att-value="doctor.id">
+                                                <t t-out="doctor.display_name"/>
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Subject</label>
+                                        <input name="subject"
+                                               type="text"
+                                               maxlength="200"
+                                               required="required"
+                                               class="form-control"
+                                               t-att-value="submitted_subject"/>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">First Message</label>
+                                        <textarea name="body"
+                                                  class="form-control"
+                                                  rows="6"
+                                                  placeholder="Describe your non-emergency question..."><t t-out="submitted_body"/></textarea>
+                                    </div>
+
+                                    <div class="alert alert-warning">
+                                        Do not use Secure Messaging for emergencies or conditions requiring immediate medical attention.
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Create Secure Conversation</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_secure_thread" name="Secure Conversation">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4 o_clinic_telemedicine_portal">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+                    <div>
+                        <div class="text-muted small" t-out="thread.name"/>
+                        <h2 class="mb-1" t-out="thread.subject"/>
+                        <div class="text-muted">
+                            Doctor: <span t-field="thread.doctor_id"/>
+                        </div>
+                    </div>
+                    <a href="/my/clinic/messages" class="btn btn-outline-secondary">Back to Messages</a>
+                </div>
+
+                <div t-if="thread.priority == 'urgent' or thread.attention_required"
+                     class="alert alert-danger">
+                    This conversation is flagged for clinic attention.
+                    Secure Messaging is not an emergency service.
+                </div>
+
+                <div t-if="error_message" class="alert alert-danger" t-out="error_message"/>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-3 p-md-4 o_clinic_secure_message_stream">
+                        <t t-if="secure_messages">
+                            <div t-foreach="secure_messages"
+                                 t-as="message"
+                                 t-attf-class="o_clinic_secure_message #{'o_patient_message' if message.author_kind == 'patient' else 'o_clinic_message'}">
+                                <div class="small text-muted mb-1">
+                                    <strong t-out="message.sender_display_name"/>
+                                    · <span t-field="message.sent_at"/>
+                                </div>
+                                <div class="o_clinic_secure_message_body" t-out="message.body"/>
+
+                                <div class="mt-2" t-if="message.attachment_ids">
+                                    <a t-foreach="message.attachment_ids"
+                                       t-as="attachment"
+                                       t-att-href="'/clinic/telemedicine/attachment/%s/download' % attachment.id"
+                                       class="btn btn-sm btn-outline-secondary me-2 mb-1">
+                                        <i class="fa fa-paperclip me-1"/>
+                                        <t t-out="attachment.name"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-else="" class="text-center text-muted p-4">
+                            No messages have been sent yet.
+                        </div>
+                    </div>
+                </div>
+
+                <div t-if="thread.state == 'open' and thread.patient_can_reply"
+                     class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5>Send a Secure Message</h5>
+                        <form t-att-action="'/my/clinic/messages/%s/send' % thread.id"
+                              method="post"
+                              enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <div class="mb-3">
+                                <textarea name="body"
+                                          class="form-control"
+                                          rows="5"
+                                          t-att-maxlength="max_message_chars"
+                                          placeholder="Write your non-emergency message..."/>
+                                <div class="form-text">
+                                    Maximum <t t-out="max_message_chars"/> characters.
+                                </div>
+                            </div>
+
+                            <div class="mb-3" t-if="thread.patient_can_upload">
+                                <label class="form-label">Optional File</label>
+                                <input name="attachment"
+                                       type="file"
+                                       class="form-control"
+                                       accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"/>
+                                <div class="form-text">
+                                    PDF/JPEG/PNG only, maximum <t t-out="max_file_mb"/> MB.
+                                </div>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                Do not send emergency requests here. Use the clinic's emergency-care process when immediate attention is required.
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Send Securely</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div t-else="" class="alert alert-secondary">
+                    This conversation is closed or patient replies are disabled.
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
+

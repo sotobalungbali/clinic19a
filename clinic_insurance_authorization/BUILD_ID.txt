@@ -1,0 +1,8 @@
+CLINIC_INSURANCE_AUTHORIZATION_BUILD_20260820_V19.0.1.0.1
+Project: ClinicOne
+Addon: clinic_insurance_authorization
+Official sequence: 25 of 39
+Upstream boundary: clinic_l10n_id and prior ClinicOne addons
+Existing claim owner: clinic_billing
+Runtime status: PENDING after live Appointment/Treatment/Partner insurance bridge repair
+

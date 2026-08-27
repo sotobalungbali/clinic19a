@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Local root is intentional. A post-init hook reparents it under ClinicOne
+       when the installed database exposes clinic_base.menu_root. This avoids
+       making presentation XML-IDs from sibling addons installation blockers. -->
+  <menuitem id="menu_clinic_encounter_root" name="Clinical Encounters" sequence="40" groups="base.group_user"/>
+
+  <menuitem id="menu_clinic_encounter_operations" name="Operations" parent="menu_clinic_encounter_root" sequence="10"/>
+  <menuitem id="menu_clinic_encounter_records" name="Encounters" parent="menu_clinic_encounter_operations" action="action_clinic_encounter" sequence="10"/>
+  <menuitem id="menu_clinic_diagnosis" name="Diagnoses" parent="menu_clinic_encounter_operations" action="action_clinic_diagnosis" sequence="20"/>
+  <menuitem id="menu_clinic_soap_note" name="SOAP Notes" parent="menu_clinic_encounter_operations" action="action_clinic_soap_note" sequence="30"/>
+
+  <menuitem id="menu_clinic_encounter_procedures" name="Procedures" parent="menu_clinic_encounter_root" sequence="20"/>
+  <menuitem id="menu_clinic_procedure_catalog" name="Procedure Catalog" parent="menu_clinic_encounter_procedures" action="action_clinic_procedure_catalog" sequence="10"/>
+  <menuitem id="menu_clinic_encounter_procedure" name="Procedure Plans" parent="menu_clinic_encounter_procedures" action="action_clinic_encounter_procedure" sequence="20"/>
+  <menuitem id="menu_clinic_procedure_session" name="Procedure Sessions" parent="menu_clinic_encounter_procedures" action="action_clinic_procedure_session" sequence="30"/>
+  <menuitem id="menu_clinic_execution_log" name="Execution Logs" parent="menu_clinic_encounter_procedures" action="action_clinic_execution_log" sequence="40"/>
+
+  <menuitem id="menu_clinic_encounter_documents" name="Clinical Documentation" parent="menu_clinic_encounter_root" sequence="30"/>
+  <menuitem id="menu_clinic_result_document" name="Clinical Results" parent="menu_clinic_encounter_documents" action="action_clinic_result_document" sequence="10"/>
+  <menuitem id="menu_clinic_consent_document" name="Encounter Consents" parent="menu_clinic_encounter_documents" action="action_clinic_consent_document" sequence="20"/>
+  <menuitem id="menu_clinic_checklist" name="Checklists" parent="menu_clinic_encounter_documents" action="action_clinic_checklist" sequence="30"/>
+
+  <menuitem id="menu_clinic_encounter_safety" name="Safety &amp; Perioperative" parent="menu_clinic_encounter_root" sequence="40"/>
+  <menuitem id="menu_clinic_anesthesia_case" name="Anesthesia Cases" parent="menu_clinic_encounter_safety" action="action_clinic_anesthesia_case" sequence="10"/>
+  <menuitem id="menu_clinic_adverse_event" name="Adverse Events" parent="menu_clinic_encounter_safety" action="action_clinic_adverse_event" sequence="20"/>
+
+  <menuitem id="menu_clinic_encounter_configuration" name="Configuration" parent="menu_clinic_encounter_root" sequence="90" groups="base.group_system"/>
+  <menuitem id="menu_clinic_encounter_stage" name="Encounter Stages" parent="menu_clinic_encounter_configuration" action="action_clinic_encounter_stage" sequence="10"/>
+  <menuitem id="menu_clinic_procedure_category" name="Procedure Categories" parent="menu_clinic_encounter_configuration" action="action_clinic_procedure_category" sequence="20"/>
+  <menuitem id="menu_clinic_procedure_tag" name="Procedure Tags" parent="menu_clinic_encounter_configuration" action="action_clinic_procedure_tag" sequence="30"/>
+  <menuitem id="menu_clinic_result_group" name="Result Groups" parent="menu_clinic_encounter_configuration" action="action_clinic_result_group" sequence="40"/>
+  <menuitem id="menu_clinic_checklist_template" name="Checklist Templates" parent="menu_clinic_encounter_configuration" action="action_clinic_checklist_template" sequence="50"/>
+  <menuitem id="menu_clinic_consent_risk_template" name="Consent Risk Templates" parent="menu_clinic_encounter_configuration" action="action_clinic_consent_risk_template" sequence="60"/>
+  <menuitem id="menu_clinic_ae_category" name="Adverse Event Categories" parent="menu_clinic_encounter_configuration" action="action_clinic_ae_category" sequence="70"/>
+  <menuitem id="menu_clinic_ae_type" name="Adverse Event Types" parent="menu_clinic_encounter_configuration" action="action_clinic_ae_type" sequence="80"/>
+  <menuitem id="menu_clinic_ae_factor" name="Adverse Event Factors" parent="menu_clinic_encounter_configuration" action="action_clinic_ae_factor" sequence="90"/>
+</odoo>

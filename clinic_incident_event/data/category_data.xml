@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="incident_category_clinical_adverse" model="clinic.incident.category">
+        <field name="name">Clinical Adverse Event</field>
+        <field name="code">CLINICAL-AE</field>
+        <field name="incident_type">clinical_adverse</field>
+        <field name="default_severity">high</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+        <field name="requires_regulatory_review" eval="True"/>
+        <field name="triage_target_hours">4</field>
+        <field name="investigation_target_hours">72</field>
+        <field name="action_plan_target_hours">120</field>
+    </record>
+
+    <record id="incident_category_medication" model="clinic.incident.category">
+        <field name="name">Medication Safety</field>
+        <field name="code">MEDICATION</field>
+        <field name="incident_type">medication</field>
+        <field name="default_severity">high</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+        <field name="triage_target_hours">4</field>
+        <field name="investigation_target_hours">72</field>
+        <field name="action_plan_target_hours">120</field>
+    </record>
+
+    <record id="incident_category_device" model="clinic.incident.category">
+        <field name="name">Device / Equipment</field>
+        <field name="code">DEVICE</field>
+        <field name="incident_type">device</field>
+        <field name="default_severity">medium</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+    </record>
+
+    <record id="incident_category_fall" model="clinic.incident.category">
+        <field name="name">Patient Fall</field>
+        <field name="code">FALL</field>
+        <field name="incident_type">fall</field>
+        <field name="default_severity">high</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+    </record>
+
+    <record id="incident_category_infection" model="clinic.incident.category">
+        <field name="name">Infection Prevention</field>
+        <field name="code">INFECTION</field>
+        <field name="incident_type">infection</field>
+        <field name="default_severity">high</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+    </record>
+
+    <record id="incident_category_privacy" model="clinic.incident.category">
+        <field name="name">Privacy / Information Security</field>
+        <field name="code">PRIVACY</field>
+        <field name="incident_type">privacy</field>
+        <field name="default_severity">high</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+        <field name="requires_regulatory_review" eval="True"/>
+    </record>
+
+    <record id="incident_category_staff_safety" model="clinic.incident.category">
+        <field name="name">Staff Safety</field>
+        <field name="code">STAFF-SAFETY</field>
+        <field name="incident_type">staff_safety</field>
+        <field name="default_severity">medium</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+    </record>
+
+    <record id="incident_category_facility" model="clinic.incident.category">
+        <field name="name">Facility / Environment</field>
+        <field name="code">FACILITY</field>
+        <field name="incident_type">facility</field>
+        <field name="default_severity">medium</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+    </record>
+
+    <record id="incident_category_telemedicine" model="clinic.incident.category">
+        <field name="name">Telemedicine</field>
+        <field name="code">TELEMED</field>
+        <field name="incident_type">telemedicine</field>
+        <field name="default_severity">medium</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+    </record>
+
+    <record id="incident_category_service" model="clinic.incident.category">
+        <field name="name">Service / Communication</field>
+        <field name="code">SERVICE</field>
+        <field name="incident_type">service</field>
+        <field name="default_severity">medium</field>
+        <field name="requires_investigation" eval="False"/>
+        <field name="requires_capa" eval="False"/>
+    </record>
+
+    <record id="incident_category_operational" model="clinic.incident.category">
+        <field name="name">Operational</field>
+        <field name="code">OPERATIONAL</field>
+        <field name="incident_type">operational</field>
+        <field name="default_severity">medium</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+    </record>
+
+    <record id="incident_category_other" model="clinic.incident.category">
+        <field name="name">Other Incident</field>
+        <field name="code">OTHER</field>
+        <field name="incident_type">other</field>
+        <field name="default_severity">medium</field>
+        <field name="requires_investigation" eval="True"/>
+        <field name="requires_capa" eval="True"/>
+    </record>
+</odoo>

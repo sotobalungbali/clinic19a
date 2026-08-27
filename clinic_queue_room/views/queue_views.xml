@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_queue_search" model="ir.ui.view">
+        <field name="name">clinic.queue.search</field>
+        <field name="model">clinic.queue</field>
+        <field name="arch" type="xml">
+            <search string="Search Clinical Queue">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="appointment_id"/>
+                <field name="token_id"/>
+                <field name="room_id"/>
+                <field name="stage_id"/>
+                <field name="state"/>
+                <filter name="active_states" string="Open"
+                        domain="[('state','in',['waiting','in_progress','on_hold'])]"/>
+                <filter name="waiting" string="Waiting" domain="[('state','=','waiting')]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state','=','in_progress')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_stage" string="Stage" context="{'group_by':'stage_id'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_room" string="Room" context="{'group_by':'room_id'}"/>
+                    <filter name="group_type" string="Queue Type" context="{'group_by':'queue_type'}"/>
+                    <filter name="group_checkin" string="Check-in Day" context="{'group_by':'checkin_time:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_queue_list" model="ir.ui.view">
+        <field name="name">clinic.queue.list</field>
+        <field name="model">clinic.queue</field>
+        <field name="arch" type="xml">
+            <list string="Clinical Queue"
+                  decoration-info="state == 'in_progress'"
+                  decoration-warning="state == 'on_hold'"
+                  decoration-success="state == 'done'"
+                  decoration-muted="state in ('cancelled','no_show')">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="checkin_time"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="token_id"/>
+                <field name="room_id"/>
+                <field name="stage_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="waiting_duration_min"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_queue_form" model="ir.ui.view">
+        <field name="name">clinic.queue.form</field>
+        <field name="model">clinic.queue</field>
+        <field name="arch" type="xml">
+            <form string="Clinical Queue">
+                <header>
+                    <button name="action_start" type="object" string="Start" class="btn-primary"
+                            invisible="state not in ('waiting','on_hold')"/>
+                    <button name="action_hold" type="object" string="Hold" invisible="state != 'in_progress'"/>
+                    <button name="action_resume" type="object" string="Resume" class="btn-primary"
+                            invisible="state != 'on_hold'"/>
+                    <button name="action_done" type="object" string="Done" class="btn-primary"
+                            invisible="state not in ('waiting','in_progress','on_hold')"/>
+                    <button name="action_release_room" type="object" string="Release Room"
+                            invisible="not room_id"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('done','cancelled','no_show')"/>
+                    <button name="action_no_show" type="object" string="No Show"
+                            invisible="state in ('done','cancelled','no_show')"/>
+                    <button name="action_check_and_escalate_sla" type="object" string="Check SLA"
+                            invisible="state not in ('waiting','in_progress','on_hold')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="waiting,in_progress,on_hold,done,cancelled,no_show"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_room_assignment" type="object" class="oe_stat_button"
+                                icon="fa-hospital-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Room Assignment</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title"><label for="name"/><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Patient &amp; Service">
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="treatment_id"/>
+                            <field name="appointment_id"/>
+                            <field name="token_id"/>
+                            <field name="queue_type"/>
+                            <field name="channel_id"/>
+                            <field name="channel"/>
+                            <field name="priority"/>
+                        </group>
+                        <group string="Routing">
+                            <field name="stage_id"/>
+                            <field name="room_id"/>
+                            <field name="room_assignment_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Timing &amp; SLA">
+                            <group>
+                                <group>
+                                    <field name="checkin_time"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                </group>
+                                <group>
+                                    <field name="waiting_duration_min" readonly="1"/>
+                                    <field name="service_duration_min" readonly="1"/>
+                                    <field name="total_duration_min" readonly="1"/>
+                                    <field name="sla_wait_target_min" readonly="1"/>
+                                    <field name="sla_service_target_min" readonly="1"/>
+                                    <field name="sla_wait_breached" readonly="1"/>
+                                    <field name="sla_service_breached" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Commercial">
+                            <group>
+                                <field name="sale_order_id"/>
+                                <field name="invoice_id"/>
+                                <field name="analytic_account_id"/>
+                                <field name="planned_product_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Notes"><field name="notes"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_clinic_queue_kanban" model="ir.ui.view">
+        <field name="name">clinic.queue.kanban</field>
+        <field name="model">clinic.queue</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column">
+                <field name="name"/><field name="patient_id"/><field name="doctor_id"/>
+                <field name="room_id"/><field name="priority"/><field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="p-2">
+                            <strong><field name="name"/></strong>
+                            <div><field name="patient_id"/></div>
+                            <div><field name="doctor_id"/></div>
+                            <div><field name="room_id"/></div>
+                            <div><field name="priority" widget="priority"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="action_clinic_queue" model="ir.actions.act_window">
+        <field name="name">Clinical Queue</field>
+        <field name="res_model">clinic.queue</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_active_states': 1}</field>
+    </record>
+    <!-- Stable aliases required by existing Python actions. -->
+    <record id="action_clinic_queue_tree" model="ir.actions.act_window">
+        <field name="name">Clinical Queue</field>
+        <field name="res_model">clinic.queue</field>
+        <field name="view_mode">list,form,kanban</field>
+    </record>
+    <record id="action_clinic_queue_form" model="ir.actions.act_window">
+        <field name="name">Clinical Queue</field>
+        <field name="res_model">clinic.queue</field>
+        <field name="view_mode">form,list,kanban</field>
+    </record>
+</odoo>

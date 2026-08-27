@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_accounting_close_search" model="ir.ui.view">
+        <field name="name">clinic.accounting.close.search</field>
+        <field name="model">clinic.accounting.close</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="period_type"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="company_id"/>
+                <filter name="needs_attention" string="Needs Attention" domain="[('blocking_count', '&gt;', 0)]"/>
+                <filter name="ready" string="Ready" domain="[('state', '=', 'ready')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_period_type" string="Period Type" context="{'group_by': 'period_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_year" string="Year" context="{'group_by': 'date_to:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_accounting_close_list" model="ir.ui.view">
+        <field name="name">clinic.accounting.close.list</field>
+        <field name="model">clinic.accounting.close</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="blocking_count &gt; 0" decoration-warning="warning_count &gt; 0 and blocking_count == 0" decoration-success="state == 'closed'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="period_type" widget="badge"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="blocking_count"/>
+                <field name="warning_count"/>
+                <field name="clear_count"/>
+                <field name="native_lock_date_after" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_accounting_close_form" model="ir.ui.view">
+        <field name="name">clinic.accounting.close.form</field>
+        <field name="model">clinic.accounting.close</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_run_preflight" type="object" string="Run Preflight" class="btn-primary"
+                            groups="clinic_accounting.group_clinic_accounting_accountant"
+                            invisible="state == 'closed'"/>
+                    <button name="action_mark_ready" type="object" string="Mark Ready" class="btn-primary"
+                            groups="clinic_accounting.group_clinic_accounting_accountant"
+                            invisible="state != 'preflight' or blocking_count != 0"/>
+                    <button name="action_close_period" type="object" string="Close Period" class="btn-primary"
+                            groups="clinic_accounting.group_clinic_accounting_manager"
+                            invisible="state != 'ready'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_accounting.group_clinic_accounting_accountant"
+                            invisible="state in ('closed', 'cancelled')"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_accounting.group_clinic_accounting_accountant"
+                            invisible="state in ('draft', 'closed')"/>
+                    <button name="action_print_close" type="object" string="Print Close Evidence"
+                            invisible="not last_preflight_at"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,preflight,ready,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_company" type="object" class="oe_stat_button" icon="fa-building">
+                            <div class="o_stat_info"><span class="o_stat_text">Company</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="blocking_count == 0">
+                        Blocking items remain. The accounting period cannot be closed.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="warning_count == 0">
+                        Warning items remain. Review them before the Accounting Manager closes the period.
+                    </div>
+
+                    <group>
+                        <group string="Close Period">
+                            <field name="period_type" readonly="state not in ('draft', 'cancelled')"/>
+                            <field name="date_from" readonly="state not in ('draft', 'cancelled')"/>
+                            <field name="date_to" readonly="state not in ('draft', 'cancelled')"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state not in ('draft', 'cancelled')"/>
+                        </group>
+                        <group string="Preflight &amp; Native Lock">
+                            <field name="blocking_count" readonly="1"/>
+                            <field name="warning_count" readonly="1"/>
+                            <field name="clear_count" readonly="1"/>
+                            <field name="last_preflight_at" readonly="1"/>
+                            <field name="last_preflight_by_id" readonly="1"/>
+                            <field name="native_lock_date_before" readonly="1"/>
+                            <field name="native_lock_date_after" readonly="1"/>
+                            <field name="closed_by_id" readonly="1"/>
+                            <field name="closed_at" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Close Checks">
+                            <field name="check_ids" readonly="1">
+                                <list decoration-danger="status == 'open' and severity == 'blocking'" decoration-warning="status == 'open' and severity == 'warning'" decoration-success="status == 'clear'">
+                                    <field name="code" optional="hide"/>
+                                    <field name="title"/>
+                                    <field name="severity" widget="badge"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="record_count"/>
+                                    <field name="note" optional="show"/>
+                                    <button name="action_open_records" type="object" string="Open Records" icon="fa-external-link" invisible="record_count == 0"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Management Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_accounting_close_check_search" model="ir.ui.view">
+        <field name="name">clinic.accounting.close.check.search</field>
+        <field name="model">clinic.accounting.close.check</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="close_id"/>
+                <field name="title"/>
+                <field name="code"/>
+                <field name="severity"/>
+                <filter name="open" string="Open" domain="[('status', '=', 'open')]"/>
+                <filter name="blocking" string="Blocking" domain="[('severity', '=', 'blocking')]"/>
+                <group>
+                    <filter name="group_close" string="Close Period" context="{'group_by': 'close_id'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by': 'severity'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_accounting_close_check_list" model="ir.ui.view">
+        <field name="name">clinic.accounting.close.check.list</field>
+        <field name="model">clinic.accounting.close.check</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'open' and severity == 'blocking'" decoration-warning="status == 'open' and severity == 'warning'" decoration-success="status == 'clear'">
+                <field name="close_id"/>
+                <field name="title"/>
+                <field name="severity" widget="badge"/>
+                <field name="status" widget="badge"/>
+                <field name="record_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_records" type="object" string="Open Records" icon="fa-external-link" invisible="record_count == 0"/>
+                <button name="action_open_close" type="object" string="Open Close" icon="fa-folder-open"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_accounting_close_check_form" model="ir.ui.view">
+        <field name="name">clinic.accounting.close.check.form</field>
+        <field name="model">clinic.accounting.close.check</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="close_id" readonly="1"/>
+                        <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        <field name="code" readonly="1"/>
+                        <field name="title" readonly="1"/>
+                        <field name="severity" widget="badge" readonly="1"/>
+                        <field name="status" widget="badge" readonly="1"/>
+                        <field name="record_count" readonly="1"/>
+                        <field name="model_name" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Guidance"><field name="note" readonly="1"/></page>
+                        <page string="Technical Domain" groups="base.group_no_one">
+                            <field name="domain_text" readonly="1"/>
+                        </page>
+                    </notebook>
+                    <div class="d-flex gap-2">
+                        <button name="action_open_records" type="object" string="Open Records" class="btn-primary" invisible="record_count == 0"/>
+                        <button name="action_open_close" type="object" string="Open Close" class="btn-secondary"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_accounting_close" model="ir.actions.act_window">
+        <field name="name">Period Close</field>
+        <field name="res_model">clinic.accounting.close</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_accounting_close_search"/>
+    </record>
+
+    <record id="action_accounting_close_check" model="ir.actions.act_window">
+        <field name="name">Close Checks</field>
+        <field name="res_model">clinic.accounting.close.check</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_accounting_close_check_search"/>
+    </record>
+</odoo>

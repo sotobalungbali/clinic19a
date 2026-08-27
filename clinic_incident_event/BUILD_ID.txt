@@ -1,0 +1,13 @@
+CLINIC_INCIDENT_EVENT_RUNTIME_REPAIR_20260826_V19.0.1.0.1
+Project: ClinicOne
+Addon: clinic_incident_event
+Official sequence: 34 of 39
+Authoritative repair baseline: clinic19a(20260826-001541).md
+Latest frozen upstream: clinic_telemedicine_secure_messaging 19.0.1.0.1
+Runtime status: PENDING after User Settings privilege-label repair
+
+Repair evidence:
+- Odoo 19 User Access Rights OWL parse failure traced to raw '&' in
+  ir.module.category / res.groups.privilege label.
+- Category and privilege external IDs are preserved.
+- Security hierarchy, ACL, record rules and business workflows unchanged.

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_insurance_expire_policies" model="ir.cron">
+        <field name="name">Clinic Insurance: Expire Policies</field>
+        <field name="model_id" ref="model_clinic_insurance_policy"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_policies()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_insurance_expire_eligibility" model="ir.cron">
+        <field name="name">Clinic Insurance: Expire Eligibility Evidence</field>
+        <field name="model_id" ref="model_clinic_insurance_eligibility_check"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_eligibility()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_insurance_expire_authorizations" model="ir.cron">
+        <field name="name">Clinic Insurance: Expire Authorizations</field>
+        <field name="model_id" ref="model_clinic_insurance_authorization"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_authorizations()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
+

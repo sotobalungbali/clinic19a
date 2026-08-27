@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_emar_reschedule_wizard_form" model="ir.ui.view">
+        <field name="name">clinic.emar.reschedule.wizard.form</field>
+        <field name="model">clinic.emar.reschedule.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reschedule Medication Administration">
+                <group>
+                    <field name="schedule_id"/>
+                    <field name="current_datetime"/>
+                    <field name="new_datetime"/>
+                    <field name="reason" placeholder="Clinical or operational reason for rescheduling..."/>
+                </group>
+                <footer>
+                    <button name="action_reschedule" type="object" string="Reschedule" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

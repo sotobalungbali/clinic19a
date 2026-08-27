@@ -1,0 +1,209 @@
+
+<!--
+ClinicOne — Care Plan & Protocol Library
+File: static/description/index.html
+Odoo 19 CE | License: LGPL-3.0
+
+NOTE:
+- README.md di root untuk dokumentasi lengkap; file ini untuk tampilan deskripsi di Apps UI.
+- Konsisten tanpa <blockquote> sesuai ketentuan proyek ClinicOne.
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="ClinicOne Care Plan Icon" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Care Plan & Protocol Library</h1>
+      <h2 class="oe_slogan">Care Plans • Protocol Templates • Step Scheduling • Adherence & Outcomes • Billing & eMAR Links</h2>
+      <p>
+        Pustaka <b>care plan</b> terpusat dan <b>protocol template</b> untuk menyusun perawatan pasien secara konsisten,
+        mengelola <b>langkah/step</b> dengan penjadwalan, melacak <b>adherence & progress</b>, terhubung ke
+        <b>treatment sessions</b>, <b>prescription/eMAR</b>, <b>booking</b>, dan <b>billing</b> — terintegrasi penuh
+        di ekosistem <b>ClinicOne (Odoo 19 Community Edition)</b>.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 19 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">eMAR & Sessions</span>
+        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Billing Links</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Overview</h3>
+      <p>
+        Modul ini memusatkan desain <b>Care Plan</b> berbasis <b>Protocol</b> sehingga perawatan lebih terstandardisasi,
+        terukur, dan mudah diaudit. Engineer dapat memodelkan <i>protocol step</i>, menghasilkan <i>plan lines</i> otomatis,
+        menyusun <i>treatment sessions</i>, dan menghubungkan ke <b>prescriptions (eMAR)</b>, <b>consent</b>,
+        <b>booking</b>, <b>inventory/products</b>, serta <b>billing</b>. Dashboard adherence & outcome membantu evaluasi klinis.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li><b>Care Plan</b> lifecycle: Draft → Active → On Hold → Completed → Archived</li>
+        <li><b>Protocol Templates</b> dengan <i>steps</i>, durasi, dependensi, dan instruksi</li>
+        <li><b>Generate Plan Lines</b> otomatis dari protocol (editable)</li>
+        <li><b>Scheduling</b> treatment session + smart buttons ke Encounter/Booking</li>
+        <li><b>Adherence & Progress</b> (step/session completion, % progress)</li>
+        <li><b>eMAR Links</b>: prescriptions & administration (orders → administration)</li>
+        <li><b>Billing Integration</b>: estimated amount, invoiced amount, remaining</li>
+        <li><b>Consent & Attachments</b> untuk compliance, dengan record rules</li>
+        <li><b>Reports</b>: Care Plan Summary, Protocol Adherence, Outcomes</li>
+        <li><b>Audit Trail</b> via mail.thread & activity mixin</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>clinic.care.plan</b> — master care plan & lifecycle</li>
+        <li><b>clinic.care.protocol</b> — protocol template (reusable)</li>
+        <li><b>clinic.care.plan.line</b> — item/step turunan protocol</li>
+        <li><b>clinic.care.protocol.step</b> — definisi langkah protocol</li>
+      </ul>
+      <p style="margin-top:8px;">Relasi ke: patient, doctor, practitioners, treatments, sessions, prescriptions, invoices.</p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Holistic Integrations (26 Modules)</h3>
+      <p>
+        Mulus dengan: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment, clinic_pricing,
+        clinic_inventory, clinic_room_device, clinic_wallet, clinic_membership, clinic_package, clinic_billing, clinic_ar,
+        clinic_ap, clinic_finance, clinic_accounting, clinic_ecommerce, clinic_portal, clinic_feedback, clinic_reports,
+        clinic_dashboard, clinic_hr, clinic_marketing, clinic_l10n_id, clinic_audit</i>.
+      </p>
+      <p style="font-size:12px;color:#666;">
+        Soft-coupled via relasi, server action, activity/mail template, dan event hooks sehingga modular & mudah diupgrade.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Tambahkan addon ke <i>addons_path</i> Odoo.</li>
+        <li>Update Apps list, cari <b>ClinicOne — Care Plan & Protocol Library</b>.</li>
+        <li>Install; dependensi akan terpasang otomatis.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Konfigurasi <b>Sequence</b> untuk nomor Care Plan.</li>
+        <li>Definisikan <b>Protocol Templates</b> dan <b>Protocol Steps</b>.</li>
+        <li>Atur <b>Security Groups</b> dan record rules untuk confidentiality.</li>
+        <li>Opsional: mapping ke <b>Billing</b>, <b>eMAR</b>, <b>Booking</b>, <b>Inventory</b>.</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: Care Plan User, Care Plan Manager, Clinical Compliance.</li>
+        <li>Record Rules: scope perusahaan, kontrol akses patient-sensitive.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Screenshot grid (gunakan file Anda sendiri: s1.png..s6.png) -->
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Screenshots</h3>
+    </div>
+    <div class="oe_span4"><img src="s1.png" alt="Care Plan Form" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s2.png" alt="Protocol Template" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s3.png" alt="Protocol Steps" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s4.png" alt="Plan Lines" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s5.png" alt="Adherence & Progress" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s6.png" alt="Reports & Dashboard" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Demo &amp; Testing</h3>
+      <ul>
+        <li>Demo data: protocol, protocol steps, sample care plan & lines.</li>
+        <li>Unit tests: lifecycle, generate lines, adherence calc, financials.</li>
+        <li>UAT: protocol → plan → sessions → eMAR → invoice → report.</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Performance Notes</h3>
+      <ul>
+        <li>Index: patient_id, doctor_id, state, start_date, protocol_template_id.</li>
+        <li>Gunakan <i>read_group</i> untuk agregasi progress/adherence.</li>
+        <li>Arsip plan lama/selesai untuk volume besar.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Assets</h3>
+      <ul>
+        <li>CSS: <i>care_plan_style.css</i></li>
+        <li>QWeb (opsional): <i>care_plan_qweb.xml</i></li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>API Hooks</h3>
+      <ul>
+        <li>Server actions: generate plan lines, schedule sessions</li>
+        <li>Onchange/constraints: compliance, date & dependency validation</li>
+        <li>Bridge events: eMAR, Billing, Booking, Inventory</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Upgrade &amp; Migration</h3>
+      <ul>
+        <li>Penamaan diseragamkan: <i>clinicone.care.*</i> → <b>clinic.care.*</b></li>
+        <li>Compat alias & data migration script saat perubahan nama model/field</li>
+        <li>Event hooks distandardkan untuk integrasi lintas modul</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distribusi di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        Ajukan isu dan kontribusi melalui alur ClinicOne: sertakan test, patuhi style guide, serta dokumentasikan dampak migrasi.
+      </p>
+    </div>
+  </div>
+</section>

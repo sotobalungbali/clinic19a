@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_insurance_authorization_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>ClinicOne Insurance Pre-Authorization</h2>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Reference:</strong> <span t-field="o.name"/><br/>
+                        <strong>Patient:</strong> <span t-field="o.patient_id"/><br/>
+                        <strong>Policy:</strong> <span t-field="o.policy_id"/><br/>
+                        <strong>Insurer:</strong> <span t-field="o.insurer_partner_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Service Date:</strong> <span t-field="o.service_date"/><br/>
+                        <strong>Status:</strong> <span t-field="o.state"/><br/>
+                        <strong>Authorization Code:</strong> <span t-field="o.authorization_code"/><br/>
+                        <strong>Valid:</strong> <span t-field="o.valid_from"/> - <span t-field="o.valid_to"/>
+                    </div>
+                </div>
+
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th class="text-end">Qty</th>
+                            <th class="text-end">Requested</th>
+                            <th class="text-end">Approved Qty</th>
+                            <th class="text-end">Approved</th>
+                            <th class="text-end">Payer</th>
+                            <th class="text-end">Patient</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.line_ids" t-as="line">
+                            <td><span t-field="line.description"/></td>
+                            <td class="text-end"><span t-field="line.quantity"/></td>
+                            <td class="text-end"><span t-field="line.requested_amount"/></td>
+                            <td class="text-end"><span t-field="line.approved_quantity"/></td>
+                            <td class="text-end"><span t-field="line.approved_amount"/></td>
+                            <td class="text-end"><span t-field="line.insurer_payable_amount"/></td>
+                            <td class="text-end"><span t-field="line.patient_responsibility_amount"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <strong>External Reference:</strong> <span t-field="o.external_reference"/><br/>
+                        <strong>Source:</strong> <span t-field="o.source_type"/><br/>
+                        <strong>Eligibility OK:</strong> <span t-field="o.eligibility_ok"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Requested:</strong> <span t-field="o.requested_amount"/><br/>
+                        <strong>Approved:</strong> <span t-field="o.approved_amount"/><br/>
+                        <strong>Insurer Payable:</strong> <span t-field="o.insurer_payable_amount"/><br/>
+                        <strong>Patient Responsibility:</strong> <span t-field="o.patient_responsibility_amount"/>
+                    </div>
+                </div>
+
+                <div t-if="o.request_reason" class="mt-3">
+                    <strong>Request Reason</strong>
+                    <p t-field="o.request_reason"/>
+                </div>
+                <div t-if="o.diagnosis_summary" class="mt-3">
+                    <strong>Diagnosis Summary</strong>
+                    <p t-field="o.diagnosis_summary"/>
+                </div>
+                <div t-if="o.rejection_reason" class="mt-3">
+                    <strong>Rejection Reason</strong>
+                    <p t-field="o.rejection_reason"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_insurance_authorization">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="clinic_insurance_authorization.report_insurance_authorization_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+

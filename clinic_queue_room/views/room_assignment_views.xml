@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_room_assignment_search" model="ir.ui.view">
+        <field name="name">clinic.room.assignment.search</field>
+        <field name="model">clinic.room.assignment</field>
+        <field name="arch" type="xml">
+            <search string="Search Room Assignments">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="queue_id"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="state"/>
+                <filter name="filter_open" string="Active"
+                        domain="[('state','in',['assigned','in_service']),('released_at','=',False)]"/>
+                <filter name="filter_released" string="Released" domain="[('state','=','released')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_room" string="Room" context="{'group_by':'room_id'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_date" string="Assigned Day" context="{'group_by':'assigned_at:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_room_assignment_list" model="ir.ui.view">
+        <field name="name">clinic.room.assignment.list</field>
+        <field name="model">clinic.room.assignment</field>
+        <field name="arch" type="xml">
+            <list string="Room Assignments"
+                  decoration-info="state == 'in_service'"
+                  decoration-success="state == 'released'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="assigned_at"/>
+                <field name="room_id"/>
+                <field name="queue_id"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="state"/>
+                <field name="service_start_at"/>
+                <field name="released_at"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_room_assignment_form" model="ir.ui.view">
+        <field name="name">clinic.room.assignment.form</field>
+        <field name="model">clinic.room.assignment</field>
+        <field name="arch" type="xml">
+            <form string="Room Assignment">
+                <header>
+                    <button name="action_mark_service_start" type="object" string="Start Service" class="btn-primary"
+                            invisible="state != 'assigned'"/>
+                    <button name="action_mark_service_end" type="object" string="End Service"
+                            invisible="state != 'in_service'"/>
+                    <button name="action_release" type="object" string="Release" class="btn-primary"
+                            invisible="state not in ('assigned','in_service')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('released','cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="assigned,in_service,released,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><label for="name"/><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Assignment">
+                            <field name="room_id"/>
+                            <field name="room_type_id"/>
+                            <field name="queue_id"/>
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="treatment_id"/>
+                            <field name="assigned_via"/>
+                        </group>
+                        <group string="Audit">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="assigned_at"/>
+                            <field name="assigned_by_id"/>
+                            <field name="released_at"/>
+                            <field name="released_by_id"/>
+                            <field name="release_reason"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Service Timing">
+                            <group>
+                                <group>
+                                    <field name="service_start_at"/>
+                                    <field name="service_end_at"/>
+                                </group>
+                                <group>
+                                    <field name="wait_before_service_min" readonly="1"/>
+                                    <field name="service_duration_min" readonly="1"/>
+                                    <field name="occupancy_duration_min" readonly="1"/>
+                                    <field name="is_active_assignment" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Devices &amp; Billing">
+                            <group>
+                                <field name="device_ids" widget="many2many_tags"/>
+                                <field name="surcharge_product_id"/>
+                                <field name="billable"/>
+                                <field name="sale_order_id"/>
+                                <field name="sale_line_id"/>
+                                <field name="invoice_id"/>
+                                <field name="analytic_account_id"/>
+                            </group>
+                        </page>
+                        <page string="Notes"><field name="notes"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_room_assignment" model="ir.actions.act_window">
+        <field name="name">Room Assignments</field>
+        <field name="res_model">clinic.room.assignment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_clinic_room_assignment_tree" model="ir.actions.act_window">
+        <field name="name">Room Assignments</field>
+        <field name="res_model">clinic.room.assignment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_clinic_room_assignment_form" model="ir.actions.act_window">
+        <field name="name">Room Assignment</field>
+        <field name="res_model">clinic.room.assignment</field>
+        <field name="view_mode">form,list</field>
+    </record>
+</odoo>

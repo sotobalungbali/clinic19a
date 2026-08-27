@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="view_membership_benefit_search" model="ir.ui.view">
+    <field name="name">membership.plan.benefit.search</field>
+    <field name="model">membership.plan.benefit</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="plan_id"/>
+        <field name="benefit_type"/>
+        <field name="treatment_id"/>
+        <field name="product_id"/>
+        <filter string="Active" name="active" domain="[('active','=',True)]"/>
+        <group>
+          <filter string="Plan" context="{'group_by':'plan_id'}" name="group_plan_id"/>
+          <filter string="Type" context="{'group_by':'benefit_type'}" name="group_benefit_type"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_membership_benefit_list" model="ir.ui.view">
+    <field name="name">membership.plan.benefit.list</field>
+    <field name="model">membership.plan.benefit</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="sequence" widget="handle"/>
+        <field name="name"/>
+        <field name="plan_id"/>
+        <field name="benefit_type" widget="badge"/>
+        <field name="summary"/>
+        <field name="stackable"/>
+        <field name="active"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_membership_benefit_form" model="ir.ui.view">
+    <field name="name">membership.plan.benefit.form</field>
+    <field name="model">membership.plan.benefit</field>
+    <field name="arch" type="xml">
+      <form string="Membership Benefit">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_plan" type="object" class="oe_stat_button" icon="fa-id-card">
+              <div class="o_stat_info">
+                <span class="o_stat_text">Open Plan</span>
+              </div>
+            </button>
+          </div>
+          <div class="oe_title">
+            <label for="name"/>
+            <h1>
+              <field name="name"/>
+            </h1>
+          </div>
+          <group>
+            <group>
+              <field name="plan_id"/>
+              <field name="benefit_type"/>
+              <field name="sequence"/>
+              <field name="active"/>
+              <field name="stackable"/>
+              <field name="exclusive_group"/>
+            </group>
+            <group>
+              <field name="discount_percent" invisible="benefit_type != 'discount_percent'"/>
+              <field name="discount_amount" invisible="benefit_type != 'discount_amount'"/>
+              <field name="discount_mode" invisible="benefit_type not in ('discount_percent','discount_amount')"/>
+              <field name="quota_unit" invisible="benefit_type != 'quota'"/>
+              <field name="quota_value" invisible="benefit_type != 'quota'"/>
+              <field name="total_term_quota" invisible="benefit_type != 'quota'"/>
+              <field name="free_qty" invisible="benefit_type != 'free_item'"/>
+              <field name="free_product_id" invisible="benefit_type != 'free_item'"/>
+              <field name="voucher_on_join_qty" invisible="benefit_type != 'voucher_on_join'"/>
+              <field name="voucher_on_join_type" invisible="benefit_type != 'voucher_on_join'"/>
+              <field name="voucher_value" invisible="benefit_type != 'voucher_on_join'"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Scope">
+              <group>
+                <field name="treatment_id"/>
+                <field name="product_id"/>
+                <field name="product_category_id"/>
+                <field name="doctor_id"/>
+              </group>
+            </page>
+            <page string="Eligibility Window">
+              <group>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="days_of_week"/>
+                <field name="time_from" widget="float_time"/>
+                <field name="time_to" widget="float_time"/>
+                <field name="min_price"/>
+                <field name="max_price"/>
+                <field name="min_qty"/>
+                <field name="max_qty"/>
+              </group>
+            </page>
+            <page string="Usage Limits">
+              <group>
+                <field name="limit_per_visit"/>
+                <field name="limit_per_day"/>
+                <field name="limit_per_week"/>
+                <field name="limit_per_month"/>
+                <field name="limit_per_term"/>
+                <field name="rollover_eligible"/>
+              </group>
+            </page>
+            <page string="Summary">
+              <field name="summary" readonly="1"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="action_membership_benefits" model="ir.actions.act_window">
+    <field name="name">Membership Benefits</field>
+    <field name="res_model">membership.plan.benefit</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+  </record>
+</odoo>
+

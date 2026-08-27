@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_ecommerce_settings" model="ir.actions.act_window">
+        <field name="name">Clinic eCommerce Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_ecommerce', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_clinic_ecommerce" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.ecommerce</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne eCommerce"
+                     name="clinic_ecommerce"
+                     groups="clinic_ecommerce.group_ecommerce_manager">
+                    <block title="Storefront Governance">
+                        <setting string="Default Website"
+                                 help="Website used by catalog-discovery and management defaults.">
+                            <field name="clinic_ecommerce_default_website_id"/>
+                        </setting>
+                        <setting string="Allow Guest Checkout Metadata"
+                                 help="Catalog items may still independently require sign-in or a Patient card.">
+                            <field name="clinic_ecommerce_allow_guest"/>
+                        </setting>
+                        <setting string="Require Clinic Purchase Terms">
+                            <field name="clinic_ecommerce_require_terms"/>
+                        </setting>
+                        <setting string="Single Branch Per Cart"
+                                 help="Prevents a governed Clinic cart from silently mixing Branch scopes.">
+                            <field name="clinic_ecommerce_single_branch_cart"/>
+                        </setting>
+                    </block>
+
+                    <block title="Fulfillment Governance">
+                        <setting string="Automatic Fulfillment Trigger"
+                                 help="Choose when Clinic fulfillment handoff is allowed to run automatically.">
+                            <field name="clinic_ecommerce_fulfillment_trigger"/>
+                        </setting>
+                        <setting string="Auto-Activate Package Allocation"
+                                 help="Uses the clinic_package owner workflow after the draft Allocation is created.">
+                            <field name="clinic_ecommerce_auto_activate_package"/>
+                        </setting>
+                        <setting string="Auto-Activate Membership Contract"
+                                 help="Off by default. Membership activation still obeys the owner addon's payment gate.">
+                            <field name="clinic_ecommerce_auto_activate_membership"/>
+                        </setting>
+                    </block>
+
+                    <block title="Catalog Setup">
+                        <setting string="Clinic Online Catalog"
+                                 help="Open the governed Clinic catalog and discover source offerings.">
+                            <button name="action_open_clinic_ecommerce_catalog"
+                                    type="object"
+                                    string="Open Catalog"
+                                    class="btn-primary"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

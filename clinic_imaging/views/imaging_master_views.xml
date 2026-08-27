@@ -1,0 +1,1443 @@
+<odoo>
+    <record id="view_clinical_imaging_type_tag_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.tag.search</field>
+        <field name="model">clinical.imaging.type.tag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_tag_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.tag.list</field>
+        <field name="model">clinical.imaging.type.tag</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_tag_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.tag.form</field>
+        <field name="model">clinical.imaging.type.tag</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Type Tag">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="color"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.search</field>
+        <field name="model">clinical.imaging.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="modality"/>
+                <field name="category"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="default_product_id"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_modality" string="Modality" context="{'group_by':'modality'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.list</field>
+        <field name="model">clinical.imaging.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="modality"/>
+                <field name="category"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="default_product_id"/>
+                <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.form</field>
+        <field name="model">clinical.imaging.type</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Type">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="modality"/>
+                            <field name="category"/>
+                            <field name="default_product_id"/>
+                            <field name="currency_id"/>
+                            <field name="default_device_id"/>
+                            <field name="contrast_agent_product_id"/>
+                            <field name="report_template_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="default_price_unit"/>
+                                <field name="is_billable"/>
+                                <field name="default_duration_minutes"/>
+                                <field name="require_consent"/>
+                                <field name="safety_risk"/>
+                                <field name="require_pregnancy_check"/>
+                                <field name="require_creatinine_check"/>
+                                <field name="creatinine_max_value"/>
+                            </group>
+                            <group>
+                                <field name="contrast_required"/>
+                                <field name="contrast_dose_mg_per_kg"/>
+                                <field name="sedation_required"/>
+                                <field name="fasting_hours"/>
+                                <field name="protocol_step_count"/>
+                                <field name="prep_count"/>
+                                <field name="contra_count"/>
+                                <field name="device_count"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="tag_ids"/>
+                            <field name="default_tax_ids"/>
+                            <field name="device_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="description"/>
+                            <field name="consent_note"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_protocol_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.protocol.search</field>
+        <field name="model">clinical.imaging.protocol</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="imaging_type_id"/>
+                <field name="company_id"/>
+                <field name="title"/>
+                <field name="note"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_imaging_type_id" string="Imaging Type" context="{'group_by':'imaging_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_protocol_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.protocol.list</field>
+        <field name="model">clinical.imaging.protocol</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="imaging_type_id"/>
+                <field name="company_id"/>
+                <field name="title"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_protocol_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.protocol.form</field>
+        <field name="model">clinical.imaging.protocol</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Protocol">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="imaging_type_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="title"/>
+                                <field name="expected_duration_minutes"/>
+                            </group>
+                            <group>
+                                <field name="requires_contrast"/>
+                                <field name="requires_sedation"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="instruction"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_prep_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.prep.search</field>
+        <field name="model">clinical.imaging.type.prep</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="imaging_type_id"/>
+                <field name="company_id"/>
+                <field name="title"/>
+                <field name="responsible"/>
+                <field name="note"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_imaging_type_id" string="Imaging Type" context="{'group_by':'imaging_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_prep_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.prep.list</field>
+        <field name="model">clinical.imaging.type.prep</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="imaging_type_id"/>
+                <field name="company_id"/>
+                <field name="title"/>
+                <field name="responsible"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_prep_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.prep.form</field>
+        <field name="model">clinical.imaging.type.prep</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Type Preparation">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="imaging_type_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="title"/>
+                                <field name="responsible"/>
+                            </group>
+                            <group>
+                                <field name="min_hours_before"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="instruction"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_contra_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.contra.search</field>
+        <field name="model">clinical.imaging.type.contra</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="imaging_type_id"/>
+                <field name="company_id"/>
+                <field name="severity"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_imaging_type_id" string="Imaging Type" context="{'group_by':'imaging_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_contra_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.contra.list</field>
+        <field name="model">clinical.imaging.type.contra</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="imaging_type_id"/>
+                <field name="company_id"/>
+                <field name="severity"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_type_contra_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.type.contra.form</field>
+        <field name="model">clinical.imaging.type.contra</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Type Contraindication">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="imaging_type_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="severity"/>
+                                <field name="require_doctor_approval"/>
+                            </group>
+                            <group>
+                                <field name="require_lab_check"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="guidance"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.search</field>
+        <field name="model">clinical.imaging.device</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="modality"/>
+                <field name="status"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="manufacturer"/>
+                <group>
+                    <filter name="group_status" string="Status" context="{'group_by':'status'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_modality" string="Modality" context="{'group_by':'modality'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.list</field>
+        <field name="model">clinical.imaging.device</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="modality"/>
+                <field name="status"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="manufacturer"/>
+                <field name="model_name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.form</field>
+        <field name="model">clinical.imaging.device</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Device">
+            <header>
+                <button name="action_set_operational" type="object" string="Operational" class="oe_highlight"/>
+                <button name="action_set_maintenance" type="object" string="Maintenance"/>
+                <button name="action_set_down" type="object" string="Down"/>
+                <button name="action_retire" type="object" string="Retire"/>
+                <field name="status" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_downtime" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Downtime</span></div>
+                    </button>
+                    <button name="action_open_calibration" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Calibration</span></div>
+                    </button>
+                    <button name="action_open_connectivity" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Connectivity</span></div>
+                    </button>
+                    <button name="action_open_imaging" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Imaging</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="modality"/>
+                            <field name="department_id"/>
+                            <field name="room_id"/>
+                            <field name="calendar_id"/>
+                            <field name="vendor_contact_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="manufacturer"/>
+                                <field name="model_name"/>
+                                <field name="serial_number"/>
+                                <field name="udi_di"/>
+                                <field name="software_version"/>
+                                <field name="firmware_version"/>
+                                <field name="install_date"/>
+                                <field name="warranty_expiry_date"/>
+                                <field name="max_patient_weight_kg"/>
+                                <field name="bore_diameter_cm"/>
+                                <field name="throughput_per_hour"/>
+                                <field name="supports_contrast"/>
+                                <field name="location"/>
+                                <field name="ip_address"/>
+                                <field name="dicom_supported"/>
+                            </group>
+                            <group>
+                                <field name="ae_title"/>
+                                <field name="dicom_port"/>
+                                <field name="dicom_tls"/>
+                                <field name="last_maintenance_date"/>
+                                <field name="maintenance_interval_days"/>
+                                <field name="next_maintenance_date"/>
+                                <field name="last_qc_date"/>
+                                <field name="qc_interval_days"/>
+                                <field name="next_qc_date"/>
+                                <field name="qc_status"/>
+                                <field name="status_note"/>
+                                <field name="retired_date"/>
+                                <field name="downtime_hours_total"/>
+                                <field name="uptime_ratio_30d"/>
+                                <field name="imaging_count"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_downtime_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.downtime.search</field>
+        <field name="model">clinical.imaging.device.downtime</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="device_id"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="severity"/>
+                <field name="reason"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_device_id" string="Device" context="{'group_by':'device_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_downtime_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.downtime.list</field>
+        <field name="model">clinical.imaging.device.downtime</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="device_id"/>
+                <field name="state"/>
+                <field name="company_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="severity"/>
+                <field name="reason"/>
+                <field name="reported_by"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_downtime_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.downtime.form</field>
+        <field name="model">clinical.imaging.device.downtime</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Device Downtime">
+            <header>
+                <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="device_id"/>
+                            <field name="reported_by"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="start_datetime"/>
+                                <field name="end_datetime"/>
+                                <field name="duration_hours"/>
+                                <field name="severity"/>
+                            </group>
+                            <group>
+                                <field name="reason"/>
+                                <field name="ticket_ref"/>
+                                <field name="attachment_count"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_calibration_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.calibration.search</field>
+        <field name="model">clinical.imaging.device.calibration</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="device_id"/>
+                <field name="company_id"/>
+                <field name="date"/>
+                <field name="type"/>
+                <field name="attachment_filename"/>
+                <field name="performed_by"/>
+                <field name="next_due_date"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_device_id" string="Device" context="{'group_by':'device_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_calibration_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.calibration.list</field>
+        <field name="model">clinical.imaging.device.calibration</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="device_id"/>
+                <field name="company_id"/>
+                <field name="date"/>
+                <field name="type"/>
+                <field name="attachment_filename"/>
+                <field name="performed_by"/>
+                <field name="next_due_date"/>
+                <field name="reference_measure"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_calibration_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.calibration.form</field>
+        <field name="model">clinical.imaging.device.calibration</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Device Calibration / QC">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="device_id"/>
+                            <field name="performed_by"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="date"/>
+                                <field name="type"/>
+                                <field name="passed"/>
+                            </group>
+                            <group>
+                                <field name="attachment_filename"/>
+                                <field name="next_due_date"/>
+                                <field name="reference_measure"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="findings"/>
+                            <field name="attachment"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_connectivity_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.connectivity.search</field>
+        <field name="model">clinical.imaging.device.connectivity</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="device_id"/>
+                <field name="company_id"/>
+                <field name="role"/>
+                <field name="ae_title"/>
+                <field name="host"/>
+                <field name="description"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_device_id" string="Device" context="{'group_by':'device_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_connectivity_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.connectivity.list</field>
+        <field name="model">clinical.imaging.device.connectivity</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="device_id"/>
+                <field name="company_id"/>
+                <field name="role"/>
+                <field name="ae_title"/>
+                <field name="host"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_device_connectivity_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.device.connectivity.form</field>
+        <field name="model">clinical.imaging.device.connectivity</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Device Connectivity">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="device_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="role"/>
+                                <field name="ae_title"/>
+                                <field name="host"/>
+                                <field name="port"/>
+                            </group>
+                            <group>
+                                <field name="use_tls"/>
+                                <field name="description"/>
+                                <field name="is_default"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.search</field>
+        <field name="model">clinical.imaging.report.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="modality"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="default_language"/>
+                <field name="paperformat_id"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_modality" string="Modality" context="{'group_by':'modality'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.list</field>
+        <field name="model">clinical.imaging.report.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="modality"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="default_language"/>
+                <field name="paperformat_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.form</field>
+        <field name="model">clinical.imaging.report.template</field>
+        <field name="arch" type="xml">
+        <form string="Clinical Imaging Report Template">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_preview_with_result" type="object" class="oe_stat_button" icon="fa-external-link">
+                        <div class="o_stat_info"><span class="o_stat_text">Preview</span></div>
+                    </button>
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="modality"/>
+                            <field name="paperformat_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="default_language"/>
+                                <field name="is_default_company"/>
+                                <field name="include_findings"/>
+                                <field name="include_key_images"/>
+                                <field name="include_measurements"/>
+                            </group>
+                            <group>
+                                <field name="show_author_signature"/>
+                                <field name="show_cosigner_signature"/>
+                                <field name="version"/>
+                                <field name="locked"/>
+                                <field name="section_count"/>
+                                <field name="variable_count"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="imaging_type_ids"/>
+                            <field name="section_ids"/>
+                            <field name="variable_ids"/>
+                            <field name="asset_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="header_html"/>
+                            <field name="body_html"/>
+                            <field name="footer_html"/>
+                            <field name="notes"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_section_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.section.search</field>
+        <field name="model">clinical.imaging.report.template.section</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="title"/>
+                <field name="condition_expr"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_section_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.section.list</field>
+        <field name="model">clinical.imaging.report.template.section</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="title"/>
+                <field name="condition_expr"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_section_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.section.form</field>
+        <field name="model">clinical.imaging.report.template.section</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Report Template Section">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="template_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="title"/>
+                            </group>
+                            <group>
+                                <field name="condition_expr"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="body_html"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_variable_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.variable.search</field>
+        <field name="model">clinical.imaging.report.template.variable</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_variable_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.variable.list</field>
+        <field name="model">clinical.imaging.report.template.variable</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_variable_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.variable.form</field>
+        <field name="model">clinical.imaging.report.template.variable</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Report Template Variable">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="template_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="expr"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_asset_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.asset.search</field>
+        <field name="model">clinical.imaging.report.template.asset</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_asset_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.asset.list</field>
+        <field name="model">clinical.imaging.report.template.asset</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_report_template_asset_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.report.template.asset.form</field>
+        <field name="model">clinical.imaging.report.template.asset</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Report Template Asset">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="template_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="css"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_modality_tag_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.modality.tag.search</field>
+        <field name="model">clinical.imaging.modality.tag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_modality_tag_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.modality.tag.list</field>
+        <field name="model">clinical.imaging.modality.tag</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_modality_tag_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.modality.tag.form</field>
+        <field name="model">clinical.imaging.modality.tag</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Modality Tag">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_premed_protocol_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.premed.protocol.search</field>
+        <field name="model">clinical.imaging.premed.protocol</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="allergy_type"/>
+                <field name="reference"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_premed_protocol_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.premed.protocol.list</field>
+        <field name="model">clinical.imaging.premed.protocol</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="allergy_type"/>
+                <field name="reference"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_premed_protocol_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.premed.protocol.form</field>
+        <field name="model">clinical.imaging.premed.protocol</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Contrast Premedication Protocol">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="allergy_type"/>
+                            </group>
+                            <group>
+                                <field name="reference"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="regimen"/>
+                            <field name="precautions"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_template_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.template.search</field>
+        <field name="model">clinical.imaging.consent.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="modality"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="scope"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_modality" string="Modality" context="{'group_by':'modality'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_template_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.template.list</field>
+        <field name="model">clinical.imaging.consent.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="modality"/>
+                <field name="company_id"/>
+                <field name="active"/>
+                <field name="scope"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_template_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.template.form</field>
+        <field name="model">clinical.imaging.consent.template</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Consent Template">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="name"/>
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="modality"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="scope"/>
+                                <field name="default_validity_days"/>
+                            </group>
+                            <group>
+                                <field name="require_patient_signature"/>
+                                <field name="require_staff_signature"/>
+                                <field name="require_doctor_signature"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Related Records">
+                        <group>
+                            <field name="imaging_type_ids"/>
+                            <field name="question_ids"/>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="body_html"/>
+                            <field name="disclaimer"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <chatter/>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_template_question_search" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.template.question.search</field>
+        <field name="model">clinical.imaging.consent.template.question</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="text"/>
+                <field name="qtype"/>
+                <field name="default_text"/>
+                <field name="default_selection"/>
+                <group>
+                    <filter name="group_company_id" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_template_question_list" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.template.question.list</field>
+        <field name="model">clinical.imaging.consent.template.question</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="template_id"/>
+                <field name="company_id"/>
+                <field name="text"/>
+                <field name="qtype"/>
+                <field name="default_text"/>
+                <field name="default_selection"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinical_imaging_consent_template_question_form" model="ir.ui.view">
+        <field name="name">clinical.imaging.consent.template.question.form</field>
+        <field name="model">clinical.imaging.consent.template.question</field>
+        <field name="arch" type="xml">
+        <form string="Imaging Consent Template Question">
+            <header>
+
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <group>
+                    <group string="Identity">
+                            <field name="code"/>
+                    </group>
+                    <group string="Context &amp; Governance">
+                            <field name="company_id"/>
+                            <field name="template_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Operational Details">
+                        <group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="text"/>
+                                <field name="qtype"/>
+                                <field name="required"/>
+                            </group>
+                            <group>
+                                <field name="critical"/>
+                                <field name="default_boolean"/>
+                                <field name="default_text"/>
+                                <field name="default_selection"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Content &amp; Evidence">
+                        <group>
+                            <field name="selection_options"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+</odoo>

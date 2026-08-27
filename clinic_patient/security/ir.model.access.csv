@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clinic_patient_stage_user,clinic.patient.stage internal user,model_clinic_patient_stage,base.group_user,1,1,1,1
+access_clinic_patient_tag_user,clinic.patient.tag internal user,model_clinic_patient_tag,base.group_user,1,1,1,1
+access_clinic_patient_user,clinic.patient internal user,model_clinic_patient,base.group_user,1,1,1,1
+access_clinic_allergen_category_user,clinic.allergen.category internal user,model_clinic_allergen_category,base.group_user,1,1,1,1
+access_clinic_allergen_user,clinic.allergen internal user,model_clinic_allergen,base.group_user,1,1,1,1
+access_clinic_allergy_reaction_type_user,clinic.allergy.reaction.type internal user,model_clinic_allergy_reaction_type,base.group_user,1,1,1,1
+access_clinic_patient_allergy_user,clinic.patient.allergy internal user,model_clinic_patient_allergy,base.group_user,1,1,1,1
+access_clinic_patient_allergy_reaction_user,clinic.patient.allergy.reaction internal user,model_clinic_patient_allergy_reaction,base.group_user,1,1,1,1
+access_clinic_condition_category_user,clinic.condition.category internal user,model_clinic_condition_category,base.group_user,1,1,1,1
+access_clinic_condition_user,clinic.condition internal user,model_clinic_condition,base.group_user,1,1,1,1
+access_clinic_condition_code_user,clinic.condition.code internal user,model_clinic_condition_code,base.group_user,1,1,1,1
+access_clinic_patient_condition_user,clinic.patient.condition internal user,model_clinic_patient_condition,base.group_user,1,1,1,1
+access_clinic_patient_condition_episode_user,clinic.patient.condition.episode internal user,model_clinic_patient_condition_episode,base.group_user,1,1,1,1
+access_clinic_patient_identifier_type_user,clinic.patient.identifier.type internal user,model_clinic_patient_identifier_type,base.group_user,1,1,1,1
+access_clinic_patient_identifier_user,clinic.patient.identifier internal user,model_clinic_patient_identifier,base.group_user,1,1,1,1
+access_clinic_patient_vital_user,clinic.patient.vital internal user,model_clinic_patient_vital,base.group_user,1,1,1,1

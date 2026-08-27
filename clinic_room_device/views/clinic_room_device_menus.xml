@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_room_device_root" name="Rooms &amp; Devices" sequence="35"/>
+    <menuitem id="menu_clinic_room_device_operations" name="Operations" parent="menu_clinic_room_device_root" sequence="10"/>
+    <menuitem id="menu_clinic_room" name="Rooms" parent="menu_clinic_room_device_operations" action="action_clinic_room" sequence="10"/>
+    <menuitem id="menu_clinic_room_session" name="Room Sessions" parent="menu_clinic_room_device_operations" action="action_clinic_room_session" sequence="20"/>
+    <menuitem id="menu_clinic_room_availability" name="Availability" parent="menu_clinic_room_device_operations" action="action_clinic_room_availability" sequence="30"/>
+    <menuitem id="menu_clinic_device" name="Devices" parent="menu_clinic_room_device_operations" action="action_clinic_device" sequence="40"/>
+    <menuitem id="menu_clinic_assignment" name="Device Assignments" parent="menu_clinic_room_device_operations" action="action_clinic_room_device_assignment" sequence="50"/>
+    <menuitem id="menu_clinic_movement" name="Device Movements" parent="menu_clinic_room_device_operations" action="action_clinic_device_movement" sequence="60"/>
+    <menuitem id="menu_clinic_room_device_configuration" name="Configuration" parent="menu_clinic_room_device_root" sequence="90"/>
+    <menuitem id="menu_clinic_room_type" name="Room Types" parent="menu_clinic_room_device_configuration" action="action_clinic_room_type" sequence="10"/>
+    <menuitem id="menu_clinic_device_category" name="Device Categories" parent="menu_clinic_room_device_configuration" action="action_clinic_device_category" sequence="20"/>
+</odoo>

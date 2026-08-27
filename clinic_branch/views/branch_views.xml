@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_branch_search" model="ir.ui.view">
+        <field name="name">clinic.branch.search</field>
+        <field name="model">clinic.branch</field>
+        <field name="arch" type="xml">
+            <search string="Branches">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="city"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="franchise" string="Franchise" domain="[('is_franchise', '=', True)]"/>
+                <separator/>
+                <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                <filter name="group_parent" string="Parent Branch" context="{'group_by': 'parent_id'}"/>
+                <filter name="group_city" string="City" context="{'group_by': 'city'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_branch_list" model="ir.ui.view">
+        <field name="name">clinic.branch.list</field>
+        <field name="model">clinic.branch</field>
+        <field name="arch" type="xml">
+            <list string="Branches" default_order="company_id,sequence,name"
+                  decoration-muted="not active" multi_edit="1">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="parent_id" optional="show"/>
+                <field name="city" optional="show"/>
+                <field name="default_warehouse_id" optional="show"/>
+                <field name="is_franchise" optional="show"/>
+                <field name="location_count" optional="show"/>
+                <field name="user_count" optional="hide"/>
+                <field name="active" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_branch_form" model="ir.ui.view">
+        <field name="name">clinic.branch.form</field>
+        <field name="model">clinic.branch</field>
+        <field name="arch" type="xml">
+            <form string="Clinic Branch">
+                <header>
+                    <button name="action_view_locations" type="object" string="Open Locations"
+                            class="btn-primary" groups="clinic_branch.group_branch_user"/>
+                    <button name="action_view_users" type="object" string="Allowed Users"
+                            groups="clinic_branch.group_branch_manager"/>
+                </header>
+                <sheet>
+                    <field name="image_128" widget="image" class="oe_avatar"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_locations" type="object" class="oe_stat_button"
+                                icon="fa-map-marker">
+                            <field name="location_count" widget="statinfo" string="Locations"/>
+                        </button>
+                        <button name="action_view_users" type="object" class="oe_stat_button"
+                                icon="fa-users" groups="clinic_branch.group_branch_manager">
+                            <field name="user_count" widget="statinfo" string="Users"/>
+                        </button>
+                        <button name="action_view_warehouses" type="object" class="oe_stat_button"
+                                icon="fa-building-o">
+                            <field name="warehouse_count" widget="statinfo" string="Warehouses"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Denpasar Central Clinic"/></h1>
+                        <div>
+                            <field name="code" placeholder="DPS01" class="oe_inline"/>
+                            <span> · </span>
+                            <field name="company_id" class="oe_inline" groups="base.group_multi_company"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Organization">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="parent_id"/>
+                            <field name="sequence"/>
+                            <field name="is_franchise"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="phone" widget="phone"/>
+                            <field name="mobile" widget="phone"/>
+                            <field name="email" widget="email"/>
+                            <field name="website" widget="url"/>
+                            <field name="tz"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Address &amp; Geography">
+                            <group>
+                                <group>
+                                    <field name="street"/>
+                                    <field name="street2"/>
+                                    <field name="city"/>
+                                    <field name="state_id"/>
+                                    <field name="zip"/>
+                                    <field name="country_id"/>
+                                </group>
+                                <group>
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                    <field name="color" widget="color_picker"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Inventory Defaults">
+                            <group>
+                                <field name="default_warehouse_id"/>
+                                <field name="picking_type_in_id"/>
+                                <field name="picking_type_out_id"/>
+                                <field name="picking_type_internal_id"/>
+                            </group>
+                        </page>
+                        <page string="Accounting Defaults">
+                            <group>
+                                <group>
+                                    <field name="journal_sale_id"/>
+                                    <field name="journal_purchase_id"/>
+                                    <field name="journal_bank_id"/>
+                                    <field name="journal_cash_id"/>
+                                </group>
+                                <group>
+                                    <field name="tax_sale_id"/>
+                                    <field name="tax_purchase_id"/>
+                                    <field name="sequence_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Branding">
+                            <group>
+                                <field name="report_header"/>
+                                <field name="report_footer"/>
+                            </group>
+                        </page>
+                        <page string="Child Branches">
+                            <field name="child_ids" context="{'default_parent_id': id, 'default_company_id': company_id}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="city"/>
+                                    <field name="is_franchise"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_branch" model="ir.actions.act_window">
+        <field name="name">Branches</field>
+        <field name="res_model">clinic.branch</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_branch_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

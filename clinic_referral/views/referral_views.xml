@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_referral_search" model="ir.ui.view">
+        <field name="name">clinic.referral.search</field>
+        <field name="model">clinic.referral</field>
+        <field name="arch" type="xml">
+            <search string="Referrals">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="source_id"/>
+                <field name="program_id"/>
+                <field name="target_doctor_id"/>
+                <field name="lead_id"/>
+                <field name="branch_id"/>
+                <field name="user_id"/>
+                <filter name="open" string="Open" domain="[('state','in',('draft','confirmed'))]"/>
+                <filter name="converted" string="Converted" domain="[('state','=','converted')]"/>
+                <filter name="expired" string="Expired" domain="[('is_expired','=',True)]"/>
+                <filter name="reward_pending" string="Reward Pending" domain="[('reward_state','=','pending')]"/>
+                <separator/>
+                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                <filter name="group_source" string="Source" context="{'group_by':'source_id'}"/>
+                <filter name="group_program" string="Program" context="{'group_by':'program_id'}"/>
+                <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                <filter name="group_month" string="Referral Month" context="{'group_by':'date_referral:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_referral_list" model="ir.ui.view">
+        <field name="name">clinic.referral.list</field>
+        <field name="model">clinic.referral</field>
+        <field name="arch" type="xml">
+            <list default_order="date_referral desc,id desc"
+                  decoration-success="state == 'converted'"
+                  decoration-danger="state in ('cancelled','expired')"
+                  decoration-warning="reward_state == 'pending'">
+                <field name="name"/>
+                <field name="date_referral"/>
+                <field name="patient_id"/>
+                <field name="branch_id"/>
+                <field name="source_id"/>
+                <field name="program_id" optional="show"/>
+                <field name="target_doctor_id" optional="show"/>
+                <field name="booking_count" optional="show"/>
+                <field name="membership_count" optional="hide"/>
+                <field name="reward_state" widget="badge" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="user_id" optional="hide"/>
+                <button name="action_open_patient" type="object" string="Patient" icon="fa-user"/>
+                <button name="action_create_booking" type="object" string="Book" icon="fa-calendar-plus-o"
+                        invisible="state in ('cancelled','expired')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_referral_kanban" model="ir.ui.view">
+        <field name="name">clinic.referral.kanban</field>
+        <field name="model">clinic.referral</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="source_id"/>
+                <field name="program_id"/>
+                <field name="branch_id"/>
+                <field name="state"/>
+                <field name="reward_state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="fw-bold"><field name="name"/></div>
+                        <div><i class="fa fa-user me-1"/><field name="patient_id"/></div>
+                        <div><i class="fa fa-share-alt me-1"/><field name="source_id"/></div>
+                        <div><i class="fa fa-bullseye me-1"/><field name="program_id"/></div>
+                        <div><i class="fa fa-building-o me-1"/><field name="branch_id"/></div>
+                        <div class="mt-2"><field name="reward_state" widget="badge"/></div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_referral_form" model="ir.ui.view">
+        <field name="name">clinic.referral.form</field>
+        <field name="model">clinic.referral</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_convert" type="object" string="Convert" class="btn-primary"
+                            invisible="state not in ('draft','confirmed')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state not in ('draft','confirmed')"/>
+                    <button name="action_mark_expired" type="object" string="Mark Expired"
+                            invisible="state not in ('draft','confirmed') or not is_expired"/>
+                    <button name="action_set_draft" type="object" string="Reset to Draft"
+                            groups="clinic_referral.group_referral_manager"
+                            invisible="state not in ('cancelled','expired')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,converted,cancelled,expired"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="booking_count" widget="statinfo" string="Bookings"/>
+                        </button>
+                        <button name="action_open_treatment_sessions" type="object" class="oe_stat_button" icon="fa-stethoscope">
+                            <field name="treatment_session_count" widget="statinfo" string="Sessions"/>
+                        </button>
+                        <button name="action_open_memberships" type="object" class="oe_stat_button" icon="fa-id-card-o">
+                            <field name="membership_count" widget="statinfo" string="Memberships"/>
+                        </button>
+                        <button name="action_open_audit_events" type="object" class="oe_stat_button" icon="fa-shield"
+                                groups="clinic_referral.group_referral_manager">
+                            <field name="audit_event_count" widget="statinfo" string="Audit"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Converted" bg_color="text-bg-success"
+                            invisible="state != 'converted'"/>
+                    <widget name="web_ribbon" title="Expired" bg_color="text-bg-danger"
+                            invisible="state != 'expired'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Referral">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="patient_id"/>
+                            <field name="target_doctor_id"/>
+                            <field name="user_id"/>
+                            <field name="date_referral"/>
+                            <field name="date_received"/>
+                            <field name="valid_until"/>
+                            <field name="is_expired" readonly="1"/>
+                        </group>
+                        <group string="Acquisition">
+                            <field name="source_id"/>
+                            <field name="program_id"/>
+                            <field name="referrer_type"/>
+                            <field name="internal_referrer_doctor_id"
+                                   invisible="referrer_type != 'internal_doctor'"/>
+                            <field name="external_referrer_partner_id"
+                                   invisible="referrer_type not in ('external_doctor','agent','corporate')"/>
+                            <field name="referrer_patient_id"
+                                   invisible="referrer_type != 'patient'"/>
+                            <field name="referrer_free_text"
+                                   invisible="referrer_type != 'other'"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_create_booking" type="object"
+                                string="Create Booking" class="btn btn-primary"
+                                invisible="state in ('cancelled','expired')"/>
+                        <button name="action_open_patient" type="object"
+                                string="Open Patient" class="btn btn-secondary"/>
+                        <button name="action_open_origin" type="object"
+                                string="Open Origin" class="btn btn-secondary"
+                                invisible="not origin_model_id or not origin_res_id"/>
+                        <button name="action_open_conversion" type="object"
+                                string="Open Conversion" class="btn btn-secondary"
+                                invisible="not conversion_model_id or not conversion_res_id"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Clinical Context">
+                            <group>
+                                <field name="clinical_reason"/>
+                                <field name="clinical_notes"/>
+                            </group>
+                        </page>
+
+                        <page string="Conversion">
+                            <group>
+                                <group>
+                                    <field name="date_converted"/>
+                                    <field name="date_cancelled"/>
+                                    <field name="conversion_model_id"/>
+                                    <field name="conversion_res_id"/>
+                                    <field name="conversion_display_name" readonly="1"/>
+                                    <field name="conversion_value"/>
+                                </group>
+                                <group string="CRM / UTM">
+                                    <field name="lead_id"/>
+                                    <button name="action_open_crm_lead" type="object"
+                                            string="Open CRM Lead" icon="fa-external-link"
+                                            invisible="not lead_id"/>
+                                    <field name="utm_campaign_id"/>
+                                    <field name="utm_source_id"/>
+                                    <field name="utm_medium_id"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Reward">
+                            <div class="d-flex gap-2 mb-3">
+                                <button name="action_apply_reward_policy" type="object"
+                                        string="Reload Program / Source Policy"
+                                        class="btn btn-secondary"/>
+                                <button name="action_set_reward_pending" type="object"
+                                        string="Set Pending"
+                                        invisible="state != 'converted' or reward_policy == 'none' or reward_state == 'pending'"/>
+                                <button name="action_mark_reward_done" type="object"
+                                        string="Mark Reward Done" class="btn btn-primary"
+                                        groups="clinic_referral.group_referral_manager"
+                                        invisible="state != 'converted' or reward_policy == 'none' or reward_state == 'done'"/>
+                                <button name="action_reject_reward" type="object"
+                                        string="Reject Reward"
+                                        groups="clinic_referral.group_referral_manager"
+                                        invisible="reward_policy == 'none' or reward_state == 'rejected'"/>
+                                <button name="action_reset_reward" type="object"
+                                        string="Reset Reward"
+                                        groups="clinic_referral.group_referral_manager"
+                                        invisible="reward_state == 'none'"/>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="reward_policy"/>
+                                    <field name="reward_state" widget="badge"/>
+                                    <field name="currency_id"/>
+                                </group>
+                                <group>
+                                    <field name="reward_value"/>
+                                    <field name="reward_percent"/>
+                                    <field name="reward_points"/>
+                                    <field name="reward_reference"/>
+                                </group>
+                            </group>
+                            <field name="reward_notes"/>
+                        </page>
+
+                        <page string="Source Lineage">
+                            <group>
+                                <group string="Origin">
+                                    <field name="origin_model_id"/>
+                                    <field name="origin_res_id"/>
+                                    <field name="origin_display_name" readonly="1"/>
+                                </group>
+                                <group string="Operational Counts">
+                                    <field name="booking_count" readonly="1"/>
+                                    <field name="treatment_session_count" readonly="1"/>
+                                    <field name="membership_count" readonly="1"/>
+                                    <field name="audit_event_count" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Internal Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_referral_graph" model="ir.ui.view">
+        <field name="name">clinic.referral.graph</field>
+        <field name="model">clinic.referral</field>
+        <field name="arch" type="xml">
+            <graph string="Referral Trend" type="bar">
+                <field name="date_referral" interval="month"/>
+                <field name="source_id"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_referral_pivot" model="ir.ui.view">
+        <field name="name">clinic.referral.pivot</field>
+        <field name="model">clinic.referral</field>
+        <field name="arch" type="xml">
+            <pivot string="Referral Analysis">
+                <field name="source_id" type="row"/>
+                <field name="program_id" type="row"/>
+                <field name="state" type="row"/>
+                <field name="branch_id" type="row"/>
+                <field name="date_referral" type="col" interval="month"/>
+                <field name="conversion_value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_referral" model="ir.actions.act_window">
+        <field name="name">Referrals</field>
+        <field name="res_model">clinic.referral</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_referral_search"/>
+    </record>
+
+    <record id="action_referral_analysis" model="ir.actions.act_window">
+        <field name="name">Referral Analytics</field>
+        <field name="res_model">clinic.referral</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="search_view_id" ref="view_referral_search"/>
+    </record>
+</odoo>

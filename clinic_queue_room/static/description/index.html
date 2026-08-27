@@ -1,0 +1,194 @@
+<!--
+ClinicOne — Clinical Queue & Room Management
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTE:
+- Keep README.md (root) for long-form docs; this file is for the Apps UI description.
+- Avoid using <blockquote> across the ClinicOne project (team convention).
+-->
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span3">
+        <img src="icon.png" alt="ClinicOne Queue & Room Icon" style="width:100%; border-radius:16px;">
+      </div>
+      <div class="oe_span9">
+        <h1 class="oe_slogan">ClinicOne — Clinical Queue & Room Management</h1>
+        <h2 class="oe_slogan">Queueing • Room Allocation • Live Dashboards • Kiosk Check-in</h2>
+        <p>
+          A production-ready module to orchestrate patient flow from <b>check-in → queue → room → treatment → completion</b>,
+          with deep integrations across the ClinicOne suite. Compatible with <b>Odoo 18 Community Edition</b>.
+        </p>
+        <p>
+          <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+          <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+          <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+          <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Dashboard</span>
+          <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Kiosk</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Overview</h3>
+        <p>
+          This module centralizes queue operations, room allocation, and real-time visibility for front desk teams,
+          clinical staff, and managers. It introduces configurable <b>queue stages</b> with policies (requirements, auto-assign),
+          <b>WIP limits</b>, <b>SLA hints</b>, and hooks to billing, insurance, inventory, and feedback.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Key Features</h3>
+        <ul>
+          <li>Queue lifecycle: <i>Waiting, In Progress, On Hold, Done, Cancelled, No Show</i></li>
+          <li>Kanban stages: sequence, color, fold, transition whitelist, WIP limit</li>
+          <li>Room management: types, capacity, statuses, auto-assignment policies</li>
+          <li>Doctor/Treatment binding + optional Procedure Session creation</li>
+          <li>Live backend dashboard &amp; touch-friendly kiosk check-in</li>
+          <li>SLA hints (waiting/service) + mail/server action hooks on enter/exit stage</li>
+          <li>Deep integrations: Patient, Booking, Treatment, Billing, Insurance, Inventory, Feedback, Telemedicine</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Core Models</h3>
+        <ul>
+          <li><b>clinic.queue</b> — queue entry, timing, stage/state, relations</li>
+          <li><b>clinic.room</b> — room catalog, types, capacity, status</li>
+          <li><b>clinic.queue.stage</b> — stage policies, SLA, transitions</li>
+          <li><b>clinic.room.assignment</b> — rooming history &amp; conflicts</li>
+          <li><b>clinic.queue.event</b> — auditable lifecycle events</li>
+        </ul>
+        <p style="margin-top:8px;">
+          Legacy compatibility aliases are provided for older <i>clinicone.clinical.*</i> model names during migration.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Holistic Integrations (26 Modules)</h3>
+        <p>
+          Seamless with: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment, clinic_billing,
+          clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_ecommerce, clinic_membership,
+          clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet, clinic_package, clinic_pricing, clinic_room_device,
+          clinic_hr, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit, clinic_insurance, clinic_telemedicine</i>.
+        </p>
+        <p style="font-size:12px;color:#666;">
+          Integrations are soft-coupled via relations, server actions, activities, and mail templates to keep modules independently deployable.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span4">
+        <h3>Installation</h3>
+        <ol>
+          <li>Add this addon to your Odoo <i>addons_path</i>.</li>
+          <li>Update Apps list, search <b>ClinicOne: Clinical Queue & Room Management</b>.</li>
+          <li>Install; dependencies auto-resolve.</li>
+        </ol>
+      </div>
+      <div class="oe_span4">
+        <h3>Configuration</h3>
+        <ul>
+          <li>Define <b>Queue Stages</b> (defaults, transitions, WIP, SLA, hooks).</li>
+          <li>Create <b>Room Types</b> &amp; <b>Rooms</b>, set statuses.</li>
+          <li>Verify sequence <b>clinic.queue</b> is active.</li>
+          <li>Bind optional mail templates / server actions on stage enter/exit.</li>
+        </ul>
+      </div>
+      <div class="oe_span4">
+        <h3>Security</h3>
+        <ul>
+          <li>Groups: Queue Receptionist, Clinical Staff, Room Supervisor, Admin.</li>
+          <li>Record Rules: company scope, active queues, patient portal visibility.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Demo &amp; Testing</h3>
+        <ul>
+          <li>Demo data: <i>demo_rooms.xml</i>, <i>demo_queue.xml</i> (for sandbox only).</li>
+          <li>Unit tests: queue flow, room allocation, security.</li>
+          <li>UAT scenarios: walk-in vs appointment, auto-assign, SLA breach, billing trigger, feedback request.</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Performance Notes</h3>
+        <ul>
+          <li>Index frequently filtered fields: stage_id, company_id, patient_id, doctor_id, room_id, state, checkin_time.</li>
+          <li>Use domains in dashboards; avoid heavy computes in list views.</li>
+          <li>Periodically archive completed queues for high-volume environments.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Assets</h3>
+        <ul>
+          <li>JS: <i>queue_dashboard.js</i>, <i>kiosk_checkin.js</i>, <i>room_board.js</i></li>
+          <li>QWeb: <i>queue_dashboard_templates.xml</i>, <i>kiosk_templates.xml</i></li>
+          <li>SCSS: <i>queue_dashboard.scss</i>, <i>kiosk.scss</i></li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>API Endpoints</h3>
+        <ul>
+          <li><i>controllers/queue_api.py</i> — JSON queue ops (create, move, status)</li>
+          <li><i>controllers/display_api.py</i> — endpoints for TV dashboard widgets</li>
+          <li><i>controllers/portal.py</i> — patient portal queue status</li>
+          <li><i>controllers/webhook.py</i> — inbound kiosk/messaging webhooks</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Upgrade &amp; Migration</h3>
+        <ul>
+          <li>Model prefix normalized from <i>clinicone.clinical.*</i> → <b>clinic.*</b>.</li>
+          <li>New models keep <i>_table</i> pointing to legacy tables to preserve data.</li>
+          <li>Legacy alias classes (<i>_register = False</i>) maintain compatibility during transition.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>License</h3>
+        <p>Distributed under the <b>LGPL-3.0</b> license. See <i>LICENSE</i> file.</p>
+      </div>
+      <div class="oe_span6">
+        <h3>Support &amp; Contribution</h3>
+        <p>
+          For issues or enhancements, follow the ClinicOne contribution guide:
+          write tests, follow code style, and document migration impacts.
+        </p>
+      </div>
+    </div>
+  </section>
+  

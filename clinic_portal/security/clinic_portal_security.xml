@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_patient_portal" model="ir.module.category">
+        <field name="name">ClinicOne Patient Portal</field>
+        <field name="sequence">68</field>
+    </record>
+
+    <record id="privilege_patient_portal" model="res.groups.privilege">
+        <field name="name">ClinicOne Patient Portal</field>
+        <field name="category_id" ref="clinic_portal.module_category_patient_portal"/>
+        <field name="sequence">68</field>
+    </record>
+
+    <record id="group_patient_portal_operator" model="res.groups">
+        <field name="name">Patient Portal Operator</field>
+        <field name="privilege_id" ref="clinic_portal.privilege_patient_portal"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_patient_portal_manager" model="res.groups">
+        <field name="name">Patient Portal Manager</field>
+        <field name="privilege_id" ref="clinic_portal.privilege_patient_portal"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[Command.link(ref('clinic_portal.group_patient_portal_operator'))]"/>
+    </record>
+
+    <record id="rule_portal_profile_company" model="ir.rule">
+        <field name="name">Patient Portal Profile: allowed companies</field>
+        <field name="model_id" ref="model_clinic_portal_profile"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_portal.group_patient_portal_operator'))]"/>
+    </record>
+</odoo>

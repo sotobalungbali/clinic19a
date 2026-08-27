@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Runtime-safe local root. Do not hard-reference clinic_base.menu_root:
+        that XML-ID is only present in a commented legacy scaffold in the
+        current ClinicOne baseline. Optional re-parenting is handled by the
+        post-init hook on fresh installation.
+    -->
+    <menuitem id="menu_treatment_catalog"
+              name="Treatment Catalog"
+              sequence="30"
+              groups="base.group_user"/>
+    <menuitem id="menu_treatment_catalog_services" name="Services" parent="menu_treatment_catalog" sequence="10"/>
+    <menuitem id="menu_treatments" name="Treatments" parent="menu_treatment_catalog_services" action="action_treatment_tree" sequence="10"/>
+    <menuitem id="menu_bundles" name="Bundles" parent="menu_treatment_catalog_services" action="action_treatment_bundle" sequence="20"/>
+    <menuitem id="menu_pricing" name="Pricing" parent="menu_treatment_catalog" sequence="20"/>
+    <menuitem id="menu_pricelists" name="Pricelists" parent="menu_pricing" action="action_treatment_pricelist" sequence="10"/>
+    <menuitem id="menu_price_rules" name="Price Rules" parent="menu_pricing" action="action_treatment_pricelist_item" sequence="20"/>
+    <menuitem id="menu_consent" name="Consent" parent="menu_treatment_catalog" sequence="30"/>
+    <menuitem id="menu_consent_requests" name="Requests" parent="menu_consent" action="action_consent_request" sequence="10"/>
+    <menuitem id="menu_consent_templates" name="Templates" parent="menu_consent" action="action_consent_template" sequence="20"/>
+    <menuitem id="menu_master_data" name="Configuration" parent="menu_treatment_catalog" sequence="90"/>
+    <menuitem id="menu_categories" name="Categories" parent="menu_master_data" action="action_treatment_category" sequence="10"/>
+    <menuitem id="menu_tags" name="Tags" parent="menu_master_data" action="action_treatment_tag" sequence="20"/>
+    <menuitem id="menu_attributes" name="Attributes" parent="menu_master_data" action="action_treatment_attribute" sequence="30"/>
+    <menuitem id="menu_attribute_values" name="Attribute Values" parent="menu_master_data" action="action_treatment_attribute_value" sequence="40"/>
+</odoo>
+

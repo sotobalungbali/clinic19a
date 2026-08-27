@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_audit_event_search" model="ir.ui.view">
+    <field name="name">clinic.audit.event.search</field><field name="model">clinic.audit.event</field>
+    <field name="arch" type="xml"><search string="Audit Events">
+      <field name="name"/><field name="ref_model"/><field name="ref_res_id"/><field name="ref_display_name"/>
+      <field name="user_id"/><field name="company_id"/><field name="branch_id"/><field name="correlation_id"/>
+      <filter name="create" string="Create" domain="[('action','=','create')]"/>
+      <filter name="write" string="Updates" domain="[('action','=','write')]"/>
+      <filter name="unlink" string="Deletes" domain="[('action','=','unlink')]"/>
+      <separator/><filter name="critical" string="Critical" domain="[('severity','=','critical')]"/>
+      <filter name="high" string="High" domain="[('severity','=','high')]"/>
+      <separator/><filter name="group_model" string="Model" context="{'group_by':'ref_model'}"/>
+      <filter name="group_action" string="Action" context="{'group_by':'action'}"/>
+      <filter name="group_user" string="User" context="{'group_by':'user_id'}"/>
+      <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+      <filter name="group_day" string="Day" context="{'group_by':'date_event:day'}"/>
+    </search></field>
+  </record>
+  <record id="view_audit_event_list" model="ir.ui.view">
+    <field name="name">clinic.audit.event.list</field><field name="model">clinic.audit.event</field>
+    <field name="arch" type="xml"><list string="Audit Events" create="0" edit="0" delete="0" default_order="id desc"
+      decoration-danger="severity == 'critical'" decoration-warning="severity == 'high'">
+      <field name="date_event"/><field name="name"/><field name="action" widget="badge"/><field name="severity" widget="badge"/>
+      <field name="ref_model"/><field name="ref_display_name" optional="show"/><field name="user_id"/>
+      <field name="branch_id" optional="show"/><field name="source" optional="show"/><field name="changed_field_names" optional="hide"/>
+      <field name="sealed" optional="show"/>
+    </list></field>
+  </record>
+  <record id="view_audit_event_form" model="ir.ui.view">
+    <field name="name">clinic.audit.event.form</field><field name="model">clinic.audit.event</field>
+    <field name="arch" type="xml"><form string="Audit Event" create="0" edit="0" delete="0">
+      <header>
+        <button name="action_open_record" type="object" string="Open Audited Record" class="btn-primary"/>
+        <button name="action_verify_integrity" type="object" string="Verify Integrity" groups="clinic_audit.group_audit_manager"/>
+      </header>
+      <sheet>
+        <div class="oe_button_box" name="button_box">
+          <button name="action_open_reviews" type="object" class="oe_stat_button" icon="fa-search">
+            <field name="review_count" widget="statinfo" string="Reviews"/>
+          </button>
+        </div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <group><group string="Evidence">
+          <field name="date_event"/><field name="action"/><field name="severity"/><field name="source"/><field name="sealed"/>
+        </group><group string="Scope">
+          <field name="company_id" groups="base.group_multi_company"/><field name="branch_id"/><field name="user_id"/><field name="policy_id"/>
+        </group></group>
+        <group string="Audited Resource"><group><field name="ref_model"/><field name="ref_res_id"/><field name="ref_display_name"/></group>
+          <group><field name="correlation_id"/><field name="changed_field_names"/><field name="change_digest"/></group></group>
+        <notebook>
+          <page string="Field Changes"><field name="line_ids" readonly="1">
+            <list create="0" edit="0" delete="0"><field name="field_name"/><field name="field_label"/><field name="field_type" optional="hide"/>
+              <field name="masked"/><field name="old_value" optional="show"/><field name="new_value" optional="show"/>
+              <button name="action_open_event" type="object" string="Event" icon="fa-external-link"/>
+            </list></field></page>
+          <page string="Integrity"><group><field name="previous_hash"/><field name="event_fingerprint"/><field name="event_hash"/></group></page>
+          <page string="Legacy Provenance" invisible="not legacy_model"><group><field name="legacy_model"/><field name="legacy_res_id"/><field name="legacy_payload_digest"/></group></page>
+          <page string="Summary"><field name="summary"/></page>
+        </notebook>
+      </sheet>
+    </form></field>
+  </record>
+  <record id="action_audit_events" model="ir.actions.act_window">
+    <field name="name">Audit Events</field><field name="res_model">clinic.audit.event</field><field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_audit_event_search"/>
+  </record>
+</odoo>

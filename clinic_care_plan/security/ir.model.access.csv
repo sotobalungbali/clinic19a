@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clinic_care_plan_user,clinic.care.plan user,model_clinic_care_plan,base.group_user,1,1,1,1
+access_clinic_care_plan_line_user,clinic.care.plan.line user,model_clinic_care_plan_line,base.group_user,1,1,1,1
+access_clinic_care_protocol_user,clinic.care.protocol user,model_clinic_care_protocol,base.group_user,1,1,1,1
+access_clinic_care_protocol_step_user,clinic.care.protocol.step user,model_clinic_care_protocol_step,base.group_user,1,1,1,1

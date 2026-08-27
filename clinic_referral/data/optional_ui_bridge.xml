@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Idempotent cross-addon presentation integration.
+        The model method resolves historical/source-drift parent views at
+        runtime and isolates incompatible layouts in database savepoints.
+    -->
+    <function model="clinic.referral.source"
+              name="_ensure_optional_cross_addon_ui"/>
+</odoo>

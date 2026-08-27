@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_quality_root"
+              name="Quality"
+              sequence="89"
+              groups="clinic_quality.group_quality_user"/>
+
+    <menuitem id="menu_quality_sop"
+              name="Standard Operating Procedures"
+              parent="menu_quality_root"
+              action="action_quality_sop"
+              sequence="10"/>
+
+    <menuitem id="menu_quality_checks"
+              name="Quality Checks"
+              parent="menu_quality_root"
+              action="action_quality_check"
+              sequence="20"/>
+
+    <menuitem id="menu_quality_review_queue"
+              name="Review Queue"
+              parent="menu_quality_root"
+              action="action_quality_review_queue"
+              sequence="25"
+              groups="clinic_quality.group_quality_approver"/>
+
+    <menuitem id="menu_quality_nonconformity"
+              name="Nonconformities"
+              parent="menu_quality_root"
+              action="action_quality_nonconformity"
+              sequence="30"/>
+
+    <menuitem id="menu_quality_schedules"
+              name="Scheduled Checks"
+              parent="menu_quality_root"
+              action="action_quality_schedule"
+              sequence="40"
+              groups="clinic_quality.group_quality_manager"/>
+
+    <menuitem id="menu_quality_configuration"
+              name="Configuration"
+              parent="menu_quality_root"
+              sequence="90"
+              groups="clinic_quality.group_quality_manager"/>
+
+    <menuitem id="menu_quality_templates"
+              name="Check Templates"
+              parent="menu_quality_configuration"
+              action="action_quality_template"
+              sequence="10"/>
+
+    <menuitem id="menu_quality_template_controls"
+              name="Template Controls"
+              parent="menu_quality_configuration"
+              action="action_quality_template_line"
+              sequence="20"/>
+
+    <menuitem id="menu_quality_sop_versions"
+              name="SOP Versions"
+              parent="menu_quality_configuration"
+              action="action_quality_sop_version"
+              sequence="30"/>
+
+    <menuitem id="menu_quality_sop_acknowledgements"
+              name="SOP Acknowledgements"
+              parent="menu_quality_configuration"
+              action="action_quality_sop_ack"
+              sequence="40"/>
+
+    <menuitem id="menu_quality_control_results"
+              name="Control Results"
+              parent="menu_quality_configuration"
+              action="action_quality_check_line"
+              sequence="50"/>
+
+    <menuitem id="menu_quality_settings"
+              name="Settings"
+              parent="menu_quality_configuration"
+              action="action_quality_settings"
+              sequence="90"/>
+</odoo>

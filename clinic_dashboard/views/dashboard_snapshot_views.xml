@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dashboard_snapshot_search" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.search</field>
+        <field name="model">clinic.dashboard.snapshot</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="board_id"/>
+                <field name="dashboard_type"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="generated_by_id"/>
+                <filter name="ready" string="Ready" domain="[('state','=','ready')]"/>
+                <filter name="failed" string="Failed" domain="[('state','=','failed')]"/>
+                <filter name="archived" string="Archived" domain="[('state','=','archived')]"/>
+                <filter name="has_critical" string="Has Critical KPI" domain="[('critical_count','&gt;',0)]"/>
+                <filter name="has_warning" string="Has Warning KPI" domain="[('warning_count','&gt;',0)]"/>
+                <filter name="has_no_data" string="Has Missing Data" domain="[('no_data_count','&gt;',0)]"/>
+                <group>
+                    <filter name="group_board" string="Dashboard" context="{'group_by':'board_id'}"/>
+                    <filter name="group_type" string="Dashboard Type" context="{'group_by':'dashboard_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_month" string="Period Month" context="{'group_by':'date_to:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_dashboard_snapshot_list" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.list</field>
+        <field name="model">clinic.dashboard.snapshot</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'ready' and critical_count == 0"
+                  decoration-danger="critical_count &gt; 0 or state == 'failed'"
+                  decoration-warning="warning_count &gt; 0 and critical_count == 0"
+                  decoration-muted="state == 'archived'">
+                <field name="name"/>
+                <field name="board_id"/>
+                <field name="dashboard_type" widget="badge"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="branch_id"/>
+                <field name="available_count"/>
+                <field name="critical_count"/>
+                <field name="warning_count"/>
+                <field name="no_data_count"/>
+                <field name="report_run_count"/>
+                <field name="generated_at"/>
+                <field name="generated_by_id"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_live_dashboard" type="object" string="Dashboard" icon="fa-dashboard"
+                        invisible="state not in ('ready','archived')"/>
+                <button name="action_view_lines" type="object" string="KPIs" icon="fa-th-large"/>
+                <button name="action_view_report_runs" type="object" string="Reports" icon="fa-line-chart"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dashboard_snapshot_kanban" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.kanban</field>
+        <field name="model">clinic.dashboard.snapshot</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="board_id"/>
+                <field name="dashboard_type"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="branch_id"/>
+                <field name="critical_count"/>
+                <field name="warning_count"/>
+                <field name="no_data_count"/>
+                <field name="available_count"/>
+                <field name="generated_at"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong><field name="board_id"/></strong>
+                                    <div class="text-muted"><field name="name"/></div>
+                                </div>
+                                <field name="state" widget="badge"/>
+                            </div>
+                            <div class="mb-2">
+                                <field name="date_from"/> - <field name="date_to"/>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap mb-2">
+                                <span class="badge rounded-pill text-bg-danger">
+                                    Critical <field name="critical_count"/>
+                                </span>
+                                <span class="badge rounded-pill text-bg-warning">
+                                    Warning <field name="warning_count"/>
+                                </span>
+                                <span class="badge rounded-pill text-bg-secondary">
+                                    Missing <field name="no_data_count"/>
+                                </span>
+                                <span class="badge rounded-pill text-bg-success">
+                                    Available <field name="available_count"/>
+                                </span>
+                            </div>
+                            <div class="text-muted">
+                                <field name="branch_id"/>
+                                <span class="ms-2"><field name="generated_at"/></span>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button name="action_open_live_dashboard" type="object" class="btn btn-primary btn-sm"
+                                        invisible="state not in ('ready','archived')">
+                                    Open Dashboard
+                                </button>
+                                <button name="action_view_lines" type="object" class="btn btn-secondary btn-sm">
+                                    KPI Lines
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_dashboard_snapshot_form" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.form</field>
+        <field name="model">clinic.dashboard.snapshot</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_live_dashboard" type="object" string="Open Interactive Dashboard" class="btn-primary"
+                            invisible="state not in ('ready','archived')"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_dashboard.group_dashboard_manager"
+                            invisible="state != 'ready'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,refreshing,ready,failed,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_lines" type="object" class="oe_stat_button" icon="fa-th-large">
+                            <field name="line_count" widget="statinfo" string="KPI Lines"/>
+                        </button>
+                        <button name="action_view_report_runs" type="object" class="oe_stat_button" icon="fa-line-chart">
+                            <field name="report_run_count" widget="statinfo" string="Report Runs"/>
+                        </button>
+                        <button name="action_open_board" type="object" class="oe_stat_button" icon="fa-dashboard">
+                            <div class="o_stat_info"><span class="o_stat_text">Board</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="state != 'failed'">
+                        Dashboard refresh failed. Review the generation error before the next refresh.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="critical_count == 0 and warning_count == 0">
+                        This snapshot contains KPI exceptions requiring management attention.
+                    </div>
+
+                    <group>
+                        <group string="Dashboard Scope">
+                            <field name="board_id"/>
+                            <field name="dashboard_type"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group string="Snapshot Audit">
+                            <field name="generated_at"/>
+                            <field name="generated_by_id"/>
+                            <field name="available_count"/>
+                            <field name="critical_count"/>
+                            <field name="warning_count"/>
+                            <field name="no_data_count"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_live_dashboard" type="object" string="Open Interactive Dashboard" class="btn btn-primary"
+                                invisible="state not in ('ready','archived')"/>
+                        <button name="action_view_report_runs" type="object" string="Open Source Report Runs" class="btn btn-secondary"/>
+                        <button name="action_view_lines" type="object" string="Analyze KPI Lines" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="KPI Snapshot">
+                            <field name="line_ids">
+                                <list decoration-danger="status == 'critical'"
+                                      decoration-warning="status == 'warning'"
+                                      decoration-muted="status in ('no_data','unsupported_scope','error')">
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                    <field name="metric_code"/>
+                                    <field name="display_value"/>
+                                    <field name="trend_direction" widget="badge"/>
+                                    <field name="trend_percent"/>
+                                    <field name="target_progress"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="report_run_id"/>
+                                    <button name="action_open_metric" type="object" string="Metric" icon="fa-line-chart"
+                                            invisible="not metric_id"/>
+                                    <button name="action_open_report_run" type="object" string="Report" icon="fa-external-link"
+                                            invisible="not report_run_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Generation Error" invisible="state != 'failed'">
+                            <field name="error_message"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dashboard_snapshot" model="ir.actions.act_window">
+        <field name="name">Dashboard Snapshots</field>
+        <field name="res_model">clinic.dashboard.snapshot</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_dashboard_snapshot_search"/>
+    </record>
+</odoo>

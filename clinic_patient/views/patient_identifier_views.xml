@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- =========================================================
+         Identifier Type
+         ========================================================= -->
+    <record id="view_clinic_patient_identifier_type_search" model="ir.ui.view">
+        <field name="name">clinic.patient.identifier.type.search</field>
+        <field name="model">clinic.patient.identifier.type</field>
+        <field name="arch" type="xml">
+            <search string="Identifier Types">
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="mrn" string="MRN" domain="[('is_mrn', '=', True)]"/>
+                <filter name="national_id" string="National ID" domain="[('is_national_id', '=', True)]"/>
+                <filter name="insurance" string="Insurance" domain="[('is_insurance_member', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_identifier_type_list" model="ir.ui.view">
+        <field name="name">clinic.patient.identifier.type.list</field>
+        <field name="model">clinic.patient.identifier.type</field>
+        <field name="arch" type="xml">
+            <list string="Identifier Types" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="force_case" optional="show"/>
+                <field name="use_sequence" optional="show"/>
+                <field name="is_mrn" optional="show"/>
+                <field name="is_national_id" optional="hide"/>
+                <field name="is_insurance_member" optional="hide"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_identifier_type_form" model="ir.ui.view">
+        <field name="name">clinic.patient.identifier.type.form</field>
+        <field name="model">clinic.patient.identifier.type</field>
+        <field name="arch" type="xml">
+            <form string="Identifier Type">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Identity">
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                            <field name="force_case"/>
+                            <field name="barcode_symbology"/>
+                        </group>
+                        <group string="Automation">
+                            <field name="use_sequence"/>
+                            <field name="sequence_id" invisible="not use_sequence"/>
+                            <field name="single_primary_per_patient"/>
+                            <field name="partner_mapping"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Validation">
+                            <group>
+                                <field name="validation_regex"/>
+                                <field name="validation_help"/>
+                            </group>
+                        </page>
+                        <page string="Functional Flags">
+                            <group>
+                                <field name="is_mrn"/>
+                                <field name="is_national_id"/>
+                                <field name="is_passport"/>
+                                <field name="is_tax_id"/>
+                                <field name="is_insurance_member"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_patient_identifier_type" model="ir.actions.act_window">
+        <field name="name">Identifier Types</field>
+        <field name="res_model">clinic.patient.identifier.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_patient_identifier_type_search"/>
+    </record>
+
+    <!-- =========================================================
+         Patient Identifier
+         ========================================================= -->
+    <record id="view_clinic_patient_identifier_search" model="ir.ui.view">
+        <field name="name">clinic.patient.identifier.search</field>
+        <field name="model">clinic.patient.identifier</field>
+        <field name="arch" type="xml">
+            <search string="Patient Identifiers">
+                <field name="value"/>
+                <field name="patient_id"/>
+                <field name="type_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="primary" string="Primary" domain="[('is_primary', '=', True)]"/>
+                <filter name="revoked" string="Revoked" domain="[('revoked', '=', True)]"/>
+                <separator/>
+                <filter name="group_patient" string="Patient" context="{'group_by': 'patient_id'}"/>
+                <filter name="group_type" string="Type" context="{'group_by': 'type_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_identifier_list" model="ir.ui.view">
+        <field name="name">clinic.patient.identifier.list</field>
+        <field name="model">clinic.patient.identifier</field>
+        <field name="arch" type="xml">
+            <list string="Patient Identifiers"
+                  decoration-success="is_primary"
+                  decoration-warning="status == 'expired'"
+                  decoration-muted="status == 'revoked'">
+                <field name="patient_id"/>
+                <field name="type_id"/>
+                <field name="value"/>
+                <field name="is_primary"/>
+                <field name="status"/>
+                <field name="issue_date" optional="hide"/>
+                <field name="expiry_date" optional="show"/>
+                <field name="issuing_authority" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <button name="action_set_primary"
+                        type="object"
+                        string="Set Primary"
+                        icon="fa-star"
+                        invisible="is_primary"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_patient_identifier_form" model="ir.ui.view">
+        <field name="name">clinic.patient.identifier.form</field>
+        <field name="model">clinic.patient.identifier</field>
+        <field name="arch" type="xml">
+            <form string="Patient Identifier">
+                <header>
+                    <button name="action_set_primary"
+                            type="object"
+                            string="Set as Primary"
+                            class="btn-primary"
+                            invisible="is_primary"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" text="Primary" invisible="not is_primary"/>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="type_id"/>
+                            <field name="value"/>
+                            <field name="is_primary"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="issue_date"/>
+                            <field name="expiry_date"/>
+                            <field name="issuing_authority"/>
+                            <field name="place_of_issue"/>
+                            <field name="revoked"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_patient_identifier" model="ir.actions.act_window">
+        <field name="name">Patient Identifiers</field>
+        <field name="res_model">clinic.patient.identifier</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_patient_identifier_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<odoo noupdate="1">
+    <record id="mail_template_clinical_imaging_result" model="mail.template">
+        <field name="name">Clinical Imaging Result</field>
+        <field name="model_id" ref="model_clinical_imaging_result"/>
+        <field name="subject">Imaging Result {{ object.name or '' }}</field>
+        <field name="email_to">{{ object.patient_id.email or '' }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Dear <t t-out="object.patient_id.display_name or 'Patient'"/>,</p>
+                <p>Your clinical imaging result <strong><t t-out="object.name"/></strong> is available.</p>
+                <p t-if="object.impression"><strong>Impression:</strong><br/><t t-out="object.impression"/></p>
+                <p>Please contact the clinic if you need clarification or follow-up.</p>
+            </div>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="action_clinic_finance_settings" model="ir.actions.act_window">
+    <field name="name">Clinic Finance Settings</field>
+    <field name="res_model">res.config.settings</field><field name="view_mode">form</field><field name="target">current</field>
+    <field name="context">{'module':'clinic_finance','bin_size':False}</field>
+  </record>
+  <record id="res_config_settings_view_form_clinic_finance" model="ir.ui.view">
+    <field name="name">res.config.settings.view.form.clinic.finance</field><field name="model">res.config.settings</field>
+    <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+    <field name="arch" type="xml"><xpath expr="//form" position="inside">
+      <app string="ClinicOne Finance" name="clinic_finance" groups="clinic_finance.group_clinic_finance_manager">
+        <block title="Treasury &amp; Posting" help="Configure internal Finance posting and liquidity controls.">
+          <setting string="Finance General Journal" help="General journal for transfers between Finance liquidity accounts."><field name="finance_general_journal_id" options="{'no_create_edit':True}"/></setting>
+          <setting string="Default Finance Account"><field name="finance_default_account_id" options="{'no_create_edit':True}"/></setting>
+          <setting string="Approval Threshold" help="Amounts at or above this threshold require approval. Zero disables the global threshold."><field name="finance_approval_threshold"/></setting>
+        </block>
+        <block title="Cash Closing" help="Govern physical cash count variances.">
+          <setting string="Cash Variance Tolerance"><field name="finance_cash_variance_tolerance"/></setting>
+          <setting string="Variance Gain / Loss Accounts"><div class="content-group"><field name="finance_variance_gain_account_id" options="{'no_create_edit':True}"/><field name="finance_variance_loss_account_id" options="{'no_create_edit':True}"/></div></setting>
+        </block>
+        <block title="Treasury Position">
+          <setting string="Daily Treasury Position"><field name="finance_auto_daily_position"/></setting>
+          <setting string="Position Sources"><div class="content-group"><field name="finance_position_include_ar"/> Include AR<br/><field name="finance_position_include_ap"/> Include AP<br/><field name="finance_position_include_wallet"/> Include Wallet Liability</div></setting>
+        </block>
+      </app>
+    </xpath></field>
+  </record>
+</odoo>

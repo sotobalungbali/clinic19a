@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_vitals_intake_search" model="ir.ui.view">
+        <field name="name">clinic.vitals.intake.search</field>
+        <field name="model">clinic.vitals.intake</field>
+        <field name="arch" type="xml">
+            <search string="Vitals Intake">
+                <field name="patient_id"/>
+                <field name="triage_session_id"/>
+                <field name="triage_level_id"/>
+                <field name="measured_by_id"/>
+                <field name="room_id"/>
+                <field name="room_device_id"/>
+                <filter name="filter_abnormal" string="Abnormal" domain="[('is_abnormal', '=', True)]"/>
+                <filter name="filter_fever" string="Fever" domain="[('is_fever', '=', True)]"/>
+                <filter name="filter_hypoxia" string="Hypoxia" domain="[('is_hypoxia', '=', True)]"/>
+                <filter name="filter_hypertensive" string="Hypertension" domain="[('is_hypertensive', '=', True)]"/>
+                <filter name="filter_device" string="Device Captured" domain="[('source', '=', 'device')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_patient" string="Patient" context="{'group_by': 'patient_id'}"/>
+                    <filter name="group_level" string="Triage Level" context="{'group_by': 'triage_level_id'}"/>
+                    <filter name="group_measured_by" string="Measured By" context="{'group_by': 'measured_by_id'}"/>
+                    <filter name="group_room" string="Room" context="{'group_by': 'room_id'}"/>
+                    <filter name="group_date" string="Measured Day" context="{'group_by': 'measure_datetime:day'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_vitals_intake_list" model="ir.ui.view">
+        <field name="name">clinic.vitals.intake.list</field>
+        <field name="model">clinic.vitals.intake</field>
+        <field name="arch" type="xml">
+            <list string="Vitals Intake"
+                  decoration-danger="is_abnormal"
+                  default_order="measure_datetime desc, id desc">
+                <field name="measure_datetime"/>
+                <field name="patient_id"/>
+                <field name="triage_level_id"/>
+                <field name="temperature_c"/>
+                <field name="heart_rate_bpm"/>
+                <field name="respiratory_rate_bpm"/>
+                <field name="spo2_percent"/>
+                <field name="sbp_mm_hg"/>
+                <field name="dbp_mm_hg"/>
+                <field name="gcs" optional="show"/>
+                <field name="pain_score" optional="show"/>
+                <field name="bmi" optional="hide"/>
+                <field name="source" optional="hide"/>
+                <field name="room_id" optional="hide"/>
+                <field name="measured_by_id" optional="show"/>
+                <field name="is_abnormal"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_vitals_intake_form" model="ir.ui.view">
+        <field name="name">clinic.vitals.intake.form</field>
+        <field name="model">clinic.vitals.intake</field>
+        <field name="arch" type="xml">
+            <form string="Vitals Intake">
+                <header>
+                    <button name="action_open_triage_session"
+                            type="object"
+                            string="Open Triage Session"
+                            class="btn-secondary"/>
+                </header>
+
+                <sheet>
+                    <widget name="web_ribbon"
+                            text="Abnormal"
+                            bg_color="text-bg-danger"
+                            invisible="not is_abnormal"/>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="patient_id" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Measurement Context">
+                            <field name="triage_session_id"/>
+                            <field name="triage_level_id" readonly="1"/>
+                            <field name="measure_datetime"/>
+                            <field name="measured_by_id"/>
+                            <field name="source"/>
+                            <field name="position"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Room &amp; Device">
+                            <field name="room_id"/>
+                            <field name="room_device_id"/>
+                            <field name="device_serial"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Core Vitals" name="core_vitals">
+                            <group>
+                                <group string="Temperature &amp; Respiratory">
+                                    <field name="temperature_c"/>
+                                    <field name="temperature_f"/>
+                                    <field name="temperature_method"/>
+                                    <field name="respiratory_rate_bpm"/>
+                                    <field name="spo2_percent"/>
+                                    <field name="on_oxygen"/>
+                                    <field name="o2_flow_l_min" invisible="not on_oxygen"/>
+                                </group>
+                                <group string="Pulse &amp; Blood Pressure">
+                                    <field name="heart_rate_bpm"/>
+                                    <field name="sbp_mm_hg"/>
+                                    <field name="dbp_mm_hg"/>
+                                    <field name="map_mm_hg" readonly="1"/>
+                                    <field name="pulse_pressure_mm_hg" readonly="1"/>
+                                    <field name="bp_arm"/>
+                                    <field name="bp_method"/>
+                                    <field name="bp_position"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Anthropometrics" name="anthropometrics">
+                            <group>
+                                <group>
+                                    <field name="weight_kg"/>
+                                    <field name="weight_lb"/>
+                                    <field name="height_cm"/>
+                                    <field name="height_in"/>
+                                </group>
+                                <group>
+                                    <field name="bmi" readonly="1"/>
+                                    <field name="bmi_category" readonly="1"/>
+                                    <field name="bsa_m2" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Neurologic &amp; Pain" name="neurologic">
+                            <group>
+                                <group string="Glasgow Coma Scale">
+                                    <field name="gcs_e"/>
+                                    <field name="gcs_v"/>
+                                    <field name="gcs_m"/>
+                                    <field name="gcs" readonly="1"/>
+                                </group>
+                                <group string="Pain">
+                                    <field name="pain_score"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Abnormality Flags" name="abnormal_flags">
+                            <group>
+                                <group>
+                                    <field name="is_fever" readonly="1"/>
+                                    <field name="is_hypothermia" readonly="1"/>
+                                    <field name="is_tachycardia" readonly="1"/>
+                                    <field name="is_bradycardia" readonly="1"/>
+                                    <field name="is_tachypnea" readonly="1"/>
+                                    <field name="is_bradypnea" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="is_hypoxia" readonly="1"/>
+                                    <field name="is_hypertensive" readonly="1"/>
+                                    <field name="is_hypotensive" readonly="1"/>
+                                    <field name="is_abnormal" readonly="1"/>
+                                    <field name="abnormal_fields" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                            <field name="internal_notes" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_vitals_intake" model="ir.actions.act_window">
+        <field name="name">Vitals Intake</field>
+        <field name="res_model">clinic.vitals.intake</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_vitals_intake_search"/>
+    </record>
+</odoo>

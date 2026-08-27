@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_ecommerce_root"
+              name="Clinic eCommerce"
+              sequence="83"
+              groups="clinic_ecommerce.group_ecommerce_user"/>
+
+    <menuitem id="menu_ecommerce_sales"
+              name="Online Sales"
+              parent="menu_ecommerce_root"
+              action="action_clinic_ecommerce_sales"
+              sequence="10"/>
+
+    <menuitem id="menu_ecommerce_fulfillments"
+              name="Fulfillment Queue"
+              parent="menu_ecommerce_root"
+              action="action_ecommerce_fulfillment"
+              sequence="20"/>
+
+    <menuitem id="menu_ecommerce_catalog"
+              name="Online Catalog"
+              parent="menu_ecommerce_root"
+              action="action_ecommerce_catalog_item"
+              sequence="30"/>
+
+    <menuitem id="menu_ecommerce_governance"
+              name="Governance"
+              parent="menu_ecommerce_root"
+              sequence="90"
+              groups="clinic_ecommerce.group_ecommerce_manager"/>
+
+    <menuitem id="menu_ecommerce_discover"
+              name="Discover Offerings"
+              parent="menu_ecommerce_governance"
+              action="action_catalog_discovery_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_ecommerce_settings"
+              name="Settings"
+              parent="menu_ecommerce_governance"
+              action="action_ecommerce_settings"
+              sequence="90"/>
+</odoo>

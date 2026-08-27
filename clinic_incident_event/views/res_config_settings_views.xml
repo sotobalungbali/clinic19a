@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_incident_settings" model="ir.actions.act_window">
+        <field name="name">Incident Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_incident_event'}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_incident" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.incident</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Incident &amp; Event"
+                     name="clinic_incident_event"
+                     groups="clinic_incident_event.group_incident_manager">
+                    <block title="Incident Operations">
+                        <setting string="Default Case Owner"
+                                 help="Optional default owner used when an Incident is created without a specific Case Owner.">
+                            <field name="clinic_incident_default_case_owner_id"/>
+                        </setting>
+
+                        <setting string="Default CAPA Due Days"
+                                 help="Used when a Corrective/Preventive Action is created without an explicit due date.">
+                            <field name="clinic_incident_default_capa_days"/>
+                        </setting>
+
+                        <setting string="Staff Incident KPI"
+                                 help="Include non-cancelled incidents involving Staff in Clinic Staff KPI snapshots.">
+                            <field name="clinic_incident_staff_kpi_enabled"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

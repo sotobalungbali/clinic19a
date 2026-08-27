@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_quality_sop" model="ir.actions.report">
+        <field name="name">Current SOP</field>
+        <field name="model">clinic.quality.sop</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_quality.report_quality_sop_document</field>
+        <field name="report_file">clinic_quality.report_quality_sop_document</field>
+        <field name="print_report_name">'SOP - %s' % (object.code or '')</field>
+        <field name="binding_model_id" ref="model_clinic_quality_sop"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_quality_sop_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            <span t-field="o.code"/>
+                            <span> — </span>
+                            <span t-field="o.name"/>
+                        </h2>
+
+                        <t t-set="v" t-value="o.current_version_id"/>
+
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Company</th>
+                                    <td t-field="o.company_id"/>
+                                    <th>Status</th>
+                                    <td t-field="o.state"/>
+                                </tr>
+                                <tr>
+                                    <th>Current Version</th>
+                                    <td><span t-if="v" t-field="v.version_no"/></td>
+                                    <th>Effective Date</th>
+                                    <td><span t-if="v" t-field="v.effective_date"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Review Due</th>
+                                    <td><span t-if="v" t-field="v.review_due_date"/></td>
+                                    <th>Approved By</th>
+                                    <td><span t-if="v" t-field="v.approved_by_id"/></td>
+                                </tr>
+                                <tr>
+                                    <th>SOP Owner</th>
+                                    <td t-field="o.owner_user_id"/>
+                                    <th>Default Approver</th>
+                                    <td t-field="o.approver_user_id"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Purpose</h4>
+                        <p t-field="o.purpose"/>
+
+                        <h4>Scope</h4>
+                        <p t-field="o.scope"/>
+
+                        <h4>Responsibilities</h4>
+                        <p t-field="o.responsibilities"/>
+
+                        <t t-if="v">
+                            <h4>Change Summary</h4>
+                            <p t-field="v.change_summary"/>
+
+                            <h4>Controlled Procedure</h4>
+                            <div t-field="v.content"/>
+
+                            <p class="text-muted small mt-4">
+                                Approved SOP Version evidence.
+                                Changes require a new controlled SOP Version.
+                            </p>
+                        </t>
+
+                        <t t-if="not v">
+                            <div class="alert alert-warning">
+                                This SOP has no current Approved Version.
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

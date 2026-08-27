@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_consent_signature_search" model="ir.ui.view">
+        <field name="name">clinic.consent.signature.search</field>
+        <field name="model">clinic.consent.signature</field>
+        <field name="arch" type="xml">
+            <search string="Consent Signatures">
+                <field name="form_id"/>
+                <field name="patient_id"/>
+                <field name="signer_name"/>
+                <field name="role"/>
+                <field name="treatment_id"/>
+                <filter name="filter_signed" string="Signed" domain="[('state','=','signed')]"/>
+                <filter name="filter_revoked" string="Revoked" domain="[('state','=','revoked')]"/>
+                <filter name="filter_superseded" string="Superseded" domain="[('state','=','superseded')]"/>
+                <group>
+                    <filter name="group_by_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_by_role" string="Role" context="{'group_by':'role'}"/>
+                    <filter name="group_by_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_by_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_consent_signature_list" model="ir.ui.view">
+        <field name="name">clinic.consent.signature.list</field>
+        <field name="model">clinic.consent.signature</field>
+        <field name="arch" type="xml">
+            <list string="Signature Ledger"
+                  create="false" delete="false"
+                  decoration-success="state == 'signed'"
+                  decoration-danger="state == 'revoked'"
+                  decoration-muted="state == 'superseded'">
+                <field name="signed_on"/>
+                <field name="form_id"/>
+                <field name="patient_id"/>
+                <field name="role"/>
+                <field name="signer_name"/>
+                <field name="relationship" optional="show"/>
+                <field name="content_version" optional="show"/>
+                <field name="is_latest_for_role" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_consent_signature_form" model="ir.ui.view">
+        <field name="name">clinic.consent.signature.form</field>
+        <field name="model">clinic.consent.signature</field>
+        <field name="arch" type="xml">
+            <form string="Consent Signature" create="false" delete="false">
+                <header>
+                    <button name="action_revoke" type="object" string="Revoke"
+                            class="btn-secondary" invisible="state != 'signed'"/>
+                    <button name="action_mark_superseded" type="object" string="Mark Superseded"
+                            invisible="state != 'signed'"/>
+                    <button name="action_open_parent_consent" type="object"
+                            string="Open Consent" class="btn-primary"/>
+                    <button name="action_open_in_portal" type="object"
+                            string="Portal Preview"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="signed,revoked,superseded"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Signature Identity">
+                            <field name="form_id" readonly="1"/>
+                            <field name="role" readonly="state != 'signed'"/>
+                            <field name="signer_name" readonly="state != 'signed'"/>
+                            <field name="relationship" readonly="state != 'signed'"/>
+                            <field name="partner_id" readonly="state != 'signed'"/>
+                            <field name="user_id" readonly="1"/>
+                            <field name="signature_image" widget="image" readonly="1"/>
+                        </group>
+                        <group string="Audit Evidence">
+                            <field name="signed_on" readonly="1"/>
+                            <field name="ip_address" readonly="1"/>
+                            <field name="user_agent" readonly="1"/>
+                            <field name="device_hint" readonly="1"/>
+                            <field name="content_version" readonly="1"/>
+                            <field name="content_checksum" readonly="1"/>
+                            <field name="is_latest_for_role" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Clinical Context">
+                        <field name="patient_id" readonly="1"/>
+                        <field name="doctor_id" readonly="1"/>
+                        <field name="treatment_id" readonly="1"/>
+                        <field name="booking_id" readonly="1"/>
+                        <field name="room_session_id" readonly="1"/>
+                        <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                    </group>
+                    <group string="Revocation" invisible="state != 'revoked'">
+                        <field name="revoke_reason"/>
+                        <field name="revoked_on" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Content Snapshot">
+                            <field name="content_snapshot" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_consent_signature" model="ir.actions.act_window">
+        <field name="name">Signature Ledger</field>
+        <field name="res_model">clinic.consent.signature</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_consent_signature_search"/>
+    </record>
+</odoo>

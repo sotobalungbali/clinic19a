@@ -1,0 +1,19 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wallet_user,clinic.wallet user,model_clinic_wallet,clinic_wallet.group_wallet_user,1,1,1,0
+access_wallet_accountant,clinic.wallet accountant,model_clinic_wallet,clinic_wallet.group_wallet_accountant,1,1,1,0
+access_wallet_manager,clinic.wallet manager,model_clinic_wallet,clinic_wallet.group_wallet_manager,1,1,1,1
+access_wallet_tx_user,clinic.wallet.transaction user,model_clinic_wallet_transaction,clinic_wallet.group_wallet_user,1,0,0,0
+access_wallet_tx_accountant,clinic.wallet.transaction accountant,model_clinic_wallet_transaction,clinic_wallet.group_wallet_accountant,1,1,1,0
+access_wallet_tx_manager,clinic.wallet.transaction manager,model_clinic_wallet_transaction,clinic_wallet.group_wallet_manager,1,1,1,1
+access_wallet_rule_user,clinic.wallet.rule user,model_clinic_wallet_rule,clinic_wallet.group_wallet_user,1,0,0,0
+access_wallet_rule_manager,clinic.wallet.rule manager,model_clinic_wallet_rule,clinic_wallet.group_wallet_manager,1,1,1,1
+access_wallet_approver_manager,clinic.wallet.portal.mgr.approver manager,model_clinic_wallet_portal_mgr_approver,clinic_wallet.group_wallet_manager,1,1,1,1
+access_wallet_request_user,clinic.wallet.portal.request user,model_clinic_wallet_portal_request,clinic_wallet.group_wallet_user,1,1,1,0
+access_wallet_request_manager,clinic.wallet.portal.request manager,model_clinic_wallet_portal_request,clinic_wallet.group_wallet_manager,1,1,1,1
+access_wallet_operation_wizard_accountant,wallet.operation.wizard accountant,model_clinic_wallet_operation_wizard,clinic_wallet.group_wallet_accountant,1,1,1,1
+access_wallet_portal_read,clinic.wallet portal read,model_clinic_wallet,base.group_portal,1,0,0,0
+access_wallet_tx_portal_read,clinic.wallet.transaction portal read,model_clinic_wallet_transaction,base.group_portal,1,0,0,0
+access_wallet_request_portal,clinic.wallet.portal.request portal,model_clinic_wallet_portal_request,base.group_portal,1,1,1,0
+
+
+

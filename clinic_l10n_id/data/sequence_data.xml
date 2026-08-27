@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_clinic_l10n_id_tax_report" model="ir.sequence">
+        <field name="name">Clinic Indonesia PPN Report</field>
+        <field name="code">clinic.l10n.id.tax.report</field>
+        <field name="prefix">ID-PPN/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_clinic_l10n_id_compliance" model="ir.sequence">
+        <field name="name">Clinic Indonesia Compliance Run</field>
+        <field name="code">clinic.l10n.id.compliance.run</field>
+        <field name="prefix">ID-COMP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>
+

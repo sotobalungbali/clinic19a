@@ -1,0 +1,197 @@
+<!--
+ClinicOne — Clinical Imaging Management
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTE:
+- Keep README.rst (root) for long-form docs; this file is for the Apps UI description.
+- Avoid using <blockquote> across the ClinicOne project (team convention).
+-->
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span3">
+        <img src="icon.png" alt="ClinicOne Imaging Icon" style="width:100%; border-radius:16px;">
+      </div>
+      <div class="oe_span9">
+        <h1 class="oe_slogan">ClinicOne — Clinical Imaging Management</h1>
+        <h2 class="oe_slogan">Requests • Studies • Structured Findings • Reporting • KPIs • Portal</h2>
+        <p>
+          End-to-end imaging workflow for <b>Odoo 18 Community Edition</b>:
+          <b>Request → Screening/Consent → Acquisition (Study/Series/Image) → Findings → Report/Sign-off → Billing → KPIs</b>.
+          Seamlessly integrates with the ClinicOne suite (patients, doctors/HR, booking, treatment, billing, portal, etc.).
+        </p>
+        <p>
+          <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+          <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+          <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+          <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Dashboard/KPI</span>
+          <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Portal Sharing</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Overview</h3>
+        <p>
+          The module introduces an imaging domain model (request, case header, study/series/image, findings, result/report, device registry),
+          safety &amp; consent flows, staff credentialing, and imaging-aware billing. All relations are soft-coupled so modules remain
+          independently deployable while still providing deep cross-module context (appointment, encounter, treatment, prescription).
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Key Features</h3>
+        <ul>
+          <li><b>Imaging Request lifecycle</b>: Draft → Submitted/Approved → Scheduled → In Progress → Done/Cancelled.</li>
+          <li><b>Acquisition hierarchy</b>: Study → Series → Image (binary, attachment, or external URL/UID).</li>
+          <li><b>Structured Findings</b> &amp; <b>Reporting</b> with sign policy (solo/co-sign/supervised) and digital signature.</li>
+          <li><b>Safety &amp; Consent</b>: contrast allergy, eGFR/renal risk, implants/MRI safety, sedation plan; consent templates &amp; Q&amp;A.</li>
+          <li><b>Device registry</b> &amp; staff competencies; authorized operators per modality/device.</li>
+          <li><b>Billing integration</b>: imaging-aware invoices/lines, posting hooks, chatter tracebacks.</li>
+          <li><b>KPIs</b>: throughput, TAT (request→acq, acq→sign, sign→invoice), revenue by modality/type, staff productivity.</li>
+          <li><b>Portal</b>: key images &amp; final results sharing with patient preferences.</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Core Models</h3>
+        <ul>
+          <li><b>clinical.imaging.request</b> — order entry (priority, indication, consent, preferred device)</li>
+          <li><b>clinical.imaging</b> — case header bridging request→study/result (billing flags, context links)</li>
+          <li><b>clinical.imaging.study / .series / .image</b> — acquisition timeline &amp; operators; key images</li>
+          <li><b>clinical.imaging.finding</b> — structured observations, severities</li>
+          <li><b>clinical.imaging.result</b> — report authoring, sign-off/final/amend, portal flags</li>
+          <li><b>clinical.imaging.type</b> — modality taxonomy; protocols</li>
+          <li><b>clinical.imaging.device</b> — device registry, QA/QC attributes, authorized staff</li>
+          <li><b>account.move(_line)</b> — imaging-aware billing fields &amp; totals</li>
+        </ul>
+        <p style="margin-top:8px;">
+          Backward-compatible lookups and safe cross-module checks keep installs resilient when not all modules are present.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Holistic Integrations (26 Modules)</h3>
+        <p>
+          Seamless with: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment, clinic_billing,
+          clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_ecommerce, clinic_membership,
+          clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet, clinic_package, clinic_pricing, clinic_room_device,
+          clinic_hr, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit</i>.
+        </p>
+        <p style="font-size:12px;color:#666;">
+          Integrations are implemented via relations, computed helpers, activities, server actions, and mail templates.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span4">
+        <h3>Installation</h3>
+        <ol>
+          <li>Add this addon to your Odoo <i>addons_path</i> as <b>clinic_imaging</b>.</li>
+          <li>Update Apps list, search <b>ClinicOne: Clinical Imaging Management</b>.</li>
+          <li>Install; dependencies auto-resolve.</li>
+        </ol>
+      </div>
+      <div class="oe_span4">
+        <h3>Configuration</h3>
+        <ul>
+          <li>Define <b>Imaging Types</b> (modality, contrast use, protocols).</li>
+          <li>Register <b>Devices</b> and assign authorized staff/competencies.</li>
+          <li>Configure <b>Report Templates</b> &amp; signing policies.</li>
+          <li>Set up <b>Consent Templates</b> (contrast/MRI/sedation/radiation).</li>
+        </ul>
+      </div>
+      <div class="oe_span4">
+        <h3>Security</h3>
+        <ul>
+          <li>Groups: Imaging User, Technologist, Radiologist, Imaging Manager.</li>
+          <li>Record Rules: company scope, portal sharing of key images/results.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Demo &amp; Testing</h3>
+        <ul>
+          <li>Demo data: imaging types/devices, sample requests/studies/results (for sandbox only).</li>
+          <li>Unit tests: request workflow, acquisition chain, reporting/signing, billing hooks.</li>
+          <li>UAT scenarios: contrast/sedation flows, consent requirements, portal sharing, KPI snapshots.</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Performance Notes</h3>
+        <ul>
+          <li>Index frequently filtered fields: patient_id, doctor_id, modality, imaging_type_id, state, request_datetime, study_datetime, signed_datetime.</li>
+          <li>Use domains in dashboards; avoid heavy computes in list/tree views.</li>
+          <li>Archive completed items periodically in high-volume environments.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Assets</h3>
+        <ul>
+          <li>JS: <i>clinic_imaging_portal.js</i></li>
+          <li>QWeb: <i>clinical_imaging_report_templates.xml</i></li>
+          <li>SCSS: <i>clinic_imaging.scss</i></li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>API Endpoints</h3>
+        <ul>
+          <li><i>controllers/portal.py</i> — portal pages for key images &amp; results</li>
+          <li><i>controllers/web.py</i> — lightweight endpoints for viewer widgets</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Upgrade &amp; Migration</h3>
+        <ul>
+          <li>Module prefixes standardized to <b>clinic_*</b> across the suite.</li>
+          <li>Safe cross-module lookups guard installs where only a subset is deployed.</li>
+          <li>Sequences: <i>clinical.imaging</i>, <i>clinical.imaging.request</i>, <i>clinical.imaging.study</i>, <i>clinical.imaging.series</i>, <i>clinical.imaging.image</i>, <i>clinical.imaging.result</i>, <i>clinical.imaging.encounter.screening</i>, <i>clinical.imaging.encounter.note</i>, <i>clinic.treatment.imaging.plan</i>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>License</h3>
+        <p>Distributed under the <b>LGPL-3.0</b> license. See the <i>LICENSE</i> file.</p>
+      </div>
+      <div class="oe_span6">
+        <h3>Support &amp; Contribution</h3>
+        <p>
+          For issues or enhancements, follow the ClinicOne contribution guide:
+          write tests, follow code style, and document migration impacts.
+        </p>
+      </div>
+    </div>
+  </section>
+  

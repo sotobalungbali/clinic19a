@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_referral" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.referral</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="mode">extension</field>
+        <field name="priority" eval="70"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Referral"
+                     name="clinic_referral"
+                     groups="clinic_referral.group_referral_manager">
+                    <block title="Referral Governance">
+                        <setting string="Default Referral Validity"
+                                 help="Days automatically added to Referral Date when Valid Until is empty.">
+                            <field name="clinic_referral_default_valid_days"/>
+                        </setting>
+                        <setting string="Require Referral Source"
+                                 help="Require a Referral Source before a referral can be confirmed.">
+                            <field name="clinic_referral_require_source"/>
+                        </setting>
+                        <setting string="Require Program for Rewards"
+                                 help="Require a Referral Program whenever a referral uses a reward policy.">
+                            <field name="clinic_referral_require_program_for_reward"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_referral_settings" model="ir.actions.act_window">
+        <field name="name">Referral Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="path">clinic-referral-settings</field>
+        <field name="context">{'module': 'clinic_referral'}</field>
+    </record>
+</odoo>

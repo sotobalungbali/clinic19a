@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_room_search" model="ir.ui.view">
+        <field name="name">clinic.room.search</field>
+        <field name="model">clinic.room</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/><field name="code"/><field name="room_type_id"/><field name="status"/><field name="supervisor_id"/><field name="location_id"/>
+                <filter name="bookable" string="Bookable" domain="[('is_bookable','=',True)]"/>
+                <filter name="available" string="Available" domain="[('status','=','available')]"/>
+                <group><filter name="group_status" string="Status" context="{'group_by':'status'}"/><filter name="group_type" string="Room Type" context="{'group_by':'room_type_id'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}"/></group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_room_list" model="ir.ui.view">
+        <field name="name">clinic.room.list</field>
+        <field name="model">clinic.room</field>
+        <field name="arch" type="xml">
+            <list string="Rooms">
+                <field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="room_type_id"/><field name="status"/><field name="capacity"/><field name="is_bookable"/><field name="supervisor_id"/><field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_room_form" model="ir.ui.view">
+        <field name="name">clinic.room.form</field>
+        <field name="model">clinic.room</field>
+        <field name="arch" type="xml">
+            <form string="Clinic Room">
+                <header><field name="status" widget="statusbar" statusbar_visible="available,occupied,maintenance,closed"/></header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_assignments" type="object" class="oe_stat_button" icon="fa-medkit"><field name="device_count" widget="statinfo" string="Devices"/></button>
+                        <button name="action_view_availability" type="object" class="oe_stat_button" icon="fa-calendar"><span class="o_stat_text">Availability</span></button>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1><field name="code"/></div>
+                    <group><group><field name="room_type_id"/><field name="usage_kind"/><field name="booking_policy" readonly="1"/><field name="require_queue" readonly="1"/></group>
+                    <group><field name="capacity"/><field name="is_bookable"/><field name="supervisor_id"/><field name="location_id"/><field name="company_id" groups="base.group_multi_company"/></group></group>
+                    <notebook>
+                        <page string="Availability"><field name="availability_ids"><list editable="bottom"><field name="start"/><field name="stop"/><field name="shift"/><field name="state"/><button name="action_set_active" type="object" string="Activate" icon="fa-check"/></list></field></page>
+                        <page string="Device Assignments"><field name="assignment_ids"><list><field name="device_id"/><field name="state"/><field name="start"/><field name="end"/><button name="action_open_device" type="object" string="Device" icon="fa-external-link"/><button name="action_open_room" type="object" string="Room" icon="fa-external-link"/></list></field></page>
+                        <page string="Technicians"><field name="technician_ids" widget="many2many_tags"/></page>
+                        <page string="Notes"><field name="notes"/></page>
+                    </notebook>
+                </sheet><chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_clinic_room_type_search" model="ir.ui.view">
+        <field name="name">clinic.room.type.search</field>
+        <field name="model">clinic.room.type</field>
+        <field name="arch" type="xml">
+            <search><field name="name"/><field name="code"/><field name="usage_kind"/><field name="booking_policy"/><group><filter name="group_usage" string="Usage" context="{'group_by':'usage_kind'}"/><filter name="group_policy" string="Policy" context="{'group_by':'booking_policy'}"/></group></search>
+        </field>
+    </record>
+
+    <record id="view_clinic_room_type_list" model="ir.ui.view">
+        <field name="name">clinic.room.type.list</field>
+        <field name="model">clinic.room.type</field>
+        <field name="arch" type="xml">
+            <list><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="usage_kind"/><field name="booking_policy"/><field name="default_capacity"/><field name="default_is_bookable"/><field name="company_id" groups="base.group_multi_company"/></list>
+        </field>
+    </record>
+
+    <record id="view_clinic_room_type_form" model="ir.ui.view">
+        <field name="name">clinic.room.type.form</field>
+        <field name="model">clinic.room.type</field>
+        <field name="arch" type="xml">
+            <form string="Room Type"><sheet>
+                <div class="oe_button_box" name="button_box"><button name="action_view_rooms" type="object" class="oe_stat_button" icon="fa-building"><field name="room_count" widget="statinfo" string="Rooms"/></button></div>
+                <field name="image_1920" widget="image" class="oe_avatar"/><div class="oe_title"><h1><field name="name"/></h1><field name="code"/></div>
+                <group><group><field name="usage_kind"/><field name="booking_policy"/><field name="require_queue" readonly="1"/><field name="default_capacity"/><field name="default_is_bookable"/></group><group><field name="maintenance_team_id"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group></group>
+                <notebook><page string="Device Policy"><field name="device_category_ids" widget="many2many_tags"/><field name="feature_product_ids" widget="many2many_tags"/></page><page string="Doctors"><field name="doctor_ids" widget="many2many_tags"/></page><page string="Description"><field name="description"/></page></notebook>
+            </sheet><chatter/></form>
+        </field>
+    </record>
+
+    <record id="action_clinic_room" model="ir.actions.act_window">
+        <field name="name">Rooms</field><field name="res_model">clinic.room</field><field name="view_mode">list,form</field>
+    </record>
+    <record id="action_clinic_room_type" model="ir.actions.act_window">
+        <field name="name">Room Types</field><field name="res_model">clinic.room.type</field><field name="view_mode">list,form</field>
+    </record>
+</odoo>

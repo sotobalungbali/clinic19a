@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dashboard_snapshot_line_search" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.line.search</field>
+        <field name="model">clinic.dashboard.snapshot.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date_to"/>
+                <field name="snapshot_id"/>
+                <field name="board_id"/>
+                <field name="name"/>
+                <field name="metric_code"/>
+                <field name="definition_id"/>
+                <field name="report_run_id"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="date_to"/>
+                <filter name="critical" string="Critical" domain="[('status','=','critical')]"/>
+                <filter name="warning" string="Warning" domain="[('status','=','warning')]"/>
+                <filter name="no_data" string="No Data / Error" domain="[('status','in',('no_data','unsupported_scope','error'))]"/>
+                <filter name="on_track" string="On Track" domain="[('status','=','normal')]"/>
+                <group>
+                    <filter name="group_board" string="Dashboard" context="{'group_by':'board_id'}"/>
+                    <filter name="group_metric" string="Metric" context="{'group_by':'metric_code'}"/>
+                    <filter name="group_status" string="KPI Status" context="{'group_by':'status'}"/>
+                    <filter name="group_definition" string="Report" context="{'group_by':'definition_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_type" string="Dashboard Type" context="{'group_by':'dashboard_type'}"/>
+                    <filter name="group_month" string="Period Month" context="{'group_by':'date_to:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_dashboard_snapshot_line_list" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.line.list</field>
+        <field name="model">clinic.dashboard.snapshot.line</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'critical'"
+                  decoration-warning="status == 'warning'"
+                  decoration-muted="status in ('no_data','unsupported_scope','error')">
+                <field name="snapshot_id"/>
+                <field name="board_id"/>
+                <field name="name"/>
+                <field name="metric_code"/>
+                <field name="metric_type" widget="badge"/>
+                <field name="display_value"/>
+                <field name="previous_value"/>
+                <field name="trend_direction" widget="badge"/>
+                <field name="trend_percent"/>
+                <field name="target_value"/>
+                <field name="target_progress"/>
+                <field name="status" widget="badge"/>
+                <field name="report_run_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_metric" type="object" string="Metric" icon="fa-line-chart"
+                        invisible="not metric_id"/>
+                <button name="action_open_report_run" type="object" string="Report" icon="fa-external-link"
+                        invisible="not report_run_id"/>
+                <button name="action_open_definition" type="object" string="Definition" icon="fa-book"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dashboard_snapshot_line_form" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.line.form</field>
+        <field name="model">clinic.dashboard.snapshot.line</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_report_run" type="object" class="oe_stat_button" icon="fa-external-link"
+                                invisible="not report_run_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Report Run</span></div>
+                        </button>
+                        <button name="action_open_metric" type="object" class="oe_stat_button" icon="fa-line-chart"
+                                invisible="not metric_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Source Metric</span></div>
+                        </button>
+                        <button name="action_open_definition" type="object" class="oe_stat_button" icon="fa-book">
+                            <div class="o_stat_info"><span class="o_stat_text">Definition</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="metric_code"/></div>
+                    </div>
+
+                    <group>
+                        <group string="KPI Value">
+                            <field name="display_value"/>
+                            <field name="value"/>
+                            <field name="metric_type"/>
+                            <field name="status" widget="badge"/>
+                            <field name="status_label"/>
+                            <field name="display_style"/>
+                        </group>
+                        <group string="Trend &amp; Target">
+                            <field name="previous_value"/>
+                            <field name="has_trend"/>
+                            <field name="trend_direction"/>
+                            <field name="trend_percent"/>
+                            <field name="has_target"/>
+                            <field name="target_value" invisible="not has_target"/>
+                            <field name="target_progress" invisible="not has_target"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Dashboard Provenance">
+                            <field name="snapshot_id"/>
+                            <field name="board_id"/>
+                            <field name="dashboard_type"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="generated_at"/>
+                            <field name="widget_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                        </group>
+                        <group string="Report Provenance">
+                            <field name="definition_id"/>
+                            <field name="report_run_id"/>
+                            <field name="metric_id"/>
+                        </group>
+                    </group>
+
+                    <field name="note"/>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_report_run" type="object" string="Open Source Report" class="btn btn-primary"
+                                invisible="not report_run_id"/>
+                        <button name="action_open_metric" type="object" string="Open Source Metric" class="btn btn-secondary"
+                                invisible="not metric_id"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dashboard_snapshot_line_pivot" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.line.pivot</field>
+        <field name="model">clinic.dashboard.snapshot.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Dashboard KPI Analysis">
+                <field name="board_id" type="row"/>
+                <field name="metric_code" type="row"/>
+                <field name="status" type="col"/>
+                <field name="value" type="measure"/>
+                <field name="trend_percent" type="measure"/>
+                <field name="target_progress" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_snapshot_line_graph" model="ir.ui.view">
+        <field name="name">clinic.dashboard.snapshot.line.graph</field>
+        <field name="model">clinic.dashboard.snapshot.line</field>
+        <field name="arch" type="xml">
+            <graph string="Dashboard KPI Trend" type="line">
+                <field name="date_to" interval="month"/>
+                <field name="value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_snapshot_line" model="ir.actions.act_window">
+        <field name="name">Dashboard KPI Analysis</field>
+        <field name="res_model">clinic.dashboard.snapshot.line</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_dashboard_snapshot_line_search"/>
+    </record>
+</odoo>

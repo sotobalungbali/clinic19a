@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_integration_api_root" name="Integration API" sequence="90" groups="clinic_integration_api.group_api_operator"/>
+    <menuitem id="menu_api_operations" name="Operations" parent="menu_integration_api_root" sequence="10"/>
+    <menuitem id="menu_api_clients" name="API Clients" parent="menu_api_operations" action="action_api_clients" sequence="10"/>
+    <menuitem id="menu_api_providers" name="Providers" parent="menu_api_operations" action="action_api_providers" sequence="20"/>
+    <menuitem id="menu_api_events" name="Integration Events" parent="menu_api_operations" action="action_api_events" sequence="30"/>
+    <menuitem id="menu_api_subscriptions" name="Webhook Subscriptions" parent="menu_api_operations" action="action_api_subscriptions" sequence="40"/>
+    <menuitem id="menu_api_deliveries" name="Webhook Deliveries" parent="menu_api_operations" action="action_api_deliveries" sequence="50"/>
+
+    <menuitem id="menu_api_monitoring" name="Monitoring" parent="menu_integration_api_root" sequence="20"/>
+    <menuitem id="menu_api_requests" name="Request Logs" parent="menu_api_monitoring" action="action_api_requests" sequence="10"/>
+    <menuitem id="menu_api_idempotency" name="Idempotency" parent="menu_api_monitoring" action="action_api_idempotency" sequence="20" groups="clinic_integration_api.group_api_manager"/>
+
+    <menuitem id="menu_api_configuration" name="Configuration" parent="menu_integration_api_root" sequence="90" groups="clinic_integration_api.group_api_manager"/>
+    <menuitem id="menu_api_scopes" name="API Scopes" parent="menu_api_configuration" action="action_api_scopes" sequence="10"/>
+    <menuitem id="menu_api_event_types" name="Event Types" parent="menu_api_configuration" action="action_api_event_types" sequence="20"/>
+</odoo>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_reports_root"
+              name="Reports"
+              sequence="81"
+              groups="clinic_reports.group_reports_user"/>
+
+    <menuitem id="menu_reports_generate"
+              name="Generate Report"
+              parent="menu_reports_root"
+              action="action_generate_report_wizard"
+              sequence="5"
+              groups="clinic_reports.group_reports_analyst"/>
+
+    <menuitem id="menu_reports_financial"
+              name="Financial"
+              parent="menu_reports_root"
+              action="action_report_run_financial"
+              sequence="10"/>
+
+    <menuitem id="menu_reports_operational"
+              name="Operational"
+              parent="menu_reports_root"
+              action="action_report_run_operational"
+              sequence="20"/>
+
+    <menuitem id="menu_reports_clinical"
+              name="Clinical"
+              parent="menu_reports_root"
+              action="action_report_run_clinical"
+              sequence="30"/>
+
+    <menuitem id="menu_reports_analysis"
+              name="Analysis"
+              parent="menu_reports_root"
+              sequence="40"/>
+
+    <menuitem id="menu_reports_metrics"
+              name="KPI Metrics"
+              parent="menu_reports_analysis"
+              action="action_report_metric"
+              sequence="10"/>
+
+    <menuitem id="menu_reports_details"
+              name="Traceable Details"
+              parent="menu_reports_analysis"
+              action="action_report_detail"
+              sequence="20"/>
+
+    <menuitem id="menu_reports_governance"
+              name="Governance"
+              parent="menu_reports_root"
+              sequence="90"
+              groups="clinic_reports.group_reports_manager"/>
+
+    <menuitem id="menu_reports_catalog"
+              name="Report Catalog"
+              parent="menu_reports_governance"
+              action="action_report_definition"
+              sequence="10"/>
+
+    <menuitem id="menu_reports_runs"
+              name="All Report Runs"
+              parent="menu_reports_governance"
+              action="action_report_run"
+              sequence="20"/>
+
+    <menuitem id="menu_reports_schedules"
+              name="Report Schedules"
+              parent="menu_reports_governance"
+              action="action_report_schedule"
+              sequence="30"/>
+
+    <menuitem id="menu_reports_settings"
+              name="Settings"
+              parent="menu_reports_governance"
+              action="action_reports_settings"
+              sequence="90"/>
+</odoo>

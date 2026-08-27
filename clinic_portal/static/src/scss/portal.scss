@@ -1,0 +1,25 @@
+.o_clinic_portal_hero {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.06), rgba(25, 135, 84, 0.06));
+}
+
+.o_clinic_portal_summary {
+    border: 1px solid var(--border-color, #dee2e6);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+    color: var(--body-color, #212529);
+}
+
+.o_clinic_portal_summary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.08);
+}
+
+.o_clinic_portal_icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(108, 117, 125, 0.12);
+    font-size: 1.2rem;
+}

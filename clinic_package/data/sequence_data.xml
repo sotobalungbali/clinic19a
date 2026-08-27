@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_clinic_package" model="ir.sequence">
+        <field name="name">Clinic Package</field><field name="code">clinic.package</field>
+        <field name="prefix">PKG/%(year)s/</field><field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_package_allocation" model="ir.sequence">
+        <field name="name">Clinic Package Allocation</field><field name="code">clinic.package.allocation</field>
+        <field name="prefix">PKA/%(year)s/</field><field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_package_usage" model="ir.sequence">
+        <field name="name">Clinic Package Redemption</field><field name="code">clinic.package.usage</field>
+        <field name="prefix">PKU/%(year)s/</field><field name="padding">7</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_package_voucher" model="ir.sequence">
+        <field name="name">Clinic Package Voucher</field><field name="code">clinic.package.voucher</field>
+        <field name="prefix">PKV/%(year)s/</field><field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_package_voucher_batch" model="ir.sequence">
+        <field name="name">Clinic Package Voucher Batch</field><field name="code">clinic.package.voucher.batch</field>
+        <field name="prefix">PKVB/%(year)s/</field><field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_package_event" model="ir.sequence">
+        <field name="name">Clinic Package Integration Event</field><field name="code">clinic.package.integration.event</field>
+        <field name="prefix">PKIE/%(year)s/</field><field name="padding">7</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_wallet_search" model="ir.ui.view">
+        <field name="name">clinic.wallet.search</field>
+        <field name="model">clinic.wallet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="company_id"/>
+                <field name="expiry_date"/>
+                <filter name="filter_open" string="Active" domain="[('state','=','open')]"/>
+                <filter name="filter_suspended" string="Suspended" domain="[('state','=','suspended')]"/>
+                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="filter_closed" string="Closed" domain="[('state','=','closed')]"/>
+                <separator/>
+                <filter name="filter_positive" string="Positive Balance" domain="[('balance','&gt;',0)]"/>
+                <filter name="filter_reserved" string="Has Reserved Funds" domain="[('reserved_amount','&gt;',0)]"/>
+                <filter name="filter_expiry" string="Has Expiry" domain="[('expiry_date','!=',False)]"/>
+                <group>
+                    <filter name="group_partner" string="Patient / Customer" context="{'group_by':'partner_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_expiry" string="Expiry Month" context="{'group_by':'expiry_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_wallet_list" model="ir.ui.view">
+        <field name="name">clinic.wallet.list</field>
+        <field name="model">clinic.wallet</field>
+        <field name="arch" type="xml">
+            <list string="Patient Wallets" decoration-muted="state == 'closed'" decoration-warning="state == 'suspended'" decoration-info="state == 'draft'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="state" widget="badge"/>
+                <field name="balance" sum="Available Balance"/>
+                <field name="reserved_amount" sum="Reserved" optional="show"/>
+                <field name="total_topup" sum="Top-Up" optional="hide"/>
+                <field name="total_redeem" sum="Redeem" optional="hide"/>
+                <field name="expiry_date" optional="show"/>
+                <field name="last_transaction_date" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_wallet_form" model="ir.ui.view">
+        <field name="name">clinic.wallet.form</field>
+        <field name="model">clinic.wallet</field>
+        <field name="arch" type="xml">
+            <form string="Patient Wallet">
+                <header>
+                    <button name="action_open" type="object" string="Activate" class="btn-primary" groups="clinic_wallet.group_wallet_manager" invisible="state not in ('draft','suspended')"/>
+                    <button name="action_suspend" type="object" string="Suspend" groups="clinic_wallet.group_wallet_manager" invisible="state != 'open'"/>
+                    <button name="action_close" type="object" string="Close" groups="clinic_wallet.group_wallet_manager" invisible="state == 'closed'" confirm="Close this wallet? The balance and reserved amount must both be zero."/>
+                    <button name="action_print_statement" type="object" string="Print Statement" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open,suspended,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_transactions" type="object" class="oe_stat_button" icon="fa-exchange">
+                            <field name="transaction_count" widget="statinfo" string="Transactions"/>
+                        </button>
+                        <button name="action_view_rules" type="object" class="oe_stat_button" icon="fa-shield">
+                            <field name="rule_count" widget="statinfo" string="Rules"/>
+                        </button>
+                        <button name="action_view_partner" type="object" class="oe_stat_button" icon="fa-user" invisible="not partner_id" string="Customer"/>
+                    </div>
+
+                    <widget name="web_ribbon" title="SUSPENDED" bg_color="text-bg-warning" invisible="state != 'suspended'"/>
+                    <widget name="web_ribbon" title="CLOSED" bg_color="text-bg-secondary" invisible="state != 'closed'"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h3><field name="partner_id" options="{'no_create_edit': True}"/></h3>
+                    </div>
+
+                    <group>
+                        <group string="Wallet Identity">
+                            <field name="patient_id" options="{'no_create_edit': True}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" readonly="transaction_count &gt; 0"/>
+                            <field name="issue_date"/>
+                            <field name="expiry_date"/>
+                            <field name="expiry_policy"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Balance Position">
+                            <field name="balance" readonly="1" class="oe_inline"/>
+                            <field name="reserved_amount" readonly="1"/>
+                            <field name="total_topup" readonly="1"/>
+                            <field name="total_redeem" readonly="1"/>
+                            <field name="total_refund" readonly="1"/>
+                            <field name="last_transaction_date" readonly="1"/>
+                            <field name="membership_tier_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Body-form actions: prominent operational commands, not hidden in header. -->
+                    <div class="d-flex gap-2 mb-3" invisible="state != 'open'">
+                        <button name="action_topup" type="object" string="Top-Up" icon="fa-plus-circle" class="btn btn-primary" groups="clinic_wallet.group_wallet_accountant"/>
+                        <button name="action_refund" type="object" string="Refund" icon="fa-reply" class="btn btn-secondary" groups="clinic_wallet.group_wallet_accountant"/>
+                        <button name="action_adjust_in" type="object" string="Adjustment In" icon="fa-level-up" class="btn btn-secondary" groups="clinic_wallet.group_wallet_manager"/>
+                        <button name="action_adjust_out" type="object" string="Adjustment Out" icon="fa-level-down" class="btn btn-secondary" groups="clinic_wallet.group_wallet_manager"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Transactions" name="wallet_transactions">
+                            <field name="transaction_ids" readonly="1">
+                                <list string="Wallet Transactions" create="0" delete="0" decoration-success="state == 'posted'" decoration-muted="state == 'canceled'" decoration-warning="state == 'reserved'">
+                                    <field name="date"/>
+                                    <field name="name"/>
+                                    <field name="transaction_type"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="amount" sum="Amount"/>
+                                    <field name="amount_signed" sum="Net"/>
+                                    <field name="reference" optional="show"/>
+                                    <field name="move_id" optional="show"/>
+                                    <button name="action_open_self" type="object" icon="fa-external-link" title="Open Transaction"/>
+                                    <button name="action_view_move" type="object" icon="fa-book" title="Open Journal Entry" invisible="not move_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Usage Rules" name="wallet_rules">
+                            <field name="rule_ids" context="{'default_company_id': company_id, 'default_wallet_id': id}">
+                                <list editable="bottom" decoration-muted="not active">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="scope"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="min_amount" optional="show"/>
+                                    <field name="max_amount" optional="show"/>
+                                    <field name="date_start" optional="hide"/>
+                                    <field name="date_end" optional="show"/>
+                                    <field name="active" optional="hide"/>
+                                    <button name="action_open_self" type="object" icon="fa-external-link" title="Open Rule"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Governance Notes" name="wallet_notes">
+                            <field name="notes" placeholder="Internal wallet notes, exception rationale, or operational context..."/>
+                            <group string="Audit Snapshot">
+                                <field name="create_uid" readonly="1"/>
+                                <field name="create_date" readonly="1"/>
+                                <field name="write_uid" readonly="1"/>
+                                <field name="write_date" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wallets" model="ir.actions.act_window">
+        <field name="name">Patient Wallets</field>
+        <field name="res_model">clinic.wallet</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_wallet_search"/>
+        <field name="context">{'search_default_filter_open': 1}</field>
+    </record>
+</odoo>
+
+
+

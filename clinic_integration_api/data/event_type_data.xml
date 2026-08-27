@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="event_type_api_resource_changed" model="clinic.api.event.type"><field name="name">API Resource Changed</field><field name="code">api.resource.changed</field></record>
+    <record id="event_type_provider_webhook_received" model="clinic.api.event.type"><field name="name">Provider Webhook Received</field><field name="code">provider.webhook.received</field></record>
+</odoo>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_care_plan_search" model="ir.ui.view">
+        <field name="name">clinic.care.plan.search</field>
+        <field name="model">clinic.care.plan</field>
+        <field name="arch" type="xml">
+            <search string="Care Plans">
+                <field name="name"/>
+                <field name="display_name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="protocol_template_id"/>
+                <field name="treatment_ids"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="filter_active_state" string="Active" domain="[('state','=','active')]"/>
+                <filter name="filter_on_hold" string="On Hold" domain="[('state','=','on_hold')]"/>
+                <filter name="filter_completed" string="Completed" domain="[('state','=','completed')]"/>
+                <filter name="filter_critical" string="Critical" domain="[('priority','=','3')]"/>
+                <filter name="filter_confidential" string="Confidential" domain="[('is_confidential','=',True)]"/>
+                <separator/>
+                <filter name="filter_current" string="Current Plans"
+                        domain="[('state','in',('draft','active','on_hold'))]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_type" string="Plan Type" context="{'group_by':'plan_type'}"/>
+                    <filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_protocol" string="Protocol" context="{'group_by':'protocol_template_id'}"/>
+                    <filter name="group_start_month" string="Start Month" context="{'group_by':'start_date:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_plan_list" model="ir.ui.view">
+        <field name="name">clinic.care.plan.list</field>
+        <field name="model">clinic.care.plan</field>
+        <field name="arch" type="xml">
+            <list string="Care Plans"
+                  decoration-danger="priority == '3' and state not in ('completed','cancelled','archived')"
+                  decoration-warning="state == 'on_hold'"
+                  decoration-success="state == 'completed'"
+                  decoration-muted="state in ('cancelled','archived')">
+                <field name="priority" widget="priority"/>
+                <field name="name"/>
+                <field name="display_name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="plan_type"/>
+                <field name="protocol_template_id" optional="show"/>
+                <field name="start_date"/>
+                <field name="end_date" optional="show"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="adherence_score" widget="progressbar" optional="show"/>
+                <field name="amount_estimated" sum="Estimated"/>
+                <field name="amount_remaining" sum="Remaining" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_plan_calendar" model="ir.ui.view">
+        <field name="name">clinic.care.plan.calendar</field>
+        <field name="model">clinic.care.plan</field>
+        <field name="arch" type="xml">
+            <calendar string="Care Plan Timeline"
+                      date_start="start_date"
+                      date_stop="end_date"
+                      color="doctor_id"
+                      mode="month">
+                <field name="display_name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="state"/>
+                <field name="progress"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_plan_form" model="ir.ui.view">
+        <field name="name">clinic.care.plan.form</field>
+        <field name="model">clinic.care.plan</field>
+        <field name="arch" type="xml">
+            <form string="Care Plan">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_hold" type="object" string="Put On Hold"
+                            invisible="state != 'active'"/>
+                    <button name="action_activate" type="object" string="Resume" class="btn-primary"
+                            invisible="state != 'on_hold'"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-primary"
+                            invisible="state not in ('active','on_hold')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('completed','cancelled','archived')"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            invisible="state not in ('completed','cancelled')"/>
+                    <button name="action_print_summary" type="object" string="Print Summary"
+                            class="btn-secondary"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,on_hold,completed,cancelled,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_lines" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="step_count" widget="statinfo" string="Plan Lines"/>
+                        </button>
+                        <button name="action_open_sessions" type="object" class="oe_stat_button" icon="fa-calendar-check-o">
+                            <field name="session_count" widget="statinfo" string="Sessions"/>
+                        </button>
+                        <button name="action_open_prescriptions" type="object" class="oe_stat_button" icon="fa-medkit">
+                            <field name="prescription_count" widget="statinfo" string="Prescriptions"/>
+                        </button>
+                        <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" text="CONFIDENTIAL" bg_color="text-bg-danger"
+                            invisible="not is_confidential"/>
+
+                    <div class="oe_title">
+                        <label for="display_name" string="Care Plan Title"/>
+                        <h1><field name="display_name" placeholder="e.g. Acne Recovery Program"/></h1>
+                        <div>
+                            <field name="name" readonly="1" class="oe_inline"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Clinical Ownership">
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="practitioner_ids" widget="many2many_tags"/>
+                            <field name="referrer_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Plan Governance">
+                            <field name="plan_type"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="protocol_template_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="duration_days" readonly="1"/>
+                            <field name="is_confidential"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Execution Health">
+                            <field name="step_completed_count" readonly="1"/>
+                            <field name="step_count" readonly="1"/>
+                            <field name="progress" widget="progressbar" readonly="1"/>
+                        </group>
+                        <group string="Adherence &amp; Financial">
+                            <field name="adherence_score" widget="progressbar" readonly="1"/>
+                            <field name="amount_estimated"/>
+                            <field name="amount_invoiced" readonly="1"/>
+                            <field name="amount_remaining" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <div class="oe_button_box" name="body_action_box">
+                        <button name="action_generate_lines_from_protocol"
+                                type="object"
+                                string="Generate / Refresh Plan Lines from Protocol"
+                                class="btn btn-primary"
+                                icon="fa-magic"
+                                invisible="not protocol_template_id or state not in ('draft','on_hold')"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Execution Plan" name="execution_plan">
+                            <field name="line_ids" context="{'default_plan_id': id}">
+                                <list editable="bottom"
+                                      decoration-success="state == 'done'"
+                                      decoration-warning="state == 'in_progress'"
+                                      decoration-muted="state in ('skipped','cancelled')">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="expected_date"/>
+                                    <field name="scheduled_datetime" optional="show"/>
+                                    <field name="performer_id"/>
+                                    <field name="treatment_id" optional="show"/>
+                                    <field name="product_id" optional="show"/>
+                                    <field name="qty" optional="hide"/>
+                                    <field name="amount_estimated" optional="hide"/>
+                                    <button name="action_open_or_create_session" type="object"
+                                            title="Open or prepare Procedure Session"
+                                            icon="fa-stethoscope"/>
+                                    <button name="action_open_or_create_prescription" type="object"
+                                            title="Open or prepare eMAR Prescription"
+                                            icon="fa-medkit"/>
+                                    <button name="action_request_inventory" type="object"
+                                            title="Create Inventory activity"
+                                            icon="fa-cubes"
+                                            invisible="not is_product"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Clinical Context" name="clinical_context">
+                            <group>
+                                <group>
+                                    <field name="encounter_id"/>
+                                    <field name="booking_id"/>
+                                    <field name="triage_id"/>
+                                </group>
+                                <group>
+                                    <field name="consent_id"/>
+                                    <field name="treatment_ids" widget="many2many_tags"/>
+                                    <field name="product_line_count" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="diagnosis_summary" placeholder="Clinical problem statement and diagnosis summary..."/>
+                        </page>
+
+                        <page string="Instructions &amp; Notes" name="instructions_notes">
+                            <group>
+                                <field name="instruction_note"/>
+                                <field name="stage_note"/>
+                                <field name="internal_note"/>
+                            </group>
+                        </page>
+
+                        <page string="Evidence &amp; Attachments" name="evidence">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+
+                        <page string="Audit" name="audit">
+                            <group>
+                                <field name="create_uid" readonly="1"/>
+                                <field name="create_date" readonly="1"/>
+                                <field name="write_uid" readonly="1"/>
+                                <field name="write_date" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_care_plan" model="ir.actions.act_window">
+        <field name="name">Care Plans</field>
+        <field name="res_model">clinic.care.plan</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="search_view_id" ref="view_clinic_care_plan_search"/>
+        <field name="context">{'search_default_filter_current': 1}</field>
+    </record>
+</odoo>

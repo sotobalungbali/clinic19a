@@ -1,0 +1,17 @@
+CLINIC_AUDIT_BUILD_20260822_V19.0.2.0.3
+Project: ClinicOne
+Addon order: 38 / 39
+Baseline: clinic19a(20260822-092627).md
+Baseline SHA-256: 7e30d0e347a868f111b8caa22bda1c37d0999bcdeb61acfff13b3759fa52a1a6
+Architecture: immutable clinic.audit.event + legacy clinic.audit.log compatibility surface
+Runtime status: PENDING until Odoo 19 CE installation and smoke test
+
+Runtime repair: clinic.audit.review.is_overdue custom search contract added.
+
+Runtime Repair 19.0.2.0.3:
+- Added clinic.audit.log.action_open_log for XML validation.
+- Added final-registry action_open_log injection for the historical
+  clinic_encounter duplicate model ownership contract.
+- Preserved 19.0.2.0.1 dynamic is_overdue search repair.
+
+Runtime Repair 19.0.2.0.3: added real last_legacy_id pagination cursor; cumulative counters; preserved 19.0.2.0.1/0.2 repairs.

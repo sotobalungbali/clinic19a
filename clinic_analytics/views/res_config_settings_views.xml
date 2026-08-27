@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_analytics_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Analytics Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module':'clinic_analytics'}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_analytics" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.analytics</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Analytics"
+                     name="clinic_analytics"
+                     groups="clinic_analytics.group_analytics_manager">
+                    <block title="Insight Automation">
+                        <setting string="Automatically Generate Insights"
+                                 help="Generate threshold/trend insights after successful snapshots and forecast runs.">
+                            <field name="clinic_analytics_auto_generate_insights"/>
+                        </setting>
+                    </block>
+                    <block title="Integration Governance">
+                        <setting string="Publish Integration Events"
+                                 help="Publish non-PII analytics completion metadata into Clinic Integration API. Disabled by default.">
+                            <field name="clinic_analytics_publish_integration_events"/>
+                        </setting>
+                    </block>
+                    <block title="Forecast Guidance">
+                        <setting string="Default History Periods">
+                            <field name="clinic_analytics_default_history_periods"/>
+                        </setting>
+                        <setting string="Default Horizon Periods">
+                            <field name="clinic_analytics_default_horizon_periods"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

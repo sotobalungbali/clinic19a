@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_ecommerce" model="ir.module.category">
+        <field name="name">ClinicOne eCommerce</field>
+        <field name="sequence">68</field>
+    </record>
+
+    <record id="privilege_ecommerce" model="res.groups.privilege">
+        <field name="name">ClinicOne eCommerce</field>
+        <field name="category_id" ref="clinic_ecommerce.module_category_ecommerce"/>
+        <field name="sequence">68</field>
+    </record>
+
+    <record id="group_ecommerce_user" model="res.groups">
+        <field name="name">eCommerce User</field>
+        <field name="privilege_id" ref="clinic_ecommerce.privilege_ecommerce"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_ecommerce_operator" model="res.groups">
+        <field name="name">eCommerce Operator</field>
+        <field name="privilege_id" ref="clinic_ecommerce.privilege_ecommerce"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_ecommerce.group_ecommerce_user')),
+            Command.link(ref('sales_team.group_sale_salesman'))
+        ]"/>
+    </record>
+
+    <record id="group_ecommerce_manager" model="res.groups">
+        <field name="name">eCommerce Manager</field>
+        <field name="privilege_id" ref="clinic_ecommerce.privilege_ecommerce"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[Command.link(ref('clinic_ecommerce.group_ecommerce_operator'))]"/>
+    </record>
+
+    <record id="rule_ecommerce_catalog_company" model="ir.rule">
+        <field name="name">Clinic eCommerce Catalog: allowed companies</field>
+        <field name="model_id" ref="model_clinic_ecommerce_catalog_item"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_ecommerce.group_ecommerce_user'))]"/>
+    </record>
+
+    <record id="rule_ecommerce_fulfillment_company" model="ir.rule">
+        <field name="name">Clinic eCommerce Fulfillment: allowed companies</field>
+        <field name="model_id" ref="model_clinic_ecommerce_fulfillment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_ecommerce.group_ecommerce_user'))]"/>
+    </record>
+</odoo>

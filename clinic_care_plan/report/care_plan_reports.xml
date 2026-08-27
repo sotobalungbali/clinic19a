@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_care_plan_summary" model="ir.actions.report">
+        <field name="name">Care Plan Summary</field>
+        <field name="model">clinic.care.plan</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_care_plan.report_care_plan_summary</field>
+        <field name="report_file">clinic_care_plan.report_care_plan_summary</field>
+        <field name="binding_model_id" ref="model_clinic_care_plan"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Care Plan - %s' % (object.name or 'Summary')</field>
+    </record>
+
+    <template id="report_care_plan_summary">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Care Plan Summary</h2>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Plan</th>
+                                    <td><span t-field="o.name"/> — <span t-field="o.display_name"/></td>
+                                    <th>Status</th>
+                                    <td><span t-field="o.state"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Patient</th>
+                                    <td><span t-field="o.patient_id"/></td>
+                                    <th>Doctor</th>
+                                    <td><span t-field="o.doctor_id"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Period</th>
+                                    <td>
+                                        <span t-field="o.start_date"/>
+                                        <t t-if="o.end_date"> — <span t-field="o.end_date"/></t>
+                                    </td>
+                                    <th>Protocol</th>
+                                    <td><span t-field="o.protocol_template_id"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Clinical Context</h4>
+                        <p t-if="o.diagnosis_summary">
+                            <span t-field="o.diagnosis_summary"/>
+                        </p>
+
+                        <h4>Execution Plan</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Step</th>
+                                    <th>Status</th>
+                                    <th>Expected</th>
+                                    <th>Performer</th>
+                                    <th class="text-end">Estimate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td><span t-field="line.sequence"/></td>
+                                    <td><span t-field="line.name"/></td>
+                                    <td><span t-field="line.state"/></td>
+                                    <td><span t-field="line.expected_date"/></td>
+                                    <td><span t-field="line.performer_id"/></td>
+                                    <td class="text-end"><span t-field="line.amount_estimated"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Progress &amp; Financial</h4>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Progress</th>
+                                    <td><span t-esc="'%.1f%%' % (o.progress or 0.0)"/></td>
+                                    <th>Adherence</th>
+                                    <td><span t-esc="'%.1f%%' % (o.adherence_score or 0.0)"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Estimated</th>
+                                    <td><span t-field="o.amount_estimated"/></td>
+                                    <th>Remaining</th>
+                                    <td><span t-field="o.amount_remaining"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div t-if="o.instruction_note">
+                            <h4>Patient Instructions</h4>
+                            <div t-field="o.instruction_note"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

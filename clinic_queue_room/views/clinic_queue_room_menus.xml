@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_queue_room_root" name="Queue &amp; Rooms" sequence="35"/>
+    <menuitem id="menu_clinic_queue_room_operations" name="Operations"
+              parent="menu_clinic_queue_room_root" sequence="10"/>
+    <menuitem id="menu_clinic_queue_room_monitoring" name="Monitoring"
+              parent="menu_clinic_queue_room_root" sequence="20"/>
+    <menuitem id="menu_clinic_queue_room_configuration" name="Configuration"
+              parent="menu_clinic_queue_room_root" sequence="90"/>
+
+    <menuitem id="menu_clinic_queue" name="Clinical Queue"
+              parent="menu_clinic_queue_room_operations" action="action_clinic_queue" sequence="10"/>
+    <menuitem id="menu_clinic_queue_token" name="Queue Tokens"
+              parent="menu_clinic_queue_room_operations" action="action_clinic_queue_token" sequence="20"/>
+    <menuitem id="menu_clinic_room_assignment" name="Room Assignments"
+              parent="menu_clinic_queue_room_operations" action="action_clinic_room_assignment" sequence="30"/>
+    <menuitem id="menu_clinic_queue_visit" name="Visits"
+              parent="menu_clinic_queue_room_operations" action="action_clinic_queue_visit" sequence="40"/>
+    <menuitem id="menu_clinic_queue_ticket" name="Tickets"
+              parent="menu_clinic_queue_room_operations" action="action_clinic_queue_ticket" sequence="50"/>
+
+    <menuitem id="menu_clinic_queue_event" name="Queue Events"
+              parent="menu_clinic_queue_room_monitoring" action="action_clinic_queue_event" sequence="10"/>
+
+    <menuitem id="menu_clinic_queue_stage" name="Queue Stages"
+              parent="menu_clinic_queue_room_configuration" action="action_clinic_queue_stage" sequence="10"/>
+    <menuitem id="menu_clinic_queue_channel" name="Queue Channels"
+              parent="menu_clinic_queue_room_configuration" action="action_clinic_queue_channel" sequence="20"/>
+</odoo>

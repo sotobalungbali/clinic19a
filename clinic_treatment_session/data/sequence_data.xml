@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_treatment_session" model="ir.sequence">
+        <field name="name">Clinic Treatment Session</field>
+        <field name="code">clinic_treatment_session.session</field>
+        <field name="prefix">TS/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

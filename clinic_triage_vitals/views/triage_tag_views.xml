@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_triage_tag_search" model="ir.ui.view">
+        <field name="name">clinic.triage.tag.search</field>
+        <field name="model">clinic.triage.tag</field>
+        <field name="arch" type="xml">
+            <search string="Triage Tags">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="tag_type"/>
+                <field name="parent_id"/>
+                <filter name="filter_active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="filter_billable" string="Billable" domain="[('billable', '=', True)]"/>
+                <separator/>
+                <group>
+                    <filter name="group_type" string="Tag Type" context="{'group_by': 'tag_type'}"/>
+                    <filter name="group_parent" string="Parent" context="{'group_by': 'parent_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_triage_tag_list" model="ir.ui.view">
+        <field name="name">clinic.triage.tag.list</field>
+        <field name="model">clinic.triage.tag</field>
+        <field name="arch" type="xml">
+            <list string="Triage Tags" default_order="sequence, name, id">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="tag_type"/>
+                <field name="parent_id" optional="show"/>
+                <field name="session_count"/>
+                <field name="last_used_on" optional="hide"/>
+                <field name="recommended_room_type_id" optional="hide"/>
+                <field name="billable" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_triage_tag_form" model="ir.ui.view">
+        <field name="name">clinic.triage.tag.form</field>
+        <field name="model">clinic.triage.tag</field>
+        <field name="arch" type="xml">
+            <form string="Triage Tag">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sessions"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-stethoscope">
+                            <field name="session_count" widget="statinfo" string="Triage Sessions"/>
+                        </button>
+                    </div>
+
+                    <field name="image_128" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Allergy"/></h1>
+                        <div class="o_row">
+                            <field name="code" placeholder="ALLERGY"/>
+                            <field name="active"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Classification">
+                            <field name="sequence"/>
+                            <field name="tag_type"/>
+                            <field name="parent_id"/>
+                            <field name="color"/>
+                            <field name="color_hex"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Routing &amp; Billing">
+                            <field name="recommended_room_type_id"/>
+                            <field name="default_queue_stage_id"/>
+                            <field name="default_activity_type_id"/>
+                            <field name="billable"/>
+                            <field name="product_id" invisible="not billable"/>
+                            <field name="default_fee" invisible="not billable"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Guidelines" name="guidelines">
+                            <field name="description"/>
+                            <field name="guidelines_html" widget="html"/>
+                        </page>
+                        <page string="Children" name="children">
+                            <field name="child_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="tag_type"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Automation" name="automation">
+                            <group>
+                                <field name="rule_domain"/>
+                                <field name="last_used_on" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_triage_tag" model="ir.actions.act_window">
+        <field name="name">Triage Tags</field>
+        <field name="res_model">clinic.triage.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_triage_tag_search"/>
+    </record>
+</odoo>

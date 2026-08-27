@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="public_feedback_form" name="ClinicOne Patient Feedback">
+        <t t-call="website.layout">
+            <div class="container py-5" style="max-width: 860px;">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4 p-md-5">
+                        <h1 class="h3 mb-3">
+                            <t t-out="survey.title if survey else 'Patient Feedback'"/>
+                        </h1>
+
+                        <div t-if="survey and survey.introduction_html" class="mb-4"
+                             t-field="survey.introduction_html"/>
+
+                        <div t-if="error" class="alert alert-danger" role="alert">
+                            <t t-out="error"/>
+                        </div>
+
+                        <form t-att-action="'/clinic/feedback/%s' % token" method="post">
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Feedback Type</label>
+                                <select name="feedback_type" class="form-select">
+                                    <option value="satisfaction">Satisfaction</option>
+                                    <option value="compliment">Compliment</option>
+                                    <option value="suggestion">Suggestion</option>
+                                    <option value="complaint">Complaint</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4"
+                                 t-if="not survey or survey.require_overall_rating">
+                                <label class="form-label fw-bold">
+                                    Overall Rating
+                                </label>
+                                <select name="overall_rating"
+                                        class="form-select"
+                                        required="required">
+                                    <option value="">Select a rating</option>
+                                    <option value="5">5 - Very Satisfied</option>
+                                    <option value="4">4 - Satisfied</option>
+                                    <option value="3">3 - Neutral</option>
+                                    <option value="2">2 - Dissatisfied</option>
+                                    <option value="1">1 - Very Dissatisfied</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4" t-if="survey and survey.ask_nps">
+                                <label class="form-label fw-bold">
+                                    How likely are you to recommend us? (0-10)
+                                </label>
+                                <select name="nps_score" class="form-select">
+                                    <option value="">Prefer not to answer</option>
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4"
+                                 t-if="not survey or survey.ask_recommendation">
+                                <label class="form-label fw-bold">
+                                    Would you recommend our clinic?
+                                </label>
+                                <select name="would_recommend" class="form-select">
+                                    <option value="na">Prefer not to say</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+
+                            <t t-if="survey">
+                                <t t-foreach="survey.question_ids.filtered('active')" t-as="question">
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">
+                                            <t t-out="question.name"/>
+                                            <span t-if="question.required" class="text-danger">*</span>
+                                        </label>
+                                        <div t-if="question.help_text" class="form-text mb-2">
+                                            <t t-out="question.help_text"/>
+                                        </div>
+
+                                        <select t-if="question.question_type == 'rating_1_5'"
+                                                t-att-name="'q_%s' % question.id"
+                                                class="form-select"
+                                                t-att-required="'required' if question.required else None">
+                                            <option value="">Select</option>
+                                            <option value="5">5 - Excellent</option>
+                                            <option value="4">4 - Good</option>
+                                            <option value="3">3 - Fair</option>
+                                            <option value="2">2 - Poor</option>
+                                            <option value="1">1 - Very Poor</option>
+                                        </select>
+
+                                        <select t-elif="question.question_type == 'nps_0_10'"
+                                                t-att-name="'q_%s' % question.id"
+                                                class="form-select"
+                                                t-att-required="'required' if question.required else None">
+                                            <option value="">Select</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+
+                                        <select t-elif="question.question_type == 'yes_no'"
+                                                t-att-name="'q_%s' % question.id"
+                                                class="form-select"
+                                                t-att-required="'required' if question.required else None">
+                                            <option value="">Select</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+
+                                        <textarea t-else=""
+                                                  t-att-name="'q_%s' % question.id"
+                                                  class="form-control"
+                                                  rows="3"
+                                                  t-att-required="'required' if question.required else None"/>
+                                    </div>
+                                </t>
+                            </t>
+
+                            <div class="mb-4" t-if="not survey or survey.ask_comment">
+                                <label class="form-label fw-bold">
+                                    Additional Comments
+                                </label>
+                                <textarea name="comment" class="form-control" rows="5"/>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="anonymous_public"
+                                       value="1"
+                                       id="anonymous_public"/>
+                                <label class="form-check-label" for="anonymous_public">
+                                    Please keep my name anonymous in public/internal presentation where appropriate.
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Submit Feedback
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="public_feedback_thank_you" name="ClinicOne Feedback Thank You">
+        <t t-call="website.layout">
+            <div class="container py-5" style="max-width: 760px;">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-5 text-center">
+                        <h1 class="h3 mb-3">Thank You</h1>
+                        <div t-if="survey and survey.thank_you_html"
+                             t-field="survey.thank_you_html"/>
+                        <p t-else="">
+                            Your feedback has been received. Thank you for helping us improve.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="public_feedback_unavailable" name="ClinicOne Feedback Link Unavailable">
+        <t t-call="website.layout">
+            <div class="container py-5" style="max-width: 760px;">
+                <div class="alert alert-warning">
+                    <h1 class="h4">Feedback Link Unavailable</h1>
+                    <p class="mb-0"><t t-out="reason"/></p>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

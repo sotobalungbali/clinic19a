@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_insurance_root"
+              name="Insurance"
+              sequence="78"
+              groups="clinic_insurance_authorization.group_clinic_insurance_user"/>
+
+    <menuitem id="menu_clinic_insurance_coverage"
+              name="Coverage"
+              parent="menu_clinic_insurance_root"
+              sequence="10"/>
+    <menuitem id="menu_clinic_insurance_payers"
+              name="Insurers / Payers"
+              parent="menu_clinic_insurance_coverage"
+              action="action_insurance_payers"
+              sequence="10"/>
+    <menuitem id="menu_clinic_insurance_plans"
+              name="Insurance Plans"
+              parent="menu_clinic_insurance_coverage"
+              action="action_insurance_plan"
+              sequence="20"/>
+    <menuitem id="menu_clinic_insurance_policies"
+              name="Patient Policies"
+              parent="menu_clinic_insurance_coverage"
+              action="action_insurance_policy"
+              sequence="30"/>
+    <menuitem id="menu_clinic_insurance_eligibility"
+              name="Eligibility Checks"
+              parent="menu_clinic_insurance_coverage"
+              action="action_insurance_eligibility"
+              sequence="40"/>
+
+    <menuitem id="menu_clinic_insurance_authorization_root"
+              name="Pre-Authorization"
+              parent="menu_clinic_insurance_root"
+              sequence="20"/>
+    <menuitem id="menu_clinic_insurance_authorizations"
+              name="Authorizations"
+              parent="menu_clinic_insurance_authorization_root"
+              action="action_clinic_insurance_authorization"
+              sequence="10"/>
+    <menuitem id="menu_clinic_insurance_bookings"
+              name="Insurance Bookings"
+              parent="menu_clinic_insurance_authorization_root"
+              action="action_insurance_bookings"
+              sequence="20"/>
+
+    <menuitem id="menu_clinic_insurance_claim_root"
+              name="Claims"
+              parent="menu_clinic_insurance_root"
+              sequence="30"/>
+    <menuitem id="menu_clinic_insurance_claims"
+              name="Insurance Claims"
+              parent="menu_clinic_insurance_claim_root"
+              action="action_insurance_claim_enterprise"
+              sequence="10"/>
+    <menuitem id="menu_clinic_insurance_billing"
+              name="Insurance Billing"
+              parent="menu_clinic_insurance_claim_root"
+              action="action_insurance_billing"
+              sequence="20"/>
+
+    <menuitem id="menu_clinic_insurance_configuration"
+              name="Configuration"
+              parent="menu_clinic_insurance_root"
+              sequence="90"
+              groups="clinic_insurance_authorization.group_clinic_insurance_manager"/>
+    <menuitem id="menu_clinic_insurance_benefit_rules"
+              name="Benefit / Coverage Rules"
+              parent="menu_clinic_insurance_configuration"
+              action="action_insurance_plan_rule"
+              sequence="10"/>
+    <menuitem id="menu_clinic_insurance_settings"
+              name="Settings"
+              parent="menu_clinic_insurance_configuration"
+              action="action_insurance_settings"
+              sequence="90"/>
+</odoo>
+

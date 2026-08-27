@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_compliance" model="ir.actions.report">
+        <field name="name">Indonesia Localization Compliance Evidence</field>
+        <field name="model">clinic.l10n.id.compliance.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_l10n_id.report_compliance</field>
+        <field name="report_file">clinic_l10n_id.report_compliance</field>
+        <field name="binding_model_id" ref="model_clinic_l10n_id_compliance_run"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Indonesia Compliance - %s' % (object.name)</field>
+    </record>
+</odoo>
+

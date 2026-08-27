@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <menuitem id="menu_clinic_membership_root" name="Membership" sequence="45" groups="clinic_membership.group_clinic_membership_user"/>
+  <menuitem id="menu_membership_operations" name="Operations" parent="menu_clinic_membership_root" sequence="10"/>
+  <menuitem id="menu_membership_contracts" name="Contracts" parent="menu_membership_operations" action="action_membership_contracts" sequence="10"/>
+  <menuitem id="menu_membership_usage" name="Usage &amp; Redemptions" parent="menu_membership_operations" action="action_membership_usages" sequence="20"/>
+  <menuitem id="menu_membership_holds" name="Hold Requests" parent="menu_membership_operations" action="action_membership_holds" sequence="30"/>
+  <menuitem id="menu_membership_benefits_root" name="Programs &amp; Benefits" parent="menu_clinic_membership_root" sequence="20"/>
+  <menuitem id="menu_membership_plans" name="Plans" parent="menu_membership_benefits_root" action="action_membership_plans" sequence="10"/>
+  <menuitem id="menu_membership_benefits" name="Benefit Rules" parent="menu_membership_benefits_root" action="action_membership_benefits" sequence="20"/>
+  <menuitem id="menu_membership_entitlements" name="Contract Entitlements" parent="menu_membership_benefits_root" action="action_membership_entitlements" sequence="30"/>
+  <menuitem id="menu_membership_vouchers" name="Vouchers" parent="menu_membership_benefits_root" action="action_membership_vouchers" sequence="40"/>
+  <menuitem id="menu_membership_points" name="Loyalty Point Ledger" parent="menu_membership_benefits_root" action="action_membership_points" sequence="50"/>
+  <menuitem id="menu_membership_traceability" name="Traceability" parent="menu_clinic_membership_root" sequence="30" groups="clinic_membership.group_clinic_membership_manager"/>
+  <menuitem id="menu_membership_events" name="Integration Events" parent="menu_membership_traceability" action="action_membership_events" sequence="10"/>
+  <menuitem id="menu_membership_configuration" name="Configuration" parent="menu_clinic_membership_root" sequence="90" groups="clinic_membership.group_clinic_membership_manager"/>
+  <menuitem id="menu_membership_settings" name="Settings" parent="menu_membership_configuration" action="action_membership_settings" sequence="10"/>
+</odoo>
+

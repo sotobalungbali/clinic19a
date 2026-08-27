@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_incident" model="ir.module.category">
+        <field name="name">ClinicOne Incident and Event</field>
+        <field name="sequence">75</field>
+    </record>
+
+    <record id="privilege_incident" model="res.groups.privilege">
+        <field name="name">ClinicOne Incident and Event</field>
+        <field name="category_id" ref="clinic_incident_event.module_category_incident"/>
+        <field name="sequence">75</field>
+    </record>
+
+    <record id="group_incident_user" model="res.groups">
+        <field name="name">Incident User</field>
+        <field name="privilege_id" ref="clinic_incident_event.privilege_incident"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_incident_reporter" model="res.groups">
+        <field name="name">Incident Reporter</field>
+        <field name="privilege_id" ref="clinic_incident_event.privilege_incident"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_incident_event.group_incident_user'))
+        ]"/>
+    </record>
+
+    <record id="group_incident_investigator" model="res.groups">
+        <field name="name">Incident Investigator</field>
+        <field name="privilege_id" ref="clinic_incident_event.privilege_incident"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_incident_event.group_incident_reporter'))
+        ]"/>
+    </record>
+
+    <record id="group_incident_manager" model="res.groups">
+        <field name="name">Incident Manager</field>
+        <field name="privilege_id" ref="clinic_incident_event.privilege_incident"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_incident_event.group_incident_investigator'))
+        ]"/>
+    </record>
+
+    <record id="rule_incident_category_company" model="ir.rule">
+        <field name="name">Incident Category: shared or allowed companies</field>
+        <field name="model_id" ref="model_clinic_incident_category"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_incident_event.group_incident_user'))]"/>
+    </record>
+
+    <record id="rule_incident_company_branch" model="ir.rule">
+        <field name="name">Incident: allowed companies and branches</field>
+        <field name="model_id" ref="model_clinic_incident"/>
+        <field name="domain_force">[
+            '&amp;',
+            ('company_id', 'in', company_ids),
+            '|',
+            ('branch_id', '=', False),
+            ('branch_id', 'in', user.clinic_incident_access_branch_ids.ids)
+        ]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_incident_event.group_incident_user'))]"/>
+    </record>
+
+    <record id="rule_incident_investigation_company_branch" model="ir.rule">
+        <field name="name">Incident Investigation: allowed companies and branches</field>
+        <field name="model_id" ref="model_clinic_incident_investigation"/>
+        <field name="domain_force">[
+            '&amp;',
+            ('company_id', 'in', company_ids),
+            '|',
+            ('branch_id', '=', False),
+            ('branch_id', 'in', user.clinic_incident_access_branch_ids.ids)
+        ]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_incident_event.group_incident_user'))]"/>
+    </record>
+
+    <record id="rule_incident_action_company_branch" model="ir.rule">
+        <field name="name">Incident CAPA: allowed companies and branches</field>
+        <field name="model_id" ref="model_clinic_incident_action"/>
+        <field name="domain_force">[
+            '&amp;',
+            ('company_id', 'in', company_ids),
+            '|',
+            ('branch_id', '=', False),
+            ('branch_id', 'in', user.clinic_incident_access_branch_ids.ids)
+        ]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_incident_event.group_incident_user'))]"/>
+    </record>
+
+    <record id="rule_incident_timeline_company_branch" model="ir.rule">
+        <field name="name">Incident Timeline: allowed companies and branches</field>
+        <field name="model_id" ref="model_clinic_incident_timeline"/>
+        <field name="domain_force">[
+            '&amp;',
+            ('company_id', 'in', company_ids),
+            '|',
+            ('branch_id', '=', False),
+            ('branch_id', 'in', user.clinic_incident_access_branch_ids.ids)
+        ]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_incident_event.group_incident_user'))]"/>
+    </record>
+</odoo>

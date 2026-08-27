@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_wallet" model="ir.ui.view">
+        <field name="name">res.partner.form.clinic.wallet</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_wallet" type="object" class="oe_stat_button" icon="fa-credit-card" groups="clinic_wallet.group_wallet_user">
+                    <field name="wallet_count_total" widget="statinfo" string="Wallets"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Patient Wallet" name="clinic_wallet" groups="clinic_wallet.group_wallet_user">
+                    <group>
+                        <group string="Current Company Wallet">
+                            <field name="wallet_id_current_company" readonly="1"/>
+                            <field name="wallet_state" widget="badge" readonly="1"/>
+                            <field name="wallet_balance" readonly="1"/>
+                            <field name="wallet_reserved_amount" readonly="1"/>
+                            <field name="wallet_currency_id" invisible="1"/>
+                            <button name="action_create_wallet" type="object" string="Create Wallet" class="btn-primary" groups="clinic_wallet.group_wallet_manager" invisible="wallet_id_current_company"/>
+                            <button name="action_open_wallet" type="object" string="Open Wallet" class="btn-secondary" invisible="not wallet_id_current_company"/>
+                            <button name="action_view_wallet_transactions" type="object" string="View Transactions" class="btn-secondary" invisible="not wallet_id_current_company"/>
+                        </group>
+                        <group string="Lifetime Snapshot">
+                            <field name="wallet_total_topup" readonly="1"/>
+                            <field name="wallet_total_redeem" readonly="1"/>
+                            <field name="wallet_total_refund" readonly="1"/>
+                            <field name="wallet_last_transaction_date" readonly="1"/>
+                            <field name="wallet_count_total" readonly="1"/>
+                            <field name="wallet_count_active" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="wallet_ids" readonly="1">
+                        <list create="0" delete="0">
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="state" widget="badge"/>
+                            <field name="balance"/>
+                            <field name="reserved_amount"/>
+                            <field name="expiry_date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+
+

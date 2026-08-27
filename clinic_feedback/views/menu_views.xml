@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_feedback_root"
+              name="Feedback"
+              sequence="80"
+              groups="clinic_feedback.group_feedback_user"/>
+
+    <menuitem id="menu_feedback_operations"
+              name="Operations"
+              parent="menu_feedback_root"
+              sequence="10"/>
+
+    <menuitem id="menu_feedback_requests"
+              name="Feedback Requests"
+              parent="menu_feedback_operations"
+              action="action_feedback_request"
+              sequence="10"/>
+
+    <menuitem id="menu_feedback_responses"
+              name="Patient Feedback"
+              parent="menu_feedback_operations"
+              action="action_feedback_response"
+              sequence="20"/>
+
+    <menuitem id="menu_feedback_escalations"
+              name="Service Recovery"
+              parent="menu_feedback_operations"
+              action="action_feedback_escalation"
+              sequence="30"/>
+
+    <menuitem id="menu_feedback_sources"
+              name="Source Queues"
+              parent="menu_feedback_root"
+              sequence="20"/>
+
+    <menuitem id="menu_feedback_encounters"
+              name="Completed Encounters"
+              parent="menu_feedback_sources"
+              action="action_feedback_completed_encounters"
+              sequence="10"/>
+
+    <menuitem id="menu_feedback_postcare"
+              name="Completed Post-Care"
+              parent="menu_feedback_sources"
+              action="action_feedback_completed_postcare"
+              sequence="20"/>
+
+    <menuitem id="menu_feedback_bookings"
+              name="Completed Bookings"
+              parent="menu_feedback_sources"
+              action="action_feedback_completed_bookings"
+              sequence="30"/>
+
+    <menuitem id="menu_feedback_queue"
+              name="Queue Context"
+              parent="menu_feedback_sources"
+              action="action_feedback_queue_visits"
+              sequence="40"/>
+
+    <menuitem id="menu_feedback_legacy_booking"
+              name="Booking Feedback Links"
+              parent="menu_feedback_sources"
+              action="action_legacy_booking_feedback"
+              sequence="50"/>
+
+    <menuitem id="menu_feedback_insights"
+              name="Satisfaction Views"
+              parent="menu_feedback_root"
+              sequence="30"/>
+
+    <menuitem id="menu_feedback_patients"
+              name="Patients"
+              parent="menu_feedback_insights"
+              action="action_feedback_patients"
+              sequence="10"/>
+
+    <menuitem id="menu_feedback_doctors"
+              name="Doctors"
+              parent="menu_feedback_insights"
+              action="action_feedback_doctors"
+              sequence="20"/>
+
+    <menuitem id="menu_feedback_staff"
+              name="Staff"
+              parent="menu_feedback_insights"
+              action="action_feedback_staff"
+              sequence="30"/>
+
+    <menuitem id="menu_feedback_configuration"
+              name="Configuration"
+              parent="menu_feedback_root"
+              sequence="90"
+              groups="clinic_feedback.group_feedback_manager"/>
+
+    <menuitem id="menu_feedback_surveys"
+              name="Satisfaction Surveys"
+              parent="menu_feedback_configuration"
+              action="action_feedback_survey"
+              sequence="10"/>
+
+    <menuitem id="menu_feedback_questions"
+              name="Survey Questions"
+              parent="menu_feedback_configuration"
+              action="action_feedback_question"
+              sequence="20"/>
+
+    <menuitem id="menu_feedback_answers"
+              name="Survey Answers"
+              parent="menu_feedback_configuration"
+              action="action_feedback_answer"
+              sequence="30"/>
+
+    <menuitem id="menu_feedback_settings"
+              name="Settings"
+              parent="menu_feedback_configuration"
+              action="action_feedback_settings"
+              sequence="90"/>
+</odoo>

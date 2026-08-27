@@ -1,0 +1,1157 @@
+<odoo>
+  <!-- ================================================================== -->
+  <!-- Encounter -->
+  <!-- ================================================================== -->
+  <record id="view_clinic_encounter_form" model="ir.ui.view">
+    <field name="name">clinic.encounter.form.enterprise</field>
+    <field name="model">clinic.encounter</field>
+    <field name="arch" type="xml">
+      <form string="Clinical Encounter">
+        <header>
+          <button name="action_start" type="object" string="Start Encounter" class="btn-primary"
+                  invisible="state != 'draft'"/>
+          <button name="action_done" type="object" string="Complete" class="btn-primary"
+                  invisible="state != 'in_progress'"/>
+          <button name="action_set_to_draft" type="object" string="Reset to Draft"
+                  invisible="state not in ('in_progress', 'done')"/>
+          <button name="action_cancel" type="object" string="Cancel"
+                  invisible="state in ('done', 'cancelled')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_procedures" type="object" class="oe_stat_button" icon="fa-stethoscope">
+              <field name="procedure_count" widget="statinfo" string="Procedure Plans"/>
+            </button>
+            <button name="action_open_sessions" type="object" class="oe_stat_button" icon="fa-play-circle">
+              <field name="session_count" widget="statinfo" string="Sessions"/>
+            </button>
+            <button name="action_open_consents" type="object" class="oe_stat_button" icon="fa-pencil-square-o">
+              <field name="consent_count" widget="statinfo" string="Consents"/>
+            </button>
+            <button name="action_open_checklists" type="object" class="oe_stat_button" icon="fa-check-square-o">
+              <field name="checklist_count" widget="statinfo" string="Checklists"/>
+            </button>
+            <button name="action_open_results" type="object" class="oe_stat_button" icon="fa-file-text-o">
+              <field name="result_count" widget="statinfo" string="Results"/>
+            </button>
+            <button name="action_open_adverse_events" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+              <field name="ae_count" widget="statinfo" string="Adverse Events"/>
+            </button>
+            <button name="action_open_billing" type="object" class="oe_stat_button" icon="fa-money">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+          </div>
+
+          <widget name="web_ribbon" title="Completed" bg_color="text-bg-success" invisible="state != 'done'"/>
+          <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+
+          <div class="oe_title">
+            <label for="name"/>
+            <h1><field name="name" readonly="1"/></h1>
+          </div>
+
+          <group>
+            <group string="Patient &amp; Provider">
+              <field name="patient_id"/>
+              <field name="partner_id" readonly="1"/>
+              <field name="doctor_id"/>
+              <field name="user_id"/>
+              <field name="appointment_id"/>
+              <field name="treatment_id"/>
+            </group>
+            <group string="Scheduling &amp; Ownership">
+              <field name="company_id" groups="base.group_multi_company"/>
+              <field name="stage_id"/>
+              <field name="priority" widget="priority"/>
+              <field name="date_planned_start"/>
+              <field name="date_planned_end"/>
+              <field name="planned_duration"/>
+              <field name="date_start" readonly="1"/>
+              <field name="date_end" readonly="1"/>
+              <field name="actual_duration" readonly="1"/>
+            </group>
+          </group>
+
+          <group string="Clinical Readiness">
+            <field name="consent_ok" readonly="1"/>
+            <field name="diagnosis_note" placeholder="Initial assessment / clinical context..."/>
+          </group>
+
+          <notebook>
+            <page string="Procedure Plan" name="procedure_plan">
+              <field name="procedure_line_ids" context="{'default_encounter_id': id}">
+                <list editable="bottom" decoration-success="state == 'done'" decoration-muted="state == 'cancelled'">
+                  <field name="sequence" widget="handle"/>
+                  <field name="procedure_id"/>
+                  <field name="diagnosis_id" optional="show"/>
+                  <field name="quantity"/>
+                  <field name="planned_sessions"/>
+                  <field name="planned_duration"/>
+                  <field name="price_total"/>
+                  <field name="state"/>
+                  <button name="action_open_sessions" type="object" string="Sessions" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Sessions" name="sessions">
+              <field name="session_ids" readonly="1">
+                <list decoration-success="state == 'done'" decoration-warning="state == 'paused'">
+                  <field name="name"/>
+                  <field name="procedure_id"/>
+                  <field name="performer_doctor_id"/>
+                  <field name="room_id"/>
+                  <field name="planned_start"/>
+                  <field name="state"/>
+                  <button name="action_open_encounter" type="object" string="Encounter" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Vitals" name="vitals">
+              <field name="vital_ids" readonly="1"/>
+            </page>
+            <page string="Governance" name="governance">
+              <group>
+                <field name="consent_ids" readonly="1"/>
+                <field name="checklist_ids" readonly="1"/>
+                <field name="result_ids" readonly="1"/>
+                <field name="ae_ids" readonly="1"/>
+              </group>
+            </page>
+            <page string="Financials" name="financials">
+              <group>
+                <group>
+                  <field name="amount_untaxed" readonly="1"/>
+                  <field name="amount_tax" readonly="1"/>
+                  <field name="amount_total" readonly="1"/>
+                </group>
+                <group>
+                  <field name="amount_invoiced" readonly="1"/>
+                  <field name="amount_to_invoice" readonly="1"/>
+                  <button name="action_open_billing" type="object" string="Open Billing" class="btn-secondary"/>
+                </group>
+              </group>
+            </page>
+            <page string="Internal Notes" name="internal_notes">
+              <field name="internal_note" placeholder="Internal clinical/operational notes..."/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_clinic_encounter_calendar" model="ir.ui.view">
+    <field name="name">clinic.encounter.calendar</field>
+    <field name="model">clinic.encounter</field>
+    <field name="arch" type="xml">
+      <calendar string="Encounters" date_start="date_planned_start" date_stop="date_planned_end"
+                color="doctor_id" quick_create="0">
+        <field name="name"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="state"/>
+      </calendar>
+    </field>
+  </record>
+
+  <!-- ================================================================== -->
+  <!-- Encounter Procedure Plan -->
+  <!-- ================================================================== -->
+  <record id="view_clinic_encounter_procedure_form" model="ir.ui.view">
+    <field name="name">clinic.encounter.procedure.form.enterprise</field>
+    <field name="model">clinic.encounter.procedure</field>
+    <field name="arch" type="xml">
+      <form string="Encounter Procedure Plan">
+        <header>
+          <button name="action_plan" type="object" string="Plan" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'planned'"/>
+          <button name="action_generate_sessions" type="object" string="Generate Sessions"
+                  invisible="state not in ('planned', 'in_progress')"/>
+          <button name="action_done" type="object" string="Complete" class="btn-primary"
+                  invisible="state not in ('planned', 'in_progress')"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('done', 'cancelled')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,planned,in_progress,done,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_sessions" type="object" class="oe_stat_button" icon="fa-play-circle">
+              <field name="session_count" widget="statinfo" string="Sessions"/>
+            </button>
+            <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-money">
+              <span class="o_stat_text">Invoices</span>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+          <group>
+            <group string="Clinical Plan">
+              <field name="encounter_id"/>
+              <field name="patient_id" readonly="1"/>
+              <field name="diagnosis_id"/>
+              <field name="procedure_id"/>
+              <field name="priority" widget="priority"/>
+            </group>
+            <group string="Execution Planning">
+              <field name="doctor_id" readonly="1"/>
+              <field name="performer_doctor_id"/>
+              <field name="performer_user_id"/>
+              <field name="room_id"/>
+              <field name="planned_sessions"/>
+              <field name="planned_duration"/>
+            </group>
+          </group>
+          <group string="Billing Contract">
+            <group>
+              <field name="product_id"/>
+              <field name="uom_id"/>
+              <field name="quantity"/>
+              <field name="billing_policy"/>
+            </group>
+            <group>
+              <field name="price_unit"/>
+              <field name="discount"/>
+              <field name="tax_ids" widget="many2many_tags"/>
+              <field name="price_subtotal" readonly="1"/>
+              <field name="price_tax" readonly="1"/>
+              <field name="price_total" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Sessions">
+              <field name="session_ids" readonly="1"/>
+            </page>
+            <page string="Invoices">
+              <field name="invoice_line_ids" readonly="1"/>
+            </page>
+            <page string="Notes">
+              <field name="notes"/>
+              <field name="internal_note"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- ================================================================== -->
+  <!-- Procedure Session -->
+  <!-- ================================================================== -->
+  <record id="view_clinic_procedure_session_form" model="ir.ui.view">
+    <field name="name">clinic.procedure.session.form.enterprise</field>
+    <field name="model">clinic.procedure.session</field>
+    <field name="arch" type="xml">
+      <form string="Procedure Session">
+        <header>
+          <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_pause" type="object" string="Pause" invisible="state != 'in_progress'"/>
+          <button name="action_resume" type="object" string="Resume" class="btn-primary" invisible="state != 'paused'"/>
+          <button name="action_done" type="object" string="Complete" class="btn-primary" invisible="state not in ('in_progress', 'paused')"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('done', 'cancelled')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,paused,done,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_plan_line" type="object" class="oe_stat_button" icon="fa-list-alt">
+              <span class="o_stat_text">Procedure Plan</span>
+            </button>
+            <button name="action_open_results" type="object" class="oe_stat_button" icon="fa-file-text-o">
+              <field name="result_count" widget="statinfo" string="Results"/>
+            </button>
+            <button name="action_open_checklists" type="object" class="oe_stat_button" icon="fa-check-square-o">
+              <field name="checklist_count" widget="statinfo" string="Checklists"/>
+            </button>
+            <button name="action_open_adverse_events" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+              <field name="ae_count" widget="statinfo" string="Adverse Events"/>
+            </button>
+            <button name="action_open_stock_moves" type="object" class="oe_stat_button" icon="fa-cubes">
+              <field name="stock_move_count" widget="statinfo" string="Stock Moves"/>
+            </button>
+            <button name="action_open_billing" type="object" class="oe_stat_button" icon="fa-money">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+          <group>
+            <group string="Clinical Context">
+              <field name="encounter_id"/>
+              <field name="encounter_procedure_id"/>
+              <field name="diagnosis_id"/>
+              <field name="procedure_id"/>
+              <field name="performer_doctor_id"/>
+              <field name="performer_user_id"/>
+              <field name="room_id"/>
+            </group>
+            <group string="Timing &amp; Readiness">
+              <field name="planned_start"/>
+              <field name="planned_end"/>
+              <field name="planned_duration"/>
+              <field name="date_start" readonly="1"/>
+              <field name="date_end" readonly="1"/>
+              <field name="actual_duration" readonly="1"/>
+              <field name="require_consent"/>
+              <field name="consent_valid" readonly="1"/>
+              <field name="require_checklist"/>
+              <field name="checklist_compliant" readonly="1"/>
+            </group>
+          </group>
+          <group string="Billing &amp; Inventory">
+            <group>
+              <field name="billing_policy"/>
+              <field name="product_id"/>
+              <field name="uom_id"/>
+              <field name="quantity"/>
+              <field name="price_unit"/>
+              <field name="discount"/>
+              <field name="tax_ids" widget="many2many_tags"/>
+              <field name="price_total" readonly="1"/>
+            </group>
+            <group>
+              <button name="action_issue_consumables" type="object" string="Issue Consumables" class="btn-secondary"/>
+              <button name="action_create_quick_result" type="object" string="Create Quick Result" class="btn-secondary"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Checklists"><field name="checklist_ids"/></page>
+            <page string="Results"><field name="result_ids" readonly="1"/></page>
+            <page string="Adverse Events"><field name="ae_ids" readonly="1"/></page>
+            <page string="Stock Moves"><field name="stock_move_ids" readonly="1"/></page>
+            <page string="Clinical Notes">
+              <field name="result_text"/>
+              <field name="adverse_event_note"/>
+              <field name="internal_note"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_clinic_procedure_session_calendar" model="ir.ui.view">
+    <field name="name">clinic.procedure.session.calendar</field>
+    <field name="model">clinic.procedure.session</field>
+    <field name="arch" type="xml">
+      <calendar string="Procedure Sessions" date_start="planned_start" date_stop="planned_end" color="room_id" quick_create="0">
+        <field name="name"/>
+        <field name="procedure_id"/>
+        <field name="performer_doctor_id"/>
+        <field name="state"/>
+      </calendar>
+    </field>
+  </record>
+
+  <!-- ================================================================== -->
+  <!-- Procedure Catalog -->
+  <!-- ================================================================== -->
+  <record id="view_clinic_procedure_catalog_form" model="ir.ui.view">
+    <field name="name">clinic.procedure.catalog.form.enterprise</field>
+    <field name="model">clinic.procedure.catalog</field>
+    <field name="arch" type="xml">
+      <form string="Procedure Catalog">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_related_plans" type="object" class="oe_stat_button" icon="fa-list-alt">
+              <field name="plan_count" widget="statinfo" string="Plans"/>
+            </button>
+            <button name="action_open_related_sessions" type="object" class="oe_stat_button" icon="fa-play-circle">
+              <field name="session_count" widget="statinfo" string="Sessions"/>
+            </button>
+            <button name="action_quick_plan_for_encounter" type="object" class="oe_stat_button" icon="fa-plus-square">
+              <span class="o_stat_text">Quick Plan</span>
+            </button>
+          </div>
+          <div class="oe_title">
+            <label for="name"/>
+            <h1><field name="name"/></h1>
+            <div><field name="code" placeholder="Procedure code"/></div>
+          </div>
+          <group>
+            <group string="Classification">
+              <field name="category_id"/>
+              <field name="tag_ids" widget="many2many_tags"/>
+              <field name="active"/>
+              <field name="company_id" groups="base.group_multi_company"/>
+            </group>
+            <group string="Default Operational Policy">
+              <field name="default_duration_min"/>
+              <field name="default_sessions"/>
+              <field name="require_consent"/>
+              <field name="require_checklist"/>
+              <field name="billing_policy"/>
+            </group>
+          </group>
+          <group string="Commercial Mapping">
+            <group>
+              <field name="product_id"/>
+              <field name="uom_id"/>
+              <field name="tax_ids" widget="many2many_tags"/>
+            </group>
+            <group>
+              <field name="list_price"/>
+              <field name="standard_price"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Procedure Steps">
+              <field name="step_ids">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name"/>
+                  <field name="duration_min"/>
+                  <field name="mandatory"/>
+                  <field name="is_critical"/>
+                  <field name="risk_level"/>
+                  <button name="action_open_procedure" type="object" string="Open" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Consumables">
+              <field name="consumable_ids">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="product_id"/>
+                  <field name="quantity"/>
+                  <field name="uom_id"/>
+                  <field name="required"/>
+                  <button name="action_open_procedure" type="object" string="Open" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Clinical Instructions">
+              <field name="instructions_pre"/>
+              <field name="instructions_post"/>
+              <field name="risks"/>
+            </page>
+            <page string="Internal Notes"><field name="note"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Procedure Step -->
+  <record id="view_clinic_procedure_step_form" model="ir.ui.view">
+    <field name="name">clinic.procedure.step.form.enterprise</field>
+    <field name="model">clinic.procedure.step</field>
+    <field name="arch" type="xml">
+      <form string="Procedure Step">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_procedure" type="object" class="oe_stat_button" icon="fa-stethoscope">
+              <span class="o_stat_text">Procedure</span>
+            </button>
+            <button name="action_open_related_plans" type="object" class="oe_stat_button" icon="fa-list">
+              <field name="plan_count" widget="statinfo" string="Plans"/>
+            </button>
+            <button name="action_open_related_sessions" type="object" class="oe_stat_button" icon="fa-play">
+              <field name="session_count" widget="statinfo" string="Sessions"/>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="name"/></h1></div>
+          <group>
+            <group>
+              <field name="procedure_id"/>
+              <field name="code"/>
+              <field name="sequence"/>
+              <field name="tag_ids" widget="many2many_tags"/>
+              <field name="mandatory"/>
+              <field name="is_critical"/>
+            </group>
+            <group>
+              <field name="duration_min"/>
+              <field name="use_timer"/>
+              <field name="qc_checkpoint"/>
+              <field name="risk_level"/>
+              <field name="required_equipment"/>
+              <field name="required_ppe"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Instructions">
+              <field name="description"/>
+              <field name="instructions"/>
+              <field name="expected_result"/>
+              <field name="notes"/>
+            </page>
+            <page string="Step Checklist">
+              <field name="checklist_ids">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name"/>
+                  <field name="is_required"/>
+                  <button name="action_open_step" type="object" string="Open Step" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Dependencies"><field name="dependency_ids" widget="many2many_tags"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- SOAP Note -->
+  <record id="view_clinic_soap_note_form" model="ir.ui.view">
+    <field name="name">clinic.soap.note.form.enterprise</field>
+    <field name="model">clinic.soap.note</field>
+    <field name="arch" type="xml">
+      <form string="SOAP Note">
+        <header>
+          <button name="action_apply_template" type="object" string="Apply Template" invisible="state != 'draft'"/>
+          <button name="action_finalize" type="object" string="Finalize" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_set_draft" type="object" string="Reset to Draft" invisible="state != 'final'"/>
+          <button name="action_duplicate_as_amendment" type="object" string="Amend" invisible="state != 'final'"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state == 'cancelled'"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,final,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_encounter" type="object" class="oe_stat_button" icon="fa-user-md">
+              <span class="o_stat_text">Encounter</span>
+            </button>
+            <button name="action_open_related_invoices" type="object" class="oe_stat_button" icon="fa-money">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+          <group>
+            <group>
+              <field name="encounter_id"/>
+              <field name="patient_id" readonly="1"/>
+              <field name="doctor_id" readonly="1"/>
+              <field name="user_id"/>
+              <field name="date_note"/>
+            </group>
+            <group>
+              <field name="priority" widget="priority"/>
+              <field name="template_id"/>
+              <field name="tag_ids" widget="many2many_tags"/>
+              <field name="version" readonly="1"/>
+              <field name="previous_id" readonly="1"/>
+              <field name="is_amendment" readonly="1"/>
+            </group>
+          </group>
+          <group string="Chief Complaint"><field name="chief_complaint"/></group>
+          <notebook>
+            <page string="S — Subjective"><field name="subjective"/></page>
+            <page string="O — Objective"><field name="objective"/></page>
+            <page string="A — Assessment">
+              <field name="assessment"/>
+              <field name="assessment_diagnosis_ids" widget="many2many_tags"/>
+              <field name="assessment_free_dx"/>
+              <field name="pain_scale"/>
+            </page>
+            <page string="P — Plan"><field name="plan"/></page>
+            <page string="Summary"><field name="summary"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Diagnosis -->
+  <record id="view_clinic_diagnosis_form" model="ir.ui.view">
+    <field name="name">clinic.diagnosis.form.enterprise</field>
+    <field name="model">clinic.diagnosis</field>
+    <field name="arch" type="xml">
+      <form string="Clinical Diagnosis">
+        <header>
+          <button name="action_set_primary" type="object" string="Set Primary" class="btn-primary" invisible="is_primary"/>
+          <button name="action_mark_resolved" type="object" string="Resolve" invisible="status == 'resolved'"/>
+          <button name="action_reopen" type="object" string="Reopen" invisible="status != 'resolved'"/>
+          <button name="action_plan_procedure_quick" type="object" string="Plan Suggested Procedures"
+                  class="btn-secondary" invisible="not suggested_procedure_ids"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_encounter" type="object" class="oe_stat_button" icon="fa-user-md">
+              <span class="o_stat_text">Encounter</span>
+            </button>
+            <button name="action_open_procedures" type="object" class="oe_stat_button" icon="fa-stethoscope">
+              <field name="related_procedure_count" widget="statinfo" string="Plans"/>
+            </button>
+            <button name="action_open_sessions" type="object" class="oe_stat_button" icon="fa-play-circle">
+              <field name="session_count" widget="statinfo" string="Sessions"/>
+            </button>
+            <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-money">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="display_code" readonly="1"/></h1></div>
+          <group>
+            <group string="Diagnosis">
+              <field name="name"/>
+              <field name="code"/>
+              <field name="code_system"/>
+              <field name="category_id"/>
+              <field name="type"/>
+              <field name="is_primary" readonly="1"/>
+              <field name="certainty"/>
+              <field name="severity"/>
+              <field name="chronicity"/>
+              <field name="status"/>
+            </group>
+            <group string="Clinical Context">
+              <field name="encounter_id"/>
+              <field name="patient_id" readonly="1"/>
+              <field name="doctor_id" readonly="1"/>
+              <field name="source"/>
+              <field name="body_site"/>
+              <field name="laterality"/>
+              <field name="date_onset"/>
+              <field name="date_diagnosed"/>
+              <field name="date_resolved"/>
+              <field name="priority" widget="priority"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Clinical Narrative">
+              <field name="description"/>
+              <field name="note"/>
+            </page>
+            <page string="SOAP Evidence"><field name="soap_note_ids" widget="many2many_tags"/></page>
+            <page string="Suggested Procedures"><field name="suggested_procedure_ids" widget="many2many_tags"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Result Document -->
+  <record id="view_clinic_result_document_form" model="ir.ui.view">
+    <field name="name">clinic.result.document.form.enterprise</field>
+    <field name="model">clinic.result.document</field>
+    <field name="arch" type="xml">
+      <form string="Clinical Result">
+        <header>
+          <button name="action_validate" type="object" string="Validate" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_release" type="object" string="Release" class="btn-primary" invisible="state != 'validated'"/>
+          <button name="action_set_draft" type="object" string="Reset to Draft" invisible="state not in ('validated', 'cancelled')"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('released', 'cancelled')"/>
+          <button name="action_print_report" type="object" string="Print" invisible="state == 'draft'"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,validated,released,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_encounter" type="object" class="oe_stat_button" icon="fa-user-md">
+              <span class="o_stat_text">Encounter</span>
+            </button>
+            <button name="action_open_session" type="object" class="oe_stat_button" icon="fa-play-circle" invisible="not session_id">
+              <span class="o_stat_text">Session</span>
+            </button>
+            <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-money">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1><h2><field name="title"/></h2></div>
+          <group>
+            <group string="Clinical Context">
+              <field name="encounter_id"/>
+              <field name="session_id"/>
+              <field name="procedure_id"/>
+              <field name="diagnosis_id"/>
+              <field name="patient_id" readonly="1"/>
+              <field name="doctor_id" readonly="1"/>
+            </group>
+            <group string="Governance">
+              <field name="priority" widget="priority"/>
+              <field name="validated_by_id" readonly="1"/>
+              <field name="date_validated" readonly="1"/>
+              <field name="released_by_id" readonly="1"/>
+              <field name="date_released" readonly="1"/>
+              <field name="abnormal_count" readonly="1"/>
+              <field name="critical_count" readonly="1"/>
+            </group>
+          </group>
+          <group string="Specimen">
+            <field name="specimen_type"/>
+            <field name="specimen_id"/>
+            <field name="collected_by_id"/>
+            <field name="date_collected"/>
+            <field name="date_analyzed"/>
+          </group>
+          <notebook>
+            <page string="Result Values">
+              <field name="line_ids">
+                <list editable="bottom" decoration-danger="is_critical" decoration-warning="is_abnormal">
+                  <field name="sequence" widget="handle"/>
+                  <field name="group_id"/>
+                  <field name="name"/>
+                  <field name="value_number"/>
+                  <field name="value_text"/>
+                  <field name="unit"/>
+                  <field name="ref_text"/>
+                  <field name="is_abnormal"/>
+                  <field name="is_critical"/>
+                  <button name="action_open_result" type="object" string="Open" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Summary"><field name="summary"/></page>
+            <page string="Attachments"><field name="attachment_ids" widget="many2many_binary"/></page>
+            <page string="Internal Notes"><field name="note_internal"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Consent Document -->
+  <record id="view_clinic_consent_document_form" model="ir.ui.view">
+    <field name="name">clinic.consent.document.form.enterprise</field>
+    <field name="model">clinic.consent.document</field>
+    <field name="arch" type="xml">
+      <form string="Encounter Consent Document">
+        <header>
+          <button name="action_sign" type="object" string="Sign" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_mark_expired" type="object" string="Mark Expired" invisible="state != 'signed' or not is_expired"/>
+          <button name="action_revoke" type="object" string="Revoke" invisible="state != 'signed'"/>
+          <button name="action_set_draft" type="object" string="Reset to Draft" invisible="state not in ('signed', 'expired')"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('revoked', 'cancelled')"/>
+          <button name="action_print_report" type="object" string="Print"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,signed,expired,revoked,cancelled"/>
+        </header>
+        <sheet>
+          <widget name="web_ribbon" title="Valid" bg_color="text-bg-success" invisible="not is_valid"/>
+          <widget name="web_ribbon" title="Expired" bg_color="text-bg-warning" invisible="not is_expired"/>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1><h2><field name="title"/></h2></div>
+          <group>
+            <group string="Clinical Context">
+              <field name="encounter_id"/>
+              <field name="patient_id" readonly="1"/>
+              <field name="doctor_id" readonly="1"/>
+              <field name="session_id"/>
+              <field name="diagnosis_id"/>
+              <field name="procedure_ids" widget="many2many_tags"/>
+              <field name="template_id"/>
+            </group>
+            <group string="Validity">
+              <field name="language"/>
+              <field name="validity_days"/>
+              <field name="date_signed" readonly="1"/>
+              <field name="date_expiry" readonly="1"/>
+              <field name="is_valid" readonly="1"/>
+              <field name="is_expired" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Consent Content">
+              <field name="body_html"/>
+              <field name="footer_html"/>
+            </page>
+            <page string="Risk Acknowledgements">
+              <field name="risk_line_ids">
+                <list editable="bottom" decoration-warning="required and not acknowledged">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name"/>
+                  <field name="required"/>
+                  <field name="acknowledged"/>
+                  <field name="note" optional="show"/>
+                  <button name="action_open_consent" type="object" string="Open" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Signatures">
+              <group>
+                <group>
+                  <field name="sign_by_patient"/>
+                  <field name="signer_name"/>
+                  <field name="signer_partner_id"/>
+                  <field name="signer_document_no"/>
+                  <field name="signature" widget="signature"/>
+                </group>
+                <group>
+                  <field name="is_guardian"/>
+                  <field name="guardian_name"/>
+                  <field name="guardian_relation"/>
+                  <field name="signature_guardian" widget="signature"/>
+                </group>
+              </group>
+              <group string="Witnesses">
+                <group><field name="witness1_name"/><field name="witness1_signature" widget="signature"/></group>
+                <group><field name="witness2_name"/><field name="witness2_signature" widget="signature"/></group>
+              </group>
+              <field name="signature_note"/>
+            </page>
+            <page string="Evidence"><field name="attachment_ids" widget="many2many_binary"/></page>
+            <page string="Internal Notes"><field name="note_internal"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Anesthesia Case -->
+  <record id="view_clinic_anesthesia_case_form" model="ir.ui.view">
+    <field name="name">clinic.anesthesia.case.form.enterprise</field>
+    <field name="model">clinic.anesthesia.case</field>
+    <field name="arch" type="xml">
+      <form string="Anesthesia Case">
+        <header>
+          <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_pause" type="object" string="Pause" invisible="state != 'in_progress'"/>
+          <button name="action_resume" type="object" string="Resume" class="btn-primary" invisible="state != 'paused'"/>
+          <button name="action_done" type="object" string="Complete" class="btn-primary" invisible="state not in ('in_progress', 'paused')"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('done', 'cancelled')"/>
+          <button name="action_generate_result_document" type="object" string="Generate Result" invisible="state != 'done'"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,paused,done,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_billing" type="object" class="oe_stat_button" icon="fa-money">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+          <group>
+            <group string="Case Context">
+              <field name="encounter_id"/>
+              <field name="session_id"/>
+              <field name="procedure_id"/>
+              <field name="patient_id" readonly="1"/>
+              <field name="doctor_id" readonly="1"/>
+              <field name="anesthetist_id"/>
+              <field name="room_id"/>
+            </group>
+            <group string="Timing &amp; Readiness">
+              <field name="planned_start"/>
+              <field name="planned_end"/>
+              <field name="date_start" readonly="1"/>
+              <field name="date_end" readonly="1"/>
+              <field name="anesthesia_duration_min" readonly="1"/>
+              <field name="consent_required" readonly="1"/>
+              <field name="consent_ok" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Pre-Op">
+              <group>
+                <group>
+                  <field name="asa_class"/>
+                  <field name="asa_emergency"/>
+                  <field name="mallampati"/>
+                  <field name="airway_difficult_predicted"/>
+                  <field name="thyromental_distance_cm"/>
+                  <field name="mouth_opening_cm"/>
+                  <field name="neck_mobility"/>
+                </group>
+                <group>
+                  <field name="allergies"/>
+                  <field name="fasting_since"/>
+                  <field name="preop_checklist_ok"/>
+                  <field name="preop_notes"/>
+                </group>
+              </group>
+            </page>
+            <page string="Technique">
+              <group>
+                <field name="anesthesia_type"/>
+                <field name="technique_notes"/>
+                <field name="airway_device"/>
+                <field name="airway_device_size"/>
+                <field name="laryngoscopy_grade"/>
+                <field name="intubation_attempts"/>
+                <field name="intubation_success"/>
+              </group>
+            </page>
+            <page string="Medications">
+              <field name="medication_ids">
+                <list editable="bottom">
+                  <field name="time_admin"/>
+                  <field name="product_id"/>
+                  <field name="dose"/>
+                  <field name="dose_uom"/>
+                  <field name="route"/>
+                  <button name="action_open_case" type="object" string="Open Case" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Vitals Timeline">
+              <field name="vital_ids">
+                <list editable="bottom">
+                  <field name="time_point"/>
+                  <field name="hr"/>
+                  <field name="sbp"/>
+                  <field name="dbp"/>
+                  <field name="spo2"/>
+                  <button name="action_open_case" type="object" string="Open Case" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Fluids / Output">
+              <field name="fluid_ids"/>
+              <group>
+                <field name="total_fluid_in_ml" readonly="1"/>
+                <field name="total_fluid_out_ml" readonly="1"/>
+                <field name="net_fluid_balance_ml" readonly="1"/>
+                <field name="total_blood_loss_ml" readonly="1"/>
+                <field name="total_urine_ml" readonly="1"/>
+              </group>
+            </page>
+            <page string="Airway &amp; Events">
+              <field name="airway_ids"/>
+              <field name="event_ids"/>
+            </page>
+            <page string="Recovery">
+              <group>
+                <field name="pain_scale"/>
+                <field name="nausea_vomiting"/>
+                <field name="rass_score"/>
+                <field name="aldrete_activity"/>
+                <field name="aldrete_respiration"/>
+                <field name="aldrete_circulation"/>
+                <field name="aldrete_consciousness"/>
+                <field name="aldrete_color"/>
+                <field name="aldrete_total" readonly="1"/>
+                <field name="ready_for_discharge"/>
+              </group>
+              <field name="postop_complication"/>
+              <field name="postop_complication_note"/>
+            </page>
+            <page string="Billing">
+              <group>
+                <field name="billing_policy"/>
+                <field name="product_case_id"/>
+                <field name="product_time_id"/>
+                <field name="time_unit_minutes"/>
+                <field name="base_units"/>
+              </group>
+              <field name="invoice_line_ids" readonly="1"/>
+            </page>
+            <page string="Internal Notes"><field name="note_internal"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Adverse Event -->
+  <record id="view_clinic_adverse_event_form" model="ir.ui.view">
+    <field name="name">clinic.adverse.event.form.enterprise</field>
+    <field name="model">clinic.adverse.event</field>
+    <field name="arch" type="xml">
+      <form string="Adverse Event / Near Miss">
+        <header>
+          <button name="action_submit_review" type="object" string="Submit for Review" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_close" type="object" string="Close" class="btn-primary" invisible="state != 'under_review'"/>
+          <button name="action_mark_reported" type="object" string="Mark Reported" invisible="not needs_reporting or date_reported"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('closed', 'cancelled')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,under_review,closed,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_encounter" type="object" class="oe_stat_button" icon="fa-user-md"><span class="o_stat_text">Encounter</span></button>
+            <button name="action_open_session" type="object" class="oe_stat_button" icon="fa-play-circle" invisible="not session_id"><span class="o_stat_text">Session</span></button>
+            <button name="action_open_result" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not result_id"><span class="o_stat_text">Result</span></button>
+            <button name="action_open_anesthesia" type="object" class="oe_stat_button" icon="fa-heartbeat" invisible="not anesthesia_case_id"><span class="o_stat_text">Anesthesia</span></button>
+          </div>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+          <group>
+            <group string="Incident Context">
+              <field name="encounter_id"/>
+              <field name="patient_id" readonly="1"/>
+              <field name="session_id"/>
+              <field name="procedure_id"/>
+              <field name="diagnosis_id"/>
+              <field name="room_id"/>
+              <field name="date_occurred"/>
+              <field name="date_detected"/>
+              <field name="reported_by_id"/>
+              <field name="reporter_role"/>
+            </group>
+            <group string="Classification">
+              <field name="category_id"/>
+              <field name="type_id"/>
+              <field name="factor_ids" widget="many2many_tags"/>
+              <field name="classification"/>
+              <field name="severity"/>
+              <field name="harm_scale"/>
+              <field name="causality"/>
+              <field name="outcome"/>
+              <field name="recurrence_risk"/>
+              <field name="is_serious" readonly="1"/>
+              <field name="needs_reporting" readonly="1"/>
+            </group>
+          </group>
+          <group string="Narrative"><field name="description"/></group>
+          <notebook>
+            <page string="Immediate Response">
+              <field name="immediate_action"/>
+              <field name="patient_impact"/>
+              <group>
+                <field name="drug_product_id"/>
+                <field name="device_product_id"/>
+                <field name="device_lot"/>
+                <field name="medication_line_note"/>
+              </group>
+            </page>
+            <page string="CAPA Actions">
+              <field name="action_ids">
+                <list editable="bottom">
+                  <field name="name"/>
+                  <field name="owner_id"/>
+                  <field name="deadline"/>
+                  <field name="done"/>
+                  <button name="action_open_adverse_event" type="object" string="Open Event" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Follow-ups">
+              <field name="followup_ids"/>
+            </page>
+            <page string="Regulatory">
+              <group>
+                <field name="to_regulator"/>
+                <field name="regulator_body"/>
+                <field name="regulator_reference"/>
+                <field name="date_reported"/>
+                <field name="reviewer_id"/>
+                <field name="date_closed"/>
+              </group>
+              <field name="resolution_summary"/>
+            </page>
+            <page string="Attachments"><field name="attachment_ids" widget="many2many_binary"/></page>
+            <page string="Internal Notes"><field name="note_internal"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Checklist -->
+  <record id="view_clinic_checklist_form" model="ir.ui.view">
+    <field name="name">clinic.checklist.form.enterprise</field>
+    <field name="model">clinic.checklist</field>
+    <field name="arch" type="xml">
+      <form string="Clinical Checklist">
+        <header>
+          <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_done" type="object" string="Complete" class="btn-primary" invisible="state != 'in_progress'"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state in ('done', 'cancelled')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_encounter" type="object" class="oe_stat_button" icon="fa-user-md"><span class="o_stat_text">Encounter</span></button>
+            <button name="action_open_session" type="object" class="oe_stat_button" icon="fa-play-circle" invisible="not session_id"><span class="o_stat_text">Session</span></button>
+          </div>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1><h2><field name="title"/></h2></div>
+          <group>
+            <group>
+              <field name="template_id"/>
+              <field name="scope" readonly="1"/>
+              <field name="encounter_id"/>
+              <field name="session_id"/>
+              <field name="procedure_id"/>
+              <field name="patient_id" readonly="1"/>
+            </group>
+            <group string="Progress &amp; Scoring">
+              <field name="date_start" readonly="1"/>
+              <field name="date_done" readonly="1"/>
+              <field name="completed_required" readonly="1"/>
+              <field name="total_required" readonly="1"/>
+              <field name="percent_complete" widget="progressbar"/>
+              <field name="score_percent" widget="progressbar"/>
+              <field name="passed" readonly="1"/>
+              <field name="required_ok" readonly="1"/>
+            </group>
+          </group>
+          <field name="line_ids">
+            <list editable="bottom" decoration-success="answered" decoration-danger="required and not answered">
+              <field name="sequence" widget="handle"/>
+              <field name="name"/>
+              <field name="required"/>
+              <field name="answer_type"/>
+              <field name="value_bool"/>
+              <field name="value_text"/>
+              <field name="score_value"/>
+              <field name="answered" readonly="1"/>
+              <button name="action_open_checklist" type="object" string="Open Checklist" icon="fa-external-link"/>
+            </list>
+          </field>
+          <group string="Completion Signature">
+            <field name="signed_by"/>
+            <field name="signature" widget="signature"/>
+            <field name="signature_note"/>
+          </group>
+          <notebook>
+            <page string="Policy">
+              <group>
+                <field name="require_all_required"/>
+                <field name="min_required"/>
+                <field name="pass_threshold_percent"/>
+                <field name="require_signature_to_complete"/>
+              </group>
+            </page>
+            <page string="Internal Notes"><field name="note_internal"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Checklist Template -->
+  <record id="view_clinic_checklist_template_form" model="ir.ui.view">
+    <field name="name">clinic.checklist.template.form.enterprise</field>
+    <field name="model">clinic.checklist.template</field>
+    <field name="arch" type="xml">
+      <form string="Checklist Template">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_instances" type="object" class="oe_stat_button" icon="fa-check-square-o">
+              <span class="o_stat_text">Checklist Instances</span>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="name"/></h1></div>
+          <group>
+            <group>
+              <field name="code"/>
+              <field name="scope"/>
+              <field name="language"/>
+              <field name="active"/>
+              <field name="company_id" groups="base.group_multi_company"/>
+            </group>
+            <group string="Completion Policy">
+              <field name="require_all_required"/>
+              <field name="min_required"/>
+              <field name="pass_threshold_percent"/>
+              <field name="require_signature_to_complete"/>
+            </group>
+          </group>
+          <field name="description"/>
+          <notebook>
+            <page string="Template Items">
+              <field name="item_ids">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name"/>
+                  <field name="required"/>
+                  <field name="answer_type"/>
+                  <field name="weight"/>
+                  <button name="action_open_template" type="object" string="Open Template" icon="fa-external-link"/>
+                </list>
+              </field>
+            </page>
+            <page string="Applicability">
+              <field name="encounter_stage_ids" widget="many2many_tags"/>
+              <field name="procedure_category_ids" widget="many2many_tags"/>
+              <field name="tag_ids" widget="many2many_tags"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_clinic_branch" model="ir.ui.view">
+        <field name="name">res.users.form.clinic.branch</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Clinic Branches" groups="clinic_branch.group_branch_manager">
+                    <group>
+                        <field name="allowed_branch_ids" widget="many2many_tags"/>
+                        <field name="working_branch_id"/>
+                        <field name="allowed_branch_count" readonly="1"/>
+                        <field name="working_branch_tz" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

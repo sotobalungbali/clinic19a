@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_incident_investigation_search" model="ir.ui.view">
+        <field name="name">clinic.incident.investigation.search</field>
+        <field name="model">clinic.incident.investigation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="patient_id"/>
+                <field name="methodology"/>
+                <field name="lead_user_id"/>
+                <field name="company_id"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state','=','in_progress')]"/>
+                <filter name="completed" string="Completed" domain="[('state','=','completed')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_methodology" string="Methodology" context="{'group_by':'methodology'}"/>
+                    <filter name="group_lead" string="Lead" context="{'group_by':'lead_user_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_incident_investigation_list" model="ir.ui.view">
+        <field name="name">clinic.incident.investigation.list</field>
+        <field name="model">clinic.incident.investigation</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'completed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="patient_id"/>
+                <field name="methodology" widget="badge"/>
+                <field name="lead_user_id"/>
+                <field name="started_at"/>
+                <field name="completed_at"/>
+                <field name="state" widget="badge"/>
+                <field name="branch_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_start" type="object" string="Start" icon="fa-play"
+                        groups="clinic_incident_event.group_incident_investigator"
+                        invisible="state != 'draft'"/>
+                <button name="action_complete" type="object" string="Complete" icon="fa-check"
+                        groups="clinic_incident_event.group_incident_investigator"
+                        invisible="state not in ('draft','in_progress')"/>
+                <button name="action_open_incident" type="object" string="Incident" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_incident_investigation_form" model="ir.ui.view">
+        <field name="name">clinic.incident.investigation.form</field>
+        <field name="model">clinic.incident.investigation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Start Investigation" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state != 'draft'"/>
+                    <button name="action_complete" type="object" string="Complete Investigation" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state not in ('draft','in_progress')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_incident_event.group_incident_manager"
+                            invisible="state in ('completed','cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,in_progress,completed,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_incident" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <div class="o_stat_info"><span class="o_stat_text">Incident</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Case Scope">
+                            <field name="incident_id" readonly="state in ('completed','cancelled')"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="branch_id" readonly="1"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="methodology" readonly="state in ('completed','cancelled')"/>
+                        </group>
+                        <group string="Investigation Team">
+                            <field name="lead_user_id" readonly="state in ('completed','cancelled')"/>
+                            <field name="participant_user_ids" widget="many2many_tags"
+                                   readonly="state in ('completed','cancelled')"/>
+                            <field name="started_at" readonly="1"/>
+                            <field name="completed_at" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Scope &amp; Evidence">
+                            <field name="scope" readonly="state in ('completed','cancelled')"/>
+                            <field name="evidence_summary" readonly="state in ('completed','cancelled')"/>
+                        </page>
+                        <page string="Chronology">
+                            <field name="chronology" readonly="state in ('completed','cancelled')"/>
+                        </page>
+                        <page string="5 Whys / Analysis">
+                            <field name="five_whys" readonly="state in ('completed','cancelled')"/>
+                            <field name="contributing_factors" readonly="state in ('completed','cancelled')"/>
+                        </page>
+                        <page string="Root Cause &amp; Lessons">
+                            <field name="root_cause" readonly="state in ('completed','cancelled')"/>
+                            <field name="lessons_learned" readonly="state in ('completed','cancelled')"/>
+                            <field name="recommendation" readonly="state in ('completed','cancelled')"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_incident_investigation" model="ir.actions.act_window">
+        <field name="name">Investigations</field>
+        <field name="res_model">clinic.incident.investigation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_incident_investigation_search"/>
+    </record>
+</odoo>

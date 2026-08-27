@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Technical audit surface: manager-only through ACL and menu group. -->
+    <record id="view_clinic_integration_event_log_search" model="ir.ui.view">
+        <field name="name">clinic.integration.event.log.search</field>
+        <field name="model">clinic.integration.event.log</field>
+        <field name="arch" type="xml">
+            <search string="Inventory Integration Events">
+                <field name="event_code"/>
+                <field name="ctx_model"/>
+                <field name="handled_by"/>
+                <field name="user_id"/>
+                <filter name="filter_queued" string="Queued" domain="[('status','=','queued')]"/>
+                <filter name="filter_dispatched" string="Dispatched" domain="[('status','=','dispatched')]"/>
+                <filter name="filter_error" string="Error" domain="[('status','=','error')]"/>
+                <group>
+                    <filter name="group_status" string="Status" context="{'group_by':'status'}"/>
+                    <filter name="group_event" string="Event" context="{'group_by':'event_code'}"/>
+                    <filter name="group_model" string="Context Model" context="{'group_by':'ctx_model'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_integration_event_log_list" model="ir.ui.view">
+        <field name="name">clinic.integration.event.log.list</field>
+        <field name="model">clinic.integration.event.log</field>
+        <field name="arch" type="xml">
+            <list string="Inventory Integration Events"
+                  create="0" edit="0" delete="0"
+                  decoration-danger="status == 'error'"
+                  decoration-success="status == 'dispatched'">
+                <field name="event_code"/>
+                <field name="status" widget="badge"/>
+                <field name="ctx_model"/>
+                <field name="ctx_res_id"/>
+                <field name="handled_by"/>
+                <field name="user_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_integration_event_log_form" model="ir.ui.view">
+        <field name="name">clinic.integration.event.log.form</field>
+        <field name="model">clinic.integration.event.log</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Integration Event" create="0" edit="0" delete="0">
+                <header>
+                    <field name="status" widget="statusbar" statusbar_visible="queued,dispatched,error"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="event_code"/>
+                            <field name="ctx_model"/>
+                            <field name="ctx_res_id"/>
+                            <field name="handled_by"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="message"/>
+                        </group>
+                    </group>
+                    <group string="Payload">
+                        <field name="payload_json" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_integration_event_log" model="ir.actions.act_window">
+        <field name="name">Integration Event Log</field>
+        <field name="res_model">clinic.integration.event.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_integration_event_log_search"/>
+        <field name="context">{'create': False}</field>
+    </record>
+</odoo>
+

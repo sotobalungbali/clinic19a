@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_quality_check" model="ir.actions.report">
+        <field name="name">Quality Check Report</field>
+        <field name="model">clinic.quality.check</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_quality.report_quality_check_document</field>
+        <field name="report_file">clinic_quality.report_quality_check_document</field>
+        <field name="print_report_name">'Quality Check - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="model_clinic_quality_check"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_quality_check_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            Quality Check
+                            <span class="text-muted" t-field="o.name"/>
+                        </h2>
+
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Title</th>
+                                    <td t-field="o.title"/>
+                                    <th>Status</th>
+                                    <td t-field="o.state"/>
+                                </tr>
+                                <tr>
+                                    <th>Template</th>
+                                    <td t-field="o.template_id"/>
+                                    <th>SOP Version</th>
+                                    <td t-field="o.sop_version_id"/>
+                                </tr>
+                                <tr>
+                                    <th>Scope Type</th>
+                                    <td t-field="o.scope_type"/>
+                                    <th>Branch</th>
+                                    <td t-field="o.branch_id"/>
+                                </tr>
+                                <tr>
+                                    <th>Inspector</th>
+                                    <td t-field="o.performed_by_user_id"/>
+                                    <th>Reviewer</th>
+                                    <td t-field="o.reviewed_by_user_id"/>
+                                </tr>
+                                <tr>
+                                    <th>Planned Date</th>
+                                    <td t-field="o.planned_date"/>
+                                    <th>Result</th>
+                                    <td t-field="o.overall_result"/>
+                                </tr>
+                                <tr>
+                                    <th>Score</th>
+                                    <td><span t-field="o.compliance_score"/>%</td>
+                                    <th>Target</th>
+                                    <td><span t-field="o.target_score"/>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Scope Target</h4>
+                        <ul>
+                            <li t-if="o.room_id">Room: <span t-field="o.room_id"/></li>
+                            <li t-if="o.staff_id">Staff: <span t-field="o.staff_id"/></li>
+                            <li t-if="o.doctor_id">Doctor: <span t-field="o.doctor_id"/></li>
+                            <li t-if="o.stock_lot_id">Inventory Lot: <span t-field="o.stock_lot_id"/></li>
+                            <li t-if="o.treatment_id">Treatment: <span t-field="o.treatment_id"/></li>
+                        </ul>
+
+                        <h4>Compliance Controls</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Control</th>
+                                    <th>Requirement</th>
+                                    <th>Critical</th>
+                                    <th>Result</th>
+                                    <th>Evidence</th>
+                                    <th>Incident</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td t-field="line.control_code"/>
+                                    <td t-field="line.requirement"/>
+                                    <td>
+                                        <span t-out="'Yes' if line.critical else 'No'"/>
+                                    </td>
+                                    <td t-field="line.result"/>
+                                    <td t-field="line.evidence_note"/>
+                                    <td>
+                                        <span t-if="line.incident_ids"
+                                              t-field="line.incident_ids[0].name"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Review Summary</h4>
+                        <p t-field="o.review_summary"/>
+
+                        <h4>Incident Escalations</h4>
+                        <table class="table table-sm" t-if="o.incident_ids">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Title</th>
+                                    <th>Severity</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.incident_ids" t-as="incident">
+                                    <td t-field="incident.name"/>
+                                    <td t-field="incident.title"/>
+                                    <td t-field="incident.severity"/>
+                                    <td t-field="incident.state"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p class="text-muted small mt-4">
+                            Quality evidence report. Source business workflows
+                            and Incident CAPA remain owned by their respective
+                            ClinicOne addons.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

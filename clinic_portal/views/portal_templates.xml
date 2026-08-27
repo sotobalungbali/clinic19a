@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add ClinicOne patient cards into the standard Odoo 19 portal home. -->
+    <template id="portal_my_home_clinic"
+              name="ClinicOne Patient Portal Home Cards"
+              inherit_id="portal.portal_my_home"
+              priority="45">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-if="request.env.user.partner_id.is_patient">
+                <t t-set="portal_client_category_enable" t-value="True"/>
+            </t>
+        </xpath>
+
+        <xpath expr="//div[@id='portal_client_category']" position="inside">
+            <t t-if="request.env.user.partner_id.is_patient">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/clinic_portal/static/src/img/clinic.svg'"/>
+                    <t t-set="title">My Clinic</t>
+                    <t t-set="text">Patient overview, bookings, invoices, and treatment history</t>
+                    <t t-set="url" t-value="'/my/clinic'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+
+                <t t-if="clinic_portal_enabled and clinic_portal_profile.allow_booking_view"
+                   t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/clinic_portal/static/src/img/calendar.svg'"/>
+                    <t t-set="title">Clinic Bookings</t>
+                    <t t-set="text">View upcoming and previous clinic appointments</t>
+                    <t t-set="url" t-value="'/my/clinic/bookings'"/>
+                    <t t-set="placeholder_count" t-value="'clinic_booking_count'"/>
+                </t>
+
+                <t t-if="clinic_portal_enabled and clinic_portal_profile.allow_invoice_view"
+                   t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/clinic_portal/static/src/img/invoice.svg'"/>
+                    <t t-set="title">Clinic Invoices</t>
+                    <t t-set="text">View clinic billing summaries and open native invoice pages</t>
+                    <t t-set="url" t-value="'/my/clinic/invoices'"/>
+                    <t t-set="placeholder_count" t-value="'clinic_invoice_count'"/>
+                </t>
+
+                <t t-if="clinic_portal_enabled and clinic_portal_profile.allow_treatment_history_view"
+                   t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/clinic_portal/static/src/img/history.svg'"/>
+                    <t t-set="title">Treatment History</t>
+                    <t t-set="text">Review completed treatment encounters</t>
+                    <t t-set="url" t-value="'/my/clinic/treatments'"/>
+                    <t t-set="placeholder_count" t-value="'clinic_treatment_count'"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_clinic"
+              name="ClinicOne Patient Portal Breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs"
+              priority="45">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name in ('clinic_home','clinic_bookings','clinic_booking','clinic_invoices','clinic_invoice','clinic_treatments','clinic_treatment')"
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'clinic_home' else ''}">
+                <a t-if="page_name != 'clinic_home'" href="/my/clinic">My Clinic</a>
+                <t t-else="">My Clinic</t>
+            </li>
+
+            <li t-if="page_name in ('clinic_bookings','clinic_booking')"
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'clinic_bookings' else ''}">
+                <a t-if="page_name == 'clinic_booking'" href="/my/clinic/bookings">Bookings</a>
+                <t t-else="">Bookings</t>
+            </li>
+            <li t-if="page_name == 'clinic_booking'" class="breadcrumb-item active">
+                <t t-out="booking.name"/>
+            </li>
+
+            <li t-if="page_name in ('clinic_invoices','clinic_invoice')"
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'clinic_invoices' else ''}">
+                <a t-if="page_name == 'clinic_invoice'" href="/my/clinic/invoices">Invoices</a>
+                <t t-else="">Invoices</t>
+            </li>
+            <li t-if="page_name == 'clinic_invoice'" class="breadcrumb-item active">
+                <t t-out="clinic_invoice.name"/>
+            </li>
+
+            <li t-if="page_name in ('clinic_treatments','clinic_treatment')"
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'clinic_treatments' else ''}">
+                <a t-if="page_name == 'clinic_treatment'" href="/my/clinic/treatments">Treatment History</a>
+                <t t-else="">Treatment History</t>
+            </li>
+            <li t-if="page_name == 'clinic_treatment'" class="breadcrumb-item active">
+                <t t-out="encounter.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_access_unavailable" name="Clinic Portal Access Unavailable">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="o_clinic_portal_icon">
+                                <i class="fa fa-lock"/>
+                            </div>
+                            <div>
+                                <h2 class="mb-2">Clinic Portal Access Unavailable</h2>
+                                <p class="text-muted mb-3">
+                                    Your Odoo account is signed in, but ClinicOne patient access is not currently active for this company.
+                                </p>
+                                <t t-if="clinic_profile and clinic_profile.state == 'suspended'">
+                                    <div class="alert alert-warning mb-3">
+                                        ClinicOne patient pages are temporarily suspended. Please contact the clinic for assistance.
+                                    </div>
+                                </t>
+                                <t t-elif="not clinic_patient">
+                                    <div class="alert alert-info mb-3">
+                                        This account is not linked to a Clinic Patient Card in the current company.
+                                    </div>
+                                </t>
+                                <a href="/my" class="btn btn-primary">Back to My Account</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_clinic" name="My Clinic">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Clinic</t>
+            </t>
+
+            <div class="container py-3">
+                <div class="o_clinic_portal_hero card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-8">
+                                <div class="text-muted small">Patient</div>
+                                <h2 class="mb-1"><t t-out="clinic_patient.display_name"/></h2>
+                                <div class="text-muted">
+                                    <t t-out="clinic_company.display_name"/>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <a href="/my/security" class="btn btn-outline-secondary me-2">Security</a>
+                                <a href="/my/addresses" class="btn btn-outline-secondary">Addresses</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4" t-if="clinic_profile.allow_booking_view">
+                        <a href="/my/clinic/bookings" class="text-decoration-none">
+                            <div class="card h-100 o_clinic_portal_summary">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Bookings</span>
+                                        <i class="fa fa-calendar"/>
+                                    </div>
+                                    <div class="display-6 mt-2"><t t-out="clinic_booking_count"/></div>
+                                    <div class="small text-muted">Appointments linked to your exact patient contact</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4" t-if="clinic_profile.allow_invoice_view">
+                        <a href="/my/clinic/invoices" class="text-decoration-none">
+                            <div class="card h-100 o_clinic_portal_summary">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Clinic Invoices</span>
+                                        <i class="fa fa-file-text-o"/>
+                                    </div>
+                                    <div class="display-6 mt-2"><t t-out="clinic_invoice_count"/></div>
+                                    <div class="small text-muted">Clinic billing records available to this patient</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4" t-if="clinic_profile.allow_treatment_history_view">
+                        <a href="/my/clinic/treatments" class="text-decoration-none">
+                            <div class="card h-100 o_clinic_portal_summary">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Treatment History</span>
+                                        <i class="fa fa-history"/>
+                                    </div>
+                                    <div class="display-6 mt-2"><t t-out="clinic_treatment_count"/></div>
+                                    <div class="small text-muted">Completed encounters only</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header"><strong>Quick Services</strong></div>
+                    <div class="card-body d-flex flex-wrap gap-2">
+                        <a t-if="clinic_profile.show_wallet_link" href="/my/clinic-wallet" class="btn btn-outline-primary">
+                            <i class="fa fa-credit-card me-1"/> Wallet
+                        </a>
+                        <a t-if="clinic_profile.show_consent_link" href="/my/consents" class="btn btn-outline-primary">
+                            <i class="fa fa-pencil-square-o me-1"/> Consents
+                        </a>
+                        <a t-if="clinic_profile.show_order_link" href="/my/orders" class="btn btn-outline-primary">
+                            <i class="fa fa-shopping-bag me-1"/> Orders
+                        </a>
+                        <a t-if="clinic_profile.show_shop_link" href="/clinic/shop" class="btn btn-primary">
+                            <i class="fa fa-shopping-cart me-1"/> Book / Buy Services
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-4" t-if="clinic_profile.allow_booking_view">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <strong>Recent Bookings</strong>
+                                <a href="/my/clinic/bookings" class="small">View all</a>
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <a t-foreach="recent_bookings"
+                                   t-as="booking"
+                                   t-att-href="'/my/clinic/bookings/%s' % booking.id"
+                                   class="list-group-item list-group-item-action">
+                                    <div class="fw-semibold"><t t-out="booking.treatment_id.display_name or booking.name"/></div>
+                                    <div class="small text-muted">
+                                        <span t-field="booking.start_datetime"/>
+                                        <span class="ms-2" t-field="booking.state"/>
+                                    </div>
+                                </a>
+                                <div t-if="not recent_bookings" class="list-group-item text-muted">
+                                    No bookings are available.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4" t-if="clinic_profile.allow_invoice_view">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <strong>Recent Invoices</strong>
+                                <a href="/my/clinic/invoices" class="small">View all</a>
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <a t-foreach="recent_invoices"
+                                   t-as="invoice"
+                                   t-att-href="'/my/clinic/invoices/%s' % invoice.id"
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between gap-2">
+                                        <span class="fw-semibold"><t t-out="invoice.name"/></span>
+                                        <span t-field="invoice.amount_total"
+                                              t-options="{'widget':'monetary','display_currency':invoice.currency_id}"/>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <span t-field="invoice.invoice_date"/>
+                                        <span class="ms-2" t-field="invoice.state"/>
+                                    </div>
+                                </a>
+                                <div t-if="not recent_invoices" class="list-group-item text-muted">
+                                    No clinic invoices are available.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4" t-if="clinic_profile.allow_treatment_history_view">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <strong>Recent Treatments</strong>
+                                <a href="/my/clinic/treatments" class="small">View all</a>
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <a t-foreach="recent_treatments"
+                                   t-as="encounter"
+                                   t-att-href="'/my/clinic/treatments/%s' % encounter.id"
+                                   class="list-group-item list-group-item-action">
+                                    <div class="fw-semibold"><t t-out="encounter.treatment_id.display_name or encounter.name"/></div>
+                                    <div class="small text-muted">
+                                        <span t-field="encounter.date_start"/>
+                                        <span t-if="encounter.doctor_id" class="ms-2">• <t t-out="encounter.doctor_id.display_name"/></span>
+                                    </div>
+                                </a>
+                                <div t-if="not recent_treatments" class="list-group-item text-muted">
+                                    No completed treatment history is available.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_clinic_bookings" name="My Clinic Bookings">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Clinic Bookings</t>
+            </t>
+            <div class="container py-3">
+                <t t-call="portal.portal_table">
+                    <thead>
+                        <tr>
+                            <th>Booking</th>
+                            <th>Treatment</th>
+                            <th>Doctor</th>
+                            <th>Start</th>
+                            <th>Status</th>
+                            <th class="text-end">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="bookings" t-as="booking">
+                            <td>
+                                <a t-att-href="'/my/clinic/bookings/%s' % booking.id">
+                                    <t t-out="booking.name"/>
+                                </a>
+                            </td>
+                            <td><t t-out="booking.treatment_id.display_name or '-'"/></td>
+                            <td><t t-out="booking.doctor_id.display_name or '-'"/></td>
+                            <td><span t-field="booking.start_datetime"/></td>
+                            <td><span class="badge text-bg-light" t-field="booking.state"/></td>
+                            <td class="text-end">
+                                <span t-field="booking.amount_total"
+                                      t-options="{'widget':'monetary','display_currency':booking.currency_id}"/>
+                            </td>
+                        </tr>
+                        <tr t-if="not bookings">
+                            <td colspan="6" class="text-center text-muted py-4">No bookings found.</td>
+                        </tr>
+                    </tbody>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_clinic_booking" name="My Clinic Booking">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong><t t-out="booking.name"/></strong>
+                        <span class="badge text-bg-light" t-field="booking.state"/>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="text-muted small">Treatment</div>
+                                <div class="fw-semibold"><t t-out="booking.treatment_id.display_name or '-'"/></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted small">Doctor</div>
+                                <div class="fw-semibold"><t t-out="booking.doctor_id.display_name or '-'"/></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted small">Start</div>
+                                <div><span t-field="booking.start_datetime"/></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted small">End</div>
+                                <div><span t-field="booking.end_datetime"/></div>
+                            </div>
+                            <div class="col-md-6" t-if="booking.room_id">
+                                <div class="text-muted small">Room</div>
+                                <div><t t-out="booking.room_id.display_name"/></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted small">Amount</div>
+                                <div class="fw-semibold">
+                                    <span t-field="booking.amount_total"
+                                          t-options="{'widget':'monetary','display_currency':booking.currency_id}"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex gap-2 flex-wrap">
+                            <a href="/my/clinic/bookings" class="btn btn-outline-secondary">Back to Bookings</a>
+                            <a t-if="native_invoice_url" t-att-href="native_invoice_url" class="btn btn-primary">
+                                Open Invoice
+                            </a>
+                            <a href="/clinic/shop" class="btn btn-outline-primary">Book / Buy Another Service</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_clinic_invoices" name="My Clinic Invoices">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Clinic Invoices</t>
+            </t>
+            <div class="container py-3">
+                <div class="alert alert-info">
+                    Clinic billing summaries are shown here. Payment, PDF download, and official invoice interaction remain on Odoo's native invoice portal.
+                </div>
+                <t t-call="portal.portal_table">
+                    <thead>
+                        <tr>
+                            <th>Clinic Invoice</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Total</th>
+                            <th class="text-end">Outstanding</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="invoices" t-as="invoice">
+                            <td>
+                                <a t-att-href="'/my/clinic/invoices/%s' % invoice.id">
+                                    <t t-out="invoice.name"/>
+                                </a>
+                            </td>
+                            <td><span t-field="invoice.invoice_date"/></td>
+                            <td><span class="badge text-bg-light" t-field="invoice.state"/></td>
+                            <td class="text-end">
+                                <span t-field="invoice.amount_total"
+                                      t-options="{'widget':'monetary','display_currency':invoice.currency_id}"/>
+                            </td>
+                            <td class="text-end">
+                                <span t-field="invoice.amount_residual"
+                                      t-options="{'widget':'monetary','display_currency':invoice.currency_id}"/>
+                            </td>
+                        </tr>
+                        <tr t-if="not invoices">
+                            <td colspan="5" class="text-center text-muted py-4">No clinic invoices found.</td>
+                        </tr>
+                    </tbody>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_clinic_invoice" name="My Clinic Invoice">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong><t t-out="clinic_invoice.name"/></strong>
+                        <span class="badge text-bg-light" t-field="clinic_invoice.state"/>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="text-muted small">Invoice Date</div>
+                                <div><span t-field="clinic_invoice.invoice_date"/></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted small">Total</div>
+                                <div class="fw-semibold">
+                                    <span t-field="clinic_invoice.amount_total"
+                                          t-options="{'widget':'monetary','display_currency':clinic_invoice.currency_id}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted small">Outstanding</div>
+                                <div class="fw-semibold">
+                                    <span t-field="clinic_invoice.amount_residual"
+                                          t-options="{'widget':'monetary','display_currency':clinic_invoice.currency_id}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6" t-if="clinic_invoice.encounter_id">
+                                <div class="text-muted small">Encounter</div>
+                                <div><t t-out="clinic_invoice.encounter_id.name"/></div>
+                            </div>
+                            <div class="col-md-6" t-if="clinic_invoice.clinic_doctor_id">
+                                <div class="text-muted small">Doctor</div>
+                                <div><t t-out="clinic_invoice.clinic_doctor_id.display_name"/></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex gap-2 flex-wrap">
+                            <a href="/my/clinic/invoices" class="btn btn-outline-secondary">Back to Clinic Invoices</a>
+                            <a t-if="native_invoice_url" t-att-href="native_invoice_url" class="btn btn-primary">
+                                Open Official Invoice / Payment
+                            </a>
+                            <a href="/my/invoices?filterby=invoices" class="btn btn-outline-primary">
+                                Native Invoice Portal
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_clinic_treatments" name="My Treatment History">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Treatment History</t>
+            </t>
+            <div class="container py-3">
+                <div class="alert alert-info">
+                    This page shows completed treatment history only. Internal clinical notes, assessments, diagnoses, vitals, and unpublished documents are not exposed by the generic patient portal.
+                </div>
+                <t t-call="portal.portal_table">
+                    <thead>
+                        <tr>
+                            <th>Encounter</th>
+                            <th>Treatment</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th class="text-end">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="encounters" t-as="encounter">
+                            <td>
+                                <a t-att-href="'/my/clinic/treatments/%s' % encounter.id">
+                                    <t t-out="encounter.name"/>
+                                </a>
+                            </td>
+                            <td><t t-out="encounter.treatment_id.display_name or '-'"/></td>
+                            <td><t t-out="encounter.doctor_id.display_name or '-'"/></td>
+                            <td><span t-field="encounter.date_start"/></td>
+                            <td class="text-end">
+                                <span t-field="encounter.amount_total"
+                                      t-options="{'widget':'monetary','display_currency':encounter.currency_id}"/>
+                            </td>
+                        </tr>
+                        <tr t-if="not encounters">
+                            <td colspan="5" class="text-center text-muted py-4">No completed treatment history found.</td>
+                        </tr>
+                    </tbody>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_clinic_treatment" name="My Treatment Detail">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong><t t-out="encounter.name"/></strong>
+                        <span class="badge text-bg-success">Completed</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="text-muted small">Treatment</div>
+                                <div class="fw-semibold"><t t-out="encounter.treatment_id.display_name or '-'"/></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted small">Doctor</div>
+                                <div class="fw-semibold"><t t-out="encounter.doctor_id.display_name or '-'"/></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted small">Started</div>
+                                <div><span t-field="encounter.date_start"/></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted small">Completed</div>
+                                <div><span t-field="encounter.date_end"/></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-muted small">Amount</div>
+                                <div class="fw-semibold">
+                                    <span t-field="encounter.amount_total"
+                                          t-options="{'widget':'monetary','display_currency':encounter.currency_id}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header"><strong>Completed Procedure Sessions</strong></div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Procedure / Treatment</th>
+                                    <th>Performer</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Room</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="procedure_sessions" t-as="session">
+                                    <td><t t-out="session.treatment_id.display_name or session.procedure_id.display_name or session.name"/></td>
+                                    <td><t t-out="session.performer_doctor_id.display_name or '-'"/></td>
+                                    <td><span t-field="session.date_start"/></td>
+                                    <td><span t-field="session.date_end"/></td>
+                                    <td><t t-out="session.room_id.display_name or '-'"/></td>
+                                </tr>
+                                <tr t-if="not procedure_sessions">
+                                    <td colspan="5" class="text-center text-muted py-3">
+                                        No completed procedure-session details are available for this encounter.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="/my/clinic/treatments" class="btn btn-outline-secondary">Back to Treatment History</a>
+                    <a href="/clinic/shop" class="btn btn-outline-primary">Book / Buy Another Service</a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

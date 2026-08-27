@@ -1,0 +1,6 @@
+CLINIC_FEEDBACK_BUILD_20260820_V19.0.1.0.0
+Project: ClinicOne
+Addon: clinic_feedback
+Official sequence: 27 of 39
+Authoritative upstream baseline: clinic_post_care_followup 19.0.1.0.0
+Runtime status: PENDING

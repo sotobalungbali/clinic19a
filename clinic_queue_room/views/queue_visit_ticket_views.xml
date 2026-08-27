@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Visit -->
+    <record id="view_clinic_queue_visit_search" model="ir.ui.view">
+        <field name="name">clinic.queue.visit.search</field>
+        <field name="model">clinic.queue.visit</field>
+        <field name="arch" type="xml">
+            <search string="Search Queue Visits">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="queue_id"/>
+                <field name="token_id"/>
+                <field name="room_id"/>
+                <field name="state"/>
+                <filter name="filter_open" string="Open" domain="[('state','in',['planned','in_progress'])]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_room" string="Room" context="{'group_by':'room_id'}"/>
+                    <filter name="group_day" string="Check-in Day" context="{'group_by':'checkin_time:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_queue_visit_list" model="ir.ui.view">
+        <field name="name">clinic.queue.visit.list</field>
+        <field name="model">clinic.queue.visit</field>
+        <field name="arch" type="xml">
+            <list string="Queue Visits"
+                  decoration-info="state == 'in_progress'"
+                  decoration-success="state == 'done'"
+                  decoration-muted="state in ('cancelled','no_show')">
+                <field name="name"/>
+                <field name="checkin_time"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="queue_id"/>
+                <field name="room_id"/>
+                <field name="state"/>
+                <field name="waiting_duration_min"/>
+                <field name="service_duration_min"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_queue_visit_form" model="ir.ui.view">
+        <field name="name">clinic.queue.visit.form</field>
+        <field name="model">clinic.queue.visit</field>
+        <field name="arch" type="xml">
+            <form string="Queue Visit">
+                <header>
+                    <button name="action_start" type="object" string="Start" class="btn-primary"
+                            invisible="state != 'planned'"/>
+                    <button name="action_finish" type="object" string="Finish" class="btn-primary"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('done','cancelled','no_show')"/>
+                    <button name="action_no_show" type="object" string="No Show"
+                            invisible="state in ('done','cancelled','no_show')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="planned,in_progress,done,cancelled,no_show"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_queue" type="object" class="oe_stat_button"
+                                icon="fa-list" invisible="not queue_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Queue</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="display_name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Visit">
+                            <field name="name" readonly="1"/>
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="queue_id"/>
+                            <field name="token_id"/>
+                            <field name="channel_id"/>
+                            <field name="appointment_id"/>
+                            <field name="treatment_id"/>
+                        </group>
+                        <group string="Room &amp; Company">
+                            <field name="room_id"/>
+                            <field name="room_assignment_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="billable"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Timing">
+                            <group>
+                                <group>
+                                    <field name="checkin_time"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                </group>
+                                <group>
+                                    <field name="waiting_duration_min" readonly="1"/>
+                                    <field name="service_duration_min" readonly="1"/>
+                                    <field name="total_duration_min" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Products &amp; Billing">
+                            <group>
+                                <field name="used_product_ids" widget="many2many_tags"/>
+                                <field name="sale_order_id"/>
+                                <field name="sale_line_id"/>
+                                <field name="invoice_id"/>
+                                <field name="analytic_account_id"/>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                            <field name="internal_note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_queue_visit" model="ir.actions.act_window">
+        <field name="name">Queue Visits</field>
+        <field name="res_model">clinic.queue.visit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Ticket -->
+    <record id="view_clinic_queue_ticket_search" model="ir.ui.view">
+        <field name="name">clinic.queue.ticket.search</field>
+        <field name="model">clinic.queue.ticket</field>
+        <field name="arch" type="xml">
+            <search string="Search Queue Tickets">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="queue_id"/>
+                <field name="token_id"/>
+                <field name="state"/>
+                <filter name="filter_open" string="Open" domain="[('state','in',['draft','issued'])]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_day" string="Issue Day" context="{'group_by':'issue_time:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_queue_ticket_list" model="ir.ui.view">
+        <field name="name">clinic.queue.ticket.list</field>
+        <field name="model">clinic.queue.ticket</field>
+        <field name="arch" type="xml">
+            <list string="Queue Tickets"
+                  decoration-success="state == 'used'"
+                  decoration-muted="state in ('cancelled','expired')">
+                <field name="name"/>
+                <field name="issue_time"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="queue_id"/>
+                <field name="token_id"/>
+                <field name="room_id"/>
+                <field name="state"/>
+                <field name="valid_until"/>
+                <field name="print_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_queue_ticket_form" model="ir.ui.view">
+        <field name="name">clinic.queue.ticket.form</field>
+        <field name="model">clinic.queue.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Queue Ticket">
+                <header>
+                    <button name="action_mark_used" type="object" string="Mark Used" class="btn-primary"
+                            invisible="state != 'issued'"/>
+                    <button name="action_reissue" type="object" string="Reissue"
+                            invisible="state not in ('used','cancelled','expired')"/>
+                    <button name="action_print" type="object" string="Print"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('used','cancelled','expired')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,issued,used,cancelled,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="display_name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="queue_id"/>
+                            <field name="token_id"/>
+                            <field name="channel_id"/>
+                            <field name="visit_id"/>
+                            <field name="appointment_id"/>
+                        </group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="room_id"/>
+                            <field name="room_assignment_id"/>
+                            <field name="issue_time"/>
+                            <field name="valid_until"/>
+                            <field name="is_valid" readonly="1"/>
+                            <field name="issued_by_user_id" readonly="1"/>
+                            <field name="print_count" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook><page string="Note"><field name="note"/></page></notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_queue_ticket" model="ir.actions.act_window">
+        <field name="name">Queue Tickets</field>
+        <field name="res_model">clinic.queue.ticket</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

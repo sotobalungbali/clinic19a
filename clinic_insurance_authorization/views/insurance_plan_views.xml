@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_insurance_plan_search" model="ir.ui.view">
+        <field name="name">clinic.insurance.plan.search</field>
+        <field name="model">clinic.insurance.plan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="insurer_partner_id"/>
+                <field name="company_id"/>
+                <filter name="active_plan" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="authorization_required" string="Pre-Authorization Required" domain="[('authorization_required_default', '=', True)]"/>
+                <group>
+                    <filter name="group_insurer" string="Insurer" context="{'group_by':'insurer_partner_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_insurance_plan_list" model="ir.ui.view">
+        <field name="name">clinic.insurance.plan.list</field>
+        <field name="model">clinic.insurance.plan</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="insurer_partner_id"/>
+                <field name="authorization_required_default"/>
+                <field name="default_coverage_percent"/>
+                <field name="default_copay_percent"/>
+                <field name="annual_limit"/>
+                <field name="policy_count"/>
+                <field name="authorization_count"/>
+                <field name="claim_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_insurance_plan_form" model="ir.ui.view">
+        <field name="name">clinic.insurance.plan.form</field>
+        <field name="model">clinic.insurance.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_manager"
+                            invisible="state == 'archived'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_insurance_authorization.group_clinic_insurance_manager"
+                            invisible="state != 'archived'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_policies" type="object" class="oe_stat_button" icon="fa-id-card">
+                            <field name="policy_count" widget="statinfo" string="Policies"/>
+                        </button>
+                        <button name="action_view_authorizations" type="object" class="oe_stat_button" icon="fa-check-circle">
+                            <field name="authorization_count" widget="statinfo" string="Authorizations"/>
+                        </button>
+                        <button name="action_view_claims" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="claim_count" widget="statinfo" string="Claims"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Payer &amp; Plan">
+                            <field name="insurer_partner_id" readonly="state == 'active'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state == 'active'"/>
+                            <field name="branch_id"/>
+                            <field name="settlement_journal_id"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Default Coverage">
+                            <field name="authorization_required_default"/>
+                            <field name="default_coverage_percent"/>
+                            <field name="default_copay_percent"/>
+                            <field name="default_deductible_amount"/>
+                            <field name="annual_limit"/>
+                            <field name="eligibility_valid_days"/>
+                            <field name="authorization_valid_days"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Benefit / Coverage Rules">
+                            <field name="rule_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="treatment_catalog_id" optional="show"/>
+                                    <field name="procedure_catalog_id" optional="show"/>
+                                    <field name="product_id" optional="show"/>
+                                    <field name="authorization_required"/>
+                                    <field name="coverage_percent"/>
+                                    <field name="copay_percent"/>
+                                    <field name="deductible_amount"/>
+                                    <field name="maximum_amount"/>
+                                    <field name="maximum_quantity"/>
+                                    <field name="active"/>
+                                    <button name="action_open_plan" type="object" string="Plan" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes"><field name="notes"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_insurance_plan_rule_search" model="ir.ui.view">
+        <field name="name">clinic.insurance.plan.rule.search</field>
+        <field name="model">clinic.insurance.plan.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="plan_id"/>
+                <field name="treatment_catalog_id"/>
+                <field name="procedure_catalog_id"/>
+                <field name="product_id"/>
+                <filter name="active_rule" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="preauth" string="Authorization Required" domain="[('authorization_required', '=', True)]"/>
+                <filter name="generic" string="Generic Plan Rule" domain="[('treatment_catalog_id','=',False),('procedure_catalog_id','=',False),('product_id','=',False)]"/>
+                <group>
+                    <filter name="group_plan" string="Plan" context="{'group_by':'plan_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_insurance_plan_rule_list" model="ir.ui.view">
+        <field name="name">clinic.insurance.plan.rule.list</field>
+        <field name="model">clinic.insurance.plan.rule</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="plan_id"/>
+                <field name="sequence"/>
+                <field name="treatment_catalog_id"/>
+                <field name="procedure_catalog_id"/>
+                <field name="product_id"/>
+                <field name="authorization_required"/>
+                <field name="coverage_percent"/>
+                <field name="copay_percent"/>
+                <field name="deductible_amount"/>
+                <field name="maximum_amount"/>
+                <field name="maximum_quantity"/>
+                <field name="active"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_plan" type="object" string="Open Plan" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_insurance_plan_rule_form" model="ir.ui.view">
+        <field name="name">clinic.insurance.plan.rule.form</field>
+        <field name="model">clinic.insurance.plan.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Plan &amp; Service">
+                            <field name="plan_id"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="treatment_catalog_id"/>
+                            <field name="procedure_catalog_id"/>
+                            <field name="product_id"/>
+                            <field name="active"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Coverage Rule">
+                            <field name="authorization_required"/>
+                            <field name="coverage_percent"/>
+                            <field name="copay_percent"/>
+                            <field name="deductible_amount"/>
+                            <field name="maximum_amount"/>
+                            <field name="maximum_quantity"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="note"/>
+                    <button name="action_open_plan" type="object" string="Open Insurance Plan" class="btn-secondary"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_insurance_plan" model="ir.actions.act_window">
+        <field name="name">Insurance Plans</field>
+        <field name="res_model">clinic.insurance.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_insurance_plan_search"/>
+    </record>
+
+    <record id="action_insurance_plan_rule" model="ir.actions.act_window">
+        <field name="name">Benefit / Coverage Rules</field>
+        <field name="res_model">clinic.insurance.plan.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_insurance_plan_rule_search"/>
+    </record>
+</odoo>
+

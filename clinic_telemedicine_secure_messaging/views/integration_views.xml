@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Booking is a frozen upstream addon with a stable owned form ID. -->
+    <record id="view_booking_form_telemedicine_inherit" model="ir.ui.view">
+        <field name="name">booking.booking.form.telemedicine.inherit</field>
+        <field name="model">booking.booking</field>
+        <field name="inherit_id" ref="clinic_booking.view_booking_booking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_telemedicine_session"
+                        type="object"
+                        string="Create Telemedicine Session"
+                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_clinician"
+                        invisible="state in ('done','cancelled') or telemedicine_session_count &gt; 0"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_telemedicine_sessions"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-video-camera"
+                        invisible="telemedicine_session_count == 0">
+                    <field name="telemedicine_session_count"
+                           widget="statinfo"
+                           string="Telemedicine"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+        Runtime repair 19.0.1.0.1:
+        the user's installed DB does not contain
+        clinic_patient.view_clinic_patient_form even though that XML ID exists
+        in the current source snapshot. Use Odoo's native stable Contact form
+        instead, preserving Patient smart navigation without forcing an
+        upstream clinic_patient upgrade.
+    -->
+    <record id="view_partner_form_telemedicine_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.telemedicine.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="patient_id" invisible="1"/>
+
+                <button name="action_open_clinic_telemedicine_sessions"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-video-camera"
+                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_user"
+                        invisible="not patient_id">
+                    <field name="clinic_telemedicine_session_count"
+                           widget="statinfo"
+                           string="Telemedicine"/>
+                </button>
+
+                <button name="action_open_clinic_telemedicine_threads"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-comments"
+                        groups="clinic_telemedicine_secure_messaging.group_telemedicine_user"
+                        invisible="not patient_id">
+                    <field name="clinic_telemedicine_thread_count"
+                           widget="statinfo"
+                           string="Secure Threads"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+

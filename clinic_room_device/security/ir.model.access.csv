@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clinic_room_user,clinic.room user,model_clinic_room,base.group_user,1,1,1,1
+access_clinic_room_type_user,clinic.room.type user,model_clinic_room_type,base.group_user,1,1,1,1
+access_clinic_device_user,clinic.device user,model_clinic_device,base.group_user,1,1,1,1
+access_clinic_device_category_user,clinic.device.category user,model_clinic_device_category,base.group_user,1,1,1,1
+access_clinic_room_device_assignment_user,clinic.room.device.assignment user,model_clinic_room_device_assignment,base.group_user,1,1,1,1
+access_clinic_room_availability_user,clinic.room.availability user,model_clinic_room_availability,base.group_user,1,1,1,1
+access_clinic_device_movement_user,clinic.device.movement user,model_clinic_device_movement,base.group_user,1,1,1,1
+access_clinic_room_session_user,clinic.room.session user,model_clinic_room_session,base.group_user,1,1,1,1

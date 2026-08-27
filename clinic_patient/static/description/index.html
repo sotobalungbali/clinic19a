@@ -1,0 +1,183 @@
+<!--
+ClinicOne — Patient Management
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTE:
+- README.md di root untuk dokumentasi panjang; file ini untuk tampilan deskripsi di Apps UI.
+- Hindari <blockquote> demi konsistensi proyek ClinicOne.
+-->
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span3">
+        <img src="icon.png" alt="ClinicOne Patient Icon" style="width:100%; border-radius:16px;">
+      </div>
+      <div class="oe_span9">
+        <h1 class="oe_slogan">ClinicOne — Patient Management</h1>
+        <h2 class="oe_slogan">MRN • Identifiers • Contacts • Allergies • Conditions • Vitals</h2>
+        <p>
+          Kelola data <b>pasien</b> secara menyeluruh: <b>registrasi</b> dengan <b>MRN otomatis</b>, identitas legal,
+          kontak darurat, <b>alergi</b> & <b>kondisi</b> klinis, serta <b>tanda vital</b>—terintegrasi penuh dengan
+          alur klinik dan modul finansial di <b>Odoo 18 Community Edition</b>.
+        </p>
+        <p>
+          <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+          <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+          <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+          <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Security/Audit</span>
+          <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Interop Ready</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Overview</h3>
+        <p>
+          Modul ini menyediakan fondasi <b>rekam data pasien</b> lintas layanan klinik kecantikan: mulai dari
+          pembuatan <b>MRN</b> (Medical Record Number), <b>identifiers</b> (NIK/BPJS/Passport), <b>kontak</b> & relasi,
+          <b>alergi</b>, <b>kondisi</b> klinis, hingga <b>tanda vital</b> dengan guard rentang klinis dan kalkulasi BMI.
+          Dirancang agar <i>soft-coupled</i> ke modul lain (Booking, Encounter, Billing, Consent/Legal, dsb).
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Key Features</h3>
+        <ul>
+          <li><b>MRN Otomatis</b> dengan prefix & format fleksibel (sequence & guard)</li>
+          <li><b>Identifiers</b>: NIK, BPJS, Passport, SIM, NPWP, Other (1 primary/ pasien)</li>
+          <li><b>Emergency Contacts</b> + normalisasi telepon (E.164)</li>
+          <li><b>Allergies</b>: kategori, reaksi, severity, anaphylaxis risk, verifikasi</li>
+          <li><b>Conditions</b>: kategori (chronic/acute), clinical & verification status</li>
+          <li><b>Vitals</b>: BP, HR, RR, SpO₂, suhu (°C/°F), GCS (E/V/M), BMI</li>
+          <li><b>Stages</b> pasien (New → Registered → Active → …) dengan statusbar klik-able</li>
+          <li><b>Mail Templates</b> & <b>Activities</b> (welcome & follow-up otomatis)</li>
+          <li><b>Security & Audit</b>: multi-company guard, chatter, trail create/write</li>
+          <li><b>Interop</b> helper untuk lintas modul (booking, consent, billing)</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Core Models</h3>
+        <ul>
+          <li><b>clinic.patient</b> — master pasien & MRN</li>
+          <li><b>clinic.patient.identifier</b> — identitas resmi</li>
+          <li><b>clinic.patient.contact</b> — kontak darurat / hubungan</li>
+          <li><b>clinic.patient.allergy</b> — alergi & risiko</li>
+          <li><b>clinic.patient.condition</b> — riwayat/diagnosis kondisi</li>
+          <li><b>clinic.patient.vital</b> — catatan tanda vital</li>
+          <li><b>clinic.patient.stage</b> — pipeline status pasien</li>
+        </ul>
+        <p style="margin-top:8px;">Integrasi name_get konsisten: <i>[MRN] Name</i> untuk pencarian cepat.</p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Holistic Integrations</h3>
+        <p>
+          Terhubung mulus dengan:
+          <i>clinic_doctor, clinic_booking, clinic_treatment, clinic_queue_room, clinic_encounter,
+          clinic_consent, clinic_orders, clinic_billing, clinic_ar, clinic_ap, clinic_finance,
+          clinic_accounting, clinic_inventory, clinic_membership, clinic_wallet, clinic_package,
+          clinic_pricing, clinic_room_device, clinic_portal, clinic_marketing, clinic_feedback,
+          clinic_ecommerce, clinic_l10n_id, clinic_audit, clinic_reports, clinic_dashboard</i>.
+        </p>
+        <p style="font-size:12px;color:#666;">
+          Integrasi bersifat soft-coupled via relasi, server action, mail template, & event log sehingga modul tetap
+          dapat dipasang/ditingkatkan secara independen.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span4">
+        <h3>Installation</h3>
+        <ol>
+          <li>Salin addon ke <i>addons_path</i> Odoo.</li>
+          <li>Update Apps list, cari <b>ClinicOne — Patient Management</b>.</li>
+          <li>Install; dependensi terpasang otomatis.</li>
+        </ol>
+      </div>
+      <div class="oe_span4">
+        <h3>Configuration</h3>
+        <ul>
+          <li>Sesuaikan <b>sequence MRN</b> (prefix, padding).</li>
+          <li>Definisikan <b>stages</b> pasien sesuai SOP klinik.</li>
+          <li>Atur <b>mail template</b> welcome/follow-up (opsional).</li>
+          <li>Set parameter ICP: normalisasi telepon, default country, dsb.</li>
+        </ul>
+      </div>
+      <div class="oe_span4">
+        <h3>Security</h3>
+        <ul>
+          <li>Groups: Patient User, Patient Manager, Patient Admin.</li>
+          <li>Record Rules: scope perusahaan & pembatasan akses PII.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Screenshot grid (gunakan gambar Anda sendiri: s1.png..s6.png) -->
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Screenshots</h3>
+      </div>
+      <div class="oe_span4"><img src="s1.png" alt="Patients List" style="width:100%;border-radius:10px;"></div>
+      <div class="oe_span4"><img src="s2.png" alt="Patient Form" style="width:100%;border-radius:10px;"></div>
+      <div class="oe_span4"><img src="s3.png" alt="Identifiers & Contacts" style="width:100%;border-radius:10px;"></div>
+      <div class="oe_span4"><img src="s4.png" alt="Allergies & Conditions" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+      <div class="oe_span4"><img src="s5.png" alt="Vitals & GCS" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+      <div class="oe_span4"><img src="s6.png" alt="Stages & Activities" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Demo &amp; Testing</h3>
+        <ul>
+          <li>Demo data: 5 pasien + identifiers, contacts, allergies, conditions, vitals.</li>
+          <li>Constraint: rentang GCS (E 1–4, V 1–5, M 1–6), BMI compute.</li>
+          <li>UAT: registrasi → consent → booking → encounter → billing.</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Performance Notes</h3>
+        <ul>
+          <li>Index: mrn, company_id, stage_id, patient_id (FK di tabel turunan).</li>
+          <li>Gunakan read_group untuk laporan agregat; hindari compute berat di list.</li>
+          <li>Arsip vital lama secara periodik untuk volume besar.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>License</h3>
+        <p>Distribusi di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+      </div>
+      <div class="oe_span6">
+        <h3>Support &amp; Contribution</h3>
+        <p>
+          Laporkan isu & ajukan peningkatan melalui alur kontribusi ClinicOne:
+          sertakan test, ikuti style code, dan dokumentasikan dampak migrasi.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+

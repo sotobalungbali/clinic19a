@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Runtime-safe Billing bridge marker.
+
+        The actual inherited form decorations are created idempotently from
+        models/view_bridge.py through data/optional_view_bridge.xml.
+
+        Why this is not a normal inherit_id:
+        ClinicOne Billing forms can evolve independently. A hard XPath such as
+        //div[@name='button_box'] would make clinic_ar installation fail when
+        the upstream form does not expose that anchor. Business integration
+        remains mandatory through Python model contracts; only UI decoration
+        is treated as structurally optional.
+    -->
+</odoo>

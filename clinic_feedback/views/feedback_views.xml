@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_feedback_search" model="ir.ui.view">
+        <field name="name">clinic.feedback.search</field>
+        <field name="model">clinic.feedback</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="survey_id"/>
+                <field name="doctor_id"/>
+                <field name="staff_id"/>
+                <field name="treatment_id"/>
+                <field name="company_id"/>
+                <filter name="open_feedback" string="Open Review" domain="[('state','in',('submitted','under_review','escalated'))]"/>
+                <filter name="needs_escalation" string="Needs Escalation" domain="[('needs_escalation','=',True),('state','!=','closed')]"/>
+                <filter name="complaint" string="Complaints" domain="[('feedback_type','=','complaint')]"/>
+                <filter name="low_rating" string="Rating 1-2" domain="[('overall_rating','in',(1,2))]"/>
+                <filter name="detractor" string="NPS Detractors" domain="[('nps_class','=','detractor')]"/>
+                <filter name="promoter" string="NPS Promoters" domain="[('nps_class','=','promoter')]"/>
+                <group>
+                    <filter name="group_survey" string="Survey" context="{'group_by':'survey_id'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by':'source_type'}"/>
+                    <filter name="group_type" string="Feedback Type" context="{'group_by':'feedback_type'}"/>
+                    <filter name="group_rating" string="Rating" context="{'group_by':'overall_rating'}"/>
+                    <filter name="group_nps" string="NPS Class" context="{'group_by':'nps_class'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_staff" string="Staff" context="{'group_by':'staff_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_list" model="ir.ui.view">
+        <field name="name">clinic.feedback.list</field>
+        <field name="model">clinic.feedback</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'escalated'" decoration-warning="needs_escalation and state != 'closed'" decoration-success="state == 'closed'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="survey_id"/>
+                <field name="source_type" widget="badge"/>
+                <field name="feedback_type" widget="badge"/>
+                <field name="overall_rating"/>
+                <field name="nps_score"/>
+                <field name="nps_class" widget="badge"/>
+                <field name="would_recommend"/>
+                <field name="doctor_id"/>
+                <field name="staff_id"/>
+                <field name="submitted_at"/>
+                <field name="open_escalation_count"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_start_review" type="object" string="Review" icon="fa-eye"
+                        groups="clinic_feedback.group_feedback_reviewer"
+                        invisible="state not in ('submitted','escalated')"/>
+                <button name="action_escalate" type="object" string="Escalate" icon="fa-exclamation-triangle"
+                        groups="clinic_feedback.group_feedback_reviewer"
+                        invisible="state in ('escalated','closed')"/>
+                <button name="action_open_source" type="object" string="Source" icon="fa-external-link"
+                        invisible="source_type == 'manual'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_feedback_form" model="ir.ui.view">
+        <field name="name">clinic.feedback.form</field>
+        <field name="model">clinic.feedback</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_reviewer"
+                            invisible="state != 'draft'"/>
+                    <button name="action_start_review" type="object" string="Start Review" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_reviewer"
+                            invisible="state not in ('submitted','escalated')"/>
+                    <button name="action_escalate" type="object" string="Escalate"
+                            groups="clinic_feedback.group_feedback_reviewer"
+                            invisible="state in ('escalated','closed')"/>
+                    <button name="action_close" type="object" string="Close" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_reviewer"
+                            invisible="state not in ('submitted','under_review','escalated')"/>
+                    <button name="action_print_summary" type="object" string="Print Summary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,under_review,escalated,closed"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_escalations" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="escalation_count" widget="statinfo" string="Escalations"/>
+                        </button>
+                        <button name="action_open_source" type="object" class="oe_stat_button" icon="fa-external-link"
+                                invisible="source_type == 'manual'">
+                            <div class="o_stat_info"><span class="o_stat_text">Source</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="state != 'escalated'">
+                        This Feedback has an open service-recovery escalation.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not needs_escalation or state in ('escalated','closed')">
+                        This response meets the configured service-recovery threshold.
+                    </div>
+
+                    <group>
+                        <group string="Patient &amp; Source">
+                            <field name="patient_id" readonly="state != 'draft'"/>
+                            <field name="patient_card_id" readonly="state != 'draft'"/>
+                            <field name="survey_id" readonly="state != 'draft'"/>
+                            <field name="doctor_id" readonly="state != 'draft'"/>
+                            <field name="staff_id" readonly="state != 'draft'"/>
+                            <field name="treatment_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            <field name="branch_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Satisfaction">
+                            <field name="feedback_type" readonly="state != 'draft'"/>
+                            <field name="overall_rating" readonly="state != 'draft'"/>
+                            <field name="satisfaction_percent" readonly="1"/>
+                            <field name="nps_score" readonly="state != 'draft'"/>
+                            <field name="nps_class" readonly="1" widget="badge"/>
+                            <field name="would_recommend" readonly="state != 'draft'"/>
+                            <field name="anonymous_public" readonly="state != 'draft'"/>
+                            <field name="needs_escalation" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_source" type="object" string="Open Journey Source" class="btn btn-secondary"
+                                invisible="source_type == 'manual'"/>
+                        <button name="action_view_escalations" type="object" string="Open Service Recovery" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Patient Comment">
+                            <field name="comment" readonly="state != 'draft'"/>
+                            <field name="escalation_reason" readonly="1"/>
+                        </page>
+
+                        <page string="Survey Answers">
+                            <field name="answer_ids" readonly="state != 'draft'">
+                                <list>
+                                    <field name="question_id"/>
+                                    <field name="display_value"/>
+                                    <button name="action_open_feedback" type="object" string="Feedback" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Service Recovery">
+                            <field name="escalation_ids" readonly="1">
+                                <list decoration-danger="severity == 'critical' and state not in ('resolved','cancelled')" decoration-warning="state in ('open','acknowledged','in_progress')">
+                                    <field name="name"/>
+                                    <field name="severity" widget="badge"/>
+                                    <field name="category"/>
+                                    <field name="owner_staff_id"/>
+                                    <field name="due_at"/>
+                                    <field name="is_overdue"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_feedback" type="object" string="Feedback" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Review &amp; Audit">
+                            <group>
+                                <field name="review_note"/>
+                                <field name="submitted_at" readonly="1"/>
+                                <field name="reviewed_at" readonly="1"/>
+                                <field name="reviewer_id" readonly="1"/>
+                                <field name="closed_at" readonly="1"/>
+                                <field name="closed_by_id" readonly="1"/>
+                            </group>
+                            <group string="Source References">
+                                <field name="source_type"/>
+                                <field name="request_id" readonly="1"/>
+                                <field name="booking_feedback_link_id" readonly="1"/>
+                                <field name="booking_id" invisible="source_type != 'booking'"/>
+                                <field name="queue_id" invisible="source_type != 'queue'"/>
+                                <field name="encounter_id" invisible="source_type != 'encounter'"/>
+                                <field name="postcare_plan_id" invisible="source_type != 'postcare'"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_feedback_pivot" model="ir.ui.view">
+        <field name="name">clinic.feedback.pivot</field>
+        <field name="model">clinic.feedback</field>
+        <field name="arch" type="xml">
+            <pivot string="Feedback Analysis">
+                <field name="company_id" type="row"/>
+                <field name="source_type" type="row"/>
+                <field name="feedback_type" type="col"/>
+                <field name="overall_rating" type="measure"/>
+                <field name="satisfaction_percent" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_feedback_graph" model="ir.ui.view">
+        <field name="name">clinic.feedback.graph</field>
+        <field name="model">clinic.feedback</field>
+        <field name="arch" type="xml">
+            <graph string="Feedback Satisfaction" type="bar">
+                <field name="submitted_at" interval="month"/>
+                <field name="overall_rating" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_feedback_answer_search" model="ir.ui.view">
+        <field name="name">clinic.feedback.answer.search</field>
+        <field name="model">clinic.feedback.answer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="feedback_id"/>
+                <field name="survey_id"/>
+                <field name="question_id"/>
+                <field name="company_id"/>
+                <group>
+                    <filter name="group_survey" string="Survey" context="{'group_by':'survey_id'}"/>
+                    <filter name="group_question" string="Question" context="{'group_by':'question_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_answer_list" model="ir.ui.view">
+        <field name="name">clinic.feedback.answer.list</field>
+        <field name="model">clinic.feedback.answer</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="feedback_id"/>
+                <field name="survey_id"/>
+                <field name="question_id"/>
+                <field name="display_value"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_feedback" type="object" string="Open Feedback" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_feedback_answer_form" model="ir.ui.view">
+        <field name="name">clinic.feedback.answer.form</field>
+        <field name="model">clinic.feedback.answer</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group string="Answer">
+                            <field name="feedback_id"/>
+                            <field name="survey_id"/>
+                            <field name="question_id"/>
+                            <field name="display_value"/>
+                        </group>
+                        <group string="Stored Values">
+                            <field name="numeric_value"/>
+                            <field name="boolean_value"/>
+                            <field name="text_value"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2">
+                        <button name="action_open_feedback" type="object" string="Open Feedback" class="btn-secondary"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_feedback_response" model="ir.actions.act_window">
+        <field name="name">Patient Feedback</field>
+        <field name="res_model">clinic.feedback</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_feedback_search"/>
+        <field name="context">{'search_default_open_feedback': 1}</field>
+    </record>
+
+    <record id="action_feedback_answer" model="ir.actions.act_window">
+        <field name="name">Survey Answers</field>
+        <field name="res_model">clinic.feedback.answer</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_answer_search"/>
+    </record>
+</odoo>

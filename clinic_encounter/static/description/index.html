@@ -1,0 +1,214 @@
+<!--
+ClinicOne — Encounter • Procedure • Session
+File: static/description/index.html
+Odoo 18 CE | License: AGPL-3.0
+
+NOTE:
+- README.md di root memuat dokumentasi lengkap; file ini untuk tampilan deskripsi di Apps UI.
+- Hindari <blockquote> demi konsistensi proyek ClinicOne.
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="ClinicOne — Encounter • Procedure • Session" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Encounter • Procedure • Session</h1>
+      <h2 class="oe_slogan">SOAP Encounter → Procedure Planning → Session Execution → Results &amp; Billing</h2>
+      <p>
+        Modul ini menyatukan <b>Encounter SOAP &amp; Diagnosis</b> dengan <b>Prosedur Klinis</b> dan
+        <b>Sesi Eksekusi Tindakan</b> dalam satu alur terintegrasi di <b>Odoo 18 Community Edition</b>.
+        Dirancang untuk front desk, perawat, dan dokter: dari anamnesis, pemeriksaan, pemilihan prosedur,
+        dokumentasi hasil, konsumsi stok, hingga penagihan dan laporan/portal.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Inventory &amp; Billing Bridges</span>
+        <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Portal &amp; Audit</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <img src="banner.png" alt="Clinic Encounter Banner" style="width:100%; border-radius:12px; margin-bottom:16px;">
+      <h3>Overview</h3>
+      <p>
+        <b>clinic_encounter</b> adalah konsolidasi dari modul <i>clinic_encounter_procedure</i> dan
+        <i>clinic_procedure_session</i>: Encounter (SOAP/diagnosis) → rencana prosedur →
+        eksekusi sesi tindakan → hasil &amp; follow-up. Semua terhubung ke stok &amp; billing
+        dengan nomor encounter sebagai poros audit dan pelaporan mutu.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li><b>SOAP Encounter</b> terstruktur (Subjective, Objective, Assessment, Plan)</li>
+        <li><b>Diagnosis</b> multi-entry (free text / kode referensi)</li>
+        <li><b>Procedure Planning</b> dari katalog prosedur &amp; langkah-langkah</li>
+        <li><b>Session Execution</b> dengan timer, performer, room &amp; device</li>
+        <li><b>Checklist</b> pre/post tindakan &amp; <b>Consent</b> pasien</li>
+        <li><b>Result Documentation</b>: catatan, nilai ukur, gambar/berkas</li>
+        <li><b>Adverse Event</b> capture &amp; klasifikasi</li>
+        <li><b>Inventory Consumption</b> otomatis (bahan/alat) dari sesi</li>
+        <li><b>Billing</b> koheren: line biaya dari prosedur/sesi (co-pay/insurance)</li>
+        <li><b>Portal</b> pasien: riwayat encounter &amp; ringkasan hasil</li>
+        <li><b>Audit Trail</b> status/tahap &amp; event klinis</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>clinic.encounter</b> — header encounter (pasien, provider, room, jadwal)</li>
+        <li><b>clinic.soap.note</b> — struktur SOAP + template</li>
+        <li><b>clinic.encounter.procedure</b> — rencana prosedur per encounter</li>
+        <li><b>clinic.procedure.catalog</b> &amp; <b>clinic.procedure.step</b> — master &amp; langkah</li>
+        <li><b>clinic.procedure.session</b> — eksekusi tindakan (timer, performer)</li>
+        <li><b>clinic.execution.log</b> — start/pause/resume/complete</li>
+        <li><b>clinic.result.document</b> — hasil, foto, attachment, nilai</li>
+        <li><b>clinic.consent</b> &amp; <b>clinic.checklist</b></li>
+        <li><b>clinic.adverse.event</b></li>
+        <li><i>inherits</i>: account.move (billing), stock.move (konsumsi), portal</li>
+      </ul>
+      <p style="margin-top:6px;">Mengikuti konvensi Odoo 18 CE, kompatibel multi-company &amp; multi-site.</p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Holistic Integrations (26 Modules)</h3>
+      <p>
+        Terintegrasi dengan: <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_triage_vitals,
+        clinic_queue_room, clinic_inventory, clinic_room_device, clinic_billing, clinic_reports, clinic_dashboard,
+        clinic_wallet, clinic_package, clinic_portal, clinic_marketing, clinic_l10n_id, clinic_audit</i> dan modul lain
+        dalam ekosistem ClinicOne. Integrasi <i>soft-coupled</i> via bridges &amp; hooks.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>End-to-End Flow</h3>
+      <ol>
+        <li><b>Booking</b> → check-in encounter</li>
+        <li><b>SOAP</b> &amp; <b>Diagnosis</b></li>
+        <li><b>Procedure Planning</b> (durasi, resource, estimasi biaya)</li>
+        <li><b>Session Execution</b> (checklist, consent, timer, performer)</li>
+        <li><b>Result</b> &amp; <b>Adverse Event</b> (jika ada)</li>
+        <li><b>Inventory</b> consumption &amp; <b>Billing</b> line generation</li>
+        <li><b>Portal</b>/Report &amp; <b>Follow-up</b></li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Wizards</h3>
+      <ul>
+        <li>Start/Complete/Cancel Session</li>
+        <li>Transfer Room/Device</li>
+        <li>Quick SOAP Template</li>
+        <li>Adverse Event Report</li>
+        <li>Generate Bill</li>
+      </ul>
+      <h3 style="margin-top:16px;">Security</h3>
+      <ul>
+        <li>Groups: Encounter Manager, Doctor, Nurse, Front Desk, Billing, QA</li>
+        <li>Record Rules: scope perusahaan &amp; peran klinis</li>
+        <li>Mail/Activities untuk tugas &amp; eskalasi</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Performance Notes</h3>
+      <ul>
+        <li>Index: encounter/date/patient/provider/status</li>
+        <li>Gunakan <i>read_group</i> untuk KPI encounter &amp; prosedur</li>
+        <li>Cron pembersihan log eksekusi &amp; lampiran besar</li>
+      </ul>
+      <h3 style="margin-top:16px;">Upgrade &amp; Migration</h3>
+      <ul>
+        <li>Compat alias dari nama lama: <i>clinic_encounter_procedure</i>, <i>clinic_procedure_session</i></li>
+        <li>Script migrasi: <i>migration/18.0.1.0.0/</i></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Screenshot grid (siapkan s1..s6.png di folder ini) -->
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Screenshots</h3>
+    </div>
+    <div class="oe_span4"><img src="s1.png" alt="SOAP Note" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s2.png" alt="Diagnosis & Procedure Plan" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s3.png" alt="Session Execution & Timer" style="width:100%;border-radius:10px;"></div>
+    <div class="oe_span4"><img src="s4.png" alt="Consent & Checklist" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s5.png" alt="Results & Attachments" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+    <div class="oe_span4"><img src="s6.png" alt="Billing & Inventory" style="width:100%;border-radius:10px;margin-top:10px;"></div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Copy folder addon ke <i>addons_path</i> Odoo.</li>
+        <li>Update Apps list, cari <b>ClinicOne — Encounter • Procedure • Session</b>.</li>
+        <li>Install; dependensi inti (mail, stock, account, etc.) akan terdeteksi.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Definisikan katalog prosedur &amp; langkah</li>
+        <li>Mapping room/device dan role performer</li>
+        <li>Atur template SOAP, consent, dan checklist</li>
+        <li>Aktifkan bridges Inventory &amp; Billing</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Demo &amp; Testing</h3>
+      <ul>
+        <li>Demo data: encounter contoh, katalog prosedur, sesi &amp; hasil</li>
+        <li>Unit tests: flow encounter→session→billing</li>
+        <li>UAT: portal pasien &amp; laporan PDF</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>API &amp; Bridges</h3>
+      <ul>
+        <li><i>controllers/api.py</i> — endpoint JSON (encounter, session, hasil)</li>
+        <li><i>controllers/portal.py</i> — portal pasien</li>
+        <li><i>billing bridge</i> — pembuatan invoice line</li>
+        <li><i>inventory bridge</i> — stock moves &amp; lot/serial</li>
+        <li><i>reports</i> — ringkasan encounter, prosedur, consent</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>License &amp; Support</h3>
+      <p>Distribusi di bawah lisensi <b>AGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+      <p>
+        Laporkan isu &amp; ajukan peningkatan melalui alur kontribusi ClinicOne.
+        Sertakan test, ikuti style code, dan dokumentasikan dampak migrasi.
+      </p>
+    </div>
+  </div>
+</section>

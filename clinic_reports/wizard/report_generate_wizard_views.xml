@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_report_generate_wizard_form" model="ir.ui.view">
+        <field name="name">clinic.report.generate.wizard.form</field>
+        <field name="model">clinic.report.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Clinic Report">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Generate Clinic Report</h1>
+                    </div>
+                    <group>
+                        <group string="Report">
+                            <field name="definition_id"/>
+                            <field name="family" readonly="1"/>
+                            <field name="report_key" readonly="1"/>
+                        </group>
+                        <group string="Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <group string="Output">
+                        <field name="include_details"/>
+                        <field name="detail_limit" invisible="not include_details"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_generate" type="object" string="Generate Report" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_generate_report_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Report</field>
+        <field name="res_model">clinic.report.generate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

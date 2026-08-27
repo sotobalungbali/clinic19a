@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_wallet_statement_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="wallet">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Patient Wallet Statement</h2>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Wallet:</strong> <span t-field="wallet.name"/><br/>
+                                <strong>Patient / Customer:</strong> <span t-field="wallet.partner_id"/><br/>
+                                <strong>Company:</strong> <span t-field="wallet.company_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Status:</strong> <span t-field="wallet.state"/><br/>
+                                <strong>Issue Date:</strong> <span t-field="wallet.issue_date"/><br/>
+                                <strong>Expiry Date:</strong> <span t-field="wallet.expiry_date"/>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-bordered mb-4">
+                            <thead><tr><th>Available Balance</th><th>Reserved</th><th>Total Top-Up</th><th>Total Redeem</th><th>Total Refund</th></tr></thead>
+                            <tbody><tr>
+                                <td><span t-field="wallet.balance" t-options="{'widget': 'monetary', 'display_currency': wallet.currency_id}"/></td>
+                                <td><span t-field="wallet.reserved_amount" t-options="{'widget': 'monetary', 'display_currency': wallet.currency_id}"/></td>
+                                <td><span t-field="wallet.total_topup" t-options="{'widget': 'monetary', 'display_currency': wallet.currency_id}"/></td>
+                                <td><span t-field="wallet.total_redeem" t-options="{'widget': 'monetary', 'display_currency': wallet.currency_id}"/></td>
+                                <td><span t-field="wallet.total_refund" t-options="{'widget': 'monetary', 'display_currency': wallet.currency_id}"/></td>
+                            </tr></tbody>
+                        </table>
+                        <h4>Transaction Ledger</h4>
+                        <table class="table table-sm table-striped">
+                            <thead><tr><th>Date</th><th>Number</th><th>Type</th><th>Status</th><th>Reference</th><th class="text-end">Amount</th><th class="text-end">Net</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="wallet.transaction_ids.sorted('date', reverse=True)" t-as="tx">
+                                    <td><span t-field="tx.date"/></td>
+                                    <td><span t-field="tx.name"/></td>
+                                    <td><span t-field="tx.transaction_type"/></td>
+                                    <td><span t-field="tx.state"/></td>
+                                    <td><span t-field="tx.reference"/></td>
+                                    <td class="text-end"><span t-field="tx.amount" t-options="{'widget': 'monetary', 'display_currency': tx.currency_id}"/></td>
+                                    <td class="text-end"><span t-field="tx.amount_signed" t-options="{'widget': 'monetary', 'display_currency': tx.currency_id}"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p t-if="wallet.notes"><strong>Notes:</strong> <span t-field="wallet.notes"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
+

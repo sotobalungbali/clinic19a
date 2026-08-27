@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_catalog_discovery_wizard_form" model="ir.ui.view">
+        <field name="name">clinic.ecommerce.catalog.discovery.wizard.form</field>
+        <field name="model">clinic.ecommerce.catalog.discovery.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Discover Clinic Offerings">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Discover Clinic Offerings</h1>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        Discovery is idempotent. Existing catalog mappings are preserved and missing mappings are created as Draft records for management review.
+                    </div>
+                    <group>
+                        <group string="Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="website_id"/>
+                        </group>
+                        <group string="Offering Types">
+                            <field name="include_treatments"/>
+                            <field name="include_treatment_bundles"/>
+                            <field name="include_packages"/>
+                            <field name="include_memberships"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_discover"
+                            type="object"
+                            string="Discover Offerings"
+                            class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_catalog_discovery_wizard" model="ir.actions.act_window">
+        <field name="name">Discover Clinic Offerings</field>
+        <field name="res_model">clinic.ecommerce.catalog.discovery.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_feedback_escalation_search" model="ir.ui.view">
+        <field name="name">clinic.feedback.escalation.search</field>
+        <field name="model">clinic.feedback.escalation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="feedback_id"/>
+                <field name="patient_id"/>
+                <field name="owner_staff_id"/>
+                <field name="category"/>
+                <field name="company_id"/>
+                <filter name="open_escalation" string="Open" domain="[('state','not in',('resolved','cancelled'))]"/>
+                <filter name="overdue" string="Overdue" domain="[('is_overdue','=',True)]"/>
+                <filter name="high_critical" string="High / Critical" domain="[('severity','in',('high','critical')),('state','not in',('resolved','cancelled'))]"/>
+                <filter name="critical" string="Critical" domain="[('severity','=','critical'),('state','not in',('resolved','cancelled'))]"/>
+                <group>
+                    <filter name="group_owner" string="Owner" context="{'group_by':'owner_staff_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by':'severity'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_escalation_list" model="ir.ui.view">
+        <field name="name">clinic.feedback.escalation.list</field>
+        <field name="model">clinic.feedback.escalation</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="severity == 'critical' and state not in ('resolved','cancelled')" decoration-warning="is_overdue or state in ('open','acknowledged','in_progress')" decoration-success="state == 'resolved'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="feedback_id"/>
+                <field name="severity" widget="badge"/>
+                <field name="category"/>
+                <field name="owner_staff_id"/>
+                <field name="opened_at"/>
+                <field name="due_at"/>
+                <field name="is_overdue"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_acknowledge" type="object" string="Acknowledge" icon="fa-eye"
+                        groups="clinic_feedback.group_feedback_reviewer"
+                        invisible="state != 'open'"/>
+                <button name="action_start" type="object" string="Start" icon="fa-play"
+                        groups="clinic_feedback.group_feedback_reviewer"
+                        invisible="state not in ('open','acknowledged')"/>
+                <button name="action_open_source" type="object" string="Source" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_feedback_escalation_form" model="ir.ui.view">
+        <field name="name">clinic.feedback.escalation.form</field>
+        <field name="model">clinic.feedback.escalation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_acknowledge" type="object" string="Acknowledge" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_reviewer"
+                            invisible="state != 'open'"/>
+                    <button name="action_start" type="object" string="Start Service Recovery" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_reviewer"
+                            invisible="state not in ('open','acknowledged')"/>
+                    <button name="action_resolve" type="object" string="Resolve" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_reviewer"
+                            invisible="state not in ('acknowledged','in_progress')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_feedback.group_feedback_manager"
+                            invisible="state in ('resolved','cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,acknowledged,in_progress,resolved,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_feedback" type="object" class="oe_stat_button" icon="fa-star">
+                            <div class="o_stat_info"><span class="o_stat_text">Feedback</span></div>
+                        </button>
+                        <button name="action_open_source" type="object" class="oe_stat_button" icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Journey Source</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="severity != 'critical' or state in ('resolved','cancelled')">
+                        Critical service-recovery case. Follow the clinic's escalation policy.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not is_overdue">
+                        Service-recovery SLA is overdue.
+                    </div>
+
+                    <group>
+                        <group string="Service-Recovery Case">
+                            <field name="feedback_id" readonly="1"/>
+                            <field name="request_id" readonly="1"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="severity"/>
+                            <field name="category"/>
+                            <field name="owner_staff_id"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="branch_id" readonly="1"/>
+                        </group>
+                        <group string="SLA &amp; Audit">
+                            <field name="opened_at" readonly="1"/>
+                            <field name="due_at"/>
+                            <field name="overdue_marked_at" readonly="1"/>
+                            <field name="is_overdue" readonly="1"/>
+                            <field name="acknowledged_at" readonly="1"/>
+                            <field name="acknowledged_by_id" readonly="1"/>
+                            <field name="resolved_at" readonly="1"/>
+                            <field name="resolved_by_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_open_feedback" type="object" string="Open Patient Feedback" class="btn btn-secondary"/>
+                        <button name="action_open_source" type="object" string="Open Journey Source" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Reason">
+                            <field name="reason"/>
+                        </page>
+                        <page string="Investigation">
+                            <field name="investigation_note"/>
+                        </page>
+                        <page string="Recovery Action">
+                            <field name="recovery_action"/>
+                            <field name="patient_contact_note"/>
+                        </page>
+                        <page string="Resolution">
+                            <field name="resolution_note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_feedback_escalation" model="ir.actions.act_window">
+        <field name="name">Feedback Escalations</field>
+        <field name="res_model">clinic.feedback.escalation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_escalation_search"/>
+        <field name="context">{'search_default_open_escalation': 1}</field>
+    </record>
+</odoo>

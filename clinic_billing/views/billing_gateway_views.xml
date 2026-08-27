@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_clinic_billing_gateway_tx_search" model="ir.ui.view">
+        <field name="name">clinic.billing.gateway.tx.search</field>
+        <field name="model">clinic.billing.gateway.tx</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="provider"/>
+                <field name="method"/>
+                <field name="channel"/>
+                <field name="card_scheme"/>
+                <field name="state"/>
+                <field name="invoice_id"/>
+                <field name="partner_id"/>
+                <filter name="active_state" string="Active States" domain="[('state','not in',('cancelled','canceled','failed','ignored'))]"/>
+                <group><filter string="Status" context="{'group_by':'state'}" name="group_state"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_gateway_tx_list" model="ir.ui.view">
+        <field name="name">clinic.billing.gateway.tx.list</field>
+        <field name="model">clinic.billing.gateway.tx</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('cancelled','canceled','ignored')">
+                <field name="name" optional="show"/>
+                <field name="provider" optional="show"/>
+                <field name="method" optional="show"/>
+                <field name="channel" optional="show"/>
+                <field name="card_scheme" optional="show"/>
+                <field name="state" optional="show"/>
+                <field name="invoice_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="payment_id" optional="hide"/>
+                <field name="payment_line_id" optional="hide"/>
+                <field name="order_reference" optional="hide"/>
+                <field name="external_tx_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_gateway_tx_form" model="ir.ui.view">
+        <field name="name">clinic.billing.gateway.tx.form</field>
+        <field name="model">clinic.billing.gateway.tx</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_initiate_from_invoice" type="object" string="Initiate From Invoice"/>
+                    <button name="action_mark_pending" type="object" string="Mark Pending"/>
+                    <button name="action_mark_authorized" type="object" string="Mark Authorized"/>
+                    <button name="action_mark_captured" type="object" string="Mark Captured" class="btn-primary"/>
+                    <button name="action_mark_settled" type="object" string="Mark Settled" class="btn-primary"/>
+                    <button name="action_mark_refunded" type="object" string="Mark Refunded"/>
+                    <button name="action_mark_failed" type="object" string="Mark Failed"/>
+                    <button name="action_mark_cancelled" type="object" string="Mark Cancelled"/>
+                    <button name="action_mark_chargeback" type="object" string="Mark Chargeback"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="provider"/>
+                            <field name="method"/>
+                            <field name="channel"/>
+                            <field name="card_scheme"/>
+                            <field name="state"/>
+                            <field name="invoice_id"/>
+                            <field name="partner_id"/>
+                            <field name="payment_id"/>
+                            <field name="payment_line_id"/>
+                            <field name="order_reference"/>
+                            <field name="external_tx_id"/>
+                            <field name="external_order_id"/>
+                        </group>
+                        <group>
+                            <field name="external_reference"/>
+                            <field name="amount"/>
+                            <field name="fee_amount"/>
+                            <field name="net_amount"/>
+                            <field name="captured_amount"/>
+                            <field name="refunded_amount"/>
+                            <field name="is_test_mode"/>
+                            <field name="error_code"/>
+                            <field name="error_message"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_gateway_tx" model="ir.actions.act_window">
+        <field name="name">Tx</field>
+        <field name="res_model">clinic.billing.gateway.tx</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_gateway_tx_search"/>
+    </record>
+
+    <record id="view_clinic_billing_gateway_event_search" model="ir.ui.view">
+        <field name="name">clinic.billing.gateway.event.search</field>
+        <field name="model">clinic.billing.gateway.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="tx_id"/>
+                <field name="event_type"/>
+                <field name="occurred_on"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_gateway_event_list" model="ir.ui.view">
+        <field name="name">clinic.billing.gateway.event.list</field>
+        <field name="model">clinic.billing.gateway.event</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="tx_id" optional="show"/>
+                <field name="event_type" optional="show"/>
+                <field name="occurred_on" optional="show"/>
+                <field name="payload" optional="show"/>
+                <field name="headers" optional="show"/>
+                <field name="note" optional="show"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_gateway_event_form" model="ir.ui.view">
+        <field name="name">clinic.billing.gateway.event.form</field>
+        <field name="model">clinic.billing.gateway.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="tx_id"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="tx_id"/>
+                            <field name="event_type"/>
+                            <field name="occurred_on"/>
+                        </group>
+                        <group>
+                            <field name="payload" nolabel="1"/>
+                            <field name="headers" nolabel="1"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_gateway_event" model="ir.actions.act_window">
+        <field name="name">Event</field>
+        <field name="res_model">clinic.billing.gateway.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_gateway_event_search"/>
+    </record>
+</odoo>

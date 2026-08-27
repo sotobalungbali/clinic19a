@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_insurance_authorization" model="ir.actions.report">
+        <field name="name">Insurance Pre-Authorization</field>
+        <field name="model">clinic.insurance.authorization</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinic_insurance_authorization.report_insurance_authorization</field>
+        <field name="report_file">clinic_insurance_authorization.report_insurance_authorization</field>
+        <field name="binding_model_id" ref="model_clinic_insurance_authorization"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Insurance Authorization - %s' % (object.name)</field>
+    </record>
+</odoo>
+

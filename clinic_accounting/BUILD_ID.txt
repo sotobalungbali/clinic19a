@@ -1,0 +1,6 @@
+CLINIC_ACCOUNTING_BUILD_20260820_V19.0.1.0.0
+Project: ClinicOne
+Addon: clinic_accounting
+Upstream boundary: clinic_finance and earlier financial addons
+Downstream boundary: clinic_l10n_id
+Runtime status: PENDING until Odoo 19 CE installation and smoke test

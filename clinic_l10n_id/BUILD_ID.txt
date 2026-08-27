@@ -1,0 +1,7 @@
+CLINIC_L10N_ID_BUILD_20260820_V19.0.1.0.1
+Project: ClinicOne
+Addon: clinic_l10n_id
+Upstream boundary: clinic_accounting and Odoo Indonesia localization
+Native localization owner: l10n_id + l10n_id_efaktur_coretax
+Runtime status: PENDING
+

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_l10n_id_tax_report_search" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.report.search</field><field name="model">clinic.l10n.id.tax.report</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="profile_id"/><field name="date_from"/><field name="date_to"/><field name="source_scope"/><field name="company_id"/>
+      <filter name="generated" string="Generated" domain="[('state','=','generated')]"/>
+      <filter name="locked" string="Locked" domain="[('state','=','locked')]"/>
+      <filter name="auto" string="Auto Generated" domain="[('auto_generated','=',True)]"/>
+      <group>
+        <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+        <filter name="group_source" string="Clinic Source" context="{'group_by':'source_scope'}"/>
+        <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+        <filter name="group_month" string="Month" context="{'group_by':'date_to:month'}"/>
+      </group>
+    </search></field>
+  </record>
+
+  <record id="view_l10n_id_tax_report_list" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.report.list</field><field name="model">clinic.l10n.id.tax.report</field>
+    <field name="arch" type="xml"><list decoration-info="state == 'generated'" decoration-success="state == 'locked'">
+      <field name="name"/><field name="date_from"/><field name="date_to"/><field name="profile_id"/><field name="source_scope"/>
+      <field name="output_base" sum="Output DPP"/><field name="output_tax" sum="PPN Output"/>
+      <field name="input_base" sum="Input DPP"/><field name="input_tax" sum="PPN Input"/>
+      <field name="net_ppn" sum="Net PPN"/><field name="line_count"/><field name="state" widget="badge"/>
+      <field name="company_id" groups="base.group_multi_company"/>
+    </list></field>
+  </record>
+
+  <record id="view_l10n_id_tax_report_form" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.report.form</field><field name="model">clinic.l10n.id.tax.report</field>
+    <field name="arch" type="xml"><form>
+      <header>
+        <button name="action_generate" type="object" string="Generate / Refresh" class="btn-primary" invisible="state == 'locked'"/>
+        <button name="action_lock" type="object" string="Lock Snapshot" class="btn-primary" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state != 'generated'"/>
+        <button name="action_reset_to_draft" type="object" string="Reset to Draft" groups="clinic_l10n_id.group_clinic_l10n_id_accountant" invisible="state != 'generated'"/>
+        <button name="action_print_report" type="object" string="Print PPN PDF" invisible="state == 'draft'"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,generated,locked"/>
+      </header>
+      <sheet>
+        <div class="oe_button_box" name="button_box">
+          <button name="action_view_lines" type="object" class="oe_stat_button" icon="fa-list"><field name="line_count" widget="statinfo" string="PPN Lines"/></button>
+        </div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <group>
+          <group string="Report Scope">
+            <field name="profile_id" readonly="state != 'draft'"/><field name="date_from" readonly="state != 'draft'"/>
+            <field name="date_to" readonly="state != 'draft'"/><field name="source_scope" readonly="state != 'draft'"/>
+            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+          </group>
+          <group string="PPN Summary">
+            <field name="output_base" readonly="1"/><field name="output_tax" readonly="1"/>
+            <field name="input_base" readonly="1"/><field name="input_tax" readonly="1"/>
+            <field name="net_ppn" readonly="1"/><field name="generated_at" readonly="1"/><field name="generated_by_id" readonly="1"/>
+          </group>
+        </group>
+        <div class="d-flex gap-2 my-3">
+          <button name="action_view_source_tax_lines" type="object" string="Open Source Tax Journal Items" class="btn btn-secondary"/>
+        </div>
+        <notebook>
+          <page string="PPN Lines">
+            <field name="line_ids" readonly="1">
+              <list decoration-danger="is_refund" decoration-info="direction == 'input'">
+                <field name="date"/><field name="direction" widget="badge"/><field name="invoice_number"/>
+                <field name="partner_id"/><field name="partner_npwp" optional="show"/><field name="clinic_source" widget="badge"/>
+                <field name="tax_id"/><field name="tax_group_id" optional="show"/>
+                <field name="base_amount" sum="DPP"/><field name="tax_amount" sum="PPN"/>
+                <field name="transaction_code" optional="show"/><field name="coretax_document_id" optional="show"/>
+                <button name="action_open_move" type="object" string="Invoice" icon="fa-external-link"/>
+                <button name="action_open_coretax_document" type="object" string="Coretax" icon="fa-file-code-o" invisible="not coretax_document_id"/>
+              </list>
+            </field>
+          </page>
+          <page string="Filters"><group><field name="branch_ids" widget="many2many_tags" readonly="state != 'draft'"/><field name="journal_ids" widget="many2many_tags" readonly="state != 'draft'"/></group></page>
+          <page string="Notes"><field name="note"/></page>
+        </notebook>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+
+  <record id="view_l10n_id_tax_report_line_search" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.report.line.search</field><field name="model">clinic.l10n.id.tax.report.line</field>
+    <field name="arch" type="xml"><search>
+      <field name="report_id"/><field name="date"/><field name="invoice_number"/><field name="partner_id"/><field name="tax_id"/><field name="clinic_source"/>
+      <filter name="output" string="PPN Output" domain="[('direction','=','output')]"/><filter name="input" string="PPN Input" domain="[('direction','=','input')]"/><filter name="refund" string="Refunds" domain="[('is_refund','=',True)]"/>
+      <group>
+        <filter name="group_report" string="Report" context="{'group_by':'report_id'}"/><filter name="group_direction" string="Direction" context="{'group_by':'direction'}"/>
+        <filter name="group_tax" string="Tax" context="{'group_by':'tax_id'}"/><filter name="group_source" string="Clinic Source" context="{'group_by':'clinic_source'}"/>
+        <filter name="group_month" string="Month" context="{'group_by':'date:month'}"/>
+      </group>
+    </search></field>
+  </record>
+
+  <record id="view_l10n_id_tax_report_line_list" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.report.line.list</field><field name="model">clinic.l10n.id.tax.report.line</field>
+    <field name="arch" type="xml"><list decoration-danger="is_refund" decoration-info="direction == 'input'">
+      <field name="report_id"/><field name="date"/><field name="direction" widget="badge"/><field name="invoice_number"/>
+      <field name="partner_id"/><field name="tax_id"/><field name="clinic_source" widget="badge"/>
+      <field name="base_amount" sum="DPP"/><field name="tax_amount" sum="PPN"/><field name="company_id" groups="base.group_multi_company"/>
+      <button name="action_open_move" type="object" string="Invoice" icon="fa-external-link"/>
+      <button name="action_open_report" type="object" string="Report" icon="fa-folder-open"/>
+    </list></field>
+  </record>
+
+  <record id="view_l10n_id_tax_report_line_form" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.report.line.form</field><field name="model">clinic.l10n.id.tax.report.line</field>
+    <field name="arch" type="xml"><form><sheet>
+      <group><field name="report_id" readonly="1"/><field name="company_id" groups="base.group_multi_company" readonly="1"/><field name="branch_id" readonly="1"/>
+      <field name="date" readonly="1"/><field name="direction" readonly="1"/><field name="is_refund" readonly="1"/>
+      <field name="move_id" readonly="1"/><field name="move_line_id" readonly="1"/><field name="journal_id" readonly="1"/>
+      <field name="partner_id" readonly="1"/><field name="partner_npwp" readonly="1"/><field name="partner_nik" readonly="1"/>
+      <field name="clinic_source" readonly="1"/><field name="tax_id" readonly="1"/><field name="tax_group_id" readonly="1"/>
+      <field name="base_amount" readonly="1"/><field name="tax_amount" readonly="1"/><field name="transaction_code" readonly="1"/><field name="coretax_document_id" readonly="1"/></group>
+      <div class="d-flex gap-2"><button name="action_open_move" type="object" string="Open Invoice / Entry" class="btn-primary"/><button name="action_open_coretax_document" type="object" string="Open Coretax" class="btn-secondary" invisible="not coretax_document_id"/><button name="action_open_report" type="object" string="Open Report" class="btn-secondary"/></div>
+    </sheet></form></field>
+  </record>
+
+  <record id="view_l10n_id_tax_report_pivot" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.report.pivot</field><field name="model">clinic.l10n.id.tax.report</field>
+    <field name="arch" type="xml"><pivot string="PPN Report Analysis"><field name="date_to" type="row" interval="month"/><field name="source_scope" type="col"/><field name="output_tax" type="measure"/><field name="input_tax" type="measure"/><field name="net_ppn" type="measure"/></pivot></field>
+  </record>
+  <record id="view_l10n_id_tax_report_graph" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.report.graph</field><field name="model">clinic.l10n.id.tax.report</field>
+    <field name="arch" type="xml"><graph string="PPN Trend" type="bar"><field name="date_to" interval="month"/><field name="output_tax" type="measure"/><field name="input_tax" type="measure"/></graph></field>
+  </record>
+
+  <record id="action_l10n_id_tax_report" model="ir.actions.act_window"><field name="name">PPN Tax Reports</field><field name="res_model">clinic.l10n.id.tax.report</field><field name="view_mode">list,form,pivot,graph</field><field name="search_view_id" ref="view_l10n_id_tax_report_search"/></record>
+  <record id="action_l10n_id_tax_report_line" model="ir.actions.act_window"><field name="name">PPN Report Lines</field><field name="res_model">clinic.l10n.id.tax.report.line</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_l10n_id_tax_report_line_search"/></record>
+</odoo>
+

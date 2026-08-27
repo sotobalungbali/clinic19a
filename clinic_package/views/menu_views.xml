@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_package_root" name="Treatment Packages" sequence="60"/>
+    <menuitem id="menu_clinic_package_operations" name="Operations" parent="menu_clinic_package_root" sequence="10"/>
+    <menuitem id="menu_clinic_package_catalog" name="Catalog &amp; Rules" parent="menu_clinic_package_root" sequence="20"/>
+    <menuitem id="menu_clinic_package_admin" name="Administration" parent="menu_clinic_package_root" sequence="90" groups="clinic_package.group_clinic_package_manager"/>
+
+    <menuitem id="menu_clinic_package_allocations" name="Patient Packages" parent="menu_clinic_package_operations" action="action_clinic_package_allocation" sequence="10"/>
+    <menuitem id="menu_clinic_package_usages" name="Redemptions" parent="menu_clinic_package_operations" action="action_clinic_package_usage" sequence="20"/>
+    <menuitem id="menu_clinic_package_vouchers" name="Vouchers" parent="menu_clinic_package_operations" action="action_clinic_package_voucher" sequence="30"/>
+    <menuitem id="menu_clinic_package_voucher_batches" name="Voucher Batches" parent="menu_clinic_package_operations" action="action_clinic_package_voucher_batch" sequence="40"/>
+
+    <menuitem id="menu_clinic_package_packages" name="Treatment Packages" parent="menu_clinic_package_catalog" action="action_clinic_package" sequence="10"/>
+    <menuitem id="menu_clinic_package_benefits" name="Benefit Templates" parent="menu_clinic_package_catalog" action="action_clinic_package_benefit" sequence="20"/>
+    <menuitem id="menu_clinic_package_pricing" name="Pricing Profiles" parent="menu_clinic_package_catalog" action="action_clinic_package_pricing" sequence="30" groups="clinic_package.group_clinic_package_manager"/>
+    <menuitem id="menu_clinic_package_policies" name="Policy Profiles" parent="menu_clinic_package_catalog" action="action_clinic_package_policy" sequence="40" groups="clinic_package.group_clinic_package_manager"/>
+
+    <menuitem id="menu_clinic_package_events" name="Integration Events" parent="menu_clinic_package_admin" action="action_clinic_package_event" sequence="10"/>
+</odoo>

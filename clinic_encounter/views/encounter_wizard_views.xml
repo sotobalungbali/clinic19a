@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_clinic_encounter_bill_wizard_form" model="ir.ui.view">
+    <field name="name">clinic.encounter.bill.wizard.form</field>
+    <field name="model">clinic.encounter.bill.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Generate Encounter Invoice">
+        <sheet>
+          <div class="oe_title"><h1>Generate Encounter Invoice</h1></div>
+          <group>
+            <group>
+              <field name="encounter_id" readonly="1"/>
+              <field name="partner_id" readonly="1"/>
+              <field name="invoice_date"/>
+            </group>
+            <group string="Billing Summary">
+              <field name="eligible_plan_count" readonly="1"/>
+              <field name="estimated_amount" readonly="1"/>
+              <field name="currency_id" invisible="1"/>
+            </group>
+          </group>
+          <group string="Internal Note"><field name="note" nolabel="1" placeholder="Optional invoice narration..."/></group>
+        </sheet>
+        <footer>
+          <button name="action_generate_invoice" type="object" string="Generate Invoice" class="btn-primary"/>
+          <button string="Cancel" special="cancel" class="btn-secondary"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_generate_bill_wizard" model="ir.actions.act_window">
+    <field name="name">Generate Encounter Invoice</field>
+    <field name="res_model">clinic.encounter.bill.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <record id="view_clinic_diagnosis_plan_procedure_wizard_form" model="ir.ui.view">
+    <field name="name">clinic.diagnosis.plan.procedure.wizard.form</field>
+    <field name="model">clinic.diagnosis.plan.procedure.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Generate Procedure Plans">
+        <sheet>
+          <div class="oe_title"><h1>Generate Procedure Plans</h1></div>
+          <group>
+            <field name="diagnosis_id"/>
+            <field name="encounter_id" readonly="1"/>
+            <field name="skip_existing"/>
+          </group>
+          <group string="Suggested / Selected Procedures">
+            <field name="procedure_ids" widget="many2many_tags" options="{'no_create': True}"/>
+          </group>
+        </sheet>
+        <footer>
+          <button name="action_generate_plans" type="object" string="Generate Plans" class="btn-primary"/>
+          <button string="Cancel" special="cancel" class="btn-secondary"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_generate_procedure_from_dx_wizard" model="ir.actions.act_window">
+    <field name="name">Generate Procedure Plans</field>
+    <field name="res_model">clinic.diagnosis.plan.procedure.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>

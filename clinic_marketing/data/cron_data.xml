@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_marketing_sync_campaigns" model="ir.cron">
+        <field name="name">Clinic Marketing: Sync Running Campaigns</field>
+        <field name="model_id" ref="model_clinic_marketing_campaign"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_running_campaigns()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_marketing_dispatch_whatsapp" model="ir.cron">
+        <field name="name">Clinic Marketing: Dispatch WhatsApp Extension Queue</field>
+        <field name="model_id" ref="model_clinic_marketing_message"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_dispatch_due()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_marketing_expire_promotions" model="ir.cron">
+        <field name="name">Clinic Marketing: Expire Promotions</field>
+        <field name="model_id" ref="model_clinic_marketing_promotion"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_promotions()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
+

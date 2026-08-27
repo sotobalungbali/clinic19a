@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_clinic_accounting" model="ir.module.category">
+        <field name="name">ClinicOne Accounting</field>
+        <field name="sequence">61</field>
+    </record>
+
+    <record id="privilege_clinic_accounting" model="res.groups.privilege">
+        <field name="name">ClinicOne Accounting</field>
+        <field name="category_id" ref="clinic_accounting.module_category_clinic_accounting"/>
+        <field name="sequence">61</field>
+    </record>
+
+    <record id="group_clinic_accounting_user" model="res.groups">
+        <field name="name">Accounting User</field>
+        <field name="privilege_id" ref="clinic_accounting.privilege_clinic_accounting"/>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('base.group_user')),
+            Command.link(ref('account.group_account_readonly'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_accounting_accountant" model="res.groups">
+        <field name="name">Accounting Accountant</field>
+        <field name="privilege_id" ref="clinic_accounting.privilege_clinic_accounting"/>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_accounting.group_clinic_accounting_user')),
+            Command.link(ref('account.group_account_user'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_accounting_approver" model="res.groups">
+        <field name="name">Accounting Approver</field>
+        <field name="privilege_id" ref="clinic_accounting.privilege_clinic_accounting"/>
+        <field name="sequence">30</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_accounting.group_clinic_accounting_accountant'))
+        ]"/>
+    </record>
+
+    <record id="group_clinic_accounting_manager" model="res.groups">
+        <field name="name">Accounting Manager</field>
+        <field name="privilege_id" ref="clinic_accounting.privilege_clinic_accounting"/>
+        <field name="sequence">40</field>
+        <field name="implied_ids" eval="[
+            Command.link(ref('clinic_accounting.group_clinic_accounting_approver')),
+            Command.link(ref('account.group_account_manager'))
+        ]"/>
+    </record>
+
+    <record id="rule_accounting_ledger_company" model="ir.rule">
+        <field name="name">Accounting Ledger: allowed companies</field>
+        <field name="model_id" ref="model_clinic_accounting_ledger"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_accounting.group_clinic_accounting_user'))]"/>
+    </record>
+
+    <record id="rule_accounting_adjustment_company" model="ir.rule">
+        <field name="name">Accounting Adjustment: allowed companies</field>
+        <field name="model_id" ref="model_clinic_accounting_adjustment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_accounting.group_clinic_accounting_user'))]"/>
+    </record>
+
+    <record id="rule_accounting_adjustment_line_company" model="ir.rule">
+        <field name="name">Accounting Adjustment Line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_accounting_adjustment_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_accounting.group_clinic_accounting_user'))]"/>
+    </record>
+
+    <record id="rule_accounting_close_company" model="ir.rule">
+        <field name="name">Accounting Close: allowed companies</field>
+        <field name="model_id" ref="model_clinic_accounting_close"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_accounting.group_clinic_accounting_user'))]"/>
+    </record>
+
+    <record id="rule_accounting_close_check_company" model="ir.rule">
+        <field name="name">Accounting Close Check: allowed companies</field>
+        <field name="model_id" ref="model_clinic_accounting_close_check"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_accounting.group_clinic_accounting_user'))]"/>
+    </record>
+
+    <record id="rule_accounting_statement_company" model="ir.rule">
+        <field name="name">Accounting Statement: allowed companies</field>
+        <field name="model_id" ref="model_clinic_accounting_statement"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_accounting.group_clinic_accounting_user'))]"/>
+    </record>
+
+    <record id="rule_accounting_statement_line_company" model="ir.rule">
+        <field name="name">Accounting Statement Line: allowed companies</field>
+        <field name="model_id" ref="model_clinic_accounting_statement_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[Command.link(ref('clinic_accounting.group_clinic_accounting_user'))]"/>
+    </record>
+</odoo>

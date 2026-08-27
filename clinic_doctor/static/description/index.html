@@ -1,0 +1,165 @@
+
+<!--
+ClinicOne — Doctor Management & Scheduling
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTE:
+- This file appears on the Odoo Apps page for the module.
+- Keep README.md (root) for long-form docs and developer notes.
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="Clinic Doctor Icon" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Doctor Management &amp; Scheduling</h1>
+      <h2 class="oe_slogan">Doctors • Specialties • Working Hours • Availability • Appointments</h2>
+      <p>
+        <b>clinic_doctor</b> manages the complete doctor roster and scheduling lifecycle:
+        professional profiles, specialties, working hours, availability slots, leaves, and patient appointments.
+        It integrates seamlessly with other ClinicOne modules for treatment, billing, inventory, and more —
+        fully compatible with <b>Odoo 18 Community Edition</b>.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#1565c0;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Scheduling</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#00897b;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Portal-ready</span>
+        <span style="display:inline-block;background:#ef6c00;color:#fff;padding:4px 8px;border-radius:6px;">HR Bridge (optional)</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Overview</h3>
+      <p>
+        Centralize doctor information and streamline bookings from template-based working hours to
+        materialized availability slots. Automate reminders and reduce conflicts with room-aware scheduling.
+        Connect appointments to treatment sessions and billing upon completion.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li><b>Doctor profiles</b> (license, authority, seniority, specialties)</li>
+        <li><b>Working hours</b> via <i>resource.calendar</i> and weekly <b>Schedule Rules</b></li>
+        <li><b>Availability Slots</b> materialized from rules with capacity &amp; buffers</li>
+        <li><b>Leaves / Exceptions</b> (vacation, blackout dates) with automatic conflict checks</li>
+        <li><b>Appointment lifecycle</b>: draft → confirmed → checked-in → in-treatment → done / no-show / canceled</li>
+        <li><b>Reminders</b>, rescheduling, and no-show policies (cron-enabled)</li>
+        <li><b>Room-aware scheduling</b> (via <i>clinic_queue_room</i>) and device awareness</li>
+        <li><b>Portal booking</b> (optional) for patient self-service</li>
+        <li><b>Dashboards &amp; KPIs</b> (utilization, wait time, no-show rate, revenue per doctor)</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Data Model Highlights</h3>
+      <ul>
+        <li><b>clinic.doctor</b> — linked to contact (<i>res.partner</i>) and optionally HR employee (bridge)</li>
+        <li><b>clinic.specialty</b> — hierarchical specialties with unique codes</li>
+        <li><b>clinic.schedule.rule</b> → <b>clinic.availability.slot</b> — templated → concrete slots</li>
+        <li><b>clinic.doctor.leave</b> — time-off and blackout periods</li>
+        <li><b>clinic.appointment</b> — room-aware booking with state machine</li>
+      </ul>
+      <p style="margin-top:8px;">
+        HR/Payroll kept optional via <b>clinic_doctor_hr</b> bridge (auto-create &amp; sync <i>hr.employee</i>).
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Integrations</h3>
+      <p>
+        Works end-to-end with: <i>clinic_patient, clinic_booking, clinic_treatment, clinic_billing,
+        clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_ecommerce,
+        clinic_membership, clinic_feedback, clinic_reports, clinic_dashboard, clinic_wallet,
+        clinic_package, clinic_pricing, clinic_room_device, clinic_portal, clinic_marketing,
+        clinic_l10n_id, clinic_audit</i>, plus:
+      </p>
+      <ul>
+        <li><b>clinic_queue_room</b>: provides <i>clinic.room</i> and queue/kiosk features for walk-ins</li>
+        <li><b>clinic_doctor_hr</b>: optional HR bridge for <i>hr.employee</i> and payroll readiness</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Place this addon in your Odoo <i>addons_path</i>.</li>
+        <li>Update Apps list and search <b>ClinicOne: Doctor Management &amp; Scheduling</b>.</li>
+        <li>Install along with <b>clinic_queue_room</b> (required) and <b>clinic_doctor_hr</b> (optional).</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Define specialties and assign them to doctors</li>
+        <li>Set working hours (resource calendars) and create schedule rules</li>
+        <li>Generate availability slots and configure reminder policies</li>
+        <li>(Optional) Enable HR bridge: auto-create/sync employees; strict HR mode</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: Receptionist, Doctor, Clinic Manager, Clinic Admin</li>
+        <li>Access &amp; record rules aligned to multi-company isolation</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Reports &amp; KPIs</h3>
+      <ul>
+        <li>Utilization by doctor/room</li>
+        <li>No-show rate, wait time, lead time</li>
+        <li>Revenue per doctor/service (with Billing/Accounting)</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Automation</h3>
+      <ul>
+        <li>Slot regeneration and availability refresh</li>
+        <li>Appointment reminders and follow-ups</li>
+        <li>No-show detection (grace period configurable)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distributed under the <b>LGPL-3.0</b> license. See <i>LICENSE</i> file.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        Issues and enhancements are welcome. Please follow the ClinicOne contributing guide:
+        write tests, respect code style, and document migration notes.
+      </p>
+    </div>
+  </div>
+</section>

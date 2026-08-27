@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_clinic_billing_invoice" model="ir.sequence">
+        <field name="name">Clinic Billing Invoice</field>
+        <field name="code">clinic.billing.invoice</field>
+        <field name="prefix">CBI/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_billing_payment" model="ir.sequence">
+        <field name="name">Clinic Billing Payment</field>
+        <field name="code">clinic.billing.payment</field>
+        <field name="prefix">CBP/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_insurance_claim" model="ir.sequence">
+        <field name="name">Clinic Insurance Claim</field>
+        <field name="code">clinic.insurance.claim</field>
+        <field name="prefix">CIC/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_billing_commission_settlement" model="ir.sequence">
+        <field name="name">Clinic Billing Commission Settlement</field>
+        <field name="code">clinic.billing.commission.settlement</field>
+        <field name="prefix">BCS/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_billing_gateway_tx" model="ir.sequence">
+        <field name="name">Clinic Billing Gateway Transaction</field>
+        <field name="code">clinic.billing.gateway.tx</field>
+        <field name="prefix">BGT/%(year)s/</field>
+        <field name="padding">7</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_billing_membership_usage" model="ir.sequence">
+        <field name="name">Clinic Billing Membership Usage</field>
+        <field name="code">clinic.billing.membership.usage</field>
+        <field name="prefix">BMU/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_billing_integration_event" model="ir.sequence">
+        <field name="name">Clinic Billing Integration Event</field>
+        <field name="code">clinic.billing.integration.event</field>
+        <field name="prefix">BIE/%(year)s/</field>
+        <field name="padding">7</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <function model="clinic.billing.invoice" name="_ensure_cross_addon_billing_views"/>
+</odoo>

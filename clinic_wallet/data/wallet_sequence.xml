@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_clinic_wallet" model="ir.sequence">
+        <field name="name">Clinic Wallet</field>
+        <field name="code">clinic.wallet</field>
+        <field name="prefix">WAL/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_wallet_tx" model="ir.sequence">
+        <field name="name">Clinic Wallet Transaction</field>
+        <field name="code">clinic.wallet.transaction</field>
+        <field name="prefix">WTX/%(year)s/</field>
+        <field name="padding">7</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_clinic_wallet_portal_request" model="ir.sequence">
+        <field name="name">Clinic Wallet Request</field>
+        <field name="code">clinic.wallet.portal.request</field>
+        <field name="prefix">WRQ/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>
+
+
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_accounting_root" name="Clinic Accounting" sequence="76"
+              groups="clinic_accounting.group_clinic_accounting_user"/>
+
+    <menuitem id="menu_clinic_accounting_operations" name="Journal Operations"
+              parent="menu_clinic_accounting_root" sequence="10"/>
+    <menuitem id="menu_clinic_accounting_adjustments" name="Accounting Adjustments"
+              parent="menu_clinic_accounting_operations"
+              action="action_accounting_adjustment" sequence="10"/>
+    <menuitem id="menu_clinic_accounting_entries" name="Journal Entries"
+              parent="menu_clinic_accounting_operations"
+              action="action_clinic_accounting_journal_entries" sequence="20"/>
+    <menuitem id="menu_clinic_accounting_clinic_entries" name="ClinicOne-Sourced Entries"
+              parent="menu_clinic_accounting_operations"
+              action="action_clinic_accounting_clinic_entries" sequence="30"/>
+    <menuitem id="menu_clinic_accounting_items" name="Journal Items"
+              parent="menu_clinic_accounting_operations"
+              action="action_clinic_accounting_journal_items" sequence="40"/>
+
+    <menuitem id="menu_clinic_accounting_reporting" name="Ledgers &amp; Reports"
+              parent="menu_clinic_accounting_root" sequence="20"/>
+    <menuitem id="menu_clinic_accounting_ledgers" name="Accounting Ledgers"
+              parent="menu_clinic_accounting_reporting"
+              action="action_accounting_ledger" sequence="10"/>
+    <menuitem id="menu_clinic_accounting_statements" name="Accounting Statements"
+              parent="menu_clinic_accounting_reporting"
+              action="action_accounting_statement" sequence="20"/>
+
+    <menuitem id="menu_clinic_accounting_close_root" name="Period Close"
+              parent="menu_clinic_accounting_root" sequence="30"/>
+    <menuitem id="menu_clinic_accounting_close" name="Close Periods"
+              parent="menu_clinic_accounting_close_root"
+              action="action_accounting_close" sequence="10"/>
+    <menuitem id="menu_clinic_accounting_close_checks" name="Close Checks"
+              parent="menu_clinic_accounting_close_root"
+              action="action_accounting_close_check" sequence="20"/>
+
+    <menuitem id="menu_clinic_accounting_configuration" name="Configuration"
+              parent="menu_clinic_accounting_root" sequence="90"
+              groups="clinic_accounting.group_clinic_accounting_manager"/>
+    <menuitem id="menu_clinic_accounting_settings" name="Settings"
+              parent="menu_clinic_accounting_configuration"
+              action="action_clinic_accounting_settings" sequence="90"/>
+</odoo>

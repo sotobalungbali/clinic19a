@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_l10n_id_root"
+              name="Indonesia Localization"
+              sequence="77"
+              groups="clinic_l10n_id.group_clinic_l10n_id_user"/>
+
+    <menuitem id="menu_clinic_l10n_id_reporting"
+              name="PPN &amp; Tax Reporting"
+              parent="menu_clinic_l10n_id_root"
+              sequence="10"/>
+    <menuitem id="menu_clinic_l10n_id_tax_reports"
+              name="PPN Tax Reports"
+              parent="menu_clinic_l10n_id_reporting"
+              action="action_l10n_id_tax_report"
+              sequence="10"/>
+    <menuitem id="menu_clinic_l10n_id_invoices"
+              name="Indonesia Tax Invoices"
+              parent="menu_clinic_l10n_id_reporting"
+              action="action_l10n_id_clinic_invoices"
+              sequence="20"/>
+
+    <menuitem id="menu_clinic_l10n_id_compliance_root"
+              name="Compliance"
+              parent="menu_clinic_l10n_id_root"
+              sequence="20"/>
+    <menuitem id="menu_clinic_l10n_id_compliance"
+              name="Compliance Runs"
+              parent="menu_clinic_l10n_id_compliance_root"
+              action="action_l10n_id_compliance"
+              sequence="10"/>
+    <menuitem id="menu_clinic_l10n_id_numbering"
+              name="Invoice Numbering Policies"
+              parent="menu_clinic_l10n_id_compliance_root"
+              action="action_l10n_id_numbering_policy"
+              sequence="20"/>
+
+    <menuitem id="menu_clinic_l10n_id_coretax_root"
+              name="Coretax"
+              parent="menu_clinic_l10n_id_root"
+              sequence="30"/>
+    <menuitem id="menu_clinic_l10n_id_coretax_documents"
+              name="E-Faktur Documents"
+              parent="menu_clinic_l10n_id_coretax_root"
+              action="action_l10n_id_native_coretax_documents"
+              sequence="10"/>
+    <menuitem id="menu_clinic_l10n_id_product_codes"
+              name="E-Faktur Product Codes"
+              parent="menu_clinic_l10n_id_coretax_root"
+              action="action_l10n_id_native_coretax_product_codes"
+              sequence="20"/>
+    <menuitem id="menu_clinic_l10n_id_uom_codes"
+              name="E-Faktur UoM Codes"
+              parent="menu_clinic_l10n_id_coretax_root"
+              action="action_l10n_id_native_coretax_uom_codes"
+              sequence="30"/>
+
+    <menuitem id="menu_clinic_l10n_id_configuration"
+              name="Configuration"
+              parent="menu_clinic_l10n_id_root"
+              sequence="90"
+              groups="clinic_l10n_id.group_clinic_l10n_id_manager"/>
+    <menuitem id="menu_clinic_l10n_id_profiles"
+              name="Tax Profiles"
+              parent="menu_clinic_l10n_id_configuration"
+              action="action_l10n_id_tax_profile"
+              sequence="10"/>
+    <menuitem id="menu_clinic_l10n_id_native_taxes"
+              name="Native Indonesian Taxes"
+              parent="menu_clinic_l10n_id_configuration"
+              action="action_l10n_id_native_taxes"
+              sequence="20"/>
+    <menuitem id="menu_clinic_l10n_id_settings"
+              name="Settings"
+              parent="menu_clinic_l10n_id_configuration"
+              action="action_clinic_l10n_id_settings"
+              sequence="90"/>
+</odoo>
+

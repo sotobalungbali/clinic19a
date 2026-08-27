@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_care_plan_line_search" model="ir.ui.view">
+        <field name="name">clinic.care.plan.line.search</field>
+        <field name="model">clinic.care.plan.line</field>
+        <field name="arch" type="xml">
+            <search string="Care Plan Lines">
+                <field name="name"/>
+                <field name="plan_id"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="performer_id"/>
+                <field name="treatment_id"/>
+                <field name="product_id"/>
+                <filter name="filter_pending" string="Pending" domain="[('state','=','pending')]"/>
+                <filter name="filter_scheduled" string="Scheduled" domain="[('state','=','scheduled')]"/>
+                <filter name="filter_in_progress" string="In Progress" domain="[('state','=','in_progress')]"/>
+                <filter name="filter_done" string="Done" domain="[('state','=','done')]"/>
+                <filter name="filter_product" string="Product / Consumable" domain="[('is_product','=',True)]"/>
+                <group>
+                    <filter name="group_plan" string="Care Plan" context="{'group_by':'plan_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_performer" string="Performer" context="{'group_by':'performer_id'}"/>
+                    <filter name="group_expected_month" string="Expected Month" context="{'group_by':'expected_date:month'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_plan_line_list" model="ir.ui.view">
+        <field name="name">clinic.care.plan.line.list</field>
+        <field name="model">clinic.care.plan.line</field>
+        <field name="arch" type="xml">
+            <list string="Care Plan Lines"
+                  decoration-success="state == 'done'"
+                  decoration-warning="state == 'in_progress'"
+                  decoration-info="state == 'scheduled'"
+                  decoration-muted="state in ('skipped','cancelled')">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="plan_id"/>
+                <field name="patient_id"/>
+                <field name="state" widget="badge"/>
+                <field name="expected_date"/>
+                <field name="scheduled_datetime" optional="show"/>
+                <field name="performer_id"/>
+                <field name="treatment_id" optional="show"/>
+                <field name="product_id" optional="show"/>
+                <field name="qty" optional="hide"/>
+                <field name="amount_estimated" sum="Estimated" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_plan_line_calendar" model="ir.ui.view">
+        <field name="name">clinic.care.plan.line.calendar</field>
+        <field name="model">clinic.care.plan.line</field>
+        <field name="arch" type="xml">
+            <calendar string="Care Plan Execution Calendar"
+                      date_start="scheduled_datetime"
+                      color="performer_id"
+                      mode="week">
+                <field name="name"/>
+                <field name="plan_id"/>
+                <field name="patient_id"/>
+                <field name="performer_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_clinic_care_plan_line_form" model="ir.ui.view">
+        <field name="name">clinic.care.plan.line.form</field>
+        <field name="model">clinic.care.plan.line</field>
+        <field name="arch" type="xml">
+            <form string="Care Plan Line">
+                <header>
+                    <button name="action_mark_scheduled" type="object" string="Mark Scheduled"
+                            class="btn-primary" invisible="state != 'pending'"/>
+                    <button name="action_start" type="object" string="Start" class="btn-primary"
+                            invisible="state not in ('pending','scheduled')"/>
+                    <button name="action_done" type="object" string="Complete" class="btn-primary"
+                            invisible="state not in ('scheduled','in_progress')"/>
+                    <button name="action_skip" type="object" string="Skip"
+                            invisible="state in ('done','skipped','cancelled')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('done','cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,scheduled,in_progress,done,skipped,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_plan" type="object" class="oe_stat_button" icon="fa-heartbeat">
+                            <div class="o_stat_info"><span class="o_stat_text">Care Plan</span></div>
+                        </button>
+                        <button name="action_view_dependents" type="object" class="oe_stat_button" icon="fa-sitemap">
+                            <field name="dependents_count" widget="statinfo" string="Dependents"/>
+                        </button>
+                        <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <div class="o_stat_info"><span class="o_stat_text">Invoices</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Execution Context">
+                            <field name="plan_id"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="doctor_id" readonly="1"/>
+                            <field name="performer_id"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Scheduling">
+                            <field name="sequence"/>
+                            <field name="expected_day_offset"/>
+                            <field name="expected_date" readonly="1"/>
+                            <field name="scheduled_datetime"/>
+                            <field name="booking_id"/>
+                            <field name="duration_minutes"/>
+                            <field name="actual_duration_minutes" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <button name="action_open_or_create_session" type="object"
+                                string="Procedure Session" class="btn btn-secondary" icon="fa-stethoscope"/>
+                        <button name="action_open_or_create_prescription" type="object"
+                                string="eMAR Prescription" class="btn btn-secondary" icon="fa-medkit"/>
+                        <button name="action_request_inventory" type="object"
+                                string="Inventory Request" class="btn btn-secondary" icon="fa-cubes"
+                                invisible="not is_product"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Clinical Execution" name="clinical_execution">
+                            <group>
+                                <group>
+                                    <field name="treatment_id"/>
+                                    <field name="session_id"/>
+                                    <field name="prescription_id"/>
+                                </group>
+                                <group>
+                                    <field name="start_datetime"/>
+                                    <field name="end_datetime"/>
+                                </group>
+                            </group>
+                            <field name="description"/>
+                            <field name="instruction_html"/>
+                        </page>
+
+                        <page string="Product &amp; Financial" name="product_financial">
+                            <group>
+                                <group>
+                                    <field name="is_product"/>
+                                    <field name="product_id"/>
+                                    <field name="qty"/>
+                                    <field name="uom_id"/>
+                                </group>
+                                <group>
+                                    <field name="price_unit"/>
+                                    <field name="tax_ids" widget="many2many_tags"/>
+                                    <field name="amount_estimated" readonly="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </group>
+                            <field name="invoice_line_ids" readonly="1"/>
+                        </page>
+
+                        <page string="Dependencies" name="dependencies">
+                            <field name="dependency_ids" widget="many2many_tags"
+                                   domain="[('plan_id','=',plan_id),('id','!=',id)]"/>
+                        </page>
+
+                        <page string="Evidence" name="evidence">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_care_plan_line" model="ir.actions.act_window">
+        <field name="name">Care Plan Lines</field>
+        <field name="res_model">clinic.care.plan.line</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="search_view_id" ref="view_clinic_care_plan_line_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ORM security is authoritative. UI visibility is never a substitute. -->
+    <record id="rule_clinic_doctor_allowed_product_company" model="ir.rule">
+        <field name="name">Clinic Doctor Product Rules: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_doctor_allowed_product"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_integration_event_log_company" model="ir.rule">
+        <field name="name">Clinic Integration Event Log: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_integration_event_log"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+    </record>
+
+    <record id="rule_clinic_inventory_adjustment_company" model="ir.rule">
+        <field name="name">Clinic Inventory Adjustment: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_inventory_adjustment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_inventory_adjustment_line_company" model="ir.rule">
+        <field name="name">Clinic Inventory Adjustment Lines: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_inventory_adjustment_line"/>
+        <field name="domain_force">[('adjustment_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_patient_product_history_company" model="ir.rule">
+        <field name="name">Clinic Patient Product History: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_patient_product_history"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_treatment_product_usage_company" model="ir.rule">
+        <field name="name">Clinic Treatment Product Usage: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_treatment_product_usage"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="rule_clinic_treatment_product_usage_line_company" model="ir.rule">
+        <field name="name">Clinic Treatment Product Usage Lines: Allowed Companies</field>
+        <field name="model_id" ref="model_clinic_treatment_product_usage_line"/>
+        <field name="domain_force">[('usage_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+</odoo>
+

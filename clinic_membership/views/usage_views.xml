@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="view_membership_usage_search" model="ir.ui.view">
+    <field name="name">membership.usage.search</field>
+    <field name="model">membership.usage</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="contract_id"/>
+        <field name="partner_id"/>
+        <field name="treatment_id"/>
+        <field name="doctor_id"/>
+        <field name="booking_id"/>
+        <filter string="Validated" name="validated" domain="[('state','=','validated')]"/>
+        <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+        <group>
+          <filter string="Plan" context="{'group_by':'plan_id'}" name="group_plan_id"/>
+          <filter string="Benefit" context="{'group_by':'benefit_type'}" name="group_benefit_type"/>
+          <filter string="State" context="{'group_by':'state'}" name="group_state"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_membership_usage_list" model="ir.ui.view">
+    <field name="name">membership.usage.list</field>
+    <field name="model">membership.usage</field>
+    <field name="arch" type="xml">
+      <list decoration-success="state == 'validated'" decoration-muted="state == 'cancelled'">
+        <field name="name"/>
+        <field name="date"/>
+        <field name="partner_id"/>
+        <field name="contract_id"/>
+        <field name="treatment_id"/>
+        <field name="benefit_type" widget="badge"/>
+        <field name="amount_before"/>
+        <field name="discount_amount"/>
+        <field name="amount_after"/>
+        <field name="state" widget="badge"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_membership_usage_form" model="ir.ui.view">
+    <field name="name">membership.usage.form</field>
+    <field name="model">membership.usage</field>
+    <field name="arch" type="xml">
+      <form string="Membership Usage">
+        <header>
+          <button name="action_apply_best_benefit" type="object" string="Apply Best Benefit" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_clear_benefit" type="object" string="Clear Benefit" invisible="state != 'draft' or not contract_benefit_id"/>
+          <button name="action_validate" type="object" string="Validate" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_cancel" type="object" string="Cancel" invisible="state != 'validated'"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,validated,cancelled"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_contract" type="object" class="oe_stat_button" icon="fa-id-card">
+              <div class="o_stat_info">
+                <span class="o_stat_text">Contract</span>
+              </div>
+            </button>
+          </div>
+          <div class="oe_title">
+            <h1>
+              <field name="name"/>
+            </h1>
+          </div>
+          <group>
+            <group>
+              <field name="contract_id"/>
+              <field name="partner_id" readonly="1"/>
+              <field name="patient_id" readonly="1"/>
+              <field name="date"/>
+              <field name="treatment_id"/>
+              <field name="doctor_id"/>
+              <field name="product_id"/>
+              <field name="qty"/>
+              <field name="uom_id"/>
+            </group>
+            <group>
+              <field name="contract_benefit_id" domain="[('contract_id','=',contract_id),('is_depleted','=',False)]"/>
+              <field name="benefit_type" readonly="1"/>
+              <field name="unit_price"/>
+              <field name="amount_before"/>
+              <field name="discount_percent" readonly="1"/>
+              <field name="discount_amount" readonly="1"/>
+              <field name="quota_consumed" readonly="1"/>
+              <field name="amount_after" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Clinical Traceability">
+              <group>
+                <field name="booking_id"/>
+                <field name="encounter_id"/>
+                <field name="treatment_session_id"/>
+                <field name="care_plan_id"/>
+                <field name="care_plan_line_id"/>
+                <field name="package_allocation_id"/>
+                <field name="package_usage_id"/>
+                <field name="emar_administration_id"/>
+              </group>
+            </page>
+            <page string="Commercial Traceability">
+              <group>
+                <field name="sale_order_id"/>
+                <field name="sale_line_id"/>
+                <field name="move_id"/>
+                <field name="move_line_id"/>
+              </group>
+            </page>
+            <page string="Source">
+              <group>
+                <field name="source_model"/>
+                <field name="source_res_id"/>
+                <field name="source_reference"/>
+              </group>
+              <field name="notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="action_membership_usages" model="ir.actions.act_window">
+    <field name="name">Membership Usage</field>
+    <field name="res_model">membership.usage</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+  </record>
+</odoo>
+

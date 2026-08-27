@@ -1,0 +1,361 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ClinicOne – Triage & Vitals Intake (clinic_triage_vitals)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --brand:#6C5CE7;
+      --ink:#2b2d42;
+      --muted:#6b7280;
+      --ok:#10b981;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --bg:#ffffff;
+      --soft:#f8fafc;
+      --line:#e5e7eb;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; padding:0; background:#fff; color:var(--ink);
+      font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+    .container{max-width:1080px; margin:0 auto; padding:28px 24px 64px}
+    .hero{
+      display:flex; align-items:center; gap:20px; padding:20px; border:1px solid var(--line);
+      background:linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border-radius:14px;
+    }
+    .hero img{width:88px; height:88px; border-radius:12px; border:1px solid var(--line); background:#fff}
+    .h1{margin:0; font-size:28px; font-weight:800; letter-spacing:.2px}
+    .tagline{margin:6px 0 0; color:var(--muted)}
+    .badges{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .badge{
+      font-size:12px; border:1px solid var(--line); color:#111827; padding:4px 8px; border-radius:999px; background:#fff
+    }
+    .nav{margin:22px 0 12px; display:flex; gap:10px; flex-wrap:wrap}
+    .nav a{
+      text-decoration:none; border:1px dashed var(--line); color:var(--brand);
+      padding:6px 10px; border-radius:8px; background:var(--soft)
+    }
+    h2{margin:28px 0 12px; font-size:22px}
+    h3{margin:20px 0 8px; font-size:18px}
+    p{margin:8px 0}
+    ul{margin:8px 0 12px 22px}
+    .grid{
+      display:grid; gap:16px;
+      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .card{
+      border:1px solid var(--line); border-radius:12px; padding:16px; background:#fff
+    }
+    .soft{background:var(--soft); border-color:var(--line)}
+    .kbd{
+      display:inline-block; border:1px solid var(--line); border-bottom-width:2px; background:#fff; padding:2px 6px; border-radius:6px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size:.9em
+    }
+    .table{width:100%; border-collapse:separate; border-spacing:0; border:1px solid var(--line); border-radius:12px; overflow:hidden}
+    .table th, .table td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+    .table th{background:#f5f7fa; text-align:left; font-weight:700}
+    .muted{color:var(--muted)}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .danger{color:var(--danger)}
+    .callout{
+      border-left:4px solid var(--brand); background:var(--soft); padding:12px 14px; border-radius:8px; border:1px solid var(--line)
+    }
+    pre{
+      background:#0b1020; color:#e5e7eb; padding:14px; border-radius:10px; overflow:auto;
+      border:1px solid #0f172a; box-shadow:inset 0 0 0 1px rgba(255,255,255,.03)
+    }
+    code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
+    .footer{margin-top:28px; padding-top:14px; border-top:1px dashed var(--line); color:var(--muted); font-size:14px}
+    .chips{display:flex; flex-wrap:wrap; gap:8px}
+    .chip{background:#eef2ff; color:#3730a3; border:1px solid #e0e7ff; padding:4px 8px; border-radius:999px; font-size:12px}
+    .screens{display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr))}
+    .screens img{width:100%; height:auto; border:1px solid var(--line); border-radius:10px; background:#fff}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <img src="icon.png" alt="clinic_triage_vitals icon" />
+      <div>
+        <div class="h1">ClinicOne — Triage &amp; Vitals Intake</div>
+        <p class="tagline">Fast intake, smart triage levels, SLA tracking, and vital signs — fully integrated with ClinicOne.</p>
+        <div class="badges">
+          <span class="badge">Odoo 18 CE</span>
+          <span class="badge">Multi-Company</span>
+          <span class="badge">Mail &amp; Activities</span>
+          <span class="badge">Billing-Ready</span>
+          <span class="badge">Queue/Room Hints</span>
+          <span class="badge">i18n (EN UI)</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="nav">
+      <a href="#features">Features</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#data-model">Data Model</a>
+      <a href="#installation">Installation</a>
+      <a href="#configuration">Configuration</a>
+      <a href="#usage">Usage</a>
+      <a href="#security">Security</a>
+      <a href="#reports">Reports</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#faq">FAQ</a>
+      <a href="#changelog">Changelog</a>
+      <a href="#license">License</a>
+    </nav>
+
+    <section id="features">
+      <h2>Key Features</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>⚡ Triage Session</h3>
+          <ul>
+            <li>Lifecycle: <code>draft → in_progress → completed / referred / cancelled</code></li>
+            <li>Arrival, waiting, duration &amp; SLA tracking</li>
+            <li>Nurse/Doctor assignment, notes, and chatter</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🎚️ Triage Level</h3>
+          <ul>
+            <li>SLA (minutes) &amp; priority weight</li>
+            <li>Auto-escalation (threshold &amp; target level)</li>
+            <li>Vitals thresholds &amp; guidelines</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🏷️ Triage Tags</h3>
+          <ul>
+            <li>Flexible classification (Trauma, Allergy, Pediatric, Aesthetic, …)</li>
+            <li>Queue/Room recommendations &amp; default activities</li>
+            <li>Optional billing hooks (service/fee)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>🩺 Vitals Intake</h3>
+          <ul>
+            <li>Temperature, HR, RR, SpO₂, BP, BMI, GCS, etc.</li>
+            <li>Abnormal flag &amp; notes</li>
+            <li>Multiple readings per session</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>📥 Queue &amp; Room Hints</h3>
+          <ul>
+            <li>Recommend <code>clinic.room.type</code></li>
+            <li>Default <code>clinic.queue.stage</code> per level/tag</li>
+            <li>Optional dependency on queue/room modules</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>💳 Billing-Ready</h3>
+          <ul>
+            <li>Billable toggle &amp; default fee</li>
+            <li>Service product from level/tag</li>
+            <li>Create customer invoice from session</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <h2>Workflow</h2>
+      <div class="callout">
+        <strong>UI language:</strong> All in-app labels, helps, and messages are English. This description page targets implementers/admins.
+      </div>
+      <h3>Business Flow</h3>
+      <ul>
+        <li><strong>Arrival &amp; Registration</strong> → create triage session (arrival time auto).</li>
+        <li><strong>Start Triage</strong> → capture vitals, select level &amp; tags, SLA tracked.</li>
+        <li><strong>Queue/Room</strong> → recommended room type &amp; default queue stage are suggested.</li>
+        <li><strong>Billing (optional)</strong> → mark billable, set fee/product, generate invoice.</li>
+        <li><strong>Complete/Refer/Cancel</strong> → finalize; sessions can be reopened when needed.</li>
+      </ul>
+      <h3>State Machine</h3>
+      <pre><code>[draft] --Start--> [in_progress] --Complete--> [completed]
+     │                         └─Refer──&gt; [referred]
+     └──Cancel───────────────&gt; [cancelled] ──Reopen──&gt; [draft]</code></pre>
+    </section>
+
+    <section id="data-model">
+      <h2>Data Model Overview</h2>
+
+      <table class="table">
+        <thead>
+          <tr><th>Model</th><th>Key Fields</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>clinic.triage.session</code></td>
+            <td>
+              <strong>Identity:</strong> name (sequence), company_id, active<br/>
+              <strong>Links:</strong> patient_id, encounter_id, appointment_id, assigned_nurse_id, assigned_doctor_id<br/>
+              <strong>Classification:</strong> triage_level_id, triage_tag_ids<br/>
+              <strong>Timing &amp; SLA:</strong> arrival/start/end, wait_time, duration, sla_target, sla_breached<br/>
+              <strong>Vitals:</strong> vitals_ids, has_abnormal_vitals<br/>
+              <strong>Queue/Room:</strong> queue_stage_id, recommended_room_type_id<br/>
+              <strong>Billing:</strong> is_billable, triage_fee, invoice_id<br/>
+              <strong>State:</strong> draft/in_progress/completed/referred/cancelled
+            </td>
+            <td>Chatter + activities; invoice creation helper.</td>
+          </tr>
+          <tr>
+            <td><code>clinic.triage.level</code></td>
+            <td>
+              name, code, sequence, color_hex, guidelines_html<br/>
+              sla_minutes, weight, auto_escalate, escalate_after_minutes, escalate_to_level_id<br/>
+              vitals thresholds (temp/hr/rr/spo2/bp/gcs)<br/>
+              recommended_room_type_id, default_queue_stage_id<br/>
+              billable, product_id, default_fee, default_activity_type_id
+            </td>
+            <td>Per-company uniqueness of name/code.</td>
+          </tr>
+          <tr>
+            <td><code>clinic.triage.tag</code></td>
+            <td>
+              name, code, sequence, color_hex, image_128, tag_type, parent/child<br/>
+              recommended_room_type_id, default_queue_stage_id, default_activity_type_id<br/>
+              billable, product_id, default_fee<br/>
+              session_ids m2m, session_count, last_used_on
+            </td>
+            <td>Relation table: <code>clinic_triage_session_tag_rel</code>.</td>
+          </tr>
+          <tr>
+            <td><code>clinic.vitals.intake</code></td>
+            <td>
+              triage_session_id, temperature_c, heart_rate_bpm, respiratory_rate_bpm,<br/>
+              spo2_percent, sbp_mm_hg, dbp_mm_hg, weight_kg, height_cm, bmi, gcs, is_abnormal, notes
+            </td>
+            <td>Multiple readings per session.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Entity Preview</h3>
+      <div class="screens">
+        <img src="../src/img/triage_badge.svg" alt="Triage badge" />
+        <img src="icon.png" alt="Module icon" />
+      </div>
+    </section>
+
+    <section id="installation">
+      <h2>Installation</h2>
+      <ol>
+        <li>Ensure dependencies are installed (see <a href="#integrations">Integrations</a>).</li>
+        <li>Place the module in your addons path.</li>
+        <li>Update Apps list and install: <span class="kbd">odoo-bin -d &lt;db&gt; -u clinic_triage_vitals</span></li>
+      </ol>
+      <p class="muted">Optional: install queue/room modules to enable room recommendations and queue stage defaults.</p>
+    </section>
+
+    <section id="configuration">
+      <h2>Initial Configuration</h2>
+      <ul>
+        <li>Sequences: <code>clinic.triage.session</code> (auto-loaded).</li>
+        <li>Seed Levels: Red / Yellow / Green / Blue.</li>
+        <li>Groups &amp; Access: loaded via <code>security/</code> &amp; <code>data/res_groups.xml</code>.</li>
+        <li>Activity Types: optional defaults for triage follow-up.</li>
+      </ul>
+      <div class="callout">
+        <strong>Tip:</strong> Customize triage level thresholds and billing defaults to match your clinical policy.
+      </div>
+    </section>
+
+    <section id="usage">
+      <h2>Usage</h2>
+      <ol>
+        <li>Create a new <strong>Triage Session</strong> for the arriving patient.</li>
+        <li>Click <em>Start</em> to begin; record <strong>Vitals Intake</strong>.</li>
+        <li>Select appropriate <strong>Triage Level</strong> and optional <strong>Tags</strong>.</li>
+        <li>Review SLA target; system flags <span class="warn">breach</span> if missed.</li>
+        <li>(Optional) Mark <strong>Billable</strong> and create invoice if applicable.</li>
+        <li>Finish with <em>Complete</em>, or <em>Refer</em>/<em>Cancel</em> as needed (can later <em>Reopen</em>).</li>
+      </ol>
+    </section>
+
+    <section id="security">
+      <h2>Security &amp; Access</h2>
+      <table class="table">
+        <thead><tr><th>Model</th><th>User</th><th>Manager</th><th>Admin</th></tr></thead>
+        <tbody>
+          <tr><td>clinic.triage.session</td><td>RWC</td><td>RWCD</td><td>RWCD</td></tr>
+          <tr><td>clinic.vitals.intake</td><td>RWC</td><td>RWCD</td><td>RWCD</td></tr>
+          <tr><td>clinic.triage.level</td><td>R</td><td>RWCD</td><td>RWCD</td></tr>
+          <tr><td>clinic.triage.tag</td><td>R</td><td>RWCD</td><td>RWCD</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">Record rules may restrict visibility by company/branch as required.</p>
+    </section>
+
+    <section id="reports">
+      <h2>Reports</h2>
+      <ul>
+        <li><strong>Triage Slip</strong> — per session summary (QWeb).</li>
+        <li><strong>Vitals Intake Report</strong> — vitals capture log (QWeb).</li>
+      </ul>
+    </section>
+
+    <section id="integrations">
+      <h2>Integrations</h2>
+      <div class="chips">
+        <span class="chip">clinic_patient</span>
+        <span class="chip">clinic_doctor</span>
+        <span class="chip">clinic_booking</span>
+        <span class="chip">clinic_treatment</span>
+        <span class="chip">clinic_billing</span>
+        <span class="chip">clinic_ar</span>
+        <span class="chip">clinic_ap</span>
+        <span class="chip">clinic_finance</span>
+        <span class="chip">clinic_accounting</span>
+        <span class="chip">clinic_inventory</span>
+        <span class="chip">clinic_ecommerce</span>
+        <span class="chip">clinic_membership</span>
+        <span class="chip">clinic_feedback</span>
+        <span class="chip">clinic_reports</span>
+        <span class="chip">clinic_dashboard</span>
+        <span class="chip">clinic_wallet</span>
+        <span class="chip">clinic_package</span>
+        <span class="chip">clinic_pricing</span>
+        <span class="chip">clinic_room_device</span>
+        <span class="chip">clinic_hr</span>
+        <span class="chip">clinic_portal</span>
+        <span class="chip">clinic_marketing</span>
+        <span class="chip">clinic_l10n_id</span>
+        <span class="chip">clinic_audit</span>
+      </div>
+      <p class="muted">Optional queue/room models: <code>clinic.room.type</code>, <code>clinic.queue.stage</code> (provided by your queue/room module).</p>
+    </section>
+
+    <section id="faq">
+      <h2>FAQ</h2>
+      <h3>Does the module enforce vitals thresholds?</h3>
+      <p>Thresholds on levels are guidance values. Enforcement can be added via automated actions or custom rules.</p>
+
+      <h3>Is invoicing mandatory?</h3>
+      <p>No. Billing is optional. You can keep triage sessions non-billable or bill only certain levels/tags.</p>
+
+      <h3>Can we customize scoring or SLA?</h3>
+      <p>Yes. Priority score and SLA logic are computed fields and can be extended via inheritance.</p>
+    </section>
+
+    <section id="changelog">
+      <h2>Changelog</h2>
+      <ul>
+        <li><strong>18.0.1.0.0</strong> — Initial release for Odoo 18 CE; triage sessions, levels, tags, vitals, SLA, queue/room hints, billing hooks.</li>
+      </ul>
+    </section>
+
+    <section id="license">
+      <h2>License</h2>
+      <p>Licensed under <strong>LGPL-3</strong>. See the <code>LICENSE</code> file in the module root.</p>
+    </section>
+
+    <footer class="footer">
+      <p>© ClinicOne — <em>clinic_triage_vitals</em>. UI strings in English; this page is for implementers/admins.</p>
+    </footer>
+  </div>
+</body>
+</html>

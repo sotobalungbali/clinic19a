@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_clinic_ap_sync_status" model="ir.cron">
+        <field name="name">Clinic AP: Sync Payment Status</field>
+        <field name="model_id" ref="model_clinic_ap"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_ap_status()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+    <record id="cron_clinic_ap_aging_refresh" model="ir.cron">
+        <field name="name">Clinic AP: Refresh Pinned Aging</field>
+        <field name="model_id" ref="model_clinic_ap_aging"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_refresh_pinned()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+    <record id="cron_clinic_cashflow_refresh" model="ir.cron">
+        <field name="name">Clinic AP: Refresh Pinned Cashflow</field>
+        <field name="model_id" ref="model_clinic_cashflow"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_refresh_pinned()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

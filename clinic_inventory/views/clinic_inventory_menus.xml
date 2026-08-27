@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_clinic_inventory_root"
+              name="Clinic Inventory"
+              sequence="60"
+              groups="stock.group_stock_user"/>
+
+    <menuitem id="menu_clinic_inventory_operations"
+              name="Operations"
+              parent="menu_clinic_inventory_root"
+              sequence="10"/>
+
+    <menuitem id="menu_clinic_treatment_product_usage"
+              name="Treatment Product Usage"
+              parent="menu_clinic_inventory_operations"
+              action="action_clinic_treatment_product_usage"
+              sequence="10"/>
+
+    <menuitem id="menu_clinic_inventory_adjustment"
+              name="Inventory Adjustments"
+              parent="menu_clinic_inventory_operations"
+              action="action_clinic_inventory_adjustment"
+              sequence="20"/>
+
+    <menuitem id="menu_clinic_patient_product_history"
+              name="Patient Product History"
+              parent="menu_clinic_inventory_operations"
+              action="action_clinic_patient_product_history"
+              sequence="30"/>
+
+    <menuitem id="menu_clinic_inventory_configuration"
+              name="Configuration"
+              parent="menu_clinic_inventory_root"
+              sequence="90"
+              groups="stock.group_stock_manager"/>
+
+    <menuitem id="menu_clinic_doctor_allowed_product"
+              name="Doctor Product Rules"
+              parent="menu_clinic_inventory_configuration"
+              action="action_clinic_doctor_allowed_product"
+              sequence="10"
+              groups="stock.group_stock_manager"/>
+
+    <menuitem id="menu_clinic_integration_event_log"
+              name="Integration Event Log"
+              parent="menu_clinic_inventory_configuration"
+              action="action_clinic_integration_event_log"
+              sequence="90"
+              groups="stock.group_stock_manager"/>
+</odoo>
+

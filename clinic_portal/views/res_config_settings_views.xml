@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_portal_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Patient Portal Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_portal', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_portal" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.portal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Patient Portal"
+                     name="clinic_portal"
+                     groups="clinic_portal.group_patient_portal_manager">
+                    <block title="Patient Portal Provisioning">
+                        <setting string="Auto-create &amp; Activate Clinic Portal Profile"
+                                 help="Opt-in convenience only. Native Odoo Portal authentication must already exist; default installation seeds Draft profiles for staff review instead.">
+                            <field name="clinic_portal_auto_profile"/>
+                        </setting>
+                        <setting string="Rows Per Page">
+                            <field name="clinic_portal_page_size"/>
+                        </setting>
+                    </block>
+
+                    <block title="Default Core Access">
+                        <setting string="Bookings">
+                            <field name="clinic_portal_default_booking_view"/>
+                        </setting>
+                        <setting string="Invoices">
+                            <field name="clinic_portal_default_invoice_view"/>
+                        </setting>
+                        <setting string="Treatment History">
+                            <field name="clinic_portal_default_treatment_view"/>
+                        </setting>
+                    </block>
+
+                    <block title="Companion Service Shortcuts">
+                        <setting string="Wallet">
+                            <field name="clinic_portal_show_wallet_link"/>
+                        </setting>
+                        <setting string="Consents">
+                            <field name="clinic_portal_show_consent_link"/>
+                        </setting>
+                        <setting string="Orders">
+                            <field name="clinic_portal_show_order_link"/>
+                        </setting>
+                        <setting string="Clinic Shop">
+                            <field name="clinic_portal_show_shop_link"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

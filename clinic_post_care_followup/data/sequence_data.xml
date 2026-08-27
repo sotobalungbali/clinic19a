@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_postcare_plan" model="ir.sequence">
+        <field name="name">Clinic Post-Care Plan</field>
+        <field name="code">clinic.postcare.plan</field>
+        <field name="prefix">PCP/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_postcare_task" model="ir.sequence">
+        <field name="name">Clinic Post-Care Task</field>
+        <field name="code">clinic.postcare.task</field>
+        <field name="prefix">PCT/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_postcare_checkin" model="ir.sequence">
+        <field name="name">Clinic Post-Care Check-in</field>
+        <field name="code">clinic.postcare.checkin</field>
+        <field name="prefix">PCC/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_postcare_escalation" model="ir.sequence">
+        <field name="name">Clinic Post-Care Escalation</field>
+        <field name="code">clinic.postcare.escalation</field>
+        <field name="prefix">PCE/%(year)s/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

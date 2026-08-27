@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_insurer_partner_search" model="ir.ui.view">
+        <field name="name">res.partner.search.clinic.insurer</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="insurer_code"/>
+                <field name="payer_external_id"/>
+                <field name="email"/>
+                <filter name="insurers" string="Insurers / Payers" domain="[('is_insurer','=',True)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_insurer_partner_list" model="ir.ui.view">
+        <field name="name">res.partner.list.clinic.insurer</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="insurer_code"/>
+                <field name="payer_external_id"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="payer_authorization_email"/>
+                <field name="payer_claim_email"/>
+                <field name="insurance_plan_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_insurance_plans" type="object" string="Plans" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_insurer_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.form.clinic.insurer</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_insurance_plans" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="insurance_plan_count" widget="statinfo" string="Plans"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Payer Identity">
+                            <field name="is_insurer"/>
+                            <field name="insurer_code"/>
+                            <field name="payer_external_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Payer Operations">
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="payer_authorization_email"/>
+                            <field name="payer_claim_email"/>
+                            <field name="payer_portal_url"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_insurance_payers" model="ir.actions.act_window">
+        <field name="name">Insurers / Payers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_insurer','=',True)]</field>
+        <field name="search_view_id" ref="view_insurer_partner_search"/>
+    </record>
+
+    <record id="view_insurance_booking_search" model="ir.ui.view">
+        <field name="name">booking.booking.search.insurance</field>
+        <field name="model">booking.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="insurance_policy_id"/>
+                <field name="insurance_authorization_id"/>
+                <field name="company_id"/>
+                <filter name="covered" string="Has Insurance Policy" domain="[('insurance_policy_id','!=',False)]"/>
+                <filter name="needs_authorization" string="No Authorization" domain="[('insurance_policy_id','!=',False),('insurance_authorization_id','=',False)]"/>
+                <group>
+                    <filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter name="group_auth_state" string="Authorization State" context="{'group_by':'insurance_authorization_state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_insurance_booking_list" model="ir.ui.view">
+        <field name="name">booking.booking.list.insurance</field>
+        <field name="model">booking.booking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="start_datetime"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_id"/>
+                <field name="insurance_policy_id"/>
+                <field name="insurance_authorization_id"/>
+                <field name="insurance_authorization_state" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_create_insurance_authorization" type="object" string="New Authorization" icon="fa-plus" groups="clinic_insurance_authorization.group_clinic_insurance_coordinator" invisible="insurance_authorization_id"/>
+                <button name="action_open_insurance_authorization" type="object" string="Open Authorization" icon="fa-external-link" invisible="not insurance_authorization_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_insurance_bookings" model="ir.actions.act_window">
+        <field name="name">Insurance Bookings</field>
+        <field name="res_model">booking.booking</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_insurance_booking_search"/>
+    </record>
+
+    <record id="view_insurance_billing_search" model="ir.ui.view">
+        <field name="name">clinic.billing.invoice.search.insurance</field>
+        <field name="model">clinic.billing.invoice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="insurance_policy_id"/>
+                <field name="insurance_authorization_id"/>
+                <field name="insurer_partner_id"/>
+                <field name="insurance_claim_state"/>
+                <filter name="insurance" string="Insurance Billing" domain="[('insurance_policy_id','!=',False)]"/>
+                <filter name="claim_pending" string="Claim Not Settled" domain="[('insurance_policy_id','!=',False),('insurance_claim_state','!=','settled')]"/>
+                <group>
+                    <filter name="group_insurer" string="Insurer" context="{'group_by':'insurer_partner_id'}"/>
+                    <filter name="group_claim_state" string="Claim Status" context="{'group_by':'insurance_claim_state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_insurance_billing_list" model="ir.ui.view">
+        <field name="name">clinic.billing.invoice.list.insurance</field>
+        <field name="model">clinic.billing.invoice</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="invoice_date"/>
+                <field name="patient_id"/>
+                <field name="insurer_partner_id"/>
+                <field name="insurance_policy_id"/>
+                <field name="insurance_authorization_id"/>
+                <field name="insurance_claim_state" widget="badge"/>
+                <field name="amount_total" sum="Total"/>
+                <field name="amount_residual" sum="Due"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_insurance_policy" type="object" string="Policy" icon="fa-id-card" invisible="not insurance_policy_id"/>
+                <button name="action_open_insurance_authorization" type="object" string="Authorization" icon="fa-check-circle" invisible="not insurance_authorization_id"/>
+                <button name="action_new_insurance_claim" type="object" string="New Claim" icon="fa-plus" groups="clinic_insurance_authorization.group_clinic_insurance_coordinator"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_insurance_billing" model="ir.actions.act_window">
+        <field name="name">Insurance Billing</field>
+        <field name="res_model">clinic.billing.invoice</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_insurance_billing_search"/>
+    </record>
+</odoo>
+

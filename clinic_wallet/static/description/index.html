@@ -1,0 +1,202 @@
+<!--
+ClinicOne — Patient Wallet & Prepaid Balance
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+CATATAN:
+- README.md (root) untuk dokumentasi panjang; file ini untuk tampilan Apps.
+- Hindari penggunaan <blockquote> di seluruh proyek ClinicOne (konvensi tim).
+-->
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span3">
+        <img src="icon.png" alt="ClinicOne Wallet Icon" style="width:100%; border-radius:16px;">
+      </div>
+      <div class="oe_span9">
+        <h1 class="oe_slogan">ClinicOne — Patient Wallet &amp; Prepaid Balance</h1>
+        <h2 class="oe_slogan">Top-Up • Redeem • Refund • Approval • Portal</h2>
+        <p>
+          Dompet prabayar pasien terintegrasi untuk pembayaran layanan klinik dan produk,
+          lengkap dengan <b>top-up</b>, <b>redeem</b>, <b>refund</b>, <b>approval flow</b>,
+          dan laporan saldo &amp; mutasi. Kompatibel dengan <b>Odoo 18 Community Edition</b>.
+        </p>
+        <p>
+          <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+          <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-Company</span>
+          <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Mail/Activities</span>
+          <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Accounting</span>
+          <span style="display:inline-block;background:#455a64;color:#fff;padding:4px 8px;border-radius:6px;">Portal</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Gambaran Umum</h3>
+        <p>
+          <b>clinic_wallet</b> menyediakan saldo prabayar milik pasien yang dapat digunakan untuk
+          membayar treatment, produk, atau paket. Mendukung bonus top-up, masa berlaku (expiry),
+          pembatasan penggunaan (per kategori/treatment), serta integrasi penuh ke Billing, AR,
+          Accounting, Membership, dan Portal Pasien.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Fitur Utama</h3>
+        <ul>
+          <li>Transaksi dompet: <i>Top-Up, Redeem, Adjustment, Refund</i></li>
+          <li>Aturan penggunaan: per kategori/treatment, minimal/maksimal transaksi</li>
+          <li>Masa berlaku saldo (expiry) + notifikasi pengingat sebelum kadaluarsa</li>
+          <li>Bonus top-up berdasarkan tier membership &amp; periode promo</li>
+          <li>Approval flow untuk top-up besar, refund, dan koreksi saldo</li>
+          <li>Metode bayar “Wallet” terhubung ke Billing/Invoice/Receipt</li>
+          <li>Portal pasien: cek saldo, riwayat, ajukan top-up/refund</li>
+          <li>Laporan saldo &amp; mutasi (Pivot/Graph) + PDF ringkas</li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Model Inti</h3>
+        <ul>
+          <li><b>clinic.wallet</b> — dompet pasien, saldo, expiry, aturan</li>
+          <li><b>clinic.wallet.transaction</b> — mutasi (top-up/redeem/adjust/refund)</li>
+          <li><b>clinic.wallet.rule</b> — pembatasan &amp; kebijakan penggunaan</li>
+          <li><b>res.partner</b> (inherit) — smart button saldo wallet</li>
+        </ul>
+        <p style="margin-top:8px;">
+          Integrasi akuntansi: akun liabilitas (deferred revenue) &amp; jurnal khusus wallet.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Integrasi Lintas Modul (26 Modul)</h3>
+        <p>
+          Terintegrasi dengan:
+          <i>clinic_base, clinic_patient, clinic_doctor, clinic_booking, clinic_treatment, clinic_billing,
+          clinic_ar, clinic_ap, clinic_finance, clinic_accounting, clinic_inventory, clinic_ecommerce,
+          clinic_membership, clinic_feedback, clinic_reports, clinic_dashboard, clinic_package, clinic_pricing,
+          clinic_room_device, clinic_hr, clinic_portal, clinic_marketing, clinic_queue_room, clinic_l10n_id, clinic_audit</i>.
+        </p>
+        <p style="font-size:12px;color:#666;">
+          Integrasi bersifat soft-coupled melalui relasi, server actions, activities, dan mail templates
+          agar modul tetap dapat dipasang/diupgrade secara independen.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span4">
+        <h3>Instalasi</h3>
+        <ol>
+          <li>Tambahkan addon ke <i>addons_path</i> Odoo.</li>
+          <li>Update Apps list, cari <b>ClinicOne: Patient Wallet &amp; Prepaid Balance</b>.</li>
+          <li>Install; dependensi akan terpasang otomatis.</li>
+        </ol>
+      </div>
+      <div class="oe_span4">
+        <h3>Konfigurasi</h3>
+        <ul>
+          <li>Set akun liabilitas &amp; jurnal wallet pada <i>Settings → ClinicOne → Wallet</i>.</li>
+          <li>Definisikan <b>Wallet Rules</b> (kategori, limit, expiry, bonus).</li>
+          <li>Aktifkan metode bayar <b>Wallet</b> di Billing/Invoice/POS (jika relevan).</li>
+          <li>Opsional: aktifkan template email pengingat expiry.</li>
+        </ul>
+      </div>
+      <div class="oe_span4">
+        <h3>Keamanan</h3>
+        <ul>
+          <li>Groups: Wallet User, Wallet Manager, Wallet Accountant, Admin.</li>
+          <li>Record Rules: cakupan per company, akses saldo sesuai peran.</li>
+          <li>Approval: level berjenjang untuk top-up besar, refund, adjustment.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Alur Kerja Singkat</h3>
+        <ol>
+          <li><b>Top-Up</b> (kasir/portal) → jurnal liabilitas tercatat</li>
+          <li><b>Redeem</b> saat Billing → saldo berkurang, tagih selisih jika kurang</li>
+          <li><b>Refund</b> (approval) → pembalikan liabilitas</li>
+          <li><b>Expiry</b> → notifikasi &amp; opsi kebijakan hangus/extend</li>
+        </ol>
+      </div>
+      <div class="oe_span6">
+        <h3>Performa &amp; Praktik Baik</h3>
+        <ul>
+          <li>Indeks kolom sering dipakai: partner_id, state, type, date, company_id</li>
+          <li>Gunakan server action untuk batch notifikasi expiry</li>
+          <li>Hindari compute berat di list view; optimalkan domain/report</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Assets</h3>
+        <ul>
+          <li>JS: <i>wallet_dashboard.js</i>, <i>wallet_portal.js</i></li>
+          <li>QWeb: <i>wallet_templates.xml</i>, <i>wallet_portal_templates.xml</i></li>
+          <li>SCSS: <i>wallet_dashboard.scss</i>, <i>wallet_report.scss</i></li>
+        </ul>
+      </div>
+      <div class="oe_span6">
+        <h3>Laporan &amp; Portal</h3>
+        <ul>
+          <li>Report PDF ringkas: Saldo &amp; Mutasi per periode</li>
+          <li>Pivot/Graph: analisis top-up, redeem, refund</li>
+          <li>Portal: ringkasan saldo, riwayat, ajukan top-up/refund</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span12">
+        <h3>Upgrade &amp; Migrasi</h3>
+        <ul>
+          <li>Normalisasi prefix model ke <b>clinic.*</b></li>
+          <li>Gunakan skrip migrasi untuk mapping akun &amp; re-posting saldo awal</li>
+          <li>Pastikan nomor sequence transaksi unik lintas company</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+  <section class="oe_container">
+    <div class="oe_row oe_spaced">
+      <div class="oe_span6">
+        <h3>Lisensi</h3>
+        <p>Didistribusikan di bawah lisensi <b>LGPL-3.0</b>. Lihat berkas <i>LICENSE</i>.</p>
+      </div>
+      <div class="oe_span6">
+        <h3>Dukungan &amp; Kontribusi</h3>
+        <p>
+          Untuk isu/peningkatan fitur, ikuti panduan kontribusi ClinicOne:
+          tulis test, patuhi code-style, dan dokumentasikan dampak migrasi.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+
+
+

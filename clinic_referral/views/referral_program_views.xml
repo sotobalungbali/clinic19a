@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_referral_program_search" model="ir.ui.view">
+        <field name="name">clinic.referral.program.search</field>
+        <field name="model">clinic.referral.program</field>
+        <field name="arch" type="xml">
+            <search string="Referral Programs">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="user_id"/>
+                <field name="reward_policy"/>
+                <filter name="current" string="Current" domain="[('is_current','=',True)]"/>
+                <filter name="future" string="Future" domain="[('is_future','=',True)]"/>
+                <filter name="past" string="Past" domain="[('is_past','=',True)]"/>
+                <separator/>
+                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                <filter name="group_reward" string="Reward Policy" context="{'group_by':'reward_policy'}"/>
+                <filter name="group_owner" string="Owner" context="{'group_by':'user_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_referral_program_list" model="ir.ui.view">
+        <field name="name">clinic.referral.program.list</field>
+        <field name="model">clinic.referral.program</field>
+        <field name="arch" type="xml">
+            <list default_order="start_date desc,id desc"
+                  decoration-success="state == 'running'"
+                  decoration-warning="state == 'paused'"
+                  decoration-muted="state in ('closed','archived')">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="reward_policy"/>
+                <field name="referral_count"/>
+                <field name="referral_converted_count"/>
+                <field name="referral_conversion_rate"/>
+                <field name="state" widget="badge"/>
+                <button name="action_open_referrals" type="object" string="Referrals" icon="fa-share-alt"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_referral_program_form" model="ir.ui.view">
+        <field name="name">clinic.referral.program.form</field>
+        <field name="model">clinic.referral.program</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Start" class="btn-primary"
+                            groups="clinic_referral.group_referral_manager"
+                            invisible="state not in ('draft','paused')"/>
+                    <button name="action_pause" type="object" string="Pause"
+                            groups="clinic_referral.group_referral_manager"
+                            invisible="state != 'running'"/>
+                    <button name="action_set_draft" type="object" string="Reset to Draft"
+                            groups="clinic_referral.group_referral_manager"
+                            invisible="state != 'paused'"/>
+                    <button name="action_close" type="object" string="Close"
+                            groups="clinic_referral.group_referral_manager"
+                            invisible="state not in ('running','paused')"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_referral.group_referral_manager"
+                            invisible="state == 'archived'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,running,paused,closed,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_referrals" type="object" class="oe_stat_button" icon="fa-share-alt">
+                            <field name="referral_count" widget="statinfo" string="Referrals"/>
+                        </button>
+                        <button name="action_open_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="booking_count" widget="statinfo" string="Bookings"/>
+                        </button>
+                        <button name="action_open_memberships" type="object" class="oe_stat_button" icon="fa-id-card-o">
+                            <field name="membership_count" widget="statinfo" string="Memberships"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Program">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="user_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Live Status">
+                            <field name="is_current" readonly="1"/>
+                            <field name="is_future" readonly="1"/>
+                            <field name="is_past" readonly="1"/>
+                            <field name="referral_count" readonly="1"/>
+                            <field name="referral_converted_count" readonly="1"/>
+                            <field name="referral_conversion_rate" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Applicability">
+                            <group>
+                                <group>
+                                    <field name="patient_scope"/>
+                                    <field name="min_patient_age"/>
+                                    <field name="max_patient_age"/>
+                                    <field name="allowed_company_ids" widget="many2many_tags"/>
+                                </group>
+                                <group>
+                                    <field name="allowed_branch_ids" widget="many2many_tags"/>
+                                    <field name="apply_on_booking"/>
+                                    <field name="apply_on_treatment"/>
+                                    <field name="apply_on_invoice"/>
+                                    <field name="apply_on_wallet"/>
+                                    <field name="apply_on_membership"/>
+                                    <field name="apply_on_other"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Reward Policy">
+                            <group>
+                                <group>
+                                    <field name="reward_policy"/>
+                                    <field name="currency_id"/>
+                                    <field name="reward_value"/>
+                                    <field name="reward_percent"/>
+                                    <field name="reward_points"/>
+                                </group>
+                                <group>
+                                    <field name="max_reward_per_referral"/>
+                                    <field name="max_reward_per_referrer"/>
+                                    <field name="min_qualifying_amount"/>
+                                    <field name="auto_convert_on_first_sale"/>
+                                    <field name="require_manual_approval"/>
+                                    <field name="total_reward_value" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Referrals">
+                            <field name="referral_ids" readonly="1">
+                                <list decoration-success="state == 'converted'"
+                                      decoration-danger="state in ('cancelled','expired')">
+                                    <field name="name"/>
+                                    <field name="patient_id"/>
+                                    <field name="source_id"/>
+                                    <field name="date_referral"/>
+                                    <field name="reward_state" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_open_self" type="object" string="Open" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Description">
+                            <field name="description"/>
+                            <field name="integration_notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_referral_program" model="ir.actions.act_window">
+        <field name="name">Referral Programs</field>
+        <field name="res_model">clinic.referral.program</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_referral_program_search"/>
+    </record>
+</odoo>

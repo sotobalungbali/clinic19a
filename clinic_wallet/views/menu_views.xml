@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_wallet_root" name="Patient Wallet" sequence="70" groups="clinic_wallet.group_wallet_user"/>
+
+    <menuitem id="menu_wallet_operations" name="Operations" parent="menu_wallet_root" sequence="10"/>
+    <menuitem id="menu_wallet_wallets" name="Wallets" parent="menu_wallet_operations" action="action_wallets" sequence="10"/>
+    <menuitem id="menu_wallet_transactions" name="Transactions" parent="menu_wallet_operations" action="action_wallet_transactions" sequence="20"/>
+    <menuitem id="menu_wallet_requests" name="Top-Up / Refund Requests" parent="menu_wallet_operations" action="action_wallet_requests" sequence="30"/>
+    <menuitem id="menu_wallet_requests_to_approve" name="Requests to Approve" parent="menu_wallet_operations" action="action_wallet_requests_to_approve" sequence="40" groups="clinic_wallet.group_wallet_manager"/>
+
+    <menuitem id="menu_wallet_reporting" name="Reporting" parent="menu_wallet_root" sequence="30"/>
+    <menuitem id="menu_wallet_analysis" name="Transaction Analysis" parent="menu_wallet_reporting" action="action_wallet_transactions" sequence="10"/>
+
+    <menuitem id="menu_wallet_configuration" name="Configuration" parent="menu_wallet_root" sequence="90" groups="clinic_wallet.group_wallet_manager"/>
+    <menuitem id="menu_wallet_rules" name="Usage Rules" parent="menu_wallet_configuration" action="action_wallet_rules" sequence="10"/>
+    <menuitem id="menu_wallet_approvers" name="Approval Matrix" parent="menu_wallet_configuration" action="action_wallet_approvers" sequence="20"/>
+    <menuitem id="menu_wallet_settings" name="Settings" parent="menu_wallet_configuration" action="action_wallet_config_settings" sequence="90"/>
+</odoo>
+
+
+

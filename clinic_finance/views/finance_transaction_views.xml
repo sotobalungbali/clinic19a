@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_finance_transaction_search" model="ir.ui.view">
+    <field name="name">clinic.finance.transaction.search</field><field name="model">clinic.finance.transaction</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="reference"/><field name="finance_account_id"/><field name="category_id"/><field name="partner_id"/><field name="branch_id"/>
+      <filter name="to_approve" string="To Approve" domain="[('state','=','submitted')]"/>
+      <filter name="posted" string="Posted" domain="[('state','=','posted')]"/>
+      <filter name="receipts" string="Receipts" domain="[('direction','=','in')]"/>
+      <filter name="disbursements" string="Disbursements" domain="[('direction','=','out')]"/>
+      <group>
+        <filter name="group_account" string="Finance Account" context="{'group_by':'finance_account_id'}"/>
+        <filter name="group_category" string="Category" context="{'group_by':'category_id'}"/>
+        <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+        <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+        <filter name="group_month" string="Month" context="{'group_by':'transaction_date:month'}"/>
+      </group>
+    </search></field>
+  </record>
+  <record id="view_finance_transaction_list" model="ir.ui.view">
+    <field name="name">clinic.finance.transaction.list</field><field name="model">clinic.finance.transaction</field>
+    <field name="arch" type="xml"><list decoration-info="state == 'submitted'" decoration-success="state == 'posted'" decoration-muted="state == 'cancelled'">
+      <field name="name"/><field name="transaction_date"/><field name="finance_account_id"/><field name="branch_id"/>
+      <field name="direction" widget="badge"/><field name="operation_type"/><field name="category_id"/><field name="partner_id" optional="show"/>
+      <field name="amount" sum="Total"/><field name="approval_required" optional="hide"/><field name="posting_policy" optional="hide"/>
+      <field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company"/>
+    </list></field>
+  </record>
+  <record id="view_finance_transaction_form" model="ir.ui.view">
+    <field name="name">clinic.finance.transaction.form</field><field name="model">clinic.finance.transaction</field>
+    <field name="arch" type="xml"><form>
+      <header>
+        <button name="action_submit" type="object" string="Submit" class="btn-primary" groups="clinic_finance.group_clinic_finance_cashier" invisible="state != 'draft'"/>
+        <button name="action_approve" type="object" string="Approve" class="btn-primary" groups="clinic_finance.group_clinic_finance_approver" invisible="state != 'submitted'"/>
+        <button name="action_post" type="object" string="Post" class="btn-primary" groups="clinic_finance.group_clinic_finance_cashier" invisible="state != 'approved'"/>
+        <button name="action_cancel" type="object" string="Cancel" groups="clinic_finance.group_clinic_finance_manager" invisible="state in ('posted','cancelled')"/>
+        <button name="action_reset_to_draft" type="object" string="Reset to Draft" groups="clinic_finance.group_clinic_finance_manager" invisible="state not in ('submitted','approved','cancelled')"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,posted,cancelled"/>
+      </header>
+      <sheet>
+        <div class="oe_button_box" name="button_box">
+          <button name="action_open_move" type="object" class="oe_stat_button" icon="fa-book" invisible="not move_id"><div class="o_stat_info"><span class="o_stat_text">Journal Entry</span></div></button>
+          <button name="action_open_origin" type="object" class="oe_stat_button" icon="fa-link" invisible="not origin_ref"><div class="o_stat_info"><span class="o_stat_text">Origin</span></div></button>
+          <button name="action_open_finance_account" type="object" class="oe_stat_button" icon="fa-bank"><div class="o_stat_info"><span class="o_stat_text">Finance Account</span></div></button>
+        </div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <group>
+          <group string="Operation">
+            <field name="transaction_date" readonly="state != 'draft'"/><field name="finance_account_id" readonly="state != 'draft'"/>
+            <field name="direction" readonly="state != 'draft'"/><field name="operation_type" readonly="state != 'draft'"/>
+            <field name="category_id" readonly="state != 'draft'"/><field name="partner_id" readonly="state != 'draft'"/>
+            <field name="amount" readonly="state != 'draft'"/>
+          </group>
+          <group string="Posting &amp; Scope">
+            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/><field name="branch_id" readonly="state != 'draft'"/>
+            <field name="counterpart_account_id" options="{'no_create_edit':True}" readonly="state != 'draft'"/>
+            <field name="posting_policy" readonly="state != 'draft'"/><field name="approval_required" readonly="1"/><field name="move_id" readonly="1"/>
+          </group>
+        </group>
+        <group string="Traceability"><field name="reference"/><field name="origin_ref"/><field name="fund_request_id" invisible="not fund_request_id" readonly="1"/><field name="cash_session_id" invisible="not cash_session_id" readonly="1"/><field name="analytic_account_id"/></group>
+        <notebook>
+          <page string="Approval"><group><field name="submitted_by_id" readonly="1"/><field name="submitted_at" readonly="1"/><field name="approved_by_id" readonly="1"/><field name="approved_at" readonly="1"/><field name="posted_by_id" readonly="1"/><field name="posted_at" readonly="1"/></group></page>
+          <page string="Internal Note"><field name="note"/></page>
+        </notebook>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+  <record id="view_finance_transaction_pivot" model="ir.ui.view">
+    <field name="name">clinic.finance.transaction.pivot</field><field name="model">clinic.finance.transaction</field>
+    <field name="arch" type="xml"><pivot string="Finance Transaction Analysis"><field name="transaction_date" type="row" interval="month"/><field name="direction" type="col"/><field name="amount" type="measure"/></pivot></field>
+  </record>
+  <record id="view_finance_transaction_graph" model="ir.ui.view">
+    <field name="name">clinic.finance.transaction.graph</field><field name="model">clinic.finance.transaction</field>
+    <field name="arch" type="xml"><graph string="Finance Transaction Trend" type="bar"><field name="transaction_date" interval="month"/><field name="amount" type="measure"/></graph></field>
+  </record>
+  <record id="action_finance_transaction" model="ir.actions.act_window">
+    <field name="name">Internal Transactions</field><field name="res_model">clinic.finance.transaction</field><field name="view_mode">list,form,pivot,graph</field><field name="search_view_id" ref="view_finance_transaction_search"/>
+  </record>
+</odoo>

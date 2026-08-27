@@ -1,0 +1,6 @@
+CLINIC_TREATMENT_SESSION_RUNTIME_REPAIR_20260826_V19.0.2.0.2
+Project: ClinicOne
+Source-actual addon order: 41 / 41
+Authoritative baseline: clinic19a(20260826-045636).md
+Build mode: Direct Full Addon Build
+Runtime status: PENDING after searchable overtime field repair

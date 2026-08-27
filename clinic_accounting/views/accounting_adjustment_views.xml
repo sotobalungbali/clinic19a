@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_accounting_adjustment_search" model="ir.ui.view">
+        <field name="name">clinic.accounting.adjustment.search</field>
+        <field name="model">clinic.accounting.adjustment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="journal_id"/>
+                <field name="adjustment_type"/>
+                <field name="branch_id"/>
+                <filter name="to_approve" string="To Approve" domain="[('state', '=', 'submitted')]"/>
+                <filter name="approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                <filter name="posted" string="Posted" domain="[('state', '=', 'posted')]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+                    <filter name="group_type" string="Adjustment Type" context="{'group_by': 'adjustment_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'adjustment_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_accounting_adjustment_list" model="ir.ui.view">
+        <field name="name">clinic.accounting.adjustment.list</field>
+        <field name="model">clinic.accounting.adjustment</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'submitted'" decoration-warning="state == 'approved'" decoration-success="state == 'posted'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="adjustment_date"/>
+                <field name="journal_id"/>
+                <field name="branch_id"/>
+                <field name="adjustment_type" widget="badge"/>
+                <field name="reference"/>
+                <field name="total_debit" sum="Debit"/>
+                <field name="total_credit" sum="Credit"/>
+                <field name="difference"/>
+                <field name="approval_required" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_accounting_adjustment_form" model="ir.ui.view">
+        <field name="name">clinic.accounting.adjustment.form</field>
+        <field name="model">clinic.accounting.adjustment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                            groups="clinic_accounting.group_clinic_accounting_accountant"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                            groups="clinic_accounting.group_clinic_accounting_approver"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_post" type="object" string="Post Adjustment" class="btn-primary"
+                            groups="clinic_accounting.group_clinic_accounting_accountant"
+                            invisible="state != 'approved'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_accounting.group_clinic_accounting_manager"
+                            invisible="state in ('posted', 'cancelled')"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_accounting.group_clinic_accounting_manager"
+                            invisible="state not in ('submitted', 'approved', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,posted,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_move" type="object" class="oe_stat_button" icon="fa-book"
+                                invisible="not move_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Journal Entry</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="difference == 0">
+                        Debit and credit totals are not balanced.
+                    </div>
+                    <group>
+                        <group string="Adjustment">
+                            <field name="adjustment_date" readonly="state != 'draft'"/>
+                            <field name="journal_id" readonly="state != 'draft'" options="{'no_create_edit': True}"/>
+                            <field name="adjustment_type" readonly="state != 'draft'"/>
+                            <field name="reference" readonly="state != 'draft'"/>
+                            <field name="description" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Scope &amp; Approval">
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            <field name="branch_id" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="approval_required" readonly="1"/>
+                            <field name="submitted_by_id" readonly="1"/>
+                            <field name="approved_by_id" readonly="1"/>
+                            <field name="posted_by_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Journal Lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="account_id"/>
+                                    <field name="partner_id" optional="show"/>
+                                    <field name="analytic_account_id" optional="show"/>
+                                    <field name="label"/>
+                                    <field name="debit" sum="Debit"/>
+                                    <field name="credit" sum="Credit"/>
+                                    <field name="balance" sum="Balance" readonly="1"/>
+                                    <button name="action_open_adjustment" type="object" string="Header" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                            <group class="mt16">
+                                <field name="total_debit" readonly="1"/>
+                                <field name="total_credit" readonly="1"/>
+                                <field name="difference" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Audit">
+                            <group>
+                                <field name="submitted_at" readonly="1"/>
+                                <field name="approved_at" readonly="1"/>
+                                <field name="posted_at" readonly="1"/>
+                                <field name="move_id" readonly="1"/>
+                                <field name="move_state" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_accounting_adjustment_line_search" model="ir.ui.view">
+        <field name="name">clinic.accounting.adjustment.line.search</field>
+        <field name="model">clinic.accounting.adjustment.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="adjustment_id"/>
+                <field name="account_id"/>
+                <field name="partner_id"/>
+                <field name="branch_id"/>
+                <group>
+                    <filter name="group_adjustment" string="Adjustment" context="{'group_by': 'adjustment_id'}"/>
+                    <filter name="group_account" string="Account" context="{'group_by': 'account_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_accounting_adjustment_line_list" model="ir.ui.view">
+        <field name="name">clinic.accounting.adjustment.line.list</field>
+        <field name="model">clinic.accounting.adjustment.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="adjustment_id"/>
+                <field name="account_id"/>
+                <field name="partner_id"/>
+                <field name="label"/>
+                <field name="debit" sum="Debit"/>
+                <field name="credit" sum="Credit"/>
+                <field name="balance" sum="Balance"/>
+                <field name="branch_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_adjustment" type="object" string="Open Adjustment" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_accounting_adjustment_line_form" model="ir.ui.view">
+        <field name="name">clinic.accounting.adjustment.line.form</field>
+        <field name="model">clinic.accounting.adjustment.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="adjustment_id"/>
+                        <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        <field name="branch_id" readonly="1"/>
+                        <field name="account_id"/>
+                        <field name="partner_id"/>
+                        <field name="analytic_account_id"/>
+                        <field name="label"/>
+                        <field name="debit"/>
+                        <field name="credit"/>
+                        <field name="balance" readonly="1"/>
+                    </group>
+                    <button name="action_open_adjustment" type="object" string="Open Adjustment" class="btn-secondary"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_accounting_adjustment" model="ir.actions.act_window">
+        <field name="name">Accounting Adjustments</field>
+        <field name="res_model">clinic.accounting.adjustment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_accounting_adjustment_search"/>
+    </record>
+
+    <record id="action_accounting_adjustment_line" model="ir.actions.act_window">
+        <field name="name">Adjustment Lines</field>
+        <field name="res_model">clinic.accounting.adjustment.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_accounting_adjustment_line_search"/>
+    </record>
+</odoo>

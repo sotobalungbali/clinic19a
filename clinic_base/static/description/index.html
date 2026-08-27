@@ -1,0 +1,152 @@
+
+<!--
+ClinicOne — Base
+File: static/description/index.html
+Odoo 18 CE | License: LGPL-3.0
+
+NOTE:
+- This file is displayed on the Odoo Apps module page.
+- Keep README.md (root) for long-form docs; this file is for the Apps UI description.
+-->
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span3">
+      <img src="icon.png" alt="ClinicOne Base Icon" style="width:100%; border-radius:16px;">
+    </div>
+    <div class="oe_span9">
+      <h1 class="oe_slogan">ClinicOne — Base</h1>
+      <h2 class="oe_slogan">Fundamental Models • Shared UI • Utilities • Security</h2>
+      <p>
+        <b>clinic_base</b> provides the shared foundation for the ClinicOne suite: core models, mixins,
+        web assets, demo data hooks, and security groups used by downstream modules
+        (patients, doctors, booking, treatment, billing, and more) — fully compatible with
+        <b>Odoo 18 Community Edition</b>.
+      </p>
+      <p>
+        <span style="display:inline-block;background:#4caf50;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Odoo 18 CE</span>
+        <span style="display:inline-block;background:#0091ea;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">No Menu (Base)</span>
+        <span style="display:inline-block;background:#7b1fa2;color:#fff;padding:4px 8px;border-radius:6px;margin-right:6px;">Multi-company</span>
+        <span style="display:inline-block;background:#ff6f00;color:#fff;padding:4px 8px;border-radius:6px;">APIs &amp; Mixins</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Overview</h3>
+      <p>
+        The base layer that standardizes naming, shared fields, and UI behavior across ClinicOne modules.
+        It keeps modules loosely coupled but consistent, so you can install features independently without
+        duplicating the plumbing code.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Key Features</h3>
+      <ul>
+        <li>Core reference models (clinic.company.profile, clinic.tag, clinic.note)</li>
+        <li>Common mixins: code/name sequence, active/archive, company/branch scope</li>
+        <li>Shared widgets, Kanban badges, and QWeb snippets</li>
+        <li>Centralized security groups &amp; access templates</li>
+        <li>Demo hooks for downstream modules</li>
+        <li>Technical settings registry (no top-level menu)</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Core Models</h3>
+      <ul>
+        <li><b>clinic.company.profile</b> — clinic identity (legal name, branding colors, terms)</li>
+        <li><b>clinic.tag</b> — generic tagging for patients, treatments, and documents</li>
+        <li><b>clinic.note</b> — lightweight internal notes with attachments &amp; chatter</li>
+        <li><b>res.company</b> (extended) — clinic-specific options &amp; sequences</li>
+        <li><b>mail.activity</b> (extended) — default activity types &amp; templates</li>
+      </ul>
+      <p style="margin-top:8px;">Designed to avoid creating a new app icon or home menu: this is a <b>base dependency</b>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <h3>Integrations (Downstream)</h3>
+      <p>
+        Seamlessly used by: <i>clinic_patient, clinic_doctor, clinic_booking, clinic_treatment,
+        clinic_billing, clinic_inventory, clinic_membership, clinic_reports, clinic_dashboard</i>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span4">
+      <h3>Installation</h3>
+      <ol>
+        <li>Place this addon in your Odoo <i>addons_path</i>.</li>
+        <li>Update Apps list, search <b>ClinicOne: Base</b>.</li>
+        <li>Install. No top-level menu will be added.</li>
+      </ol>
+    </div>
+    <div class="oe_span4">
+      <h3>Configuration</h3>
+      <ul>
+        <li>Company Profile: logo, brand color, document footers</li>
+        <li>Sequences for shared objects (codes and references)</li>
+        <li>Default activity types &amp; mail templates</li>
+      </ul>
+    </div>
+    <div class="oe_span4">
+      <h3>Security</h3>
+      <ul>
+        <li>Groups: Clinic User, Clinic Manager, Clinic Admin</li>
+        <li>Record rules: company/branch domain isolation</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>Assets</h3>
+      <ul>
+        <li>SCSS: <i>clinic_base.scss</i> — color tokens &amp; badges</li>
+        <li>JS: <i>clinic_base_widgets.js</i> — small UX helpers</li>
+        <li>QWeb: <i>clinic_base_templates.xml</i> — shared snippets</li>
+      </ul>
+    </div>
+    <div class="oe_span6">
+      <h3>Performance Notes</h3>
+      <ul>
+        <li>No heavy computes; only lightweight helpers</li>
+        <li>Indexes on frequently filtered fields</li>
+        <li>Neutral in upgrade chains to minimize conflicts</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span6">
+      <h3>License</h3>
+      <p>Distributed under the <b>LGPL-3.0</b> license. See <i>LICENSE</i> file.</p>
+    </div>
+    <div class="oe_span6">
+      <h3>Support &amp; Contribution</h3>
+      <p>
+        Issues and enhancements are welcome. Please follow the ClinicOne contributing guide:
+        write tests, follow code style, and document migration impacts.
+      </p>
+    </div>
+  </div>
+</section>
+

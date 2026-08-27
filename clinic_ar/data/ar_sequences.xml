@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <record id="seq_clinic_ar_invoice" model="ir.sequence"><field name="name">Clinic AR Invoice</field><field name="code">clinic.ar.invoice</field><field name="prefix">AR/%(year)s/</field><field name="padding">6</field><field name="company_id" eval="False"/></record>
+  <record id="seq_clinic_ar_payment" model="ir.sequence"><field name="name">Clinic AR Receipt</field><field name="code">clinic.ar.payment</field><field name="prefix">ARP/%(year)s/</field><field name="padding">6</field><field name="company_id" eval="False"/></record>
+  <record id="seq_clinic_ar_allocation" model="ir.sequence"><field name="name">Clinic AR Allocation</field><field name="code">clinic.ar.allocation</field><field name="prefix">ARA/%(year)s/</field><field name="padding">6</field><field name="company_id" eval="False"/></record>
+  <record id="seq_clinic_ar_followup" model="ir.sequence"><field name="name">Clinic AR Follow-up</field><field name="code">clinic.ar.followup</field><field name="prefix">ARF/%(year)s/</field><field name="padding">6</field><field name="company_id" eval="False"/></record>
+  <record id="seq_clinic_ar_statement" model="ir.sequence"><field name="name">Clinic AR Statement</field><field name="code">clinic.ar.statement</field><field name="prefix">ARS/%(year)s/</field><field name="padding">6</field><field name="company_id" eval="False"/></record>
+</odoo>
+

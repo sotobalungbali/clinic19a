@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_analytics_insight_search" model="ir.ui.view">
+        <field name="name">clinic.analytics.insight.search</field>
+        <field name="model">clinic.analytics.insight</field>
+        <field name="arch" type="xml">
+            <search string="Analytics Insights">
+                <field name="title"/>
+                <field name="kpi_id"/>
+                <field name="owner_id"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <filter name="open" string="Open" domain="[('state','in',('new','acknowledged'))]"/>
+                <filter name="critical" string="Critical" domain="[('severity','=','critical')]"/>
+                <filter name="warning" string="Warning" domain="[('severity','=','warning')]"/>
+                <separator/>
+                <filter name="group_severity" string="Severity" context="{'group_by':'severity'}"/>
+                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                <filter name="group_source" string="Source" context="{'group_by':'source_type'}"/>
+                <filter name="group_owner" string="Owner" context="{'group_by':'owner_id'}"/>
+                <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_analytics_insight_list" model="ir.ui.view">
+        <field name="name">clinic.analytics.insight.list</field>
+        <field name="model">clinic.analytics.insight</field>
+        <field name="arch" type="xml">
+            <list default_order="severity desc,create_date desc"
+                  decoration-danger="severity == 'critical' and state not in ('resolved','dismissed')"
+                  decoration-warning="severity == 'warning' and state not in ('resolved','dismissed')"
+                  decoration-muted="state in ('resolved','dismissed')">
+                <field name="title"/>
+                <field name="branch_id"/>
+                <field name="source_type" widget="badge"/>
+                <field name="kpi_id" optional="show"/>
+                <field name="severity" widget="badge"/>
+                <field name="owner_id"/>
+                <field name="state" widget="badge"/>
+                <button name="action_open_source" type="object" string="Source" icon="fa-external-link"/>
+                <button name="action_acknowledge" type="object" string="Acknowledge" icon="fa-check"
+                        groups="clinic_analytics.group_analytics_analyst"
+                        invisible="state != 'new'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_analytics_insight_form" model="ir.ui.view">
+        <field name="name">clinic.analytics.insight.form</field>
+        <field name="model">clinic.analytics.insight</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_acknowledge" type="object" string="Acknowledge" class="btn-primary"
+                            groups="clinic_analytics.group_analytics_analyst"
+                            invisible="state != 'new'"/>
+                    <button name="action_resolve" type="object" string="Resolve" class="btn-primary"
+                            groups="clinic_analytics.group_analytics_analyst"
+                            invisible="state not in ('new','acknowledged')"/>
+                    <button name="action_dismiss" type="object" string="Dismiss"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state in ('resolved','dismissed')"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            groups="clinic_analytics.group_analytics_manager"
+                            invisible="state not in ('resolved','dismissed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,acknowledged,resolved,dismissed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_source" type="object" class="oe_stat_button" icon="fa-external-link">
+                            <div class="o_stat_info"><span class="o_stat_text">Source</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1><field name="title"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Signal">
+                            <field name="severity" widget="badge"/>
+                            <field name="source_type"/>
+                            <field name="kpi_id"/>
+                            <field name="owner_id"/>
+                        </group>
+                        <group string="Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="snapshot_id" invisible="source_type != 'snapshot'"/>
+                            <field name="snapshot_line_id" invisible="source_type != 'snapshot'"/>
+                            <field name="forecast_id" invisible="source_type != 'forecast'"/>
+                            <field name="cohort_id" invisible="source_type != 'cohort'"/>
+                        </group>
+                    </group>
+
+                    <group string="Decision Support">
+                        <field name="narrative"/>
+                        <field name="recommendation"/>
+                        <field name="resolution_note"/>
+                    </group>
+
+                    <group string="Workflow Evidence">
+                        <group>
+                            <field name="acknowledged_at"/>
+                            <field name="acknowledged_by_id"/>
+                        </group>
+                        <group>
+                            <field name="resolved_at"/>
+                            <field name="resolved_by_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_analytics_insight" model="ir.actions.act_window">
+        <field name="name">Actionable Insights</field>
+        <field name="res_model">clinic.analytics.insight</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_analytics_insight_search"/>
+    </record>
+</odoo>

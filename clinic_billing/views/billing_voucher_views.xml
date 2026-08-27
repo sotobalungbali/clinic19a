@@ -1,0 +1,245 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_clinic_billing_voucher_program_search" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.program.search</field>
+        <field name="model">clinic.billing.voucher.program</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="active"/>
+                <field name="voucher_type"/>
+                <field name="scope"/>
+                <field name="method"/>
+                <field name="percent"/>
+                <field name="amount"/>
+                <field name="base_type"/>
+                <group><filter string="Company" context="{'group_by':'company_id'}" name="group_company_id"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_voucher_program_list" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.program.list</field>
+        <field name="model">clinic.billing.voucher.program</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" optional="show"/>
+                <field name="active" optional="show"/>
+                <field name="voucher_type" optional="show"/>
+                <field name="scope" optional="show"/>
+                <field name="method" optional="show"/>
+                <field name="percent" optional="show"/>
+                <field name="amount" optional="show"/>
+                <field name="base_type" optional="show"/>
+                <field name="doctor_partner_id" optional="hide"/>
+                <field name="product_id" optional="hide"/>
+                <field name="product_category_id" optional="hide"/>
+                <field name="line_type" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_voucher_program_form" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.program.form</field>
+        <field name="model">clinic.billing.voucher.program</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_vouchers" type="object" string="Generate Vouchers"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                            <field name="voucher_type"/>
+                            <field name="scope"/>
+                            <field name="method"/>
+                            <field name="percent"/>
+                            <field name="amount"/>
+                            <field name="base_type"/>
+                            <field name="doctor_partner_id"/>
+                            <field name="product_id"/>
+                            <field name="product_category_id"/>
+                            <field name="line_type"/>
+                            <field name="branch_id"/>
+                            <field name="min_qty"/>
+                            <field name="min_subtotal"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="stackable"/>
+                            <field name="exclusive"/>
+                            <field name="max_discount_per_line"/>
+                            <field name="max_discount_per_invoice"/>
+                            <field name="code_prefix"/>
+                            <field name="code_length"/>
+                            <field name="usage_limit_global"/>
+                            <field name="usage_count_global"/>
+                            <field name="default_usage_limit_per_voucher"/>
+                            <field name="priority"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_voucher_program" model="ir.actions.act_window">
+        <field name="name">Program</field>
+        <field name="res_model">clinic.billing.voucher.program</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_voucher_program_search"/>
+    </record>
+
+    <record id="view_clinic_billing_voucher_search" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.search</field>
+        <field name="model">clinic.billing.voucher</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="program_id"/>
+                <field name="code"/>
+                <field name="state"/>
+                <field name="owner_partner_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="usage_limit"/>
+                <field name="usage_count"/>
+                <filter name="active_state" string="Active States" domain="[('state','not in',('cancelled','canceled','failed','ignored'))]"/>
+                <group><filter string="Status" context="{'group_by':'state'}" name="group_state"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_voucher_list" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.list</field>
+        <field name="model">clinic.billing.voucher</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('cancelled','canceled','ignored')">
+                <field name="program_id" optional="show"/>
+                <field name="code" optional="show"/>
+                <field name="state" optional="show"/>
+                <field name="owner_partner_id" optional="show"/>
+                <field name="date_start" optional="show"/>
+                <field name="date_end" optional="show"/>
+                <field name="usage_limit" optional="show"/>
+                <field name="usage_count" optional="show"/>
+                <field name="initial_balance_amount" optional="hide"/>
+                <field name="balance_amount" optional="hide"/>
+                <field name="reserved_amount" optional="hide"/>
+                <field name="reserved_invoice_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_voucher_form" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.form</field>
+        <field name="model">clinic.billing.voucher</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="program_id"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="program_id"/>
+                            <field name="code"/>
+                            <field name="state"/>
+                            <field name="owner_partner_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="usage_limit"/>
+                            <field name="usage_count"/>
+                        </group>
+                        <group>
+                            <field name="initial_balance_amount"/>
+                            <field name="balance_amount"/>
+                            <field name="reserved_amount"/>
+                            <field name="reserved_invoice_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_voucher" model="ir.actions.act_window">
+        <field name="name">Voucher</field>
+        <field name="res_model">clinic.billing.voucher</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_voucher_search"/>
+    </record>
+
+    <record id="view_clinic_billing_voucher_redemption_search" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.redemption.search</field>
+        <field name="model">clinic.billing.voucher.redemption</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="voucher_id"/>
+                <field name="program_id"/>
+                <field name="invoice_id"/>
+                <field name="line_id"/>
+                <field name="patient_id"/>
+                <field name="amount"/>
+                <field name="code_used"/>
+                <field name="date"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_voucher_redemption_list" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.redemption.list</field>
+        <field name="model">clinic.billing.voucher.redemption</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="voucher_id" optional="show"/>
+                <field name="program_id" optional="show"/>
+                <field name="invoice_id" optional="show"/>
+                <field name="line_id" optional="show"/>
+                <field name="patient_id" optional="show"/>
+                <field name="amount" optional="show"/>
+                <field name="currency_id" optional="show"/>
+                <field name="code_used" optional="show"/>
+                <field name="date" optional="hide"/>
+                <field name="note" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_voucher_redemption_form" model="ir.ui.view">
+        <field name="name">clinic.billing.voucher.redemption.form</field>
+        <field name="model">clinic.billing.voucher.redemption</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="voucher_id"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="voucher_id"/>
+                            <field name="program_id"/>
+                            <field name="invoice_id"/>
+                            <field name="line_id"/>
+                            <field name="patient_id"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="currency_id"/>
+                            <field name="code_used"/>
+                            <field name="date"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_voucher_redemption" model="ir.actions.act_window">
+        <field name="name">Redemption</field>
+        <field name="res_model">clinic.billing.voucher.redemption</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_voucher_redemption_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_feedback_survey_search" model="ir.ui.view">
+        <field name="name">clinic.feedback.survey.search</field>
+        <field name="model">clinic.feedback.survey</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="survey_type"/>
+                <field name="company_id"/>
+                <filter name="active_survey" string="Active" domain="[('state','=','active')]"/>
+                <filter name="patient_satisfaction" string="Patient Satisfaction" domain="[('survey_type','=','satisfaction')]"/>
+                <filter name="postcare" string="Post-Care" domain="[('survey_type','=','postcare')]"/>
+                <group>
+                    <filter name="group_type" string="Survey Type" context="{'group_by':'survey_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_survey_list" model="ir.ui.view">
+        <field name="name">clinic.feedback.survey.list</field>
+        <field name="model">clinic.feedback.survey</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="survey_type" widget="badge"/>
+                <field name="question_count"/>
+                <field name="request_count"/>
+                <field name="response_count"/>
+                <field name="default_request_expiry_days"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_feedback_survey_form" model="ir.ui.view">
+        <field name="name">clinic.feedback.survey.form</field>
+        <field name="model">clinic.feedback.survey</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="clinic_feedback.group_feedback_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_feedback.group_feedback_manager"
+                            invisible="state == 'archived'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_feedback.group_feedback_manager"
+                            invisible="state != 'archived'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_requests" type="object" class="oe_stat_button" icon="fa-paper-plane">
+                            <field name="request_count" widget="statinfo" string="Requests"/>
+                        </button>
+                        <button name="action_view_feedback" type="object" class="oe_stat_button" icon="fa-star">
+                            <field name="response_count" widget="statinfo" string="Responses"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Survey Identity">
+                            <field name="company_id" groups="base.group_multi_company" readonly="state == 'active'"/>
+                            <field name="branch_id"/>
+                            <field name="survey_type"/>
+                            <field name="title"/>
+                            <field name="default_request_expiry_days"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Core Questions">
+                            <field name="require_overall_rating"/>
+                            <field name="ask_nps"/>
+                            <field name="ask_recommendation"/>
+                            <field name="ask_comment"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Introduction &amp; Thank You">
+                            <group string="Introduction">
+                                <field name="introduction_html"/>
+                            </group>
+                            <group string="Thank You Message">
+                                <field name="thank_you_html"/>
+                            </group>
+                        </page>
+
+                        <page string="Survey Questions">
+                            <field name="question_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="question_type"/>
+                                    <field name="category"/>
+                                    <field name="required"/>
+                                    <field name="weight"/>
+                                    <field name="active"/>
+                                    <button name="action_open_survey" type="object" string="Survey" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_feedback_question_search" model="ir.ui.view">
+        <field name="name">clinic.feedback.question.search</field>
+        <field name="model">clinic.feedback.question</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="survey_id"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="question_type"/>
+                <field name="category"/>
+                <filter name="active_question" string="Active" domain="[('active','=',True)]"/>
+                <filter name="required" string="Required" domain="[('required','=',True)]"/>
+                <group>
+                    <filter name="group_survey" string="Survey" context="{'group_by':'survey_id'}"/>
+                    <filter name="group_type" string="Question Type" context="{'group_by':'question_type'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_feedback_question_list" model="ir.ui.view">
+        <field name="name">clinic.feedback.question.list</field>
+        <field name="model">clinic.feedback.question</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="survey_id"/>
+                <field name="sequence"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="question_type"/>
+                <field name="category"/>
+                <field name="required"/>
+                <field name="weight"/>
+                <field name="active"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_survey" type="object" string="Open Survey" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_feedback_question_form" model="ir.ui.view">
+        <field name="name">clinic.feedback.question.form</field>
+        <field name="model">clinic.feedback.question</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Question">
+                            <field name="survey_id"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="code"/>
+                            <field name="question_type"/>
+                            <field name="category"/>
+                            <field name="required"/>
+                            <field name="weight"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Patient Help">
+                            <field name="help_text"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2">
+                        <button name="action_open_survey" type="object" string="Open Survey" class="btn-secondary"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_feedback_survey" model="ir.actions.act_window">
+        <field name="name">Satisfaction Surveys</field>
+        <field name="res_model">clinic.feedback.survey</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_survey_search"/>
+    </record>
+
+    <record id="action_feedback_question" model="ir.actions.act_window">
+        <field name="name">Survey Questions</field>
+        <field name="res_model">clinic.feedback.question</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_feedback_question_search"/>
+    </record>
+</odoo>

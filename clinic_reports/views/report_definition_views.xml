@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_report_definition_search" model="ir.ui.view">
+        <field name="name">clinic.report.definition.search</field>
+        <field name="model">clinic.report.definition</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="family"/>
+                <field name="report_key"/>
+                <filter name="active_definition" string="Active" domain="[('state','=','active')]"/>
+                <filter name="financial" string="Financial" domain="[('family','=','financial')]"/>
+                <filter name="operational" string="Operational" domain="[('family','=','operational')]"/>
+                <filter name="clinical" string="Clinical" domain="[('family','=','clinical')]"/>
+                <group>
+                    <filter name="group_family" string="Family" context="{'group_by':'family'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_report_definition_list" model="ir.ui.view">
+        <field name="name">clinic.report.definition.list</field>
+        <field name="model">clinic.report.definition</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="family" widget="badge"/>
+                <field name="report_key"/>
+                <field name="run_count"/>
+                <field name="schedule_count"/>
+                <field name="default_detail_limit"/>
+                <field name="state" widget="badge"/>
+                <button name="action_generate_report" type="object" string="Generate" icon="fa-play"
+                        groups="clinic_reports.group_reports_analyst"
+                        invisible="state != 'active'"/>
+                <button name="action_view_runs" type="object" string="Runs" icon="fa-history"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_report_definition_form" model="ir.ui.view">
+        <field name="name">clinic.report.definition.form</field>
+        <field name="model">clinic.report.definition</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary"
+                            groups="clinic_reports.group_reports_manager"
+                            invisible="state != 'draft'"/>
+                    <button name="action_archive" type="object" string="Archive"
+                            groups="clinic_reports.group_reports_manager"
+                            invisible="state == 'archived'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_reports.group_reports_manager"
+                            invisible="state != 'archived'"/>
+                    <button name="action_generate_report" type="object" string="Generate Report" class="btn-primary"
+                            groups="clinic_reports.group_reports_analyst"
+                            invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_runs" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="run_count" widget="statinfo" string="Report Runs"/>
+                        </button>
+                        <button name="action_view_schedules" type="object" class="oe_stat_button" icon="fa-clock-o">
+                            <field name="schedule_count" widget="statinfo" string="Schedules"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+
+                    <group>
+                        <group string="Report Identity">
+                            <field name="family"/>
+                            <field name="report_key"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Default Generation Policy">
+                            <field name="include_details_by_default"/>
+                            <field name="default_detail_limit"/>
+                            <field name="allow_branch_filter"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_generate_report" type="object" string="Generate This Report" class="btn btn-primary"
+                                groups="clinic_reports.group_reports_analyst"
+                                invisible="state != 'active'"/>
+                        <button name="action_view_runs" type="object" string="Review Historical Runs" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Business Purpose">
+                            <field name="description"/>
+                        </page>
+                        <page string="Methodology / KPI Definition">
+                            <field name="methodology"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_report_definition" model="ir.actions.act_window">
+        <field name="name">Report Catalog</field>
+        <field name="res_model">clinic.report.definition</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_report_definition_search"/>
+    </record>
+</odoo>

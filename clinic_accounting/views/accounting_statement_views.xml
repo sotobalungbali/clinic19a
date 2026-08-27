@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_accounting_statement_search" model="ir.ui.view">
+        <field name="name">clinic.accounting.statement.search</field>
+        <field name="model">clinic.accounting.statement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="statement_type"/>
+                <field name="ledger_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="company_id"/>
+                <filter name="generated" string="Generated" domain="[('state', '=', 'generated')]"/>
+                <filter name="locked" string="Locked" domain="[('state', '=', 'locked')]"/>
+                <filter name="auto_generated" string="Auto Generated" domain="[('auto_generated', '=', True)]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_type" string="Statement Type" context="{'group_by': 'statement_type'}"/>
+                    <filter name="group_ledger" string="Ledger" context="{'group_by': 'ledger_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_month" string="End Month" context="{'group_by': 'date_to:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_accounting_statement_list" model="ir.ui.view">
+        <field name="name">clinic.accounting.statement.list</field>
+        <field name="model">clinic.accounting.statement</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'generated'" decoration-success="state == 'locked'">
+                <field name="name"/>
+                <field name="statement_type" widget="badge"/>
+                <field name="ledger_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="line_count"/>
+                <field name="total_debit" sum="Debit"/>
+                <field name="total_credit" sum="Credit"/>
+                <field name="total_balance" sum="Balance"/>
+                <field name="net_result" optional="show"/>
+                <field name="source_scope" optional="hide"/>
+                <field name="posted_only" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="auto_generated" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_accounting_statement_form" model="ir.ui.view">
+        <field name="name">clinic.accounting.statement.form</field>
+        <field name="model">clinic.accounting.statement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate" type="object" string="Generate / Refresh" class="btn-primary"
+                            invisible="state == 'locked'"/>
+                    <button name="action_lock" type="object" string="Lock Snapshot" class="btn-primary"
+                            groups="clinic_accounting.group_clinic_accounting_manager"
+                            invisible="state != 'generated'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            groups="clinic_accounting.group_clinic_accounting_accountant"
+                            invisible="state != 'generated'"/>
+                    <button name="action_print_statement" type="object" string="Print PDF"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated,locked"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_lines" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="line_count" widget="statinfo" string="Statement Lines"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Statement">
+                            <field name="statement_type" readonly="state != 'draft'"/>
+                            <field name="ledger_id" readonly="state != 'draft'"/>
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                            <field name="source_scope" readonly="state != 'draft'"/>
+                            <field name="posted_only" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Scope &amp; Generation">
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            <field name="generated_at" readonly="1"/>
+                            <field name="generated_by_id" readonly="1"/>
+                            <field name="auto_generated" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_view_journal_items" type="object" string="Open Source Journal Items" class="btn btn-secondary"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Statement Lines">
+                            <field name="line_ids" readonly="1">
+                                <list decoration-info="line_kind == 'move_line'">
+                                    <field name="sequence" optional="hide"/>
+                                    <field name="date" optional="show"/>
+                                    <field name="line_kind" widget="badge" optional="hide"/>
+                                    <field name="account_id" optional="show"/>
+                                    <field name="journal_id" optional="show"/>
+                                    <field name="source_type" widget="badge" optional="show"/>
+                                    <field name="partner_id" optional="hide"/>
+                                    <field name="label"/>
+                                    <field name="opening_balance" sum="Opening"/>
+                                    <field name="debit" sum="Debit"/>
+                                    <field name="credit" sum="Credit"/>
+                                    <field name="balance" sum="Balance"/>
+                                    <field name="running_balance" optional="show"/>
+                                    <field name="natural_balance" optional="show"/>
+                                    <field name="record_count" optional="show"/>
+                                    <button name="action_open_source" type="object" string="Open Source" icon="fa-external-link"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Filters">
+                            <group>
+                                <field name="journal_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+                                <field name="account_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+                                <field name="branch_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+
+                        <page string="Totals">
+                            <group>
+                                <field name="total_opening" readonly="1"/>
+                                <field name="total_debit" readonly="1"/>
+                                <field name="total_credit" readonly="1"/>
+                                <field name="total_balance" readonly="1"/>
+                                <field name="net_result" readonly="1" invisible="statement_type != 'profit_loss'"/>
+                            </group>
+                        </page>
+
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_accounting_statement_line_search" model="ir.ui.view">
+        <field name="name">clinic.accounting.statement.line.search</field>
+        <field name="model">clinic.accounting.statement.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="statement_id"/>
+                <field name="account_id"/>
+                <field name="journal_id"/>
+                <field name="source_type"/>
+                <field name="partner_id"/>
+                <field name="date"/>
+                <field name="label"/>
+                <group>
+                    <filter name="group_statement" string="Statement" context="{'group_by': 'statement_id'}"/>
+                    <filter name="group_account" string="Account" context="{'group_by': 'account_id'}"/>
+                    <filter name="group_journal" string="Journal" context="{'group_by': 'journal_id'}"/>
+                    <filter name="group_source" string="Clinic Source" context="{'group_by': 'source_type'}"/>
+                    <filter name="group_kind" string="Line Type" context="{'group_by': 'line_kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_accounting_statement_line_list" model="ir.ui.view">
+        <field name="name">clinic.accounting.statement.line.list</field>
+        <field name="model">clinic.accounting.statement.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="statement_id"/>
+                <field name="date"/>
+                <field name="line_kind" widget="badge"/>
+                <field name="account_id"/>
+                <field name="journal_id"/>
+                <field name="source_type" widget="badge"/>
+                <field name="label"/>
+                <field name="opening_balance" sum="Opening"/>
+                <field name="debit" sum="Debit"/>
+                <field name="credit" sum="Credit"/>
+                <field name="balance" sum="Balance"/>
+                <field name="running_balance"/>
+                <field name="natural_balance"/>
+                <field name="record_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_source" type="object" string="Open Source" icon="fa-external-link"/>
+                <button name="action_open_statement" type="object" string="Open Statement" icon="fa-folder-open"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_accounting_statement_line_form" model="ir.ui.view">
+        <field name="name">clinic.accounting.statement.line.form</field>
+        <field name="model">clinic.accounting.statement.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="statement_id" readonly="1"/>
+                        <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        <field name="line_kind" readonly="1"/>
+                        <field name="date" readonly="1"/>
+                        <field name="account_id" readonly="1"/>
+                        <field name="account_group" readonly="1"/>
+                        <field name="journal_id" readonly="1"/>
+                        <field name="move_id" readonly="1"/>
+                        <field name="move_line_id" readonly="1"/>
+                        <field name="source_type" readonly="1"/>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="label" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="opening_balance" readonly="1"/>
+                        <field name="debit" readonly="1"/>
+                        <field name="credit" readonly="1"/>
+                        <field name="balance" readonly="1"/>
+                        <field name="running_balance" readonly="1"/>
+                        <field name="natural_balance" readonly="1"/>
+                        <field name="record_count" readonly="1"/>
+                    </group>
+                    <div class="d-flex gap-2">
+                        <button name="action_open_source" type="object" string="Open Source" class="btn-primary"/>
+                        <button name="action_open_statement" type="object" string="Open Statement" class="btn-secondary"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_accounting_statement_pivot" model="ir.ui.view">
+        <field name="name">clinic.accounting.statement.pivot</field>
+        <field name="model">clinic.accounting.statement</field>
+        <field name="arch" type="xml">
+            <pivot string="Accounting Statement Analysis">
+                <field name="date_to" type="row" interval="month"/>
+                <field name="statement_type" type="col"/>
+                <field name="total_debit" type="measure"/>
+                <field name="total_credit" type="measure"/>
+                <field name="total_balance" type="measure"/>
+                <field name="net_result" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_accounting_statement_graph" model="ir.ui.view">
+        <field name="name">clinic.accounting.statement.graph</field>
+        <field name="model">clinic.accounting.statement</field>
+        <field name="arch" type="xml">
+            <graph string="Accounting Statement Trend" type="bar">
+                <field name="date_to" interval="month"/>
+                <field name="total_debit" type="measure"/>
+                <field name="total_credit" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_accounting_statement" model="ir.actions.act_window">
+        <field name="name">Accounting Statements</field>
+        <field name="res_model">clinic.accounting.statement</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_accounting_statement_search"/>
+    </record>
+
+    <record id="action_accounting_statement_line" model="ir.actions.act_window">
+        <field name="name">Statement Lines</field>
+        <field name="res_model">clinic.accounting.statement.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_accounting_statement_line_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,185 @@
+<odoo>
+  <record id="view_booking_feedback_link_search" model="ir.ui.view">
+    <field name="name">booking.feedback.link.search</field>
+    <field name="model">booking.feedback.link</field>
+    <field name="arch" type="xml">
+      <search string="Search Feedback Link">
+        <field name="name"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="treatment_id"/>
+        <field name="state"/>
+        <field name="channel_id"/>
+        <group>
+          <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_doctor_id" string="Doctor" context="{'group_by': 'doctor_id'}"/>
+          <filter name="group_by_patient_id" string="Patient" context="{'group_by': 'patient_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_feedback_link_list" model="ir.ui.view">
+    <field name="name">booking.feedback.link.list</field>
+    <field name="model">booking.feedback.link</field>
+    <field name="arch" type="xml">
+      <list string="Feedback Link">
+        <field name="name"/>
+        <field name="booking_id"/>
+        <field name="patient_id"/>
+        <field name="doctor_id"/>
+        <field name="treatment_id"/>
+        <field name="channel_id"/>
+        <field name="policy_id"/>
+        <field name="token"/>
+        <field name="access_path"/>
+        <field name="company_id"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_feedback_link_form" model="ir.ui.view">
+    <field name="name">booking.feedback.link.form</field>
+    <field name="model">booking.feedback.link</field>
+    <field name="arch" type="xml">
+      <form string="Feedback Link">
+        <header>
+          <button name="action_generate_link" type="object" string="Generate Link" class="btn-primary" invisible="state != 'draft'"/>
+          <button name="action_send_invitation" type="object" string="Send Invitation" class="btn-primary" invisible="state in ('submitted', 'expired', 'revoked')"/>
+          <button name="action_send_reminder" type="object" string="Send Reminder" invisible="state not in ('sent', 'opened')"/>
+          <button name="action_open_public" type="object" string="Open Public Link" invisible="not access_url"/>
+          <button name="action_revoke" type="object" string="Revoke" invisible="state in ('submitted', 'expired', 'revoked')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,queued,sent,opened,submitted,expired,revoked"/>
+        </header>
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="booking_id"/>
+              <field name="company_id"/>
+              <field name="patient_id"/>
+              <field name="doctor_id"/>
+              <field name="treatment_id"/>
+              <field name="channel_id"/>
+              <field name="policy_id"/>
+              <field name="token"/>
+              <field name="access_path"/>
+              <field name="access_url"/>
+              <field name="allow_anonymous_update"/>
+            </group>
+            <group>
+              <field name="sent_at"/>
+              <field name="opened_at"/>
+              <field name="submitted_at"/>
+              <field name="expiration_days"/>
+              <field name="expire_at"/>
+              <field name="is_expired"/>
+              <field name="reminder_count"/>
+              <field name="last_reminder_at"/>
+              <field name="mail_template_id"/>
+              <field name="last_mail_id"/>
+              <field name="rating_value"/>
+              <field name="would_recommend"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Tag">
+              <field name="tag_ids"/>
+            </page>
+            <page string="Notes &amp; Details">
+              <field name="comment"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="view_booking_line_search" model="ir.ui.view">
+    <field name="name">booking.line.search</field>
+    <field name="model">booking.line</field>
+    <field name="arch" type="xml">
+      <search string="Search Line">
+        <field name="patient_id"/>
+        <field name="treatment_id"/>
+        <field name="state"/>
+        <field name="booking_id"/>
+        <field name="company_id"/>
+        <field name="currency_id"/>
+        <group>
+          <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
+          <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
+          <filter name="group_by_patient_id" string="Patient" context="{'group_by': 'patient_id'}"/>
+          <filter name="group_by_booking_id" string="Booking" context="{'group_by': 'booking_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="view_booking_line_list" model="ir.ui.view">
+    <field name="name">booking.line.list</field>
+    <field name="model">booking.line</field>
+    <field name="arch" type="xml">
+      <list string="Line">
+        <field name="booking_id"/>
+        <field name="state"/>
+        <field name="patient_id"/>
+        <field name="sequence"/>
+        <field name="display_type"/>
+        <field name="is_display_type"/>
+        <field name="tag_ids"/>
+        <field name="product_id"/>
+        <field name="treatment_id"/>
+        <field name="company_id"/>
+        <button name="action_view_booking" type="object" string="Open Booking"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_booking_line_form" model="ir.ui.view">
+    <field name="name">booking.line.form</field>
+    <field name="model">booking.line</field>
+    <field name="arch" type="xml">
+      <form string="Line">
+        <sheet>
+          <group>
+            <group>
+              <field name="booking_id"/>
+              <field name="company_id"/>
+              <field name="currency_id"/>
+              <field name="state"/>
+              <field name="patient_id"/>
+              <field name="sequence"/>
+              <field name="display_type"/>
+              <field name="is_display_type"/>
+              <field name="product_id"/>
+            </group>
+            <group>
+              <field name="treatment_id"/>
+              <field name="product_uom"/>
+              <field name="product_uom_qty"/>
+              <field name="price_unit"/>
+              <field name="discount"/>
+              <field name="price_subtotal"/>
+              <field name="price_tax"/>
+              <field name="price_total"/>
+              <field name="analytic_account_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Tag">
+              <field name="tag_ids"/>
+            </page>
+            <page string="Resource">
+              <field name="resource_ids"/>
+            </page>
+            <page string="Tax">
+              <field name="tax_ids"/>
+            </page>
+            <page string="Notes &amp; Details">
+              <field name="name"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+</odoo>

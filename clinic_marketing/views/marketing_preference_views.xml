@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_marketing_preference_search" model="ir.ui.view">
+        <field name="name">clinic.marketing.preference.search</field>
+        <field name="model">clinic.marketing.preference</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <filter name="dnc" string="Do Not Contact" domain="[('do_not_contact','=',True)]"/>
+                <filter name="email_in" string="Email Opt-In" domain="[('email_consent','=','opt_in')]"/>
+                <filter name="email_out" string="Email Opt-Out" domain="[('email_consent','=','opt_out')]"/>
+                <filter name="wa_in" string="WhatsApp Opt-In" domain="[('whatsapp_consent','=','opt_in')]"/>
+                <filter name="wa_out" string="WhatsApp Opt-Out" domain="[('whatsapp_consent','=','opt_out')]"/>
+                <group>
+                    <filter name="group_email" string="Email Consent" context="{'group_by':'email_consent'}"/>
+                    <filter name="group_wa" string="WhatsApp Consent" context="{'group_by':'whatsapp_consent'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_marketing_preference_list" model="ir.ui.view">
+        <field name="name">clinic.marketing.preference.list</field>
+        <field name="model">clinic.marketing.preference</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="do_not_contact"
+                  decoration-success="email_consent == 'opt_in' or whatsapp_consent == 'opt_in'">
+                <field name="partner_id"/>
+                <field name="patient_id"/>
+                <field name="branch_id"/>
+                <field name="email_consent" widget="badge"/>
+                <field name="whatsapp_consent" widget="badge"/>
+                <field name="do_not_contact"/>
+                <field name="consent_source"/>
+                <field name="consent_updated_at"/>
+                <field name="campaign_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_patient" type="object" string="Patient" icon="fa-user-md"/>
+                <button name="action_open_campaigns" type="object" string="Campaigns" icon="fa-bullhorn"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_marketing_preference_form" model="ir.ui.view">
+        <field name="name">clinic.marketing.preference.form</field>
+        <field name="model">clinic.marketing.preference</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_patient" type="object" class="oe_stat_button" icon="fa-user-md">
+                            <div class="o_stat_info"><span class="o_stat_text">Patient</span></div>
+                        </button>
+                        <button name="action_open_campaigns" type="object" class="oe_stat_button" icon="fa-bullhorn">
+                            <field name="campaign_count" widget="statinfo" string="Campaigns"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert" invisible="not do_not_contact">
+                        Do Not Contact is active. This patient is excluded from all ClinicOne marketing channels.
+                    </div>
+
+                    <group>
+                        <group string="Patient">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="partner_id"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="branch_id" readonly="1"/>
+                        </group>
+                        <group string="Consent Evidence">
+                            <field name="consent_source"/>
+                            <field name="consent_updated_at" readonly="1"/>
+                            <field name="consent_updated_by_id" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+
+                    <group string="Marketing Channel Permission">
+                        <group>
+                            <field name="email_consent"/>
+                            <div class="d-flex gap-2">
+                                <button name="action_opt_in_email" type="object" string="Email Opt-In" class="btn btn-success"
+                                        groups="clinic_marketing.group_marketing_coordinator"/>
+                                <button name="action_opt_out_email" type="object" string="Email Opt-Out" class="btn btn-secondary"
+                                        groups="clinic_marketing.group_marketing_coordinator"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="whatsapp_consent"/>
+                            <div class="d-flex gap-2">
+                                <button name="action_opt_in_whatsapp" type="object" string="WhatsApp Opt-In" class="btn btn-success"
+                                        groups="clinic_marketing.group_marketing_coordinator"/>
+                                <button name="action_opt_out_whatsapp" type="object" string="WhatsApp Opt-Out" class="btn btn-secondary"
+                                        groups="clinic_marketing.group_marketing_coordinator"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_do_not_contact" type="object" string="Set Do Not Contact" class="btn btn-danger"
+                                groups="clinic_marketing.group_marketing_coordinator"
+                                invisible="do_not_contact"/>
+                        <button name="action_allow_contact" type="object" string="Clear Do Not Contact" class="btn btn-secondary"
+                                groups="clinic_marketing.group_marketing_coordinator"
+                                invisible="not do_not_contact"/>
+                    </div>
+
+                    <field name="consent_note" placeholder="Record the source/context of the patient's communication preference..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_marketing_preference" model="ir.actions.act_window">
+        <field name="name">Marketing Preferences</field>
+        <field name="res_model">clinic.marketing.preference</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_marketing_preference_search"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+</odoo>
+

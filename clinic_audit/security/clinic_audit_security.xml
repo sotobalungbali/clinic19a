@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_audit_user" model="res.groups">
+        <field name="name">Clinic Audit User</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="group_audit_manager" model="res.groups">
+        <field name="name">Clinic Audit Manager</field>
+        <field name="implied_ids" eval="[(4, ref('clinic_audit.group_audit_user'))]"/>
+    </record>
+
+    <!-- GLOBAL rules deliberately intersect any wider historical group rules. -->
+    <record id="rule_audit_event_global_scope" model="ir.rule">
+        <field name="name">Audit Events: company and allowed branch</field>
+        <field name="model_id" ref="model_clinic_audit_event"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids), '|', ('branch_id', '=', False), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_audit_event_line_global_scope" model="ir.rule">
+        <field name="name">Audit Event Lines: company and allowed branch</field>
+        <field name="model_id" ref="model_clinic_audit_event_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids), '|', ('branch_id', '=', False), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_audit_policy_global_scope" model="ir.rule">
+        <field name="name">Audit Policies: company and allowed branch</field>
+        <field name="model_id" ref="model_clinic_audit_policy"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['&amp;', '|', ('company_id', '=', False), ('company_id', 'in', company_ids), '|', ('branch_id', '=', False), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_audit_review_global_scope" model="ir.rule">
+        <field name="name">Audit Reviews: company and allowed branch</field>
+        <field name="model_id" ref="model_clinic_audit_review"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids), '|', ('branch_id', '=', False), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_audit_review_line_global_scope" model="ir.rule">
+        <field name="name">Audit Review Lines: company and allowed branch</field>
+        <field name="model_id" ref="model_clinic_audit_review_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids), '|', ('branch_id', '=', False), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_audit_verification_global_scope" model="ir.rule">
+        <field name="name">Audit Verification: company and allowed branch</field>
+        <field name="model_id" ref="model_clinic_audit_verification"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids), '|', ('branch_id', '=', False), ('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+    </record>
+    <record id="rule_audit_legacy_line_global_scope" model="ir.rule">
+        <field name="name">Legacy Audit Lines: company scope</field>
+        <field name="model_id" ref="model_clinic_audit_log_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Assignment is an additional restriction for ordinary auditors. -->
+    <record id="rule_audit_review_user_assignment" model="ir.rule">
+        <field name="name">Audit Reviews: assigned auditor</field>
+        <field name="model_id" ref="model_clinic_audit_review"/>
+        <field name="groups" eval="[(4, ref('clinic_audit.group_audit_user'))]"/>
+        <field name="domain_force">['|', '|', ('owner_id', '=', user.id), ('reviewer_id', '=', user.id), ('assignee_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_audit_review_manager_assignment" model="ir.rule">
+        <field name="name">Audit Reviews Manager: all allowed scope</field>
+        <field name="model_id" ref="model_clinic_audit_review"/>
+        <field name="groups" eval="[(4, ref('clinic_audit.group_audit_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

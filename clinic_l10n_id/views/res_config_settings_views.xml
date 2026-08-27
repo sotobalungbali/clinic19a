@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_clinic_l10n_id_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Indonesia Localization Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_l10n_id', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_clinic_l10n_id" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.l10n.id</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Indonesia Localization"
+                     name="clinic_l10n_id"
+                     groups="clinic_l10n_id.group_clinic_l10n_id_manager">
+                    <block title="Indonesia Tax Governance"
+                           help="ClinicOne governance layered on top of Odoo's native Indonesian localization and Coretax modules.">
+                        <setting string="Clinic Indonesia Tax Profile">
+                            <field name="clinic_l10n_id_profile_id" options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Prior-Month PPN Report"
+                                 help="Generate a PPN snapshot on the first day of each month using the active Tax Profile.">
+                            <field name="clinic_l10n_id_auto_monthly_tax_report"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

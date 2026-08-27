@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_accounting_ledger_search" model="ir.ui.view">
+        <field name="name">clinic.accounting.ledger.search</field>
+        <field name="model">clinic.accounting.ledger</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="ledger_type"/>
+                <field name="source_scope"/>
+                <field name="company_id"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="clinic_only" string="ClinicOne Sources" domain="[('source_scope', '=', 'clinic_only')]"/>
+                <group>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_type" string="Ledger Type" context="{'group_by': 'ledger_type'}"/>
+                    <filter name="group_source" string="Source Scope" context="{'group_by': 'source_scope'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_accounting_ledger_list" model="ir.ui.view">
+        <field name="name">clinic.accounting.ledger.list</field>
+        <field name="model">clinic.accounting.ledger</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="ledger_type" widget="badge"/>
+                <field name="source_scope"/>
+                <field name="posted_only"/>
+                <field name="default_statement_type"/>
+                <field name="entry_count"/>
+                <field name="statement_count"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_accounting_ledger_form" model="ir.ui.view">
+        <field name="name">clinic.accounting.ledger.form</field>
+        <field name="model">clinic.accounting.ledger</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_entries" type="object" class="oe_stat_button" icon="fa-book">
+                            <field name="entry_count" widget="statinfo" string="Entries"/>
+                        </button>
+                        <button name="action_view_statements" type="object" class="oe_stat_button" icon="fa-bar-chart">
+                            <field name="statement_count" widget="statinfo" string="Statements"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div><field name="code" class="oe_inline"/></div>
+                    </div>
+                    <group>
+                        <group string="Ledger Identity">
+                            <field name="ledger_type"/>
+                            <field name="source_scope"/>
+                            <field name="posted_only"/>
+                            <field name="default_statement_type"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Company &amp; Branch Scope">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <div class="d-flex gap-2 my-3">
+                        <button name="action_new_statement" type="object" string="New Statement" class="btn btn-primary"/>
+                        <button name="action_view_entries" type="object" string="Open Journal Entries" class="btn btn-secondary"/>
+                        <button name="action_view_statements" type="object" string="Open Statements" class="btn btn-secondary"/>
+                    </div>
+                    <notebook>
+                        <page string="Journals">
+                            <field name="journal_ids">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Accounts">
+                            <field name="account_ids">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="account_type"/>
+                                    <field name="reconcile"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_accounting_ledger" model="ir.actions.act_window">
+        <field name="name">Accounting Ledgers</field>
+        <field name="res_model">clinic.accounting.ledger</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_accounting_ledger_search"/>
+    </record>
+</odoo>

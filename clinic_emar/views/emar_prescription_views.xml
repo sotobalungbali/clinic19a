@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_emar_prescription_search" model="ir.ui.view">
+        <field name="name">clinic.emar.prescription.search</field><field name="model">clinic.emar.prescription</field>
+        <field name="arch" type="xml"><search string="Prescriptions">
+            <field name="name"/><field name="patient_id"/><field name="doctor_id"/><field name="encounter_id"/><field name="booking_id"/>
+            <filter name="active_rx" string="Active" domain="[('state','=','active')]"/><filter name="draft_rx" string="Draft" domain="[('state','=','draft')]"/>
+            <filter name="safety_block" string="Safety Blocked" domain="[('safety_state','=','block')]"/><filter name="urgent" string="Urgent / STAT" domain="[('priority','in',('urgent','stat'))]"/>
+            <separator/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_doctor" string="Doctor" context="{'group_by':'doctor_id'}"/><filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+        </search></field>
+    </record>
+    <record id="view_emar_prescription_list" model="ir.ui.view">
+        <field name="name">clinic.emar.prescription.list</field><field name="model">clinic.emar.prescription</field>
+        <field name="arch" type="xml"><list string="Prescriptions" decoration-danger="safety_state == 'block'" decoration-warning="safety_state == 'warning'" decoration-muted="state in ('expired','cancelled')">
+            <field name="name"/><field name="date_prescribed"/><field name="patient_id"/><field name="doctor_id"/><field name="priority" widget="badge"/><field name="rx_type" optional="show"/>
+            <field name="safety_state" widget="badge"/><field name="prescriber_check_state" widget="badge" optional="show"/><field name="order_count" optional="hide"/><field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company" optional="hide"/>
+        </list></field>
+    </record>
+    <record id="view_emar_prescription_form" model="ir.ui.view">
+        <field name="name">clinic.emar.prescription.form</field><field name="model">clinic.emar.prescription</field>
+        <field name="arch" type="xml"><form string="Electronic Prescription">
+            <header>
+                <button name="action_run_patient_safety_checks" type="object" string="Run Safety Check" class="btn-secondary" invisible="state != 'draft'"/>
+                <button name="action_run_prescriber_checks" type="object" string="Check Prescriber" class="btn-secondary" invisible="state != 'draft'"/>
+                <button name="action_cosign" type="object" string="Co-sign" class="btn-secondary" invisible="state != 'draft' or not cosign_required or cosigned_by_id" groups="clinic_emar.group_emar_prescriber"/>
+                <button name="action_digital_sign" type="object" string="Attest / Sign" class="btn-secondary" invisible="state not in ('draft','validated')" groups="clinic_emar.group_emar_prescriber"/>
+                <button name="action_validate" type="object" string="Validate" class="btn-primary" invisible="state != 'draft'" groups="clinic_emar.group_emar_prescriber"/>
+                <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'validated'" groups="clinic_emar.group_emar_prescriber"/>
+                <button name="action_generate_order" type="object" string="Generate eMAR Order" class="btn-primary" invisible="state not in ('validated','active')" groups="clinic_emar.group_emar_prescriber"/>
+                <button name="action_create_invoice" type="object" string="Prepare Invoice" class="btn-secondary" invisible="state not in ('validated','active')" groups="clinic_emar.group_emar_manager"/>
+                <button name="action_cancel" type="object" string="Cancel" invisible="state in ('cancelled','expired')" groups="clinic_emar.group_emar_prescriber"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,validated,active,expired,cancelled"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-list-alt"><field name="order_count" widget="statinfo" string="Orders"/></button>
+                    <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-money"><field name="invoice_count" widget="statinfo" string="Invoices"/></button>
+                </div>
+                <widget name="web_ribbon" text="SAFETY BLOCKED" bg_color="text-bg-danger" invisible="safety_state != 'block'"/>
+                <div class="oe_title"><label for="name"/><h1><field name="name" readonly="1"/></h1></div>
+                <group><group string="Clinical Source"><field name="patient_id"/><field name="doctor_id"/><field name="encounter_id"/><field name="booking_id"/><field name="appointment_id"/><field name="treatment_id"/></group><group string="Prescription"><field name="rx_type"/><field name="prescription_type"/><field name="priority"/><field name="is_emergency"/><field name="diagnosis"/><field name="diagnosis_notes"/><field name="date_prescribed"/><field name="expires_on" readonly="1"/></group></group>
+                <notebook>
+                    <page string="Medication Plan" name="medications"><field name="line_ids" context="{'default_company_id': company_id}"><list editable="bottom"><field name="sequence" widget="handle"/><field name="product_id"/><field name="dosage" optional="show"/><field name="dose"/><field name="dose_uom_id"/><field name="route"/><field name="frequency"/><field name="quantity"/><field name="product_uom_id"/><field name="duration_count" optional="show"/><field name="duration_unit" optional="show"/><field name="is_prn" optional="hide"/><field name="is_substitutable" optional="hide"/><button name="action_open_medication_profile" type="object" icon="fa-external-link" title="Open Medication Profile"/></list></field></page>
+                    <page string="Safety &amp; Governance"><group><group string="Patient Safety"><field name="safety_state" widget="badge"/><field name="safety_checked"/><field name="safety_checked_on"/><field name="safety_checked_by_id"/><field name="allergy_flag"/><field name="dose_flag"/><field name="high_alert_flag"/></group><group string="Prescriber Governance"><field name="prescriber_check_state" widget="badge"/><field name="cosign_required"/><field name="cosigned_by_id"/><field name="cosigned_on"/><field name="signed_by_id"/><field name="signed_on"/></group></group><group><field name="safety_warnings" readonly="1"/><field name="prescriber_check_note" readonly="1"/></group></page>
+                    <page string="Instructions"><group><field name="instructions"/><field name="contraindications"/><field name="counseling_notes"/></group></page>
+                    <page string="Validity &amp; Refills"><group><group><field name="date_start"/><field name="date_end"/><field name="valid_days"/></group><group><field name="repeat_allowed"/><field name="repeat_total" invisible="not repeat_allowed"/><field name="repeat_used" readonly="1" invisible="not repeat_allowed"/><field name="refill_interval_days" invisible="not repeat_allowed"/></group></group></page>
+                    <page string="Billing"><group><group><field name="partner_id"/><field name="payer_partner_id"/><field name="pricelist_id"/></group><group><field name="company_id" groups="base.group_multi_company"/><field name="currency_id" invisible="1"/></group></group></page>
+                    <page string="Notes"><field name="notes"/></page>
+                </notebook>
+            </sheet><chatter/>
+        </form></field>
+    </record>
+    <record id="action_emar_prescriptions" model="ir.actions.act_window"><field name="name">Prescriptions</field><field name="res_model">clinic.emar.prescription</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_emar_prescription_search"/></record>
+</odoo>

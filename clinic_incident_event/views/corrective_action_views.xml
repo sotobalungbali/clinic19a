@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_incident_action_search" model="ir.ui.view">
+        <field name="name">clinic.incident.action.search</field>
+        <field name="model">clinic.incident.action</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="action_type"/>
+                <field name="owner_user_id"/>
+                <field name="owner_staff_id"/>
+                <field name="effectiveness_result"/>
+                <field name="company_id"/>
+                <filter name="open" string="Open"
+                        domain="[('state','in',('planned','in_progress'))]"/>
+                <filter name="done" string="Done / Pending Verification"
+                        domain="[('state','=','done')]"/>
+                <filter name="verified" string="Verified"
+                        domain="[('state','=','verified')]"/>
+                <filter name="due" string="Due Date" date="due_at"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_type" string="Action Type" context="{'group_by':'action_type'}"/>
+                    <filter name="group_owner" string="Owner" context="{'group_by':'owner_user_id'}"/>
+                    <filter name="group_staff" string="Responsible Staff" context="{'group_by':'owner_staff_id'}"/>
+                    <filter name="group_effectiveness" string="Effectiveness" context="{'group_by':'effectiveness_result'}"/>
+                    <filter name="group_month" string="Due Month" context="{'group_by':'due_at:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_incident_action_list" model="ir.ui.view">
+        <field name="name">clinic.incident.action.list</field>
+        <field name="model">clinic.incident.action</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_overdue"
+                  decoration-warning="state == 'done'"
+                  decoration-success="state == 'verified'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="due_at"/>
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="action_type" widget="badge"/>
+                <field name="priority" widget="priority"/>
+                <field name="owner_user_id"/>
+                <field name="owner_staff_id"/>
+                <field name="is_overdue"/>
+                <field name="effectiveness_result" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_start" type="object" string="Start" icon="fa-play"
+                        groups="clinic_incident_event.group_incident_investigator"
+                        invisible="state != 'planned'"/>
+                <button name="action_mark_done" type="object" string="Done" icon="fa-check"
+                        groups="clinic_incident_event.group_incident_investigator"
+                        invisible="state not in ('planned','in_progress')"/>
+                <button name="action_verify_effective" type="object" string="Verify" icon="fa-check-circle"
+                        groups="clinic_incident_event.group_incident_manager"
+                        invisible="state != 'done'"/>
+                <button name="action_open_incident" type="object" string="Incident" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_incident_action_kanban" model="ir.ui.view">
+        <field name="name">clinic.incident.action.kanban</field>
+        <field name="model">clinic.incident.action</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="action_type"/>
+                <field name="owner_user_id"/>
+                <field name="due_at"/>
+                <field name="priority"/>
+                <field name="is_overdue"/>
+                <field name="effectiveness_result"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between gap-2">
+                                <strong><field name="name"/></strong>
+                                <field name="priority" widget="priority"/>
+                            </div>
+                            <div class="small text-muted mt-1">
+                                <field name="incident_id"/>
+                            </div>
+                            <div class="mt-2">
+                                <field name="action_type" widget="badge"/>
+                                <span t-if="is_overdue" class="badge text-bg-danger ms-1">Overdue</span>
+                            </div>
+                            <div class="small text-muted mt-2">
+                                Owner: <field name="owner_user_id"/>
+                            </div>
+                            <div class="small text-muted">
+                                Due: <field name="due_at"/>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button name="action_start" type="object"
+                                        class="btn btn-secondary btn-sm"
+                                        groups="clinic_incident_event.group_incident_investigator"
+                                        invisible="state != 'planned'">Start</button>
+                                <button name="action_mark_done" type="object"
+                                        class="btn btn-primary btn-sm"
+                                        groups="clinic_incident_event.group_incident_investigator"
+                                        invisible="state not in ('planned','in_progress')">Done</button>
+                                <button name="action_verify_effective" type="object"
+                                        class="btn btn-primary btn-sm"
+                                        groups="clinic_incident_event.group_incident_manager"
+                                        invisible="state != 'done'">Verify</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_incident_action_pivot" model="ir.ui.view">
+        <field name="name">clinic.incident.action.pivot</field>
+        <field name="model">clinic.incident.action</field>
+        <field name="arch" type="xml">
+            <pivot string="CAPA Analysis">
+                <field name="due_at" type="row" interval="month"/>
+                <field name="action_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_incident_action_graph" model="ir.ui.view">
+        <field name="name">clinic.incident.action.graph</field>
+        <field name="model">clinic.incident.action</field>
+        <field name="arch" type="xml">
+            <graph string="CAPA Trend" type="bar">
+                <field name="due_at" interval="month"/>
+                <field name="state"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_incident_action_form" model="ir.ui.view">
+        <field name="name">clinic.incident.action.form</field>
+        <field name="model">clinic.incident.action</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Start CAPA" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state != 'planned'"/>
+                    <button name="action_mark_done" type="object" string="Mark Done" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_investigator"
+                            invisible="state not in ('planned','in_progress')"/>
+                    <button name="action_verify_effective" type="object" string="Verify Effective" class="btn-primary"
+                            groups="clinic_incident_event.group_incident_manager"
+                            invisible="state != 'done'"/>
+                    <button name="action_verify_partial" type="object" string="Verify Partial"
+                            groups="clinic_incident_event.group_incident_manager"
+                            invisible="state != 'done'"/>
+                    <button name="action_verify_ineffective" type="object" string="Verify Ineffective"
+                            groups="clinic_incident_event.group_incident_manager"
+                            invisible="state != 'done'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            groups="clinic_incident_event.group_incident_manager"
+                            invisible="state in ('verified','cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="planned,in_progress,done,verified,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_incident" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <div class="o_stat_info"><span class="o_stat_text">Incident</span></div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="state in ('verified','cancelled')"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not is_overdue">
+                        This CAPA is overdue.
+                    </div>
+
+                    <group>
+                        <group string="Action">
+                            <field name="incident_id" readonly="state in ('verified','cancelled')"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                            <field name="branch_id" readonly="1"/>
+                            <field name="action_type" readonly="state in ('verified','cancelled')"/>
+                            <field name="priority" widget="priority" readonly="state in ('verified','cancelled')"/>
+                        </group>
+                        <group string="Ownership &amp; Due Date">
+                            <field name="owner_user_id" readonly="state in ('verified','cancelled')"/>
+                            <field name="owner_staff_id" readonly="state in ('verified','cancelled')"/>
+                            <field name="due_at" readonly="state in ('verified','cancelled')"/>
+                            <field name="started_at" readonly="1"/>
+                            <field name="done_at" readonly="1"/>
+                            <field name="verified_at" readonly="1"/>
+                            <field name="verified_by_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Execution Evidence">
+                        <field name="description" readonly="state in ('verified','cancelled')"/>
+                        <field name="completion_note" readonly="state in ('verified','cancelled')"/>
+                        <field name="evidence_attachment_ids" widget="many2many_binary"
+                               readonly="state in ('verified','cancelled')"/>
+                    </group>
+
+                    <group string="Effectiveness Verification"
+                           invisible="state not in ('done','verified')">
+                        <field name="effectiveness_result" readonly="1"/>
+                        <field name="effectiveness_note"
+                               readonly="state != 'done'"
+                               placeholder="Manager verification evidence before choosing a verification result..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_incident_action" model="ir.actions.act_window">
+        <field name="name">Corrective / Preventive Actions</field>
+        <field name="res_model">clinic.incident.action</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_incident_action_search"/>
+    </record>
+</odoo>

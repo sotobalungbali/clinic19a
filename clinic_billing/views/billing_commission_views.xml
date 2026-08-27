@@ -1,0 +1,245 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_clinic_billing_commission_rule_search" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.rule.search</field>
+        <field name="model">clinic.billing.commission.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="active"/>
+                <field name="doctor_partner_id"/>
+                <field name="product_id"/>
+                <field name="product_category_id"/>
+                <field name="line_type"/>
+                <field name="min_base_amount"/>
+                <field name="percent"/>
+                <group><filter string="Company" context="{'group_by':'company_id'}" name="group_company_id"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_commission_rule_list" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.rule.list</field>
+        <field name="model">clinic.billing.commission.rule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" optional="show"/>
+                <field name="active" optional="show"/>
+                <field name="doctor_partner_id" optional="show"/>
+                <field name="product_id" optional="show"/>
+                <field name="product_category_id" optional="show"/>
+                <field name="line_type" optional="show"/>
+                <field name="min_base_amount" optional="show"/>
+                <field name="percent" optional="show"/>
+                <field name="fix_amount" optional="hide"/>
+                <field name="priority" optional="hide"/>
+                <field name="date_start" optional="hide"/>
+                <field name="date_end" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_commission_rule_form" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.rule.form</field>
+        <field name="model">clinic.billing.commission.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                            <field name="doctor_partner_id"/>
+                            <field name="product_id"/>
+                            <field name="product_category_id"/>
+                            <field name="line_type"/>
+                            <field name="min_base_amount"/>
+                            <field name="percent"/>
+                        </group>
+                        <group>
+                            <field name="fix_amount"/>
+                            <field name="priority"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_commission_rule" model="ir.actions.act_window">
+        <field name="name">Rule</field>
+        <field name="res_model">clinic.billing.commission.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_commission_rule_search"/>
+    </record>
+
+    <record id="view_clinic_billing_commission_line_search" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.line.search</field>
+        <field name="model">clinic.billing.commission.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="invoice_id"/>
+                <field name="billing_line_id"/>
+                <field name="provider_partner_id"/>
+                <field name="provider_user_id"/>
+                <field name="base_amount"/>
+                <field name="base_type"/>
+                <field name="percent"/>
+                <field name="fixed_amount"/>
+                <filter name="active_state" string="Active States" domain="[('state','not in',('cancelled','canceled','failed','ignored'))]"/>
+                <group><filter string="Status" context="{'group_by':'state'}" name="group_state"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_commission_line_list" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.line.list</field>
+        <field name="model">clinic.billing.commission.line</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('cancelled','canceled','ignored')">
+                <field name="invoice_id" optional="show"/>
+                <field name="billing_line_id" optional="show"/>
+                <field name="provider_partner_id" optional="show"/>
+                <field name="provider_user_id" optional="show"/>
+                <field name="base_amount" optional="show"/>
+                <field name="base_type" optional="show"/>
+                <field name="percent" optional="show"/>
+                <field name="fixed_amount" optional="show"/>
+                <field name="amount_commission" optional="hide"/>
+                <field name="state" optional="hide"/>
+                <field name="settlement_id" optional="hide"/>
+                <field name="line_type" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_commission_line_form" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.line.form</field>
+        <field name="model">clinic.billing.commission.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="invoice_id"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="invoice_id"/>
+                            <field name="billing_line_id"/>
+                            <field name="provider_partner_id"/>
+                            <field name="provider_user_id"/>
+                            <field name="base_amount"/>
+                            <field name="base_type"/>
+                            <field name="percent"/>
+                            <field name="fixed_amount"/>
+                        </group>
+                        <group>
+                            <field name="amount_commission"/>
+                            <field name="state"/>
+                            <field name="settlement_id"/>
+                            <field name="line_type"/>
+                            <field name="product_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_commission_line" model="ir.actions.act_window">
+        <field name="name">Line</field>
+        <field name="res_model">clinic.billing.commission.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_commission_line_search"/>
+    </record>
+
+    <record id="view_clinic_billing_commission_settlement_search" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.settlement.search</field>
+        <field name="model">clinic.billing.commission.settlement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="provider_partner_id"/>
+                <field name="provider_user_id"/>
+                <field name="date"/>
+                <field name="state"/>
+                <field name="amount_total"/>
+                <field name="journal_id"/>
+                <field name="expense_account_id"/>
+                <filter name="active_state" string="Active States" domain="[('state','not in',('cancelled','canceled','failed','ignored'))]"/>
+                <group><filter string="Status" context="{'group_by':'state'}" name="group_state"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_clinic_billing_commission_settlement_list" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.settlement.list</field>
+        <field name="model">clinic.billing.commission.settlement</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('cancelled','canceled','ignored')">
+                <field name="name" optional="show"/>
+                <field name="provider_partner_id" optional="show"/>
+                <field name="provider_user_id" optional="show"/>
+                <field name="date" optional="show"/>
+                <field name="state" optional="show"/>
+                <field name="amount_total" optional="show"/>
+                <field name="journal_id" optional="show"/>
+                <field name="expense_account_id" optional="show"/>
+                <field name="payable_account_id" optional="hide"/>
+                <field name="move_id" optional="hide"/>
+                <field name="payment_id" optional="hide"/>
+                <field name="company_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_clinic_billing_commission_settlement_form" model="ir.ui.view">
+        <field name="name">clinic.billing.commission.settlement.form</field>
+        <field name="model">clinic.billing.commission.settlement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_collect_lines" type="object" string="Collect Lines"/>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                    <button name="action_create_journal_entry" type="object" string="Create Journal Entry"/>
+                    <button name="action_register_payment" type="object" string="Register Payment"/>
+                    <button name="action_cancel" type="object" string="Cancel"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="provider_partner_id"/>
+                            <field name="provider_user_id"/>
+                            <field name="date"/>
+                            <field name="state"/>
+                            <field name="amount_total"/>
+                            <field name="journal_id"/>
+                        </group>
+                        <group>
+                            <field name="expense_account_id"/>
+                            <field name="payable_account_id"/>
+                            <field name="move_id"/>
+                            <field name="payment_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_clinic_billing_commission_settlement" model="ir.actions.act_window">
+        <field name="name">Settlement</field>
+        <field name="res_model">clinic.billing.commission.settlement</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinic_billing_commission_settlement_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_postcare_settings" model="ir.actions.act_window">
+        <field name="name">Clinic Post-Care Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'clinic_post_care_followup', 'bin_size': False}</field>
+    </record>
+
+    <record id="res_config_settings_view_form_postcare" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.clinic.postcare</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Post-Care"
+                     name="clinic_post_care_followup"
+                     groups="clinic_post_care_followup.group_postcare_manager">
+                    <block title="Post-Care Defaults">
+                        <setting string="Default Post-Care Protocol">
+                            <field name="clinic_postcare_default_protocol_id" options="{'no_create_edit': True}"/>
+                        </setting>
+                        <setting string="Default Post-Care Staff">
+                            <field name="clinic_postcare_default_assignee_id"/>
+                        </setting>
+                        <setting string="Pain Attention Threshold"
+                                 help="Operational attention signal only; not a diagnosis.">
+                            <field name="clinic_postcare_pain_red_flag_threshold"/>
+                        </setting>
+                    </block>
+
+                    <block title="Automation">
+                        <setting string="Auto-Create from Completed Encounters">
+                            <field name="clinic_postcare_auto_create_from_encounter"/>
+                        </setting>
+                        <setting string="Auto-Creation Lookback">
+                            <field name="clinic_postcare_auto_create_lookback_days"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

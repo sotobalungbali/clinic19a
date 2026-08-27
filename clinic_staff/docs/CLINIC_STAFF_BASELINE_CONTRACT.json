@@ -1,0 +1,840 @@
+{
+  "contract_id": "CLINIC_STAFF_ENTERPRISE_BASELINE_V1",
+  "addon": "clinic_staff",
+  "functional_status": "FINISHED",
+  "change_policy": "TECHNICAL_HARDENING_ONLY",
+  "odoo_target": "19.0 CE",
+  "backup_rule": "Files whose filename begins with digit 0 are user backup files and are excluded from active-source review/gates.",
+  "manifest": {
+    "version": "19.0.1.0.0",
+    "depends": [
+      "base",
+      "mail",
+      "contacts",
+      "hr",
+      "account",
+      "product",
+      "clinic_base",
+      "clinic_branch",
+      "clinic_audit"
+    ],
+    "data": [
+      "views/views.xml",
+      "views/templates.xml"
+    ],
+    "demo": [
+      "demo/demo.xml"
+    ]
+  },
+  "source_files": [
+    "__init__.py",
+    "__manifest__.py",
+    "controllers/__init__.py",
+    "controllers/controllers.py",
+    "demo/demo.xml",
+    "models/__init__.py",
+    "models/models.py",
+    "models/practitioner.py",
+    "models/res_partner_inherit.py",
+    "models/staff.py",
+    "models/staff_assignment.py",
+    "models/staff_availability.py",
+    "models/staff_kpi.py",
+    "models/staff_license.py",
+    "models/staff_presence.py",
+    "models/staff_roster.py",
+    "models/staff_skill.py",
+    "models/staff_workload.py",
+    "security/ir.model.access.csv",
+    "static/description/index.html",
+    "views/templates.xml",
+    "views/views.xml"
+  ],
+  "models": {
+    "clinic.practitioner": {
+      "file": "models/practitioner.py",
+      "class": "ClinicPractitioner",
+      "fields": [
+        "active",
+        "assignment_count",
+        "availability_count",
+        "branch_id",
+        "code",
+        "company_id",
+        "compliance_notes",
+        "display_name",
+        "employee_id",
+        "experience_years",
+        "grade",
+        "image_1920",
+        "is_license_compliant",
+        "is_ready_for_assignment",
+        "language_skills",
+        "license_count",
+        "license_valid_until",
+        "name",
+        "next_available_from",
+        "notes",
+        "partner_id",
+        "role",
+        "roster_count",
+        "skill_ids",
+        "specialty",
+        "staff_id"
+      ],
+      "methods": [
+        "_check_staff_role_practitioner",
+        "_compute_compliance",
+        "_compute_counts",
+        "_compute_display_name",
+        "_compute_employee_partner_role",
+        "_compute_readiness",
+        "action_open_staff",
+        "action_view_assignments",
+        "action_view_availability",
+        "action_view_licenses",
+        "action_view_roster",
+        "create",
+        "ensure_license_compliant",
+        "is_available_at",
+        "name_get",
+        "name_search",
+        "write"
+      ],
+      "constraints": [
+        "_code_company_uniq",
+        "_exp_non_negative",
+        "_staff_company_uniq"
+      ]
+    },
+    "clinic.staff": {
+      "file": "models/staff.py",
+      "class": "ClinicStaff",
+      "fields": [
+        "assignment_count",
+        "assignment_ids",
+        "availability_ids",
+        "branch_id",
+        "can_be_scheduled",
+        "company_id",
+        "display_name",
+        "employment_status",
+        "grade",
+        "hire_date",
+        "image_1920",
+        "incident_count",
+        "is_active",
+        "kpi_count",
+        "kpi_ids",
+        "license_count",
+        "license_ids",
+        "name",
+        "partner_id",
+        "postcare_task_count",
+        "role",
+        "roster_count",
+        "roster_ids",
+        "skill_ids",
+        "staff_code",
+        "telemed_thread_count",
+        "termination_date"
+      ],
+      "methods": [
+        "_check_dates",
+        "_compute_can_be_scheduled",
+        "_compute_counts",
+        "_compute_display_name",
+        "_get_role_label",
+        "action_open_assignments",
+        "action_open_incidents",
+        "action_open_kpis",
+        "action_open_licenses",
+        "action_open_postcare_tasks",
+        "action_open_rosters",
+        "action_open_telemedicine_threads",
+        "create",
+        "ensure_clinical_eligibility",
+        "toggle_active_operational",
+        "write"
+      ],
+      "constraints": [
+        "_staff_code_unique"
+      ]
+    },
+    "clinic.staff.assignment": {
+      "file": "models/staff_assignment.py",
+      "class": "ClinicStaffAssignment",
+      "fields": [
+        "active",
+        "actual_minutes",
+        "actual_start",
+        "actual_stop",
+        "allow_overlap",
+        "assignment_type",
+        "color",
+        "company_id",
+        "conflict_blocking_availability",
+        "conflict_other_assignments",
+        "display_name",
+        "effort_hours",
+        "has_active_license",
+        "is_skill_compliant",
+        "license_required",
+        "name",
+        "notes",
+        "planned_minutes",
+        "priority",
+        "reference",
+        "required_skill_ids",
+        "roster_id",
+        "sla_deadline",
+        "sla_met",
+        "sla_target",
+        "staff_id",
+        "start",
+        "state",
+        "stop",
+        "within_roster"
+      ],
+      "methods": [
+        "_availability_conflict",
+        "_check_actual_window",
+        "_check_overlap_other_assignments",
+        "_check_planned_window",
+        "_compute_compliance",
+        "_compute_conflicts",
+        "_compute_display_name",
+        "_compute_durations",
+        "_compute_license_flags",
+        "_compute_sla_met",
+        "_compute_within_roster",
+        "_get_staff_active_license",
+        "_overlap_domain",
+        "action_cancel",
+        "action_close",
+        "action_confirm",
+        "action_done",
+        "action_pause",
+        "action_start",
+        "create",
+        "name_get",
+        "reassign_to",
+        "write"
+      ],
+      "constraints": [
+        "_assignment_reference_unique",
+        "_check_start_before_stop"
+      ]
+    },
+    "clinic.staff.availability": {
+      "file": "models/staff_availability.py",
+      "class": "ClinicStaffAvailability",
+      "fields": [
+        "active",
+        "availability_type",
+        "color",
+        "company_id",
+        "display_name",
+        "duration_hours",
+        "interval",
+        "is_blocking",
+        "name",
+        "next_occurrence_start",
+        "notes",
+        "recur_count",
+        "recur_end_type",
+        "recur_until",
+        "recurrency",
+        "rrule_type",
+        "staff_id",
+        "start",
+        "stop",
+        "w_fri",
+        "w_mon",
+        "w_sat",
+        "w_sun",
+        "w_thu",
+        "w_tue",
+        "w_wed"
+      ],
+      "methods": [
+        "_check_datetime_order",
+        "_compute_display_name",
+        "_compute_duration_hours",
+        "_compute_is_blocking",
+        "_compute_next_occurrence",
+        "_iter_occurrences",
+        "_weekly_days_selected",
+        "action_expand_next_8_weeks",
+        "action_open_assignment_conflicts",
+        "action_open_occurrences",
+        "action_open_roster_conflicts",
+        "create",
+        "expand_occurrences",
+        "name_get",
+        "write"
+      ],
+      "constraints": [
+        "_check_start_before_stop"
+      ]
+    },
+    "clinic.staff.availability.occurrence": {
+      "file": "models/staff_availability.py",
+      "class": "ClinicStaffAvailabilityOccurrence",
+      "fields": [
+        "availability_id",
+        "availability_type",
+        "branch_id",
+        "color",
+        "company_id",
+        "display_name",
+        "duration_hours",
+        "is_blocking",
+        "name",
+        "staff_id",
+        "start",
+        "state",
+        "stop"
+      ],
+      "methods": [
+        "_check_overlap_blocking",
+        "_compute_display_name",
+        "_compute_duration_hours",
+        "action_cancel",
+        "action_mark_applied",
+        "action_open_assignment_conflicts",
+        "action_open_roster_conflicts",
+        "name_get"
+      ],
+      "constraints": [
+        "_check_start_before_stop"
+      ]
+    },
+    "clinic.kpi.definition": {
+      "file": "models/staff_kpi.py",
+      "class": "ClinicKPIDefinition",
+      "fields": [
+        "active",
+        "aggregation",
+        "category",
+        "code",
+        "company_id",
+        "description",
+        "metric_type",
+        "name",
+        "sequence",
+        "unit"
+      ],
+      "methods": [
+        "create"
+      ],
+      "constraints": [
+        "_kpi_def_code_unique",
+        "_kpi_def_name_company_unique"
+      ]
+    },
+    "clinic.staff.kpi": {
+      "file": "models/staff_kpi.py",
+      "class": "ClinicStaffKPI",
+      "fields": [
+        "assignments_count",
+        "company_id",
+        "date_from",
+        "date_to",
+        "display_name",
+        "feedback_avg_score",
+        "incidents_count",
+        "incidents_rate_per_100_assign",
+        "line_ids",
+        "notes",
+        "on_time_assignments_pct",
+        "period_type",
+        "postcare_on_time_pct",
+        "procedure_avg_duration_min",
+        "procedures_count",
+        "roster_fulfillment_pct",
+        "shift_cancellations",
+        "shift_swaps",
+        "staff_id",
+        "telemed_first_response_avg_min",
+        "telemed_threads",
+        "utilization_actual_pct",
+        "utilization_planned_pct"
+      ],
+      "methods": [
+        "_add_line",
+        "_aggregate_from_assignments",
+        "_aggregate_from_roster",
+        "_aggregate_from_workload",
+        "_compute_display_name",
+        "_dt_range",
+        "action_open_assignments",
+        "action_open_lines",
+        "action_open_rosters",
+        "action_recompute",
+        "recompute_snapshot"
+      ],
+      "constraints": [
+        "_date_order_valid",
+        "_unique_staff_period"
+      ]
+    },
+    "clinic.staff.kpi.line": {
+      "file": "models/staff_kpi.py",
+      "class": "ClinicStaffKPILine",
+      "fields": [
+        "company_id",
+        "definition_id",
+        "kpi_id",
+        "note",
+        "source_ref",
+        "unit",
+        "value_float",
+        "value_int"
+      ],
+      "methods": [
+        "action_open_source"
+      ],
+      "constraints": []
+    },
+    "clinic.license.type": {
+      "file": "models/staff_license.py",
+      "class": "ClinicLicenseType",
+      "fields": [
+        "applicable_to_doctor",
+        "applicable_to_nurse",
+        "applicable_to_therapist",
+        "code",
+        "company_id",
+        "description",
+        "is_active",
+        "name",
+        "renewal_notice_days",
+        "requires_attachment",
+        "requires_country",
+        "requires_issuer",
+        "requires_number",
+        "sequence",
+        "staff_license_ids",
+        "validity_months"
+      ],
+      "methods": [
+        "create"
+      ],
+      "constraints": [
+        "_license_type_code_unique",
+        "_license_type_name_company_unique"
+      ]
+    },
+    "clinic.staff.license": {
+      "file": "models/staff_license.py",
+      "class": "ClinicStaffLicense",
+      "fields": [
+        "active",
+        "attachment_count",
+        "attachment_ids",
+        "city",
+        "company_id",
+        "country_id",
+        "days_to_expiry",
+        "display_name",
+        "expiry_date",
+        "is_expiring_window",
+        "issue_date",
+        "issuer",
+        "issuer_partner_id",
+        "license_type_id",
+        "notes",
+        "number",
+        "reference",
+        "staff_id",
+        "state",
+        "state_id",
+        "verification_url",
+        "verified",
+        "verified_by",
+        "verified_on"
+      ],
+      "methods": [
+        "_check_dates",
+        "_compute_attachment_count",
+        "_compute_dates_flags",
+        "_compute_display_name",
+        "_maybe_schedule_expiry_activity",
+        "_onchange_dates_by_type",
+        "_recompute_state_by_dates",
+        "_today",
+        "_validate_required_by_type",
+        "action_activate",
+        "action_archive",
+        "action_mark_verified",
+        "action_open_attachments",
+        "action_open_renewal_wizard",
+        "action_set_draft",
+        "action_suspend",
+        "contributes_to_staff_eligibility",
+        "create",
+        "is_currently_valid",
+        "name_get",
+        "write"
+      ],
+      "constraints": [
+        "_license_number_unique_per_company"
+      ]
+    },
+    "clinic.staff.presence": {
+      "file": "models/staff_presence.py",
+      "class": "ClinicStaffPresence",
+      "fields": [
+        "active",
+        "assignment_id",
+        "company_id",
+        "current_session_id",
+        "display_name",
+        "last_action_on",
+        "last_check_in",
+        "last_check_out",
+        "last_device",
+        "last_ip",
+        "last_latitude",
+        "last_longitude",
+        "last_source",
+        "notes",
+        "roster_id",
+        "staff_id",
+        "state",
+        "today_break_hours",
+        "today_early_leave_minutes",
+        "today_late_minutes",
+        "today_net_hours",
+        "today_total_hours"
+      ],
+      "methods": [
+        "_compute_display_name",
+        "_compute_today_metrics",
+        "_find_current_assignment",
+        "_find_current_roster",
+        "_update_current_links",
+        "action_clock_in",
+        "action_clock_out",
+        "action_end_break",
+        "action_open_sessions",
+        "action_start_break"
+      ],
+      "constraints": [
+        "_presence_staff_unique"
+      ]
+    },
+    "clinic.staff.presence.session": {
+      "file": "models/staff_presence.py",
+      "class": "ClinicStaffPresenceSession",
+      "fields": [
+        "assignment_id",
+        "break_line_ids",
+        "break_minutes",
+        "company_id",
+        "device_info",
+        "display_name",
+        "duration_minutes",
+        "inside_roster_window",
+        "ip_address",
+        "late_by_minutes",
+        "latitude",
+        "left_early_by_minutes",
+        "longitude",
+        "net_minutes",
+        "notes",
+        "presence_id",
+        "reference",
+        "roster_id",
+        "source",
+        "staff_id",
+        "start",
+        "state",
+        "stop"
+      ],
+      "methods": [
+        "_break_minutes_between",
+        "_check_overlap_sessions",
+        "_compute_display_name",
+        "_compute_durations",
+        "_compute_roster_metrics",
+        "_find_overlapping_roster",
+        "action_clock_out",
+        "action_end_break",
+        "action_start_break",
+        "create",
+        "name_get"
+      ],
+      "constraints": [
+        "_check_start_before_stop"
+      ]
+    },
+    "clinic.staff.presence.break": {
+      "file": "models/staff_presence.py",
+      "class": "ClinicStaffPresenceBreak",
+      "fields": [
+        "duration_minutes",
+        "notes",
+        "reason",
+        "session_id",
+        "staff_id",
+        "start",
+        "stop"
+      ],
+      "methods": [
+        "_check_break_inside_session",
+        "_compute_duration",
+        "action_open_session"
+      ],
+      "constraints": [
+        "_check_start_before_stop"
+      ]
+    },
+    "clinic.shift.template": {
+      "file": "models/staff_roster.py",
+      "class": "ClinicShiftTemplate",
+      "fields": [
+        "active_fri",
+        "active_mon",
+        "active_sat",
+        "active_sun",
+        "active_thu",
+        "active_tue",
+        "active_wed",
+        "code",
+        "color",
+        "company_id",
+        "duration_hours",
+        "is_active",
+        "name",
+        "role_applicability",
+        "sequence",
+        "start_time"
+      ],
+      "methods": [
+        "_is_active_weekday",
+        "create"
+      ],
+      "constraints": [
+        "_shift_template_code_unique",
+        "_shift_template_name_company_unique"
+      ]
+    },
+    "clinic.staff.roster": {
+      "file": "models/staff_roster.py",
+      "class": "ClinicStaffRoster",
+      "fields": [
+        "active",
+        "assignment_ids",
+        "availability_occurrence_id",
+        "branch_id",
+        "color",
+        "company_id",
+        "display_name",
+        "duration_hours",
+        "name",
+        "notes",
+        "published_by",
+        "published_on",
+        "role",
+        "staff_id",
+        "start",
+        "state",
+        "stop",
+        "template_id"
+      ],
+      "methods": [
+        "_check_overlap_basic",
+        "_compute_display_name",
+        "_compute_duration_hours",
+        "_ensure_no_blocking_availability",
+        "_float_hour_to_daytime",
+        "_overlap_domain",
+        "_staff_is_eligible",
+        "action_cancel",
+        "action_complete",
+        "action_publish",
+        "action_reopen",
+        "action_start",
+        "generate_from_template",
+        "name_get"
+      ],
+      "constraints": [
+        "_check_start_before_stop"
+      ]
+    },
+    "clinic.skill": {
+      "file": "models/staff_skill.py",
+      "class": "ClinicSkill",
+      "fields": [
+        "applicable_to_doctor",
+        "applicable_to_nurse",
+        "applicable_to_therapist",
+        "category",
+        "code",
+        "company_id",
+        "description",
+        "is_active",
+        "minimum_grade",
+        "name",
+        "requires_license",
+        "staff_skill_ids"
+      ],
+      "methods": [
+        "create"
+      ],
+      "constraints": [
+        "_skill_code_unique",
+        "_skill_name_company_unique"
+      ]
+    },
+    "clinic.staff.skill": {
+      "file": "models/staff_skill.py",
+      "class": "ClinicStaffSkill",
+      "fields": [
+        "assessor_id",
+        "company_id",
+        "display_name",
+        "evidence_attachment_ids",
+        "is_compliant",
+        "is_within_validity_window",
+        "last_assessed_date",
+        "level",
+        "minimum_grade",
+        "notes",
+        "requires_license",
+        "skill_id",
+        "staff_id",
+        "state",
+        "valid_from",
+        "valid_to"
+      ],
+      "methods": [
+        "_check_validity_range",
+        "_compute_compliance",
+        "_compute_display_name",
+        "_compute_validity",
+        "_staff_grade_meets_minimum",
+        "_today",
+        "action_open_evidence",
+        "create",
+        "eligible_for_role_routing",
+        "is_eligible_for_procedure",
+        "write"
+      ],
+      "constraints": [
+        "_staff_skill_unique"
+      ]
+    },
+    "clinic.workload.policy": {
+      "file": "models/staff_workload.py",
+      "class": "ClinicWorkloadPolicy",
+      "fields": [
+        "active",
+        "branch_id",
+        "buffer_percent",
+        "code",
+        "company_id",
+        "date_end",
+        "date_start",
+        "grade_scope",
+        "include_overtime",
+        "name",
+        "role_scope",
+        "sequence",
+        "warn_over_util_pct",
+        "warn_under_util_pct",
+        "weekly_capacity_hours"
+      ],
+      "methods": [
+        "create",
+        "is_applicable"
+      ],
+      "constraints": [
+        "_workload_policy_code_unique"
+      ]
+    },
+    "clinic.staff.workload": {
+      "file": "models/staff_workload.py",
+      "class": "ClinicStaffWorkload",
+      "fields": [
+        "actual_hours",
+        "branch_id",
+        "capacity_hours",
+        "company_id",
+        "date_from",
+        "date_to",
+        "display_name",
+        "leave_hours",
+        "line_ids",
+        "notes",
+        "over_utilized",
+        "overtime_hours",
+        "period_type",
+        "planned_hours",
+        "policy_id",
+        "staff_id",
+        "under_utilized",
+        "utilization_actual",
+        "utilization_planned"
+      ],
+      "methods": [
+        "_compute_capacity_hours",
+        "_compute_display_name",
+        "_compute_utilization_and_flags",
+        "_gather_source_minutes",
+        "_generate_detail_lines",
+        "_pick_applicable_policy",
+        "action_open_assignments",
+        "action_open_availability",
+        "action_open_lines",
+        "action_open_rosters",
+        "action_recompute",
+        "name_get",
+        "recompute_workload"
+      ],
+      "constraints": [
+        "_date_order_valid",
+        "_unique_period_per_staff"
+      ]
+    },
+    "clinic.staff.workload.line": {
+      "file": "models/staff_workload.py",
+      "class": "ClinicStaffWorkloadLine",
+      "fields": [
+        "branch_id",
+        "company_id",
+        "hours",
+        "minutes",
+        "note",
+        "source_ref",
+        "source_type",
+        "start",
+        "state",
+        "stop",
+        "workload_id"
+      ],
+      "methods": [
+        "_compute_hours",
+        "action_open_source"
+      ],
+      "constraints": []
+    }
+  },
+  "hard_counts": {
+    "persistent_source_models": 20,
+    "models_constraint_objects": 27,
+    "legacy_sql_constraint_assignments": 0
+  },
+  "codex": {
+    "role": "LIMITED_IMPLEMENTATION_WORKER",
+    "max_repair_attempts": 3,
+    "forbidden_roles": [
+      "ARCHITECT",
+      "SIMPLIFIER",
+      "AUTONOMOUS_SCOPE_EXPANDER",
+      "UNBOUNDED_RETRY_ENGINE"
+    ]
+  }
+}

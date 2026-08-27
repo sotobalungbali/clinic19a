@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_l10n_id_tax_profile_search" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.profile.search</field>
+    <field name="model">clinic.l10n.id.tax.profile</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="company_id"/><field name="npwp"/><field name="state"/>
+      <filter name="active" string="Active" domain="[('state','=','active')]"/>
+      <filter name="attention" string="Needs Attention" domain="[('readiness_state','!=','ready')]"/>
+      <group>
+        <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+        <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+        <filter name="group_readiness" string="Readiness" context="{'group_by':'readiness_state'}"/>
+      </group>
+    </search></field>
+  </record>
+
+  <record id="view_l10n_id_tax_profile_list" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.profile.list</field>
+    <field name="model">clinic.l10n.id.tax.profile</field>
+    <field name="arch" type="xml"><list decoration-success="readiness_state == 'ready'" decoration-warning="readiness_state == 'attention'" decoration-danger="readiness_state == 'critical'">
+      <field name="name"/><field name="company_id" groups="base.group_multi_company"/><field name="npwp"/>
+      <field name="is_pkp"/><field name="readiness_score"/><field name="readiness_state" widget="badge"/>
+      <field name="tax_report_count"/><field name="compliance_count"/><field name="numbering_policy_count"/>
+      <field name="state" widget="badge"/>
+    </list></field>
+  </record>
+
+  <record id="view_l10n_id_tax_profile_form" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.tax.profile.form</field>
+    <field name="model">clinic.l10n.id.tax.profile</field>
+    <field name="arch" type="xml"><form>
+      <header>
+        <button name="action_load_native_taxes" type="object" string="Load Native Indonesian Taxes" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state == 'active'"/>
+        <button name="action_validate" type="object" string="Validate" class="btn-primary" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state != 'draft'"/>
+        <button name="action_activate" type="object" string="Activate" class="btn-primary" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state != 'validated'"/>
+        <button name="action_archive" type="object" string="Archive" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state == 'archived'"/>
+        <button name="action_reset_to_draft" type="object" string="Reset to Draft" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state not in ('validated','archived')"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,validated,active,archived"/>
+      </header>
+      <sheet>
+        <div class="oe_button_box" name="button_box">
+          <button name="action_view_tax_reports" type="object" class="oe_stat_button" icon="fa-table"><field name="tax_report_count" widget="statinfo" string="PPN Reports"/></button>
+          <button name="action_view_compliance" type="object" class="oe_stat_button" icon="fa-check-square-o"><field name="compliance_count" widget="statinfo" string="Compliance"/></button>
+          <button name="action_view_numbering_policies" type="object" class="oe_stat_button" icon="fa-sort-numeric-asc"><field name="numbering_policy_count" widget="statinfo" string="Numbering"/></button>
+          <button name="action_view_coretax_documents" type="object" class="oe_stat_button" icon="fa-file-code-o"><field name="coretax_document_count" widget="statinfo" string="Coretax"/></button>
+        </div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <div class="alert alert-success" role="alert" invisible="readiness_state != 'ready'"><field name="readiness_note" readonly="1"/></div>
+        <div class="alert alert-warning" role="alert" invisible="readiness_state == 'ready'"><field name="readiness_note" readonly="1"/></div>
+        <group>
+          <group string="Company Indonesia Identity">
+            <field name="company_id" groups="base.group_multi_company" readonly="state == 'active'"/>
+            <field name="country_id" readonly="1"/><field name="fiscal_country_id" readonly="1"/>
+            <field name="npwp" readonly="1"/><field name="is_pkp" readonly="1"/><field name="tku" readonly="1"/>
+          </group>
+          <group string="Readiness">
+            <field name="readiness_score" readonly="1"/><field name="readiness_state" widget="badge" readonly="1"/>
+            <field name="default_source_scope"/><field name="require_company_npwp"/>
+            <field name="require_partner_tax_identity"/><field name="require_product_efaktur_code"/>
+            <field name="require_uom_efaktur_code"/><field name="require_numbering_policy"/>
+          </group>
+        </group>
+        <div class="d-flex gap-2 my-3">
+          <button name="action_new_tax_report" type="object" string="New PPN Report" class="btn btn-primary"/>
+          <button name="action_run_compliance" type="object" string="Run Compliance" class="btn btn-secondary"/>
+          <button name="action_view_native_taxes" type="object" string="Open Native Taxes" class="btn btn-secondary"/>
+        </div>
+        <notebook>
+          <page string="PPN Tax Scope">
+            <group>
+              <field name="ppn_sale_tax_ids" widget="many2many_tags" readonly="state == 'active'"/>
+              <field name="ppn_purchase_tax_ids" widget="many2many_tags" readonly="state == 'active'"/>
+            </group>
+          </page>
+          <page string="Journal Scope"><field name="report_journal_ids" widget="many2many_tags"/></page>
+          <page string="Notes"><field name="notes"/></page>
+        </notebook>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+
+  <record id="action_l10n_id_tax_profile" model="ir.actions.act_window">
+    <field name="name">Indonesia Tax Profiles</field><field name="res_model">clinic.l10n.id.tax.profile</field>
+    <field name="view_mode">list,form</field><field name="search_view_id" ref="view_l10n_id_tax_profile_search"/>
+  </record>
+</odoo>
+

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_emar_administration_search" model="ir.ui.view">
+        <field name="name">clinic.emar.administration.search</field><field name="model">clinic.emar.administration</field>
+        <field name="arch" type="xml"><search string="Medication Administrations"><field name="name"/><field name="patient_id"/><field name="doctor_id"/><field name="product_id"/><field name="order_id"/><field name="schedule_id"/><field name="administered_by_user_id"/>
+            <filter name="open" string="Open" domain="[('state','in',('draft','confirmed','in_progress'))]"/><filter name="done" string="Completed" domain="[('state','=','done')]"/><filter name="verification_failed" string="Verification Failed" domain="[('verification_state','=','failed')]"/><filter name="adverse" string="Adverse Event" domain="[('adverse_event','=',True)]"/>
+            <separator/><filter name="group_state" string="Status" context="{'group_by':'state'}"/><filter name="group_product" string="Medication" context="{'group_by':'product_id'}"/><filter name="group_patient" string="Patient" context="{'group_by':'patient_id'}"/><filter name="group_day" string="Administration Day" context="{'group_by':'administered_datetime:day'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+        </search></field>
+    </record>
+    <record id="view_emar_administration_list" model="ir.ui.view"><field name="name">clinic.emar.administration.list</field><field name="model">clinic.emar.administration</field><field name="arch" type="xml"><list string="Medication Administrations" decoration-success="state == 'done'" decoration-danger="verification_state == 'failed' or adverse_event" decoration-warning="verification_state == 'warning'">
+        <field name="name"/><field name="administered_datetime"/><field name="patient_id"/><field name="product_id"/><field name="administered_qty"/><field name="dose_uom_id"/><field name="inventory_qty" optional="show"/><field name="inventory_uom_id" optional="show"/><field name="lot_id" optional="show"/><field name="administered_by_user_id" optional="show"/><field name="verification_state" widget="badge"/><field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company" optional="hide"/>
+    </list></field></record>
+    <record id="view_emar_administration_form" model="ir.ui.view"><field name="name">clinic.emar.administration.form</field><field name="model">clinic.emar.administration</field><field name="arch" type="xml"><form string="Medication Administration Record">
+        <header>
+            <button name="action_verify_administration" type="object" string="Verify 5 Rights / Safety" class="btn-secondary" invisible="state in ('done','cancelled')" groups="clinic_emar.group_emar_nurse"/>
+            <button name="action_confirm" type="object" string="Confirm" class="btn-primary" invisible="state != 'draft'" groups="clinic_emar.group_emar_nurse"/>
+            <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'confirmed'" groups="clinic_emar.group_emar_nurse"/>
+            <button name="action_done" type="object" string="Complete Administration" class="btn-primary" invisible="state not in ('confirmed','in_progress')" groups="clinic_emar.group_emar_nurse"/>
+            <button name="action_refuse" type="object" string="Patient Refused" invisible="state in ('done','cancelled')" groups="clinic_emar.group_emar_nurse"/>
+            <button name="action_skip" type="object" string="Skip" invisible="state in ('done','cancelled')" groups="clinic_emar.group_emar_nurse"/>
+            <button name="action_mark_missed" type="object" string="Mark Missed" invisible="state in ('done','cancelled')" groups="clinic_emar.group_emar_nurse"/>
+            <button name="action_cancel" type="object" string="Cancel" invisible="state == 'cancelled'" groups="clinic_emar.group_emar_nurse"/>
+            <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state != 'cancelled'" groups="clinic_emar.group_emar_manager"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,done,cancelled"/>
+        </header>
+        <sheet>
+            <div class="oe_button_box" name="button_box">
+                <button name="action_view_inventory_usage" type="object" class="oe_stat_button" icon="fa-cubes" invisible="not inventory_usage_id"><span class="o_stat_text">Consumption</span></button>
+                <button name="action_view_inventory_moves" type="object" class="oe_stat_button" icon="fa-exchange" invisible="not inventory_move_count"><field name="inventory_move_count" widget="statinfo" string="Stock Moves"/></button>
+                <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-money"><span class="o_stat_text">Invoices</span></button>
+            </div>
+            <widget name="web_ribbon" text="VERIFICATION FAILED" bg_color="text-bg-danger" invisible="verification_state != 'failed'"/>
+            <div class="oe_title"><label for="name"/><h1><field name="name" readonly="1"/></h1></div>
+            <group><group string="Clinical Context"><field name="patient_id" readonly="1"/><field name="doctor_id" readonly="1"/><field name="order_id"/><field name="prescription_id" readonly="1"/><field name="schedule_id"/><field name="line_id"/><field name="vitals_intake_id"/><field name="room_session_id"/></group><group string="Medication Given"><field name="product_id"/><field name="dose_qty"/><field name="administered_qty"/><field name="dose_uom_id"/><field name="route"/><field name="lot_id"/><field name="lot_expired" readonly="1"/></group></group>
+            <notebook>
+                <page string="Verification"><group><group><field name="verification_state" widget="badge" readonly="1"/><field name="patient_scan_code" password="False"/><field name="product_scan_code" password="False"/><field name="double_check_user_id"/><field name="verified_on" readonly="1"/><field name="verified_by_id" readonly="1"/></group><group><field name="administered_datetime"/><field name="administered_by_user_id"/><field name="administered_by_employee_id"/><field name="location_note"/></group></group><field name="verification_note" readonly="1"/></page>
+                <page string="Exceptions / Variance"><group><group><field name="refused"/><field name="refusal_reason" placeholder="Required before Patient Refused..."/><field name="skipped"/><field name="skip_reason" placeholder="Required before Skip..."/><field name="missed"/></group><group><field name="adverse_event"/><field name="adverse_event_note" invisible="not adverse_event"/></group></group></page>
+                <page string="Inventory"><group string="Physical Stock Usage"><field name="inventory_qty"/><field name="inventory_uom_id"/><field name="waste_qty"/><field name="inventory_usage_id" readonly="1"/><field name="picking_id" readonly="1"/><button name="action_consume_inventory" type="object" string="Consume Inventory Now" class="btn-secondary" invisible="state == 'done' or inventory_usage_id" groups="clinic_emar.group_emar_manager"/></group></page>
+                <page string="Billing"><button name="action_create_invoice" type="object" string="Prepare Invoice" class="btn-secondary" invisible="state != 'done'" groups="clinic_emar.group_emar_manager"/></page>
+                <page string="Clinical Notes"><field name="notes"/></page>
+                <page string="Company"><field name="company_id" groups="base.group_multi_company"/><field name="currency_id" invisible="1"/></page>
+            </notebook>
+        </sheet><chatter/>
+    </form></field></record>
+    <record id="action_emar_administrations" model="ir.actions.act_window"><field name="name">Medication Administrations</field><field name="res_model">clinic.emar.administration</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_emar_administration_search"/></record>
+</odoo>

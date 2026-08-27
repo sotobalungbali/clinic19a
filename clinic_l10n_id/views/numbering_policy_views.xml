@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_l10n_id_numbering_search" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.numbering.policy.search</field><field name="model">clinic.l10n.id.numbering.policy</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="journal_id"/><field name="expected_code"/><field name="company_id"/>
+      <filter name="applied" string="Applied" domain="[('state','=','applied')]"/><filter name="mismatch" string="Mismatch" domain="[('compliant','=',False)]"/>
+      <group><filter name="group_company" string="Company" context="{'group_by':'company_id'}"/><filter name="group_journal_type" string="Journal Type" context="{'group_by':'journal_type'}"/><filter name="group_state" string="Status" context="{'group_by':'state'}"/></group>
+    </search></field>
+  </record>
+  <record id="view_l10n_id_numbering_list" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.numbering.policy.list</field><field name="model">clinic.l10n.id.numbering.policy</field>
+    <field name="arch" type="xml"><list decoration-success="compliant" decoration-warning="not compliant">
+      <field name="name"/><field name="journal_id"/><field name="journal_type"/><field name="current_code"/><field name="expected_code"/>
+      <field name="dedicated_credit_note_sequence"/><field name="secure_posted_entries"/><field name="posted_move_count"/>
+      <field name="compliant"/><field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company"/>
+    </list></field>
+  </record>
+  <record id="view_l10n_id_numbering_form" model="ir.ui.view">
+    <field name="name">clinic.l10n.id.numbering.policy.form</field><field name="model">clinic.l10n.id.numbering.policy</field>
+    <field name="arch" type="xml"><form>
+      <header>
+        <button name="action_validate" type="object" string="Validate" class="btn-primary" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state != 'draft'"/>
+        <button name="action_apply" type="object" string="Apply to Native Journal" class="btn-primary" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state != 'validated'"/>
+        <button name="action_archive" type="object" string="Archive" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state == 'archived'"/>
+        <button name="action_reset_to_draft" type="object" string="Reset to Draft" groups="clinic_l10n_id.group_clinic_l10n_id_manager" invisible="state not in ('validated','archived')"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,validated,applied,archived"/>
+      </header><sheet>
+        <div class="oe_button_box" name="button_box">
+          <button name="action_open_journal" type="object" class="oe_stat_button" icon="fa-book"><div class="o_stat_info"><span class="o_stat_text">Native Journal</span></div></button>
+          <button name="action_open_posted_moves" type="object" class="oe_stat_button" icon="fa-list"><field name="posted_move_count" widget="statinfo" string="Posted Entries"/></button>
+        </div>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <div class="alert alert-success" role="alert" invisible="not compliant"><field name="compliance_note" readonly="1"/></div>
+        <div class="alert alert-warning" role="alert" invisible="compliant"><field name="compliance_note" readonly="1"/></div>
+        <group>
+          <group string="Policy"><field name="profile_id" readonly="state not in ('draft','validated')"/><field name="company_id" groups="base.group_multi_company" readonly="state not in ('draft','validated')"/><field name="journal_id" readonly="state not in ('draft','validated')"/><field name="journal_type" readonly="1"/></group>
+          <group string="Native Sequence Controls"><field name="current_code" readonly="1"/><field name="expected_code" readonly="state not in ('draft','validated')"/><field name="dedicated_credit_note_sequence" readonly="state not in ('draft','validated')"/><field name="secure_posted_entries" readonly="state not in ('draft','validated')"/><field name="native_sequence_override_regex" readonly="1" groups="base.group_no_one"/></group>
+        </group>
+        <notebook><page string="Application Audit"><group><field name="applied_by_id" readonly="1"/><field name="applied_at" readonly="1"/><field name="posted_move_count" readonly="1"/></group></page><page string="Notes"><field name="note"/></page></notebook>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+  <record id="action_l10n_id_numbering_policy" model="ir.actions.act_window"><field name="name">Invoice Numbering Policies</field><field name="res_model">clinic.l10n.id.numbering.policy</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_l10n_id_numbering_search"/></record>
+</odoo>
+

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_clinic_ar_invoice_search" model="ir.ui.view">
+    <field name="name">clinic.ar.invoice.search</field><field name="model">clinic.ar.invoice</field>
+    <field name="arch" type="xml"><search>
+      <field name="name"/><field name="partner_id"/><field name="patient_id"/><field name="billing_id"/><field name="booking_id"/><field name="membership_id"/><field name="move_id"/>
+      <filter name="open" string="Open" domain="[('state','=','posted'),('amount_residual','&gt;',0)]"/>
+      <filter name="overdue" string="Overdue" domain="[('is_overdue','=',True)]"/>
+      <filter name="paid" string="Paid" domain="[('payment_state','=','paid')]"/>
+      <filter name="billing_linked" string="Billing Linked" domain="[('billing_id','!=',False)]"/>
+      <group>
+        <filter name="group_partner" string="Customer" context="{'group_by':'partner_id'}"/>
+        <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+        <filter name="group_payment_state" string="Payment State" context="{'group_by':'payment_state'}"/>
+        <filter name="group_aging" string="Aging Bucket" context="{'group_by':'aging_bucket'}"/>
+        <filter name="group_company" string="Company" context="{'group_by':'company_id'}"/>
+      </group>
+    </search></field>
+  </record>
+  <record id="view_clinic_ar_invoice_list" model="ir.ui.view">
+    <field name="name">clinic.ar.invoice.list</field><field name="model">clinic.ar.invoice</field>
+    <field name="arch" type="xml"><list decoration-danger="is_overdue" decoration-success="payment_state == 'paid'" decoration-muted="state == 'cancelled'">
+      <field name="name"/><field name="invoice_date"/><field name="due_date"/><field name="partner_id"/><field name="patient_id" optional="show"/><field name="billing_id" optional="show"/><field name="amount_total" sum="Total"/><field name="amount_residual" sum="Residual"/><field name="days_overdue" optional="show"/><field name="aging_bucket" widget="badge"/><field name="payment_state" widget="badge"/><field name="state" widget="badge"/><field name="company_id" groups="base.group_multi_company" optional="hide"/>
+    </list></field>
+  </record>
+  <record id="view_clinic_ar_invoice_form" model="ir.ui.view">
+    <field name="name">clinic.ar.invoice.form</field><field name="model">clinic.ar.invoice</field>
+    <field name="arch" type="xml"><form string="AR Invoice">
+      <header>
+        <button name="action_post" string="Post" type="object" class="btn-primary" invisible="state != 'draft'"/>
+        <button name="action_create_payment" string="Register Receipt" type="object" class="btn-primary" invisible="state != 'posted' or amount_residual &lt;= 0"/>
+        <button name="action_schedule_followup" string="Schedule Follow-up" type="object" invisible="state != 'posted' or amount_residual &lt;= 0"/>
+        <button name="action_sync_from_accounting" string="Sync Accounting" type="object" invisible="not move_id"/>
+        <button name="action_cancel" string="Cancel" type="object" invisible="state == 'cancelled' or billing_id"/>
+        <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'" groups="clinic_ar.group_clinic_ar_manager"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,posted,cancelled"/>
+      </header>
+      <sheet>
+        <div class="oe_button_box" name="button_box">
+          <button name="action_open_account_move" type="object" class="oe_stat_button" icon="fa-book" invisible="not move_id"><field name="move_id" string="Accounting" widget="statinfo"/></button>
+          <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-money"><field name="payment_count" string="Receipts" widget="statinfo"/></button>
+          <button name="action_view_followups" type="object" class="oe_stat_button" icon="fa-bell"><field name="followup_count" string="Follow-ups" widget="statinfo"/></button>
+          <button name="action_view_allocations" type="object" class="oe_stat_button" icon="fa-random"><field name="allocation_count" string="Allocations" widget="statinfo"/></button>
+        </div>
+        <widget name="web_ribbon" title="OVERDUE" bg_color="text-bg-danger" invisible="not is_overdue"/>
+        <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+        <group>
+          <group string="Customer &amp; Clinical Source"><field name="partner_id"/><field name="patient_id"/><field name="billing_id"/><field name="booking_id"/><field name="treatment_id"/><field name="treatment_session_id"/><field name="doctor_id"/><field name="membership_id"/></group>
+          <group string="Commercial"><field name="invoice_date"/><field name="payment_term_id"/><field name="due_date"/><field name="currency_id"/><field name="company_id" groups="base.group_multi_company"/><field name="origin_ref"/></group>
+        </group>
+        <notebook>
+          <page string="AR Lines" name="lines"><field name="line_ids" readonly="state != 'draft'"><list editable="bottom"><field name="sequence" widget="handle"/><field name="product_id"/><field name="name"/><field name="quantity"/><field name="product_uom_id" optional="hide"/><field name="price_unit"/><field name="discount"/><field name="taxes_id" widget="many2many_tags" optional="show"/><field name="price_subtotal" sum="Subtotal"/><field name="price_tax" sum="Tax"/><field name="price_total" sum="Total"/><field name="billing_line_id" optional="hide"/><button name="action_open_billing_line" type="object" icon="fa-external-link" string="Billing" invisible="not billing_line_id"/></list></field></page>
+          <page string="Receipts" name="receipts"><field name="payment_ids" readonly="1"><list><field name="name"/><field name="payment_date"/><field name="amount"/><field name="applied_amount"/><field name="overpay_amount"/><field name="method"/><field name="state" widget="badge"/><button name="action_open_account_payment" type="object" icon="fa-external-link" string="Payment" invisible="not account_payment_id"/></list></field></page>
+          <page string="Collections" name="collections"><field name="followup_ids" readonly="1"><list><field name="name"/><field name="level_id"/><field name="scheduled_date"/><field name="reminder_type"/><field name="state" widget="badge"/><button name="action_open_invoice" type="object" icon="fa-external-link" string="Invoice"/></list></field></page>
+          <page string="Traceability" name="traceability"><group><field name="move_id"/><field name="aging_date"/><field name="aging_bucket"/><field name="days_overdue"/><field name="payment_state"/></group></page>
+          <page string="Notes" name="notes"><field name="note" placeholder="Internal collection notes..."/></page>
+        </notebook>
+        <group class="oe_subtotal_footer oe_right"><field name="amount_untaxed"/><field name="amount_discount"/><field name="amount_tax"/><field name="amount_total" class="oe_subtotal_footer_separator"/><field name="amount_paid"/><field name="amount_residual" class="oe_subtotal_footer_separator"/></group>
+      </sheet><chatter/>
+    </form></field>
+  </record>
+  <record id="action_clinic_ar_invoice" model="ir.actions.act_window"><field name="name">AR Invoices</field><field name="res_model">clinic.ar.invoice</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_clinic_ar_invoice_search"/></record>
+  <record id="view_clinic_ar_invoice_line_search" model="ir.ui.view"><field name="name">clinic.ar.invoice.line.search</field><field name="model">clinic.ar.invoice.line</field><field name="arch" type="xml"><search><field name="invoice_id"/><field name="partner_id"/><field name="product_id"/><field name="billing_line_id"/><group><filter name="group_invoice" string="AR Invoice" context="{'group_by':'invoice_id'}"/><filter name="group_product" string="Product" context="{'group_by':'product_id'}"/><filter name="group_company" string="Company" context="{'group_by':'company_id'}"/></group></search></field></record>
+  <record id="view_clinic_ar_invoice_line_list" model="ir.ui.view"><field name="name">clinic.ar.invoice.line.list</field><field name="model">clinic.ar.invoice.line</field><field name="arch" type="xml"><list><field name="invoice_id"/><field name="partner_id"/><field name="product_id"/><field name="name"/><field name="quantity"/><field name="price_unit"/><field name="discount"/><field name="price_subtotal" sum="Subtotal"/><field name="price_tax" sum="Tax"/><field name="price_total" sum="Total"/><field name="billing_line_id" optional="show"/><field name="company_id" groups="base.group_multi_company" optional="hide"/></list></field></record>
+  <record id="view_clinic_ar_invoice_line_form" model="ir.ui.view"><field name="name">clinic.ar.invoice.line.form</field><field name="model">clinic.ar.invoice.line</field><field name="arch" type="xml"><form><sheet><group><group><field name="invoice_id"/><field name="partner_id"/><field name="patient_id"/><field name="billing_line_id"/></group><group><field name="product_id"/><field name="name"/><field name="product_uom_id"/><field name="quantity"/><field name="price_unit"/><field name="discount"/><field name="taxes_id" widget="many2many_tags"/><field name="income_account_id"/></group></group><group string="Amounts"><field name="discount_amount"/><field name="price_subtotal"/><field name="price_tax"/><field name="price_total"/></group><button name="action_open_billing_line" string="Open Billing Line" type="object" class="btn-secondary" invisible="not billing_line_id"/></sheet></form></field></record>
+  <record id="action_clinic_ar_invoice_line" model="ir.actions.act_window"><field name="name">AR Invoice Lines</field><field name="res_model">clinic.ar.invoice.line</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_clinic_ar_invoice_line_search"/></record>
+</odoo>
+

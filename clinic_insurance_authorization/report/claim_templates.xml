@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_insurance_claim_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>ClinicOne Insurance Claim Evidence</h2>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Claim:</strong> <span t-field="o.name"/><br/>
+                        <strong>Payer Claim Ref:</strong> <span t-field="o.external_claim_reference"/><br/>
+                        <strong>Patient:</strong> <span t-field="o.patient_id"/><br/>
+                        <strong>Insurer:</strong> <span t-field="o.insurer_partner_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Policy:</strong> <span t-field="o.policy_id"/><br/>
+                        <strong>Authorization:</strong> <span t-field="o.authorization_id"/><br/>
+                        <strong>Claim Status:</strong> <span t-field="o.state"/><br/>
+                        <strong>Payer Status:</strong> <span t-field="o.payer_status"/>
+                    </div>
+                </div>
+
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th class="text-end">Requested</th>
+                            <th class="text-end">Authorized</th>
+                            <th class="text-end">Approved</th>
+                            <th class="text-end">Payer</th>
+                            <th class="text-end">Patient</th>
+                            <th class="text-end">Variance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.claim_line_ids" t-as="line">
+                            <td><span t-field="line.name"/></td>
+                            <td class="text-end"><span t-field="line.requested_amount"/></td>
+                            <td class="text-end"><span t-field="line.authorized_amount"/></td>
+                            <td class="text-end"><span t-field="line.approved_amount"/></td>
+                            <td class="text-end"><span t-field="line.insurer_payable"/></td>
+                            <td class="text-end"><span t-field="line.patient_responsibility"/></td>
+                            <td class="text-end"><span t-field="line.authorization_variance"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <strong>Authorization Code:</strong> <span t-field="o.authorization_code"/><br/>
+                        <strong>Adjudicated:</strong> <span t-field="o.adjudicated_date"/><br/>
+                        <strong>Denial Code:</strong> <span t-field="o.denial_code"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Requested:</strong> <span t-field="o.requested_amount"/><br/>
+                        <strong>Approved:</strong> <span t-field="o.approved_amount"/><br/>
+                        <strong>Insurer Payable:</strong> <span t-field="o.insurer_payable_amount"/><br/>
+                        <strong>Patient Responsibility:</strong> <span t-field="o.patient_responsibility_amount"/>
+                    </div>
+                </div>
+
+                <div t-if="o.denial_reason" class="mt-3">
+                    <strong>Denial Reason</strong>
+                    <p t-field="o.denial_reason"/>
+                </div>
+                <div t-if="o.note" class="mt-3">
+                    <strong>Internal Note</strong>
+                    <p t-field="o.note"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_insurance_claim">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="clinic_insurance_authorization.report_insurance_claim_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinic_ap_settings_form" model="ir.ui.view">
+        <field name="name">res.config.settings.clinic.ap.form</field>
+        <field name="model">res.config.settings</field>
+
+        <!--
+            Upgrade-safe correction:
+            this XML-ID used to be a standalone primary res.config.settings
+            form. That could replace Odoo's global Settings form during default
+            view resolution. Convert the SAME record to an extension so the
+            database cannot retain the old primary-view ownership.
+        -->
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="mode">extension</field>
+        <field name="priority" eval="60"/>
+
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicOne Accounts Payable"
+                     name="clinic_ap"
+                     groups="clinic_ap.group_clinic_ap_manager">
+
+                    <block title="Approval &amp; Match"
+                           help="Configure AP approval and three-way-match tolerances.">
+                        <setting string="AP Approval Threshold"
+                                 help="Documents at or above this amount require the configured AP approval workflow.">
+                            <field name="ap_approval_threshold"/>
+                        </setting>
+
+                        <setting string="Require Receipt Before AP Posting"
+                                 help="Require receipt evidence before a matched AP document can be posted.">
+                            <field name="ap_enforce_receipt_before_post"/>
+                        </setting>
+
+                        <setting string="AP Quantity Tolerance (%)"
+                                 help="Allowed quantity variance for purchase/receipt/AP matching.">
+                            <field name="ap_qty_tolerance_percent"/>
+                        </setting>
+
+                        <setting string="AP Price Tolerance (%)"
+                                 help="Allowed price variance for purchase/AP matching.">
+                            <field name="ap_price_tolerance_percent"/>
+                        </setting>
+                    </block>
+
+                    <block title="Accounting Defaults"
+                           help="Default journals used by ClinicOne Accounts Payable workflows.">
+                        <setting string="Default AP Purchase Journal">
+                            <field name="ap_default_purchase_journal_id"
+                                   options="{'no_create_edit': True}"/>
+                        </setting>
+
+                        <setting string="Default AP Payment Journal">
+                            <field name="ap_default_payment_journal_id"
+                                   options="{'no_create_edit': True}"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_clinic_ap_settings" model="ir.actions.act_window">
+        <field name="name">AP Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+
+        <!--
+            The prior release pinned the standalone AP form in view_id.
+            Explicit False is required on upgrade; removing the XML field alone
+            would leave the old database value in place.
+        -->
+        <field name="view_id" eval="False"/>
+        <field name="target">current</field>
+        <field name="path">clinic-ap-settings</field>
+        <field name="context">{'module': 'clinic_ap', 'bin_size': False}</field>
+    </record>
+</odoo>

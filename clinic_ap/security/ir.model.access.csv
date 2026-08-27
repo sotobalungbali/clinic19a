@@ -1,0 +1,19 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clinic_ap_user,clinic.ap user,model_clinic_ap,clinic_ap.group_clinic_ap_user,1,1,1,0
+access_clinic_ap_manager,clinic.ap manager,model_clinic_ap,clinic_ap.group_clinic_ap_manager,1,1,1,1
+access_clinic_ap_line_user,clinic.ap.line user,model_clinic_ap_line,clinic_ap.group_clinic_ap_user,1,1,1,1
+access_clinic_ap_line_manager,clinic.ap.line manager,model_clinic_ap_line,clinic_ap.group_clinic_ap_manager,1,1,1,1
+access_clinic_ap_aging_user,clinic.ap.aging user,model_clinic_ap_aging,clinic_ap.group_clinic_ap_user,1,1,1,0
+access_clinic_ap_aging_manager,clinic.ap.aging manager,model_clinic_ap_aging,clinic_ap.group_clinic_ap_manager,1,1,1,1
+access_clinic_ap_aging_line_user,clinic.ap.aging.line user,model_clinic_ap_aging_line,clinic_ap.group_clinic_ap_user,1,0,0,0
+access_clinic_ap_aging_line_manager,clinic.ap.aging.line manager,model_clinic_ap_aging_line,clinic_ap.group_clinic_ap_manager,1,1,1,1
+access_clinic_cashflow_user,clinic.cashflow user,model_clinic_cashflow,clinic_ap.group_clinic_ap_user,1,1,1,0
+access_clinic_cashflow_manager,clinic.cashflow manager,model_clinic_cashflow,clinic_ap.group_clinic_ap_manager,1,1,1,1
+access_clinic_cashflow_bucket_user,clinic.cashflow.bucket user,model_clinic_cashflow_bucket,clinic_ap.group_clinic_ap_user,1,0,0,0
+access_clinic_cashflow_bucket_manager,clinic.cashflow.bucket manager,model_clinic_cashflow_bucket,clinic_ap.group_clinic_ap_manager,1,1,1,1
+access_clinic_cashflow_detail_user,clinic.cashflow.detail user,model_clinic_cashflow_detail,clinic_ap.group_clinic_ap_user,1,0,0,0
+access_clinic_cashflow_detail_manager,clinic.cashflow.detail manager,model_clinic_cashflow_detail,clinic_ap.group_clinic_ap_manager,1,1,1,1
+access_clinic_cashflow_adjustment_user,clinic.cashflow.adjustment user,model_clinic_cashflow_adjustment,clinic_ap.group_clinic_ap_user,1,1,1,1
+access_clinic_cashflow_adjustment_manager,clinic.cashflow.adjustment manager,model_clinic_cashflow_adjustment,clinic_ap.group_clinic_ap_manager,1,1,1,1
+access_clinic_ap_event_user,clinic.ap.integration.event user,model_clinic_ap_integration_event,clinic_ap.group_clinic_ap_user,1,0,0,0
+access_clinic_ap_event_manager,clinic.ap.integration.event manager,model_clinic_ap_integration_event,clinic_ap.group_clinic_ap_manager,1,1,1,1

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="report_treasury_position_document">
+    <t t-call="web.external_layout">
+      <div class="page">
+        <h2>ClinicOne Treasury Position</h2>
+        <div class="row mb-3">
+          <div class="col-6"><strong>Reference:</strong> <span t-field="o.name"/><br/><strong>As of:</strong> <span t-field="o.as_of_date"/></div>
+          <div class="col-6"><strong>Company:</strong> <span t-field="o.company_id"/><br/><strong>Status:</strong> <span t-field="o.state"/></div>
+        </div>
+        <table class="table table-sm table-bordered">
+          <thead><tr><th>Type</th><th>Description</th><th class="text-end">Records</th><th class="text-end">Amount</th></tr></thead>
+          <tbody><tr t-foreach="o.line_ids" t-as="line"><td><span t-field="line.line_type"/></td><td><span t-field="line.name"/></td><td class="text-end"><span t-field="line.record_count"/></td><td class="text-end"><span t-field="line.amount"/></td></tr></tbody>
+        </table>
+        <div class="row mt-4"><div class="col-6"/><div class="col-6"><table class="table table-sm">
+          <tr><th>Liquidity</th><td class="text-end"><span t-field="o.total_liquidity"/></td></tr>
+          <tr><th>AR Outstanding</th><td class="text-end"><span t-field="o.ar_outstanding"/></td></tr>
+          <tr><th>AP Outstanding</th><td class="text-end"><span t-field="o.ap_outstanding"/></td></tr>
+          <tr><th>Wallet Liability</th><td class="text-end"><span t-field="o.wallet_liability"/></td></tr>
+          <tr><th>Net After Payables</th><td class="text-end"><span t-field="o.net_after_payables"/></td></tr>
+          <tr><th>Net After Wallet</th><td class="text-end"><span t-field="o.net_after_wallet"/></td></tr>
+          <tr><th>Forecast Ending Balance</th><td class="text-end"><span t-field="o.forecast_ending_balance"/></td></tr>
+        </table></div></div>
+      </div>
+    </t>
+  </template>
+  <template id="report_treasury_position"><t t-call="web.html_container"><t t-foreach="docs" t-as="o"><t t-call="clinic_finance.report_treasury_position_document"/></t></t></template>
+</odoo>

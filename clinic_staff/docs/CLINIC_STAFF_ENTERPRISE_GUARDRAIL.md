@@ -1,3 +1,4 @@
+
 # ClinicOne Enterprise Development Guardrail — clinic_staff
 
 ## Purpose
@@ -48,3 +49,4 @@ The validator is intentionally not allowed to fake Odoo runtime proof. On the ta
 
 ## Retry stop rule
 A Codex attempt is a focused edit/test cycle for one blocker/root-cause class. At 3 failed attempts, Codex must stop and emit `MOVE_FORWARD_READY: NO` with evidence. It must not continue to V4/V5/VN autonomously.
+

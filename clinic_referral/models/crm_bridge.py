@@ -41,3 +41,4 @@ class CrmLeadReferral(models.Model):
             "domain": [("lead_id", "=", self.id)],
             "context": {"default_lead_id": self.id},
         }
+

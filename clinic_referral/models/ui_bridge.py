@@ -415,3 +415,4 @@ class ClinicReferralSourceUiBridge(models.Model):
             )
 
         return True
+

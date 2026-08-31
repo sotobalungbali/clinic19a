@@ -30,3 +30,4 @@ Concrete Odoo ParseError proved that XML `search=` returned no inherited Patient
 ## Runtime Evidence Repair — 19.0.2.0.5
 
 Concrete Odoo 19 runtime evidence showed that `ir.ui.menu` does not accept `groups_id`; Odoo 19 uses `group_ids`. The Referral root is now declared with native `<menuitem groups=...>` syntax, allowing Odoo's converter to write the correct menu visibility field while preserving the parentless/bootstrap-safe root and 19.0.2.0.4 runtime reparenting.
+

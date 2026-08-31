@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne - Clinical Staff (Nurse & Therapist) Management
 # File: staff_availability.py
@@ -909,3 +910,4 @@ class ClinicStaffAvailabilityOccurrence(models.Model):
             name = rec.display_name or _("Staff Availability")
             res.append((rec.id, name))
         return res
+

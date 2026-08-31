@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_room_device UI/UX Matrix
 
 | Model | Search | List | Form | Statusbar / lifecycle | Smart / Action Buttons | Notes |

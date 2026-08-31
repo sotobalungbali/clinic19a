@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/patient_link.py
 # Module: clinic_doctor
@@ -371,3 +372,4 @@ class ClinicPatient(models.Model):
 #         for rec in self:
 #             if rec.patient_id and rec.partner_id and rec.patient_id.partner_id and rec.patient_id.partner_id != rec.partner_id:
 #                 raise ValidationError(_("Appointment contact does not match the selected patient."))
+

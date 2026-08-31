@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/availability.py
 # Module: clinic_doctor
@@ -533,3 +534,4 @@ class ClinicAvailabilitySlot(models.Model):
         for rec in self:
             res.append((rec.id, rec.display_name or _("Availability Slot")))
         return res
+

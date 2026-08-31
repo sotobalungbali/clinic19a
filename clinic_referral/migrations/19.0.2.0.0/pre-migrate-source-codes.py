@@ -49,3 +49,4 @@ def migrate(cr, version):
            AND ranked.row_number > 1
         """
     )
+

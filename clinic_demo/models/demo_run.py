@@ -1,3 +1,4 @@
+
 """Enterprise Control Center for one ClinicOne demo dataset run."""
 
 from odoo import api, fields, models, _
@@ -293,16 +294,192 @@ class ClinicDemoRun(models.Model):
         )
 
     def _adopt_current_build_if_pristine(self):
-        """Upgrade a pre-generation Control Center run to the current build contract.
+        """Adopt the current build only across bounded progressive demo boundaries.
 
-        A run with generated references/checkpoints remains fingerprint-locked so
-        source drift cannot be hidden. Prompt-07-only draft runs have no business
-        dataset yet and may safely adopt the current clinic_demo framework build.
+        Prompt 13 is additive: a run that completed Prompt 12 may adopt the
+        historical-time/longitudinal build after ``clinic_demo`` is upgraded and
+        Refresh Compatibility is executed. Prompt 12 remains additive: a run
+        that completed Prompt 11 may adopt the room/device/resource scheduling
+        build after ``clinic_demo`` is upgraded and Refresh Compatibility is executed. A Prompt-11 ``master.catalog``
+        failure caused only by functional-owner ACL context may also adopt a
+        bounded runtime-repair build when its savepoint left no Prompt-11
+        references committed. A later ``master.commercial`` ACL failure may
+        likewise adopt an owner-security repair when no commercial references
+        were committed. A failed ``resources.rooms_devices`` savepoint may adopt
+        Prompt-12 runtime repairs (owner sequence drift or deterministic slot-name
+        uniqueness) only while it left no Prompt-12 references committed.
+        A failed ``operations.booking`` savepoint may adopt a Prompt-14 owner/API
+        runtime repair only when ``operations.referral`` is already complete and
+        the failed booking generator left no Prompt-14 booking references committed.
+        Prompt-11/10/09 bounded adoption routes remain supported for cumulative
+        full-replacement upgrades.
         """
         self.ensure_one()
-        if self.reference_ids or self.checkpoint_ids:
-            return False
         if self.state not in {"draft", "failed"}:
+            return False
+
+        foundation_generators = {"foundation.native", "foundation.organization"}
+        workforce_generators = {"workforce.preflight", "workforce.staff"}
+        patient_generators = {"patient.personas"}
+        completed_prompt09_generators = foundation_generators | workforce_generators
+        completed_prompt10_generators = completed_prompt09_generators | patient_generators
+        prompt11_generators = {"master.catalog", "master.consent", "master.commercial"}
+        completed_prompt11_generators = completed_prompt10_generators | prompt11_generators
+        prompt12_generators = {"resources.rooms_devices"}
+        completed_prompt12_generators = completed_prompt11_generators | prompt12_generators
+        prompt13_generators = {"history.patient_longitudinal"}
+        completed_prompt13_generators = completed_prompt12_generators | prompt13_generators
+        prompt14_generators = {"operations.referral", "operations.booking"}
+        generated_keys = set(self.reference_ids.mapped("generator_key"))
+        checkpoint_generators = set(self.checkpoint_ids.mapped("generator_key"))
+
+        prompt12_complete = bool(self.checkpoint_ids.filtered(
+            lambda checkpoint: checkpoint.generator_key == "resources.rooms_devices"
+            and checkpoint.state == "done"
+        ))
+        progressive_prompt13_adoption = (
+            prompt12_complete
+            and generated_keys <= completed_prompt12_generators
+            and checkpoint_generators <= completed_prompt12_generators
+            and not (generated_keys & prompt13_generators)
+            and not (checkpoint_generators & prompt13_generators)
+            and "resources.rooms_devices" in checkpoint_generators
+        )
+
+        prompt13_complete = bool(self.checkpoint_ids.filtered(
+            lambda checkpoint: checkpoint.generator_key == "history.patient_longitudinal"
+            and checkpoint.state == "done"
+        ))
+        progressive_prompt14_adoption = (
+            prompt13_complete
+            and generated_keys <= completed_prompt13_generators
+            and checkpoint_generators <= completed_prompt13_generators
+            and not (generated_keys & prompt14_generators)
+            and not (checkpoint_generators & prompt14_generators)
+            and "history.patient_longitudinal" in checkpoint_generators
+        )
+
+        progressive_prompt12_adoption = (
+            generated_keys <= completed_prompt11_generators
+            and checkpoint_generators <= completed_prompt11_generators
+            and not (generated_keys & prompt12_generators)
+            and not (checkpoint_generators & prompt12_generators)
+            and "master.commercial" in checkpoint_generators
+        )
+
+        progressive_prompt11_adoption = (
+            generated_keys <= completed_prompt10_generators
+            and checkpoint_generators <= completed_prompt10_generators
+            and not (generated_keys & prompt11_generators)
+            and not (checkpoint_generators & prompt11_generators)
+            and "patient.personas" in checkpoint_generators
+        )
+
+        progressive_prompt10_adoption = (
+            generated_keys <= completed_prompt09_generators
+            and checkpoint_generators <= completed_prompt09_generators
+            and "patient.personas" not in generated_keys
+            and "patient.personas" not in checkpoint_generators
+        )
+
+        prompt09_staff_failed = bool(self.checkpoint_ids.filtered(
+            lambda checkpoint: checkpoint.generator_key == "workforce.staff"
+            and checkpoint.state == "failed"
+        ))
+        no_workforce_references = not (generated_keys - foundation_generators)
+        repair_safe_checkpoint_shape = not (
+            checkpoint_generators - completed_prompt09_generators
+        )
+        runtime_repair_adoption = (
+            prompt09_staff_failed
+            and no_workforce_references
+            and repair_safe_checkpoint_shape
+        )
+
+        prompt11_catalog_failed = bool(self.checkpoint_ids.filtered(
+            lambda checkpoint: checkpoint.generator_key == "master.catalog"
+            and checkpoint.state == "failed"
+        ))
+        no_prompt11_references = not (generated_keys & prompt11_generators)
+        prompt11_acl_repair_checkpoint_shape = checkpoint_generators <= (
+            completed_prompt10_generators | {"master.catalog"}
+        )
+        prompt11_acl_runtime_repair_adoption = (
+            prompt11_catalog_failed
+            and no_prompt11_references
+            and prompt11_acl_repair_checkpoint_shape
+            and "patient.personas" in checkpoint_generators
+        )
+
+        prompt11_commercial_failed = bool(self.checkpoint_ids.filtered(
+            lambda checkpoint: checkpoint.generator_key == "master.commercial"
+            and checkpoint.state == "failed"
+        ))
+        no_prompt11_commercial_references = not self.reference_ids.filtered(
+            lambda reference: reference.generator_key == "master.commercial"
+        )
+        prompt11_commercial_acl_repair_checkpoint_shape = checkpoint_generators <= (
+            completed_prompt10_generators | prompt11_generators
+        )
+        prompt11_commercial_acl_runtime_repair_adoption = (
+            prompt11_commercial_failed
+            and no_prompt11_commercial_references
+            and prompt11_commercial_acl_repair_checkpoint_shape
+            and "master.catalog" in checkpoint_generators
+            and "master.consent" in checkpoint_generators
+        )
+
+        prompt12_resources_failed = bool(self.checkpoint_ids.filtered(
+            lambda checkpoint: checkpoint.generator_key == "resources.rooms_devices"
+            and checkpoint.state == "failed"
+        ))
+        no_prompt12_references = not self.reference_ids.filtered(
+            lambda reference: reference.generator_key == "resources.rooms_devices"
+        )
+        prompt12_sequence_repair_checkpoint_shape = checkpoint_generators <= (
+            completed_prompt11_generators | prompt12_generators
+        )
+        prompt12_runtime_repair_adoption = (
+            prompt12_resources_failed
+            and no_prompt12_references
+            and prompt12_sequence_repair_checkpoint_shape
+            and "master.commercial" in checkpoint_generators
+        )
+
+        prompt14_booking_failed = bool(self.checkpoint_ids.filtered(
+            lambda checkpoint: checkpoint.generator_key == "operations.booking"
+            and checkpoint.state == "failed"
+        ))
+        prompt14_referral_complete = bool(self.checkpoint_ids.filtered(
+            lambda checkpoint: checkpoint.generator_key == "operations.referral"
+            and checkpoint.state == "done"
+        ))
+        no_prompt14_booking_references = not self.reference_ids.filtered(
+            lambda reference: reference.generator_key == "operations.booking"
+        )
+        prompt14_booking_repair_checkpoint_shape = checkpoint_generators <= (
+            completed_prompt13_generators | prompt14_generators
+        )
+        prompt14_booking_runtime_repair_adoption = (
+            prompt14_booking_failed
+            and prompt14_referral_complete
+            and no_prompt14_booking_references
+            and prompt14_booking_repair_checkpoint_shape
+            and "history.patient_longitudinal" in checkpoint_generators
+        )
+
+        if not (
+            prompt14_booking_runtime_repair_adoption
+            or progressive_prompt14_adoption
+            or progressive_prompt13_adoption
+            or prompt12_runtime_repair_adoption
+            or progressive_prompt12_adoption
+            or progressive_prompt11_adoption
+            or progressive_prompt10_adoption
+            or prompt11_acl_runtime_repair_adoption
+            or prompt11_commercial_acl_runtime_repair_adoption
+            or runtime_repair_adoption
+        ):
             return False
 
         changed = (
@@ -313,17 +490,39 @@ class ClinicDemoRun(models.Model):
         if not changed:
             return False
 
+        if prompt14_booking_runtime_repair_adoption:
+            adoption_label = "Prompt 14 bounded runtime-repair contract adopted after operations.booking rollback"
+        elif progressive_prompt14_adoption:
+            adoption_label = "Prompt 14 progressive contract adopted after completed Prompt-13 scope"
+        elif progressive_prompt13_adoption:
+            adoption_label = "Prompt 13 progressive contract adopted after completed Prompt-12 scope"
+        elif prompt12_runtime_repair_adoption:
+            adoption_label = "Prompt 12 bounded runtime-repair contract adopted after resources.rooms_devices rollback"
+        elif progressive_prompt12_adoption:
+            adoption_label = "Prompt 12 progressive contract adopted after completed Prompt-11 scope"
+        elif progressive_prompt11_adoption:
+            adoption_label = "Prompt 11 progressive contract adopted after completed Prompt-10 scope"
+        elif progressive_prompt10_adoption:
+            adoption_label = "Prompt 10 progressive contract adopted after completed Prompt-09 scope"
+        elif prompt11_acl_runtime_repair_adoption:
+            adoption_label = "Prompt 11 functional-ACL runtime-repair contract adopted after master.catalog rollback"
+        elif prompt11_commercial_acl_runtime_repair_adoption:
+            adoption_label = "Prompt 11 membership ACL runtime-repair contract adopted after master.commercial rollback"
+        else:
+            adoption_label = "Prompt 09 bounded runtime-repair contract adopted"
+
         self.write({
             "generator_version": GENERATOR_VERSION,
             "source_fingerprint": AUTHORITATIVE_SOURCE_FINGERPRINT,
             "expected_suite_fingerprint": EXPECTED_SUITE_FINGERPRINT,
             "compatibility_state": "unchecked",
             "compatibility_message": False,
+            "patch_compatibility_status": adoption_label,
         })
         self._log_control_event(
             "info",
             "adopt_build_contract",
-            "Pristine Demo Run adopted the current clinic_demo build fingerprint before generation.",
+            adoption_label,
         )
         return True
 
@@ -522,3 +721,6 @@ class ClinicDemoRun(models.Model):
             "clinic.demo.validation.result",
             [("run_id", "=", self.id)],
         )
+
+
+

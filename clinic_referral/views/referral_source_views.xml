@@ -156,3 +156,4 @@
         <field name="search_view_id" ref="view_referral_source_search"/>
     </record>
 </odoo>
+

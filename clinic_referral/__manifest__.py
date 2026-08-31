@@ -15,7 +15,7 @@ Odoo 19 ORM hardening.
 clinic_treatment_session and clinic_membership are downstream consumers of
 clinic_referral and are intentionally not hard dependencies here.
 """,
-    "version": "19.0.2.0.5",
+    "version": "19.0.2.0.6",
     "category": "ClinicOne/Referral",
     "author": "ClinicOne Dev Team",
     "license": "LGPL-3",
@@ -45,3 +45,4 @@ clinic_referral and are intentionally not hard dependencies here.
     "application": True,
     "auto_install": False,
 }
+

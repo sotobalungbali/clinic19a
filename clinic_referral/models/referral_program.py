@@ -366,3 +366,4 @@ class ClinicReferralProgram(models.Model):
                 display = "[%s] %s" % (program.code, display)
             result.append((program.id, display))
         return result
+

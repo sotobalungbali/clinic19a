@@ -1,5 +1,6 @@
 
 
+
 # -*- coding: utf-8 -*-
 from odoo.tests.common import TransactionCase, tagged
 from odoo.exceptions import UserError
@@ -142,3 +143,25 @@ class TestClinicMembershipEnterprise(TransactionCase):
 
         menu = self.env.ref("clinic_membership.menu_membership_settings")
         self.assertEqual(menu.action, action)
+
+    def test_30_membership_manager_acl_can_create_plan(self):
+        """Owner ACL must grant plan creation to the Membership Manager."""
+        manager_group = self.env.ref(
+            'clinic_membership.group_clinic_membership_manager'
+        )
+        manager = self.env['res.users'].create({
+            'name': 'Membership ACL Test Manager',
+            'login': 'membership.acl.manager@test.invalid',
+            'group_ids': [(6, 0, [manager_group.id])],
+            'company_id': self.env.company.id,
+            'company_ids': [(6, 0, [self.env.company.id])],
+        })
+        plan = self.env['membership.plan'].with_user(manager).create({
+            'name': 'Membership ACL Runtime Repair Test',
+            'code': 'ACL-RUNTIME-REPAIR',
+            'list_price': 0.0,
+            'duration_value': 1,
+            'duration_unit': 'month',
+            'company_id': self.env.company.id,
+        })
+        self.assertTrue(plan)

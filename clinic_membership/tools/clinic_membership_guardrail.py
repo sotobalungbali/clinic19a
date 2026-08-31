@@ -1,5 +1,6 @@
 
 
+
 #!/usr/bin/env python3
 from pathlib import Path
 import ast, csv, re, sys
@@ -208,6 +209,23 @@ acl_models={r.get('model_id:id','') for r in rows}
 for m in models:
     key='model_'+m.replace('.','_')
     if key not in acl_models: errors.append(f'ACL missing {m}')
+
+# Runtime-repair contract: membership plan master creation must be granted to
+# the Membership Manager and the ACL CSV must be loaded by the manifest.
+manifest_text=(ROOT/'__manifest__.py').read_text(encoding='utf-8',errors='ignore')
+if 'security/ir.model.access.csv' not in manifest_text:
+    errors.append('Membership ACL CSV is not loaded by manifest')
+manager_create_models={
+    r.get('model_id:id','')
+    for r in rows
+    if r.get('group_id:id')=='clinic_membership.group_clinic_membership_manager'
+    and r.get('perm_create')=='1'
+}
+for required_acl_model in ('model_membership_plan','model_membership_plan_benefit'):
+    if required_acl_model not in manager_create_models:
+        errors.append(
+            f'Membership Manager create ACL missing for {required_acl_model}'
+        )
 # State/searchability contracts known to be used by search/domain.
 for pattern,label in [(r'is_expired\s*=\s*fields.Boolean\([\s\S]{0,240}?search=', 'contract/voucher is_expired search'),(r'is_depleted\s*=\s*fields.Boolean\([\s\S]{0,240}?store=True','entitlement is_depleted store')]:
     if not re.search(pattern,text): errors.append(f'Missing searchable contract: {label}')

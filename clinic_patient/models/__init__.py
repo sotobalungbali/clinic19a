@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 clinic_patient.models

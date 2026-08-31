@@ -1,3 +1,4 @@
+
 """Source-driven reset-policy decisions.
 
 Unknown model/state combinations are deliberately blocked instead of falling back
@@ -31,6 +32,152 @@ class ResetPolicyRegistry:
     def decision_for_values(self, model_name, values):
         state = (values or {}).get("state")
 
+
+        if model_name in {
+            "res.users", "res.partner", "hr.employee", "hr.department",
+            "clinic.staff", "clinic.practitioner", "clinic.skill",
+            "clinic.license.type", "clinic.staff.license", "clinic.staff.availability",
+            "clinic.specialty", "clinic.doctor", "clinic.schedule.rule",
+        }:
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason="Prompt-09 workforce/provider masters are retained but deactivated on demo reset.",
+            )
+
+        if model_name == "clinic.staff.skill":
+            return ResetPolicyDecision(
+                RESET_DELETE_SAFE,
+                reason="Prompt-09 competency rows are demo-owned dependent records and may be deleted safely.",
+            )
+
+        if model_name == "clinic.patient":
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason=(
+                    "Prompt-10 patient masters are presentation anchors and may be "
+                    "referenced by later clinical/financial history; reset archives them."
+                ),
+            )
+
+        if model_name == "clinic.patient.identifier.type":
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason=(
+                    "Prompt-10 identifier-type masters are retained/deactivated; reused "
+                    "non-demo types remain untouched by ownership-aware reset."
+                ),
+            )
+
+        if model_name == "clinic.patient.identifier":
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason=(
+                    "Prompt-10 patient identifiers are identity evidence and are archived "
+                    "with the patient instead of destructively deleted."
+                ),
+            )
+
+        if model_name == "clinic.patient.condition":
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason=(
+                    "Prompt-10 longitudinal condition context is retained but deactivated "
+                    "so later clinical history never loses its source patient context."
+                ),
+            )
+
+        if model_name in {"clinic.patient.tag", "clinic.patient.allergy"}:
+            return ResetPolicyDecision(
+                RESET_DELETE_SAFE,
+                reason=(
+                    "Prompt-10 demo-owned patient tag/allergy dependent rows contain no "
+                    "posted/legal workflow evidence and may be removed child-first."
+                ),
+            )
+
+        if model_name in {
+            "clinic.patient.vital",
+            "clinic.patient.condition.episode",
+            "clinic.patient.allergy.reaction",
+        }:
+            return ResetPolicyDecision(
+                RESET_DELETE_SAFE,
+                reason=(
+                    "Prompt-13 longitudinal observations are demo-owned historical "
+                    "children with explicit business dates and may be removed child-first."
+                ),
+            )
+
+        if model_name in {
+            "clinic.treatment.category", "clinic.treatment",
+            "clinic.treatment.pricelist", "clinic.treatment.pricelist.item",
+            "product.template", "product.product", "product.pricelist",
+            "clinic.care.protocol", "clinic.care.protocol.step",
+            "clinical.imaging.type", "clinic.emar.medication.profile",
+            "clinic.consent.template", "clinic.package.policy",
+            "clinic.package.pricing", "clinic.package", "membership.plan",
+            "clinic.wallet.rule",
+        }:
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason=(
+                    "Prompt-11 reusable clinical/commercial masters are presentation anchors; "
+                    "reset archives them rather than deleting structures later journeys may reference."
+                ),
+            )
+
+        if model_name in {
+            "clinical.imaging.protocol", "clinical.imaging.type.prep",
+            "clinical.imaging.type.contra", "clinic.consent.template.version",
+            "clinic.package.line", "membership.plan.benefit",
+            "clinic.insurance.plan", "clinic.insurance.plan.rule",
+        }:
+            return ResetPolicyDecision(
+                RESET_FRESH_DB_ONLY,
+                reason=(
+                    "Prompt-11 frozen/versioned child policy rows are retained until fresh-DB reset "
+                    "because active parent workflows protect their structure."
+                ),
+            )
+
+        if model_name in {
+            "clinic.consent.template.item", "clinic.package.integration.event",
+            "membership.integration.event",
+        }:
+            return ResetPolicyDecision(
+                RESET_DELETE_SAFE,
+                reason=(
+                    "Prompt-11 demo-owned acknowledgement/outbox rows are local-safe dependent "
+                    "records and may be removed child-first when not immutable/processed evidence."
+                ),
+            )
+
+        if model_name in {
+            "clinic.room.type", "clinic.room", "clinic.device.category", "clinic.device",
+            "clinic.room.device.assignment", "booking.room.tag", "booking.room",
+            "booking.resource.tag", "booking.resource", "booking.slot",
+        }:
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason=(
+                    "Prompt-12 resource/scheduling masters are presentation anchors and are "
+                    "archived on reset so later bookings and operational history retain valid references."
+                ),
+            )
+
+        if model_name in {
+            "clinic.room.availability", "booking.room.schedule", "booking.room.blackout",
+            "booking.resource.schedule", "booking.resource.blackout",
+            "booking.doctor.schedule", "booking.doctor.blackout", "booking.slot.exception",
+        }:
+            return ResetPolicyDecision(
+                RESET_DELETE_SAFE,
+                reason=(
+                    "Prompt-12 demo-owned schedule/blackout rows are reversible configuration children "
+                    "and may be deleted safely before their parent resources are archived."
+                ),
+            )
+
         if model_name == "resource.resource":
             return ResetPolicyDecision(
                 RESET_DEACTIVATE,
@@ -54,6 +201,28 @@ class ResetPolicyRegistry:
                     "historical references are never destroyed by generic reset."
                 ),
             )
+
+        if model_name in {"clinic.referral.program", "clinic.referral.source", "booking.channel"}:
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason="Prompt-14 reusable acquisition/front-office masters are archived on reset.",
+            )
+
+        if model_name == "booking.booking":
+            if state == "done":
+                return ResetPolicyDecision(
+                    RESET_FRESH_DB_ONLY,
+                    reason="Completed historical bookings are retained as longitudinal service evidence.",
+                )
+            if state in {"confirmed", "in_progress"}:
+                return ResetPolicyDecision(
+                    RESET_CANCEL_THEN_DELETE,
+                    pre_actions=("action_cancel",),
+                    reason="Active demo bookings must be cancelled through the owner workflow before delete.",
+                )
+            if state in {"draft", "cancelled"}:
+                return ResetPolicyDecision(RESET_DELETE_SAFE)
+            raise ValidationError(f"No reset policy is registered for booking.booking state {state!r}.")
 
         if model_name == "clinic.audit.event":
             return ResetPolicyDecision(
@@ -167,7 +336,10 @@ class ResetPolicyRegistry:
 
     def policy_for_record(self, record):
         record.ensure_one()
-        values = {{}}
+        values = {}
         if "state" in record._fields:
             values["state"] = record.state
         return self.decision_for_values(record._name, values)
+
+
+

@@ -38,3 +38,4 @@ The Enterprise Development Guardrail now rejects any raw
 No workflow, security group, ACL, record rule, business model, sequence,
 booking integration, Patient/Branch runtime bridge or company-settings repair
 is changed.
+

@@ -1,3 +1,4 @@
+
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
@@ -20,3 +21,6 @@ class TestDeterministicSeedService(TransactionCase):
             service.token("patient:DEMO-PAT-001"),
             service.token("patient:DEMO-PAT-002"),
         )
+
+
+

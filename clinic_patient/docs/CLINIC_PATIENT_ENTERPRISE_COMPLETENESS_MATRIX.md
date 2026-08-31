@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_patient Enterprise Completeness Matrix
 
 Owner numbering intentionally omits Hard Gate 11. The numbering is preserved exactly.

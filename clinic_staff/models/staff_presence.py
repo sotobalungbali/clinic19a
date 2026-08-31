@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne - Clinical Staff (Nurse & Therapist) Management
 # File: staff_presence.py
@@ -901,3 +902,4 @@ class ClinicStaffPresenceBreak(models.Model):
             "res_id": self.session_id.id,
             "target": "current",
         }
+

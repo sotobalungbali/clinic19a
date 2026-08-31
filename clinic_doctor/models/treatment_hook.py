@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/treatment_hook.py
 # Module: clinic_doctor
@@ -589,3 +590,4 @@ class ClinicTreatmentSession(models.Model):
             when = fields.Datetime.to_string(rec.start) if rec.start else "?"
             res.append((rec.id, f"{base} — {doc} × {pat} — {when}"))
         return res
+

@@ -107,3 +107,6 @@
         <field name="search_view_id" ref="view_clinic_demo_checkpoint_search"/>
     </record>
 </odoo>
+
+
+

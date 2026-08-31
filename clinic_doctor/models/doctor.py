@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/doctor.py
 # Module: clinic_doctor
@@ -49,6 +50,24 @@ class ClinicDoctor(models.Model):
         required=True,
         index=True,
         help="Company that this doctor belongs to."
+    )
+
+    staff_id = fields.Many2one(
+        "clinic.staff",
+        string="Linked Staff",
+        ondelete="restrict",
+        index=True,
+        tracking=True,
+        help="ClinicOne Staff identity representing this doctor for workforce and provider operations.",
+    )
+    branch_id = fields.Many2one(
+        "clinic.branch",
+        string="Branch",
+        related="staff_id.branch_id",
+        store=True,
+        readonly=True,
+        index=True,
+        help="Operational branch inherited from the linked Staff identity.",
     )
 
     # Mirror partner's name for fast search/sort
@@ -393,6 +412,11 @@ class ClinicDoctor(models.Model):
         "A doctor for the same contact already exists in this company.",
     )
 
+    _staff_unique = models.Constraint(
+        "UNIQUE (staff_id)",
+        "A Staff identity can only be linked to one Doctor record.",
+    )
+
     # -------------------------------------------------------------------------
     # COMPUTES
     # -------------------------------------------------------------------------
@@ -463,6 +487,25 @@ class ClinicDoctor(models.Model):
     # -------------------------------------------------------------------------
     # PY CONSTRAINTS & ONCHANGES
     # -------------------------------------------------------------------------
+    @api.constrains("staff_id", "partner_id", "user_id", "company_id")
+    def _check_staff_identity_consistency(self):
+        """A Doctor and its linked Staff must describe the same person/company."""
+        for rec in self:
+            if not rec.staff_id:
+                continue
+            staff = rec.staff_id
+            if staff.role != "doctor":
+                raise ValidationError(_("Linked Staff must have the Doctor role."))
+            if staff.partner_id != rec.partner_id:
+                raise ValidationError(_("Doctor Contact must match the linked Staff Contact."))
+            if staff.company_id and rec.company_id and staff.company_id != rec.company_id:
+                raise ValidationError(_("Doctor company must match the linked Staff company."))
+            if rec.user_id or staff.user_id:
+                if rec.user_id != staff.user_id:
+                    raise ValidationError(_("Doctor System User must match the linked Staff System User."))
+            if staff.branch_id and staff.branch_id.company_id != rec.company_id:
+                raise ValidationError(_("Doctor Staff branch must belong to the Doctor company."))
+
     @api.constrains("capacity_per_slot")
     def _check_capacity(self):
         for rec in self:
@@ -718,3 +761,4 @@ class ClinicDoctor(models.Model):
             domain = ["|", ("license_no", operator, name), ("name", operator, name)] + domain
         records = self.search(domain, limit=limit)
         return [(rec.id, rec.display_name) for rec in records.sudo()]
+

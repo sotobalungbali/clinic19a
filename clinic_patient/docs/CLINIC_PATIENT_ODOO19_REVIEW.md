@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_patient Odoo 19 Enterprise Hardening Review
 
 ## Baseline policy

@@ -1,3 +1,4 @@
+
 from odoo.exceptions import UserError
 from odoo import fields
 from odoo.tests import tagged
@@ -38,3 +39,6 @@ class TestDemoSafeMode(TransactionCase):
     def test_synthetic_email_is_non_routable(self):
         email = DemoSafeModeService.synthetic_email("DEMO-PAT-001")
         self.assertTrue(email.endswith("@clinicone-demo.invalid"))
+
+
+

@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/res_partner_inherit.py
 # Module: clinic_doctor
@@ -28,11 +29,15 @@ class ResPartner(models.Model):
     # -------------------------------------------------------------------------
     # DOCTOR FLAG & LINKS
     # -------------------------------------------------------------------------
-    # SUDH DIPINDAH ke clinic_audit
-    # is_doctor = fields.Boolean(
-    #     string="Is a Doctor",
-    #     help="Enable this to indicate that this contact is a doctor."
-    # )
+    # Runtime owner contract: clinic_doctor owns the doctor identity flag.
+    # Earlier source incorrectly claimed this field had moved to clinic_audit,
+    # but clinic_audit does not define it.  Keep the field here because this
+    # active model also owns its write side-effects and constraints.
+    is_doctor = fields.Boolean(
+        string="Is a Doctor",
+        help="Enable this to indicate that this contact is a doctor.",
+        index=True,
+    )
     doctor_ids = fields.One2many(
         "clinic.doctor",
         "partner_id",
@@ -421,3 +426,4 @@ class ResPartner(models.Model):
         """
         self.ensure_one()
         return self.doctor_ids.filtered(lambda d: d.company_id == self.env.company)[:1] or False
+

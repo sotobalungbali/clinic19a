@@ -1,5 +1,6 @@
 
 
+
 # Clinic Membership — Enterprise Development Guardrail
 
 ## PROJECT IDENTITY PREFLIGHT — HARD GATE 0

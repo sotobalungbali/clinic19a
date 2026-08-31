@@ -206,3 +206,4 @@ class ClinicReferralSource(models.Model):
                 )
             result.append((source.id, label))
         return result
+

@@ -1,3 +1,4 @@
+
 <odoo>
   <record id="action_booking_channel_list" model="ir.actions.act_window">
     <field name="name">Booking Channels</field>
@@ -72,3 +73,5 @@
   <menuitem id="menu_booking_resources" name="Resources" parent="menu_clinic_booking_configuration" action="action_booking_resource_list" sequence="40"/>
   <menuitem id="menu_booking_tags" name="Tags" parent="menu_clinic_booking_configuration" action="action_booking_tag_list" sequence="50"/>
 </odoo>
+
+

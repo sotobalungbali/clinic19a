@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne - Clinical Staff (Nurse & Therapist) Management
 # File: staff_assignment.py
@@ -752,3 +753,4 @@ class ClinicStaffAssignment(models.Model):
         for rec in self:
             res.append((rec.id, rec.display_name or rec.name or rec.reference or _("Assignment")))
         return res
+

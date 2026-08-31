@@ -674,18 +674,29 @@ class ClinicReferral(models.Model):
             )
         return True
 
-    def action_confirm(self):
+    @staticmethod
+    def _effective_datetime(value=None):
+        """Normalize an optional business-effective datetime for deterministic history.
+
+        Existing callers remain unchanged: omitting ``value`` preserves the historical
+        runtime behavior and uses the current Odoo datetime.
+        """
+        return fields.Datetime.to_datetime(value) if value else fields.Datetime.now()
+
+    def action_confirm(self, effective_datetime=None):
         self._validate_confirmation_requirements()
+        effective = self._effective_datetime(effective_datetime)
         for referral in self:
             if referral.state != "draft":
                 continue
             values = {"state": "confirmed"}
             if not referral.date_received:
-                values["date_received"] = fields.Datetime.now()
+                values["date_received"] = effective
             referral.write(values)
         return True
 
-    def action_convert(self):
+    def action_convert(self, effective_datetime=None):
+        effective = self._effective_datetime(effective_datetime)
         for referral in self:
             if referral.state not in ("draft", "confirmed"):
                 raise ValidationError(
@@ -696,17 +707,22 @@ class ClinicReferral(models.Model):
 
             values = {
                 "state": "converted",
-                "date_converted": fields.Datetime.now(),
+                "date_converted": effective,
             }
             if not referral.date_received:
-                values["date_received"] = fields.Datetime.now()
+                values["date_received"] = effective
             if referral.reward_policy != "none" and referral.reward_state == "none":
                 values["reward_state"] = "pending"
             referral.write(values)
         return True
 
-    def mark_converted(self, source_record=None, conversion_value=0.0):
-        """Public downstream API for a real conversion event."""
+    def mark_converted(self, source_record=None, conversion_value=0.0, effective_datetime=None):
+        """Public downstream API for a real conversion event.
+
+        ``effective_datetime`` is optional and exists for legitimate historical
+        business events such as deterministic demo/import generation. Omitting it
+        preserves the original current-time conversion behavior.
+        """
         IrModel = self.env["ir.model"]
         for referral in self:
             values = {}
@@ -723,10 +739,11 @@ class ClinicReferral(models.Model):
                 values["conversion_value"] = conversion_value
             if values:
                 referral.write(values)
-            referral.action_convert()
+            referral.action_convert(effective_datetime=effective_datetime)
         return True
 
-    def action_cancel(self):
+    def action_cancel(self, effective_datetime=None):
+        effective = self._effective_datetime(effective_datetime)
         for referral in self:
             if referral.state not in ("draft", "confirmed"):
                 raise ValidationError(
@@ -735,17 +752,21 @@ class ClinicReferral(models.Model):
             referral.write(
                 {
                     "state": "cancelled",
-                    "date_cancelled": fields.Datetime.now(),
+                    "date_cancelled": effective,
                 }
             )
         return True
 
-    def action_mark_expired(self):
-        today = fields.Date.context_today(self)
+    def action_mark_expired(self, as_of_date=None):
+        effective_date = (
+            fields.Date.to_date(as_of_date)
+            if as_of_date
+            else fields.Date.context_today(self)
+        )
         for referral in self:
             if referral.state not in ("draft", "confirmed"):
                 continue
-            if not referral.valid_until or referral.valid_until >= today:
+            if not referral.valid_until or referral.valid_until >= effective_date:
                 raise ValidationError(
                     _("Referral can only be marked Expired after Valid Until.")
                 )
@@ -817,3 +838,4 @@ class ClinicReferral(models.Model):
             }
         )
         return True
+

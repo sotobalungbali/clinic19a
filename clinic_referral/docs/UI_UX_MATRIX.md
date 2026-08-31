@@ -12,3 +12,4 @@ Cross-addon UX:
 - Patient 360: inbound and outgoing Referral smart buttons.
 - Branch form: Referral smart button.
 - Program/Source One2many histories: row-level **Open** button.
+

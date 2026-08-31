@@ -1,3 +1,4 @@
+
 --- a/clinic_doctor/__manifest__.py
 +++ b/clinic_doctor/__manifest__.py
 @@ -4,7 +4,7 @@
@@ -454,3 +455,4 @@
              "domain": domain,
              "target": "current",
          }
+

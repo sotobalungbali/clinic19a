@@ -1,3 +1,4 @@
+
 """Ownership-aware reset foundation.
 
 Full cross-domain reset ordering is intentionally completed in Prompt 23. This
@@ -111,9 +112,10 @@ class DemoResetService:
                     break
 
         if record and decision.policy == RESET_DEACTIVATE:
-            if "active" not in record._fields:
+            active_field = "active" if "active" in record._fields else ("is_active" if "is_active" in record._fields else False)
+            if not active_field:
                 raise ValidationError(
-                    f"Model {record._name} has no active field; deactivation is not possible."
+                    f"Model {record._name} has no active/is_active field; deactivation is not possible."
                 )
 
             if record._name == "clinic.branch":
@@ -124,7 +126,7 @@ class DemoResetService:
                 ):
                     company.write({"default_branch_id": False})
 
-            record.write({"active": False})
+            record.write({active_field: False})
             reference.write({
                 "record_status": "reset_retained",
                 "last_reset_at": now,
@@ -243,3 +245,6 @@ class DemoResetService:
             "error_count": summary["errors"],
         })
         return summary
+
+
+

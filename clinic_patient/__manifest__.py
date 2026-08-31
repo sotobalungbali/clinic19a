@@ -1,7 +1,8 @@
+
 # -*- coding: utf-8 -*-
 {
     "name": "ClinicOne - Patient Management",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "ClinicOne",
     "summary": "Patient Management for ClinicOne Beauty Clinic Application",
     "description": """

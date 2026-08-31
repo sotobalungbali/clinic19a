@@ -1,4 +1,5 @@
 
+
 $ErrorActionPreference = "Stop"
 $OdooRoot = "C:\Program Files\Odoo 19.0.20260505"
 $Python = Join-Path $OdooRoot "python\python.exe"

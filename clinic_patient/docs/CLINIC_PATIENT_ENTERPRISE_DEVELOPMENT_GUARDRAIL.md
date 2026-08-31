@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_patient Enterprise Development Guardrail
 
 This document is the human-readable hard-gate policy for `clinic_patient`.

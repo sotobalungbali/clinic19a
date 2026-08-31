@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # Copyright (C) ClinicOne
 # Model: clinic.staff (basic core model)
@@ -31,6 +32,26 @@ class ClinicStaff(models.Model):
         help="Linked partner record holding contact details.",
         index=True,
         tracking=True,
+    )
+
+    # Enterprise identity bridge used by ClinicOne presentation actors.
+    # The links are additive: existing Staff records remain valid with both fields empty.
+    user_id = fields.Many2one(
+        "res.users",
+        string="System User",
+        ondelete="set null",
+        index=True,
+        tracking=True,
+        help="Internal user representing the same staff identity, when login access is required.",
+    )
+
+    employee_id = fields.Many2one(
+        "hr.employee",
+        string="Employee",
+        ondelete="set null",
+        index=True,
+        tracking=True,
+        help="HR employee representing the same staff identity.",
     )
 
     # Field related untuk akses cepat ke nama partner (tidak disimpan)
@@ -255,7 +276,7 @@ class ClinicStaff(models.Model):
     # =========================
     can_be_scheduled = fields.Boolean(
         string="Eligible for Scheduling",
-        # compute="_compute_can_be_scheduled",
+        compute="_compute_can_be_scheduled",
         help="True if role, licenses, and status allow scheduling.",
         store=False,
     )
@@ -267,6 +288,17 @@ class ClinicStaff(models.Model):
         'unique(staff_code)',
         'Staff Code must be unique.',
     )
+
+    _staff_user_unique = models.Constraint(
+        'unique(user_id)',
+        'A System User can only be linked to one ClinicOne Staff record.',
+    )
+
+    _staff_employee_unique = models.Constraint(
+        'unique(employee_id)',
+        'An Employee can only be linked to one ClinicOne Staff record.',
+    )
+
 
     # =========================
     # Compute Methods
@@ -378,6 +410,25 @@ class ClinicStaff(models.Model):
     # =========================
     # Constraints (Python-level)
     # =========================
+    @api.constrains("partner_id", "user_id", "employee_id", "company_id", "branch_id")
+    def _check_identity_consistency(self):
+        """Keep partner/user/employee/branch as one enterprise staff identity."""
+        for rec in self:
+            if rec.branch_id and rec.company_id and rec.branch_id.company_id != rec.company_id:
+                raise ValidationError(_("Staff branch must belong to the Staff company."))
+            if rec.user_id:
+                if rec.user_id.partner_id and rec.user_id.partner_id != rec.partner_id:
+                    raise ValidationError(_("Staff Contact must match the linked System User contact."))
+                if rec.company_id and rec.company_id not in rec.user_id.company_ids:
+                    raise ValidationError(_("Staff company must be allowed for the linked System User."))
+            if rec.employee_id:
+                if rec.employee_id.company_id and rec.company_id and rec.employee_id.company_id != rec.company_id:
+                    raise ValidationError(_("Staff company must match the linked Employee company."))
+                if "user_id" in rec.employee_id._fields and rec.employee_id.user_id and rec.user_id and rec.employee_id.user_id != rec.user_id:
+                    raise ValidationError(_("Staff System User must match the linked Employee user."))
+                if "branch_id" in rec.employee_id._fields and rec.employee_id.branch_id and rec.branch_id and rec.employee_id.branch_id != rec.branch_id:
+                    raise ValidationError(_("Staff branch must match the linked Employee branch."))
+
     @api.constrains("termination_date", "hire_date")
     def _check_dates(self):
         """Validasi tanggal masuk/keluar."""
@@ -488,3 +539,4 @@ class ClinicStaff(models.Model):
                     _("Staff '%s' is not eligible for clinical scheduling.") % (rec.display_name,)
                 )
         return True
+

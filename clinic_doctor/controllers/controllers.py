@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # from odoo import http
 
@@ -20,4 +21,5 @@
 #         return http.request.render('clinic_doctor.object', {
 #             'object': obj
 #         })
+
 

@@ -8,3 +8,4 @@
     <function model="clinic.referral.source"
               name="_ensure_optional_cross_addon_ui"/>
 </odoo>
+

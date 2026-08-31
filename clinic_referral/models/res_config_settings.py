@@ -18,3 +18,4 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.clinic_referral_require_program_for_reward",
         readonly=False,
     )
+

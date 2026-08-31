@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/account_move_inherit.py
@@ -7575,3 +7576,5 @@ class ClinicTreatment(models.Model):
             if self not in doctor.allowed_treatment_ids:
                 return (False, _("Treatment is not included in doctor's allowed treatments."))
         return (True, _("Allowed."))
+
+

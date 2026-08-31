@@ -15,3 +15,4 @@ simplifier, and not an endless retry engine.
 6. Executable `_sql_constraints` is forbidden; use Odoo 19 `models.Constraint`.
 7. Digit-prefixed backup basenames are never packaged.
 8. Maximum bounded implementation repair attempts for this build: **3**.
+

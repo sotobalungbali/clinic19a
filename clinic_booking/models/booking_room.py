@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_room.py
@@ -351,13 +352,16 @@ class BookingRoom(models.Model):
             return True
 
         # Iterate day by day; require full fit within some window each day
-        cursor = start
-        # Use 1-minute step at day boundaries to ensure inclusive logic
-        while cursor < end:
-            day_end = datetime.combine(cursor.date(), dt_time.max).replace(microsecond=0)
-            segment_end = min(end, day_end)
-            # Convert to local day-of-week and times in hours
-            weekday = cursor.weekday()  # Monday=0 .. Sunday=6
+        # Datetime fields are stored as UTC in Odoo, while weekly schedule hours
+        # are business-local wall-clock hours. Evaluate the weekly window in the
+        # caller/user timezone instead of comparing raw UTC hours to local hours.
+        local_start = fields.Datetime.context_timestamp(self, start)
+        local_end = fields.Datetime.context_timestamp(self, end)
+        cursor = local_start
+        while cursor < local_end:
+            day_end = cursor.replace(hour=23, minute=59, second=59, microsecond=0)
+            segment_end = min(local_end, day_end)
+            weekday = cursor.weekday()  # Monday=0 .. Sunday=6 in local time
             start_hours = cursor.hour + cursor.minute / 60.0
             end_hours = segment_end.hour + segment_end.minute / 60.0
 
@@ -581,3 +585,5 @@ class BookingRoomBlackout(models.Model):
             data.update(action)
             return data
         return action
+
+

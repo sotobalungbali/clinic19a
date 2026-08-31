@@ -11,7 +11,7 @@ class TestClinicReferralSourceContracts(unittest.TestCase):
 
     def test_manifest_identity(self):
         data = ast.literal_eval((ROOT / "__manifest__.py").read_text())
-        self.assertEqual(data["version"], "19.0.2.0.5")
+        self.assertEqual(data["version"], "19.0.2.0.6")
         self.assertIn("clinic_booking", data["depends"])
         self.assertIn("clinic_audit", data["depends"])
         self.assertNotIn("clinic_treatment_session", data["depends"])
@@ -355,6 +355,22 @@ class TestClinicReferralSourceContracts(unittest.TestCase):
         ]
         self.assertEqual(offenders, [])
 
+    def test_historical_effective_date_workflow_is_additive(self):
+        source = (ROOT / "models/referral.py").read_text()
+        self.assertIn("def action_confirm(self, effective_datetime=None):", source)
+        self.assertIn("def action_convert(self, effective_datetime=None):", source)
+        self.assertIn("effective_datetime=None", source)
+        self.assertIn("def action_cancel(self, effective_datetime=None):", source)
+        self.assertIn("def action_mark_expired(self, as_of_date=None):", source)
+        self.assertIn("fields.Datetime.now()", source)
+        self.assertIn("fields.Date.context_today(self)", source)
+
+    def test_mark_converted_forwards_effective_datetime(self):
+        source = (ROOT / "models/referral.py").read_text()
+        self.assertIn("def mark_converted(self, source_record=None, conversion_value=0.0, effective_datetime=None):", source)
+        self.assertIn("referral.action_convert(effective_datetime=effective_datetime)", source)
+
 
 if __name__ == "__main__":
     unittest.main()
+

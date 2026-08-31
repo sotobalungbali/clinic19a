@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_room_device Odoo 19 Review
 
 ## Baseline

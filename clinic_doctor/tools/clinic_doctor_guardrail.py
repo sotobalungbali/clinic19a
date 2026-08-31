@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 from __future__ import annotations
 
@@ -127,7 +128,7 @@ def main():
     pass_line("XML_PARSE")
 
     manifest = load_manifest()
-    if manifest.get("version") != "19.0.1.0.0":
+    if manifest.get("version") != "19.0.1.0.2":
         fail(f"manifest version changed: {manifest.get('version')!r}")
     if manifest.get("depends") != contract["manifest_depends_exact"]:
         fail(f"manifest dependencies changed:\nactual={manifest.get('depends')}\nexpected={contract['manifest_depends_exact']}")
@@ -201,3 +202,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

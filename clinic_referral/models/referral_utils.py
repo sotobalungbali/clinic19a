@@ -44,3 +44,4 @@ def default_working_branch(env):
         if branch and branch.company_id == company:
             return branch
     return env["clinic.branch"].browse()
+

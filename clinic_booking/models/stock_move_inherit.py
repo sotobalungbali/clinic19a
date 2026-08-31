@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/stock_move_inherit.py
@@ -378,3 +379,5 @@ class StockPicking(models.Model):
             "res_id": self.booking_id.id,
             "target": "current",
         }
+
+

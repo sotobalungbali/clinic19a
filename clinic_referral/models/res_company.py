@@ -154,3 +154,4 @@ class ResCompany(models.Model):
                     if company.clinic_referral_require_program_for_reward
                     else "False",
                 )
+

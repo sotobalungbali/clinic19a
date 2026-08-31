@@ -171,3 +171,4 @@ class ClinicReferralNavigation(models.Model):
                 )
             result.append((referral.id, display))
         return result
+

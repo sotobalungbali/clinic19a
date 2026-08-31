@@ -1,3 +1,4 @@
+
 """Build/runtime compatibility checks for the exact ClinicOne suite contract."""
 
 import hashlib
@@ -128,3 +129,6 @@ class SourceFingerprintService:
                 "compatibility_message": result["message"],
             })
         return result
+
+
+

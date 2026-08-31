@@ -1,3 +1,4 @@
+
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
@@ -39,3 +40,6 @@ class TestPrompt08FoundationRegistry(TransactionCase):
             registry.decision_for_values("clinic.branch.location", {}).policy,
             RESET_DEACTIVATE,
         )
+
+
+

@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne - Clinical Staff (Nurse & Therapist) Management
 # File: staff_workload.py
@@ -845,3 +846,4 @@ class ClinicStaffWorkloadLine(models.Model):
             "res_id": rec_id_int,
             "target": "current",
         }
+

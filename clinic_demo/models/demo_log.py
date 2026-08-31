@@ -1,3 +1,4 @@
+
 """Structured, operator-visible log for demo generation and validation."""
 
 from odoo import fields, models
@@ -72,3 +73,6 @@ class ClinicDemoLog(models.Model):
             "res_id": self.id,
             "target": "current",
         }
+
+
+

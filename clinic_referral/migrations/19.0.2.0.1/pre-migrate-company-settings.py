@@ -74,3 +74,4 @@ def migrate(cr, version):
                 company_id,
             )
             _set_parameter(cr, key, serializer(raw_value))
+

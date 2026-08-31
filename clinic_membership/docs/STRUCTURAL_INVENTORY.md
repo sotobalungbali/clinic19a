@@ -1,5 +1,6 @@
 
 
+
 # Structural Inventory
 Persistent owners: membership.plan; membership.plan.benefit; membership.contract; membership.contract.benefit; membership.usage; membership.voucher; membership.point.tx; membership.hold; membership.integration.event.
 Transient workflows: contract renewal, hold request, point adjustment.

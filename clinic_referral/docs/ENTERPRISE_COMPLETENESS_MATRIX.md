@@ -24,3 +24,4 @@
 | Bounded implementation guardrail | PASS |
 
 Runtime Odoo status is **PENDING** until the user installs/upgrades this exact package.
+

@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_recurring_rule.py
@@ -700,3 +701,5 @@ class BookingRecurringRuleMixin(models.AbstractModel):
             hour_to=hour_to,
             duration_minutes=duration_minutes,
         ))
+
+

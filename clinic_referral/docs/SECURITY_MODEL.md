@@ -27,3 +27,4 @@ Security does not rely on invisible UI controls:
 - Python workflow guards protect manager-only actions;
 - converted/expired evidence cannot simply be deleted;
 - downstream drill-down executes with the viewer's normal ACL/record rules.
+

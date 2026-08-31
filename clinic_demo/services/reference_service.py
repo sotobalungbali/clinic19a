@@ -1,3 +1,4 @@
+
 """Stable demo identity and idempotent create/reuse helpers."""
 
 import re
@@ -29,16 +30,18 @@ class DemoReferenceService:
             limit=1,
         )
 
-    def _existing_record(self, reference):
+    def _existing_record(self, reference, record_user=None):
         if not reference:
             return False
         try:
             model = self.env[reference.model_name]
+            if record_user:
+                model = model.with_user(record_user)
         except KeyError:
             return False
         return model.browse(reference.res_id).exists()
 
-    def resolve(self, run, demo_key, expected_model=None, missing_ok=False):
+    def resolve(self, run, demo_key, expected_model=None, missing_ok=False, record_user=None):
         self._validate_key(demo_key)
         reference = self._reference(run, demo_key)
         if not reference:
@@ -52,7 +55,7 @@ class DemoReferenceService:
                 f"not expected model {expected_model}."
             )
 
-        record = self._existing_record(reference)
+        record = self._existing_record(reference, record_user=record_user)
         if not record:
             values = {"last_checked_at": fields.Datetime.now()}
             if reference.record_status not in {"reset_removed", "reset_retained"}:
@@ -80,6 +83,7 @@ class DemoReferenceService:
         reset_policy=None,
         business_reference=None,
         reset_sequence=100,
+        record_user=None,
     ):
         self._validate_key(demo_key)
         run.ensure_one()
@@ -89,7 +93,7 @@ class DemoReferenceService:
             reset_policy = self.policy_registry.policy_for_record(record).policy
 
         reference = self._reference(run, demo_key)
-        existing_record = self._existing_record(reference)
+        existing_record = self._existing_record(reference, record_user=record_user)
 
         if reference and existing_record and (
             reference.model_name != record._name or reference.res_id != record.id
@@ -129,6 +133,7 @@ class DemoReferenceService:
         reset_policy=None,
         update_callback=None,
         reset_sequence=100,
+        record_user=None,
     ):
         """Create once, then resolve/reuse deterministically on every rerun.
 
@@ -143,7 +148,7 @@ class DemoReferenceService:
                     f"Demo key {demo_key} is registered for {reference.model_name}, "
                     f"not {model_name}."
                 )
-            record = self._existing_record(reference)
+            record = self._existing_record(reference, record_user=record_user)
             if record:
                 status = "reused"
                 if update_callback:
@@ -176,6 +181,7 @@ class DemoReferenceService:
             ownership_kind="created",
             reset_policy=reset_policy,
             reset_sequence=reset_sequence,
+            record_user=record_user,
         )
         return record, reference, "created"
 
@@ -188,6 +194,7 @@ class DemoReferenceService:
         scenario_key=None,
         reset_policy=None,
         reset_sequence=100,
+        record_user=None,
     ):
         return self.bind(
             run=run,
@@ -198,4 +205,8 @@ class DemoReferenceService:
             ownership_kind="reused",
             reset_policy=reset_policy,
             reset_sequence=reset_sequence,
+            record_user=record_user,
         )
+
+
+

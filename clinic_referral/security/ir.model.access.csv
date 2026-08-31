@@ -5,3 +5,4 @@ access_referral_program_user,clinic.referral.program user,model_clinic_referral_
 access_referral_program_manager,clinic.referral.program manager,model_clinic_referral_program,clinic_referral.group_referral_manager,1,1,1,1
 access_referral_source_user,clinic.referral.source user,model_clinic_referral_source,clinic_referral.group_referral_user,1,0,0,0
 access_referral_source_manager,clinic.referral.source manager,model_clinic_referral_source,clinic_referral.group_referral_manager,1,1,1,1
+

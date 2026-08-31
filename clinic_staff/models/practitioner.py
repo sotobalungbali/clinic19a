@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Clinical Staff (Nurse & Therapist) Management
 # File: clinic_staff/models/practitioner.py
@@ -518,3 +519,4 @@ class ClinicPractitioner(models.Model):
     #                     % (rec.display_name or rec.name)
     #                 )
     #     return super().unlink()
+

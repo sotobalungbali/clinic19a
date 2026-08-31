@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_booking UI/UX Matrix
 
 | Model | Search | List | Form | Primary access | UX note |
@@ -30,3 +31,5 @@
 ## UI security rule
 
 Visibility, readonly modifiers, menus, and buttons are not security controls. ACLs and record rules remain authoritative.
+
+

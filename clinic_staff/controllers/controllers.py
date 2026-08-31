@@ -1,4 +1,5 @@
 
+
 # from odoo import http
 
 
@@ -19,4 +20,5 @@
 #         return http.request.render('clinic_staff.object', {
 #             'object': obj
 #         })
+
 

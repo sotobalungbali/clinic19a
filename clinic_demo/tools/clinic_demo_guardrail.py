@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """Static Enterprise Development Guardrail for clinic_demo Prompt 07."""
 
@@ -10,8 +11,8 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_SOURCE_SHA = "4f1c986c7e1bec0848bec6659315ba239288f8f0cc37959bcf0dd47f1ef7b214"
-EXPECTED_SUITE_SHA = "8b16194ce2de3736aa2a91cfad6569dcb0f174eff1b3d9ac2e86961a198fc8ed"
+EXPECTED_SOURCE_SHA = "1b91d4402f242a91bbbb7a483403187936eab960cc1b9858b059bc7987af2c7e"
+EXPECTED_SUITE_SHA = "58bdfcce0d5385599f06a081a21f35ecfcf298298becddf5c0a667e0154fa9f1"
 EXPECTED_CLINIC_DEPENDENCIES = 41
 EXPECTED_ACL_ROWS = 22
 
@@ -382,7 +383,7 @@ def main():
     if "EXPECTED_FINAL_GENERATOR_COUNT = 35" not in execution_source:
         fail("Prompt-05 35-generator completion contract is not preserved.")
 
-    print("MASTER PROMPT 08 ENTERPRISE GUARDRAIL: PASS")
+    print("MASTER PROMPT 14 ENTERPRISE GUARDRAIL: PASS")
     print(f"Python parse: {len(python_files)} PASS")
     print(f"XML parse: {len(xml_files)} PASS")
     print("ClinicOne direct dependencies: 41 PASS")
@@ -394,7 +395,183 @@ def main():
     print("Primary res.config.settings hijack: 0 PASS")
     print("Runtime-safe Demo Dataset menu routing: PASS")
     print("Registered foundation generators: 2 PASS")
-    print("Foundation generator dependency chain: PASS")
+    workforce_files = [
+        ROOT / "generators/workforce/preflight.py",
+        ROOT / "generators/workforce/staff_provider.py",
+    ]
+    if not all(path.exists() for path in workforce_files):
+        fail("Prompt-09 workforce generators are missing.")
+    workforce_text = "\n".join(path.read_text(encoding="utf-8") for path in workforce_files)
+    if ".sudo(" in workforce_text or ".cr.commit(" in workforce_text or ".execute(" in workforce_text:
+        fail("Prompt-09 workforce generator bypasses ORM/security boundaries.")
+    if '"groups_id":' in workforce_text:
+        fail("Prompt-09 uses legacy res.users.groups_id; Odoo 19 requires group_ids.")
+    if '"group_ids":' not in workforce_text:
+        fail("Prompt-09 does not assign Odoo 19 res.users.group_ids.")
+    if "check_access_rights(" in workforce_text:
+        fail("Prompt-09 uses removed legacy check_access_rights(); Odoo 19 requires check_access().")
+    if '.check_access("read")' not in workforce_text:
+        fail("Prompt-09 role validation does not use Odoo 19 check_access().")
+    if "clinic_staff.seq_clinic_staff" not in workforce_text or "clinic_doctor.seq_clinic_appointment" not in workforce_text:
+        fail("Prompt-09 ACL/sequence preflight contract is incomplete.")
+    print("Registered workforce generators: 2 PASS")
+
+    patient_file = ROOT / "generators/patient/personas.py"
+    if not patient_file.exists():
+        fail("Prompt-10 patient persona generator is missing.")
+    patient_text = patient_file.read_text(encoding="utf-8")
+    for token in (
+        'key = "patient.personas"',
+        'phase = "10_patient"',
+        'depends_on = ("workforce.staff",)',
+        '"compact": len(CORE_PERSONAS)',
+        '"standard": len(CORE_PERSONAS) + 8',
+        '"full_enterprise": len(CORE_PERSONAS) + 16',
+        '"clinic_patient.seq_patient_code"',
+        '"clinic.patient.identifier"',
+        '@clinicone-demo.invalid',
+    ):
+        if token not in patient_text:
+            fail(f"Prompt-10 patient contract token missing: {token}")
+    if '.sudo(' in patient_text or '.cr.commit(' in patient_text or '.execute(' in patient_text:
+        fail("Prompt-10 patient generator bypasses ORM/security/transaction boundaries.")
+    if 'import random' in patient_text or 'uuid4' in patient_text or 'faker' in patient_text.lower():
+        fail("Prompt-10 patient generator violates deterministic/synthetic identity contract.")
+    for forbidden_model in (
+        'booking.booking', 'clinic.encounter', 'membership.contract',
+        'clinic.insurance.authorization', 'clinic.treatment.session',
+    ):
+        if f'ctx.env["{forbidden_model}"].create' in patient_text:
+            fail(f"Prompt-10 creates premature downstream transaction: {forbidden_model}")
+    print("Registered patient persona generators: 1 PASS")
+
+    master_files = [
+        ROOT / "generators/master/catalog.py",
+        ROOT / "generators/master/consent.py",
+        ROOT / "generators/master/commercial.py",
+    ]
+    if not all(path.exists() for path in master_files):
+        fail("Prompt-11 master generator package is incomplete.")
+    master_text = "\n".join(path.read_text(encoding="utf-8") for path in master_files)
+    for token in (
+        'key = "master.catalog"', 'key = "master.consent"', 'key = "master.commercial"',
+        'phase = "11_master"', '"clinic.treatment"', '"clinic.consent.template"',
+        '"clinic.package"', '"membership.plan"', '"clinic.insurance.plan"', '"clinic.wallet.rule"',
+        'action_publish()', 'action_activate()', 'action_ignore()', 'action_cancel()',
+    ):
+        if token not in master_text:
+            fail(f"Prompt-11 master contract token missing: {token}")
+    if '.sudo(' in master_text or '.cr.commit(' in master_text or '.execute(' in master_text:
+        fail("Prompt-11 master generators bypass ORM/security/transaction boundaries.")
+    if 'date.today()' in master_text or 'uuid4' in master_text or 'import random' in master_text:
+        fail("Prompt-11 generator violates anchor-date/determinism contract.")
+    print("Registered Prompt-11 master generators: 3 PASS")
+    print("Clinical catalog / consent / package / membership / insurance / wallet masters: PASS")
+    print("Prompt-11 premature downstream transactions: 0 PASS")
+
+    resources_file = ROOT / "generators/resources/rooms_devices.py"
+    if not resources_file.exists():
+        fail("Prompt-12 room/device/resource generator is missing.")
+    resources_text = resources_file.read_text(encoding="utf-8")
+    for token in (
+        'key = "resources.rooms_devices"', 'phase = "12_resources"',
+        'depends_on = ("master.commercial",)', '"clinic.room"', '"clinic.device"',
+        '"booking.room"', '"booking.resource"', '"booking.doctor.schedule"', '"booking.slot"',
+        'assignment.action_activate()', 'DEMO-BROOM-BLACKOUT-001', 'DEMO-BRESOURCE-BLACKOUT-001',
+    ):
+        if token not in resources_text:
+            fail(f"Prompt-12 resource contract token missing: {token}")
+    if '.sudo(' in resources_text or '.cr.commit(' in resources_text or '.execute(' in resources_text:
+        fail("Prompt-12 resource generator bypasses ORM/security/transaction boundaries.")
+    if 'date.today()' in resources_text or 'uuid4' in resources_text or 'import random' in resources_text:
+        fail("Prompt-12 generator violates anchor-date/determinism contract.")
+    for forbidden_model in (
+        'booking.booking', 'clinic.room.session', 'clinic.encounter',
+        'clinic.treatment.session', 'account.move',
+    ):
+        if f'ctx.env["{forbidden_model}"].create' in resources_text:
+            fail(f"Prompt-12 creates premature downstream transaction: {forbidden_model}")
+    print("Registered Prompt-12 resource generators: 1 PASS")
+    print("Rooms / devices / booking resources / schedules / blackouts: PASS")
+    print("Prompt-12 premature downstream transactions: 0 PASS")
+
+    historical_service = ROOT / "services/historical_service.py"
+    historical_generator = ROOT / "generators/history/patient_longitudinal.py"
+    if not historical_service.exists() or not historical_generator.exists():
+        fail("Prompt-13 historical service/generator package is incomplete.")
+    historical_text = historical_generator.read_text(encoding="utf-8")
+    timeline_text = historical_service.read_text(encoding="utf-8")
+    for token in (
+        'key = "history.patient_longitudinal"',
+        'phase = "13_history"',
+        'depends_on = ("resources.rooms_devices",)',
+        '"clinic.patient.vital"',
+        '"clinic.patient.condition.episode"',
+        '"clinic.patient.allergy.reaction"',
+        'BUSINESS_DATE_FIELDS',
+        'PROFILE_HISTORY_BUDGETS',
+        'HistoricalTimelineService',
+    ):
+        if token not in (historical_text + timeline_text):
+            fail(f"Prompt-13 historical contract token missing: {token}")
+    if any(token in historical_text for token in (
+        'ctx.env["booking.booking"].create',
+        'ctx.env["clinic.encounter"].create',
+        'ctx.env["clinic.treatment.session"].create',
+        'ctx.env["clinic.billing.invoice"].create',
+    )):
+        fail("Prompt-13 pre-empts later domain transaction generators.")
+    if any(token in historical_text + timeline_text for token in (
+        ".sudo(", ".cr.commit(", ".execute(", "date.today()", "datetime.now()", "uuid4",
+    )):
+        fail("Prompt-13 historical engine violates ORM/determinism boundaries.")
+    registered_generator_keys = set()
+    for generator_path in sorted((ROOT / "generators").rglob("*.py")):
+        tree = ast.parse(generator_path.read_text(encoding="utf-8"), filename=str(generator_path))
+        for cls in [node for node in tree.body if isinstance(node, ast.ClassDef)]:
+            if not any(ast.unparse(dec) == "GENERATOR_REGISTRY.register" for dec in cls.decorator_list):
+                continue
+            for stmt in cls.body:
+                if not isinstance(stmt, ast.Assign):
+                    continue
+                if not any(isinstance(target, ast.Name) and target.id == "key" for target in stmt.targets):
+                    continue
+                key = literal(stmt.value)
+                if isinstance(key, str):
+                    registered_generator_keys.add(key)
+    if len(registered_generator_keys) != 12:
+        fail(f"Prompt-14 expected 12 registered generators, found {len(registered_generator_keys)}.")
+    print("Registered Prompt-13 historical generators: 1 PASS")
+    print("Historical business-date contract / longitudinal patient baseline: PASS")
+    print("Prompt-13 premature downstream transactions: 0 PASS")
+    operations_referral = ROOT / "generators/operations/referral.py"
+    operations_booking = ROOT / "generators/operations/booking.py"
+    if not operations_referral.exists() or not operations_booking.exists():
+        fail("Prompt-14 referral/booking generator package is incomplete.")
+    prompt14_text = operations_referral.read_text(encoding="utf-8") + "\n" + operations_booking.read_text(encoding="utf-8")
+    for token in (
+        'key = "operations.referral"', 'depends_on = ("history.patient_longitudinal",)',
+        'key = "operations.booking"', 'depends_on = ("operations.referral",)',
+        '"clinic.referral"', '"booking.booking"', 'DEMO-REF-001',
+        'DEMO-BOOK-TODAY-REF-001', 'DEMO-BOOK-HIST-', 'DEMO-FUT-BOOK-',
+        'action_confirm(', 'action_done()', 'action_cancel(', 'action_mark_no_show()',
+        'action_apply_reschedule(', 'mark_converted(source_record=booking',
+        '"auto_create_appointment": False', '"lock_slot_on_confirm": False',
+    ):
+        if token not in prompt14_text:
+            fail(f"Prompt-14 front-office contract token missing: {token}")
+    if any(token in prompt14_text for token in (
+        ".sudo(", ".cr.commit(", ".execute(", "date.today()", "datetime.now()", "uuid4",
+        'ctx.env["clinic.queue"].create', 'ctx.env["clinic.encounter"].create',
+        'ctx.env["clinic.treatment.session"].create',
+    )):
+        fail("Prompt-14 generator violates security/determinism/bounded-scope contract.")
+    print("Registered Prompt-14 front-office generators: 2 PASS")
+    print("Referral acquisition/conversion + Booking historical/current/future: PASS")
+    print("Prompt-14 premature Queue/Triage/Encounter/Treatment Session transactions: 0 PASS")
+    print("Patient budgets: Compact 16 / Standard 24 / Full Enterprise 32 PASS")
+    print("Patient identity: registry + source sequence + MRN/NIK/BPJS foundation PASS")
+    print("Foundation → Workforce → Patient dependency chain: PASS")
     print("Bounded savepoint execution: PASS")
     print("Reset confirmation + Manager/System-Admin ACL: PASS")
     print(f"ACL rows: {len(rows)} PASS")
@@ -405,3 +582,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+

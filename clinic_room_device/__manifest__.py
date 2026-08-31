@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 {
     "name": "ClinicOne - Clinical Room & Device Management",
@@ -8,7 +9,7 @@ ClinicOne - Clinical Room & Device Management
 Enterprise room and device management for ClinicOne, preserving the existing
 functional baseline while hardening it for Odoo 19 Community Edition.
     """,
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "author": "ClinicOne Project",
     "website": "https://clinic.one",
     "license": "LGPL-3",

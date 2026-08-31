@@ -303,3 +303,4 @@
         <field name="search_view_id" ref="view_referral_search"/>
     </record>
 </odoo>
+

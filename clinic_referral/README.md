@@ -29,3 +29,4 @@ models:
 
 Runtime status remains pending until installation/upgrade succeeds on the target
 Odoo database.
+

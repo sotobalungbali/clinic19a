@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 res_users_inherit.py
@@ -102,7 +103,7 @@ class ResUsers(models.Model):
     # ------------------------------------------------------
     # COMPUTE
     # ------------------------------------------------------
-    # @api.depends("groups_id", "partner_id.is_patient")
+    # @api.depends("group_ids", "partner_id.is_patient")
     # def _compute_is_patient_user(self):
     #     for user in self:
     #         try:
@@ -110,11 +111,11 @@ class ResUsers(models.Model):
     #         except Exception:
     #             portal_group = False
     #         user.is_patient_user = bool(
-    #             portal_group and portal_group in user.groups_id and user.partner_id.is_patient
+    #             portal_group and portal_group in user.group_ids and user.partner_id.is_patient
     #         )
 
     # sebelum:
-    # @api.depends("groups_id", "partner_id.is_patient")
+    # @api.depends("group_ids", "partner_id.is_patient")
     # def _compute_is_patient_user(self):
     #     for user in self:
     #         try:
@@ -122,16 +123,16 @@ class ResUsers(models.Model):
     #         except Exception:
     #             portal_group = False
     #         user.is_patient_user = bool(
-    #             portal_group and portal_group in user.groups_id and user.partner_id.is_patient
+    #             portal_group and portal_group in user.group_ids and user.partner_id.is_patient
     #         )
 
     # sesudah:
-    @api.depends("partner_id.is_patient")  # non-store: aman tanpa groups_id
+    @api.depends("partner_id.is_patient")  # non-store: aman tanpa direct group-field dependency
     def _compute_is_patient_user(self):
         for user in self:
             in_portal = False
             try:
-                # lebih robust lintas versi & tidak butuh field groups_id
+                # lebih robust lintas versi & tidak butuh field group_ids
                 in_portal = user.has_group("base.group_portal")
             except Exception:
                 in_portal = False
@@ -240,8 +241,8 @@ class ResUsers(models.Model):
     def write(self, vals):
         res = super().write(vals)
 
-        # Bila admin mengubah partner_id atau menambahkan group portal, coba link patient
-        if "partner_id" in vals or "groups_id" in vals or "patient_id" in vals:
+        # Bila admin mengubah partner_id atau mengubah membership group portal, coba link patient
+        if "partner_id" in vals or "group_ids" in vals or "patient_id" in vals:
             for user in self:
                 # Jangan override pilihan admin jika sudah isi patient_id
                 if not user.patient_id:
@@ -283,7 +284,7 @@ class ResUsers(models.Model):
             portal_group = self.env.ref("base.group_portal")
         except Exception:
             portal_group = False
-        if portal_group and portal_group in self.groups_id and not partner.is_patient:
+        if portal_group and portal_group in self.group_ids and not partner.is_patient:
             partner.is_patient = True
             # ensure patient card exists
             patient = self.env["clinic.patient"].create({

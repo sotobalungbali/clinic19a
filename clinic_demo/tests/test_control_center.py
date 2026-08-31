@@ -1,3 +1,4 @@
+
 from odoo import fields
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -38,3 +39,6 @@ class TestDemoControlCenter(TransactionCase):
         from ..services.scenario_registry import ScenarioRegistry
 
         self.assertEqual(len(ScenarioRegistry.all()), 34)
+
+
+

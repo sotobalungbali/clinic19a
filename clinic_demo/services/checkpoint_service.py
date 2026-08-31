@@ -1,3 +1,4 @@
+
 """Idempotent checkpoint helpers for future bounded execution."""
 
 from odoo import fields
@@ -80,3 +81,6 @@ class DemoCheckpointService:
             "error_count": checkpoint.run_id.error_count + 1,
         })
         return checkpoint
+
+
+

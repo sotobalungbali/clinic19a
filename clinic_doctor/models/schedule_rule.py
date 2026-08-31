@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/schedule_rule.py
 # Module: clinic_doctor
@@ -668,3 +669,4 @@ class ClinicScheduleRule(models.Model):
             if start_utc >= start_from:
                 return start_utc
         return False
+

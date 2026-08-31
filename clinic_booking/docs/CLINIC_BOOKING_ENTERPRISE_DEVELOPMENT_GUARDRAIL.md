@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_booking Enterprise Development Guardrail
 
 ## HARD GATE 0 — PROJECT IDENTITY PREFLIGHT
@@ -59,3 +60,5 @@ Run:
 `python3 tools/clinic_booking_guardrail.py`
 
 A PASS permits runtime testing. It does **not** declare final completion.
+
+

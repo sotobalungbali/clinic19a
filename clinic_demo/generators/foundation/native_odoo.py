@@ -1,3 +1,4 @@
+
 """Source-required native Odoo foundation for ClinicOne demo generation.
 
 Prompt 08 deliberately reuses the selected Demo Run company and native masters.
@@ -197,3 +198,6 @@ class NativeOdooFoundationGenerator(BaseDemoGenerator):
 
 # Prompt-08 generators are deliberately idempotent; missing-record repair reuses
 # the same source-valid generation contract rather than a second code path.
+
+
+

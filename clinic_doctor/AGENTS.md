@@ -1,3 +1,4 @@
+
 # ClinicOne / clinic_doctor — Codex Hard Gate
 
 PROJECT_IDENTITY_PREFLIGHT: REQUIRED
@@ -50,3 +51,4 @@ Definition of done:
 - Focused doctor smoke PASS.
 - No preservation-contract regression.
 Only then: `CLINIC_DOCTOR_MOVE_FORWARD_READY: YES`.
+

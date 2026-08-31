@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne - Clinical Staff (Nurse & Therapist) Management
 # File: staff_license.py
@@ -659,3 +660,4 @@ class ClinicStaffLicense(models.Model):
             name = rec.display_name or rec.reference or _("Staff License")
             res.append((rec.id, name))
         return res
+

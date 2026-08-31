@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_doctor Odoo 19 Technical Hardening Review
 
 ## Baseline
@@ -77,3 +78,4 @@ Static PASS is not runtime completion. Before freeze:
 
 Only after runtime PASS:
 `CLINIC_DOCTOR_MOVE_FORWARD_READY: YES`
+

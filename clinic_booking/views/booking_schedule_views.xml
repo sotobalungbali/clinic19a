@@ -1,3 +1,4 @@
+
 <odoo>
   <record id="view_booking_room_schedule_search" model="ir.ui.view">
     <field name="name">booking.room.schedule.search</field>
@@ -782,3 +783,5 @@
     </field>
   </record>
 </odoo>
+
+

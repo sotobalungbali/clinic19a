@@ -1,3 +1,4 @@
+
 """Structured logging helper with conservative text sanitization."""
 
 import re
@@ -48,3 +49,6 @@ class DemoLoggingService:
             "exception_class": exception_class or False,
             "traceback_excerpt": self.sanitize(traceback_excerpt),
         })
+
+
+

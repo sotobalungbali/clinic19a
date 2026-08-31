@@ -39,3 +39,4 @@
         <field name="context">{'module': 'clinic_referral'}</field>
     </record>
 </odoo>
+

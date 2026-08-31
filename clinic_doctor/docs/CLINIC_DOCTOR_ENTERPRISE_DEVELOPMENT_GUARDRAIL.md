@@ -1,3 +1,4 @@
+
 # ClinicOne Enterprise Development Guardrail — clinic_doctor
 
 ## 1. HARD GATE STATUS
@@ -108,3 +109,4 @@ Only after static + runtime + smoke PASS:
 `CLINIC_DOCTOR_MOVE_FORWARD_READY: YES`
 
 Then freeze the addon. Downstream addons must extend it rather than casually reopen it.
+

@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_patient Full Structural Inventory
 
 Functional baseline: **FINISHED**. This inventory is a preservation contract, not a redesign proposal.

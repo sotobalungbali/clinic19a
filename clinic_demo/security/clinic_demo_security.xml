@@ -72,3 +72,6 @@
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 </odoo>
+
+
+

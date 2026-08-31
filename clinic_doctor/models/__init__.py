@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/__init__.py
 # Register business models for the clinic_doctor addon (Odoo 18 CE).
@@ -41,3 +42,4 @@ from . import res_partner_inherit
 #     "billing_hook",
 #     "inventory_hook",
 # ]
+

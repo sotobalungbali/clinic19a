@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """Static Enterprise Development Guardrail for ClinicOne clinic_patient.
 
@@ -405,6 +406,8 @@ def gate12_style_and_odoo19(manifest: dict, manifest_files: list[Path]) -> None:
     for path in sorted((ROOT / "models").glob("*.py")):
         text = path.read_text(encoding="utf-8")
         code = "\n".join(line for line in text.splitlines() if not line.lstrip().startswith("#"))
+        if path.name == "res_users_inherit.py" and re.search(r"\bgroups_id\b", code):
+            fail("Odoo 19 res.users runtime code may not use legacy groups_id; use group_ids")
         if "_sql_constraints" in code:
             fail(f"Legacy _sql_constraints remains active in {path.relative_to(ROOT)}")
         if re.search(r"\bdef\s+_name_search\s*\(", code):

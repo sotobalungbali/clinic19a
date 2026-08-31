@@ -18,3 +18,4 @@ Dependency direction is non-negotiable:
 - `clinic_membership` consumes `clinic_referral` and Treatment Session.
 
 Therefore neither downstream addon is a hard dependency of this module.
+

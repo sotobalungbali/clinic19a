@@ -39,3 +39,4 @@ class ClinicBranchReferral(models.Model):
                 "default_company_id": self.company_id.id,
             },
         }
+

@@ -40,3 +40,6 @@
               sequence="50"
               groups="base.group_system,clinic_demo.group_demo_viewer"/>
 </odoo>
+
+
+

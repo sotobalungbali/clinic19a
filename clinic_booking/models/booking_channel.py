@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_channel.py
@@ -364,15 +365,19 @@ class BookingChannel(models.Model):
     # -------------------------------------------------------------------------
     # DEFAULTS (HELPERS)
     # -------------------------------------------------------------------------
-    @api.model
-    def create(self, vals):
-        # If no policy is provided, try to pick a sensible default by channel type
-        if not vals.get("policy_id"):
-            default_policy = self._find_default_policy_for_channel(vals.get("channel_type"))
-            if default_policy:
-                vals["policy_id"] = default_policy.id
-        rec = super().create(vals)
-        return rec
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Apply channel defaults without breaking Odoo 19 multi-create semantics."""
+        prepared = []
+        for original in vals_list:
+            vals = dict(original)
+            # If no policy is provided, try to pick a sensible default by channel type.
+            if not vals.get("policy_id"):
+                default_policy = self._find_default_policy_for_channel(vals.get("channel_type"))
+                if default_policy:
+                    vals["policy_id"] = default_policy.id
+            prepared.append(vals)
+        return super().create(prepared)
 
     def write(self, vals):
         # Small guard rails: normalize code
@@ -480,3 +485,5 @@ class BookingChannelMixin(models.AbstractModel):
             except Exception:
                 # Silently ignore to keep the mixin generic/safe.
                 pass
+
+

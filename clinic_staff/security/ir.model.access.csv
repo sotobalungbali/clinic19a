@@ -1,3 +1,21 @@
-
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_clinic_staff_clinic_staff,clinic_staff.clinic_staff,model_clinic_staff_clinic_staff,base.group_user,1,1,1,1
+access_clinic_staff_internal,Clinic Staff Internal,model_clinic_staff,base.group_user,1,1,1,1
+access_clinic_skill_internal,Clinic Skill Internal,model_clinic_skill,base.group_user,1,1,1,1
+access_clinic_staff_skill_internal,Clinic Staff Skill Internal,model_clinic_staff_skill,base.group_user,1,1,1,1
+access_clinic_license_type_internal,Clinic License Type Internal,model_clinic_license_type,base.group_user,1,1,1,1
+access_clinic_staff_license_internal,Clinic Staff License Internal,model_clinic_staff_license,base.group_user,1,1,1,1
+access_clinic_staff_availability_internal,Clinic Staff Availability Internal,model_clinic_staff_availability,base.group_user,1,1,1,1
+access_clinic_staff_availability_occurrence_internal,Clinic Staff Availability Occurrence Internal,model_clinic_staff_availability_occurrence,base.group_user,1,1,1,1
+access_clinic_shift_template_internal,Clinic Shift Template Internal,model_clinic_shift_template,base.group_user,1,1,1,1
+access_clinic_staff_roster_internal,Clinic Staff Roster Internal,model_clinic_staff_roster,base.group_user,1,1,1,1
+access_clinic_staff_assignment_internal,Clinic Staff Assignment Internal,model_clinic_staff_assignment,base.group_user,1,1,1,1
+access_clinic_workload_policy_internal,Clinic Workload Policy Internal,model_clinic_workload_policy,base.group_user,1,1,1,1
+access_clinic_staff_workload_internal,Clinic Staff Workload Internal,model_clinic_staff_workload,base.group_user,1,1,1,1
+access_clinic_staff_workload_line_internal,Clinic Staff Workload Line Internal,model_clinic_staff_workload_line,base.group_user,1,1,1,1
+access_clinic_staff_presence_internal,Clinic Staff Presence Internal,model_clinic_staff_presence,base.group_user,1,1,1,1
+access_clinic_staff_presence_session_internal,Clinic Staff Presence Session Internal,model_clinic_staff_presence_session,base.group_user,1,1,1,1
+access_clinic_staff_presence_break_internal,Clinic Staff Presence Break Internal,model_clinic_staff_presence_break,base.group_user,1,1,1,1
+access_clinic_kpi_definition_internal,Clinic KPI Definition Internal,model_clinic_kpi_definition,base.group_user,1,1,1,1
+access_clinic_staff_kpi_internal,Clinic Staff KPI Internal,model_clinic_staff_kpi,base.group_user,1,1,1,1
+access_clinic_staff_kpi_line_internal,Clinic Staff KPI Line Internal,model_clinic_staff_kpi_line,base.group_user,1,1,1,1
+access_clinic_practitioner_internal,Clinic Practitioner Internal,model_clinic_practitioner,base.group_user,1,1,1,1

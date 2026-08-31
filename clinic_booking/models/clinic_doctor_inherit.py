@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/clinic_doctor_inherit.py
@@ -247,13 +248,17 @@ class ClinicDoctor(models.Model):
         if not schedules:
             return True
 
-        cursor = start
-        while cursor < end:
-            # Day segment
-            day_end = datetime.combine(cursor.date(), dt_time.max).replace(microsecond=0)
-            segment_end = min(end, day_end)
+        # Datetime fields are stored as UTC in Odoo, while weekly schedule hours
+        # are business-local wall-clock hours. Evaluate the weekly window in the
+        # caller/user timezone instead of comparing raw UTC hours to local hours.
+        local_start = fields.Datetime.context_timestamp(self, start)
+        local_end = fields.Datetime.context_timestamp(self, end)
+        cursor = local_start
+        while cursor < local_end:
+            day_end = cursor.replace(hour=23, minute=59, second=59, microsecond=0)
+            segment_end = min(local_end, day_end)
 
-            weekday = str(cursor.weekday())  # '0'..'6'
+            weekday = str(cursor.weekday())  # '0'..'6' in local time
             start_hours = cursor.hour + cursor.minute / 60.0
             end_hours = segment_end.hour + segment_end.minute / 60.0
 
@@ -278,16 +283,35 @@ class ClinicDoctor(models.Model):
         return bool(Booking.search_count(domain))
 
     def _has_overlapping_appointment(self, start, end):
-        # Soft: only if clinic.appointment exists and has these fields
+        """Soft-check clinic.appointment using the fields owned by clinic_doctor.
+
+        ClinicOne's canonical appointment model uses ``start``/``end`` and a
+        lifecycle ``state``. Older optional appointment providers may expose
+        ``start_datetime``/``end_datetime`` and/or ``active`` instead, so keep
+        this bridge field-aware rather than issuing an invalid ORM domain.
+        """
         if "clinic.appointment" not in self.env:
             return False
+
         Appointment = self.env["clinic.appointment"]
+        app_fields = Appointment._fields
+        if "doctor_id" not in app_fields:
+            return False
+
+        start_field = "start" if "start" in app_fields else "start_datetime" if "start_datetime" in app_fields else False
+        end_field = "end" if "end" in app_fields else "end_datetime" if "end_datetime" in app_fields else False
+        if not start_field or not end_field:
+            return False
+
         domain = [
             ("doctor_id", "=", self.id),
-            ("start_datetime", "<", fields.Datetime.to_string(end)),
-            ("end_datetime", ">", fields.Datetime.to_string(start)),
-            ("active", "=", True),
+            (start_field, "<", fields.Datetime.to_string(end)),
+            (end_field, ">", fields.Datetime.to_string(start)),
         ]
+        if "state" in app_fields:
+            domain.append(("state", "not in", ["canceled", "no_show"]))
+        elif "active" in app_fields:
+            domain.append(("active", "=", True))
         return bool(Appointment.search_count(domain))
 
     # -------------------------------------------------------------------------
@@ -484,3 +508,5 @@ class BookingDoctorBlackout(models.Model):
             data.update(action)
             return data
         return action
+
+

@@ -1,3 +1,7 @@
-
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_clinic_doctor_clinic_doctor,clinic_doctor.clinic_doctor,model_clinic_doctor_clinic_doctor,base.group_user,1,1,1,1
+access_clinic_doctor_internal,Clinic Doctor Internal,model_clinic_doctor,base.group_user,1,1,1,1
+access_clinic_specialty_internal,Clinic Specialty Internal,model_clinic_specialty,base.group_user,1,1,1,1
+access_clinic_schedule_rule_internal,Clinic Schedule Rule Internal,model_clinic_schedule_rule,base.group_user,1,1,1,1
+access_clinic_availability_slot_internal,Clinic Availability Slot Internal,model_clinic_availability_slot,base.group_user,1,1,1,1
+access_clinic_doctor_leave_internal,Clinic Doctor Leave Internal,model_clinic_doctor_leave,base.group_user,1,1,1,1
+access_clinic_appointment_internal,Clinic Appointment Internal,model_clinic_appointment,base.group_user,1,1,1,1

@@ -1,5 +1,6 @@
 
 
+
 # Integration Contracts
 - Hard upstream ClinicOne contracts: patient, doctor, treatment catalog, booking, encounter, eMAR, care plan, package, referral and treatment session.
 - `clinic_billing`, `clinic_ar`, and `clinic_wallet` are deliberately NOT dependencies. This keeps Membership before Billing and prevents cycles.

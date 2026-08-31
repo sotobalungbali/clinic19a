@@ -63,3 +63,4 @@ class ClinicPatientReferral(models.Model):
                 "default_referrer_patient_id": self.id,
             },
         }
+

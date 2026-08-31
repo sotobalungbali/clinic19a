@@ -1,4 +1,3 @@
-
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_membership_plan_user,plan user,model_membership_plan,clinic_membership.group_clinic_membership_user,1,0,0,0
 access_membership_plan_manager,plan manager,model_membership_plan,clinic_membership.group_clinic_membership_manager,1,1,1,1

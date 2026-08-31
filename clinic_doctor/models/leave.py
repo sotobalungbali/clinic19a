@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/leave.py
 # Module: clinic_doctor
@@ -518,3 +519,4 @@ class ClinicDoctorLeave(models.Model):
         if any(rec.state == "approve" for rec in self):
             raise UserError(_("You cannot delete an approved leave. Cancel it instead to preserve history."))
         return super().unlink()
+

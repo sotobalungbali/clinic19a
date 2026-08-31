@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/queue.py
 # Module: clinic_doctor
@@ -450,3 +451,4 @@ class ClinicQueue(models.Model):
 #             "domain": domain,
 #             "target": "current",
 #         }
+

@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_room_device Enterprise Development Guardrail
 
 ## Purpose

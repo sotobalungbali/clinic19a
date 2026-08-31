@@ -1,5 +1,6 @@
 
 
+
 # -*- coding: utf-8 -*-
 from datetime import timedelta
 from odoo import fields, models, _

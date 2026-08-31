@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 ClinicOne - clinic_room_device

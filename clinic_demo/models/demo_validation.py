@@ -1,3 +1,4 @@
+
 """Machine-readable validation evidence for one Demo Run."""
 
 from odoo import fields, models
@@ -75,3 +76,6 @@ class ClinicDemoValidationResult(models.Model):
             "res_id": self.id,
             "target": "current",
         }
+
+
+

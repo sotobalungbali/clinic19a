@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "ClinicOne",
   "addon": "clinic_doctor",
   "target_platform": "Odoo 19 Community Edition",
   "target_path": "/mnt/d/projects/odoo19v/clinic19a/clinic_doctor",
   "authoritative_baseline": "User-provided clinic19a source dump; filenames beginning with digit 0 are backup and excluded.",
-  "functional_status": "FINISHED",
-  "review_mode": "TECHNICAL_HARDENING_ONLY",
+  "functional_status": "PROMPT_09_OWNER_PATCH_STATIC_PASS_PENDING_RUNTIME",
+  "review_mode": "SOURCE_DRIVEN_ADDITIVE_OWNER_PATCH_UNDER_CLINIC_DEMO_V2_3",
   "upstream_frozen_addons": [
     "clinic_base",
     "clinic_staff"
@@ -62,18 +62,12 @@
   },
   "expected_models": {
     "clinic.doctor": {
-      "file": "models/doctor.py",
-      "class": "ClinicDoctor",
-      "name": "clinic.doctor",
-      "inherit": [
-        "mail.thread",
-        "mail.activity.mixin"
-      ],
       "fields": [
         "active",
         "allow_portal_booking",
         "availability_slot_ids",
         "availability_state",
+        "branch_id",
         "calendar_id",
         "capacity_per_slot",
         "city",
@@ -100,6 +94,7 @@
         "schedule_rule_ids",
         "seniority_level",
         "specialty_ids",
+        "staff_id",
         "state_id",
         "street",
         "telemedicine_enabled",
@@ -111,6 +106,7 @@
       "methods": [
         "_check_capacity",
         "_check_lead_times",
+        "_check_staff_identity_consistency",
         "_compute_availability_state",
         "_compute_display_name",
         "_compute_next_available_slot",
@@ -133,13 +129,6 @@
       ]
     },
     "clinic.specialty": {
-      "file": "models/specialty.py",
-      "class": "ClinicSpecialty",
-      "name": "clinic.specialty",
-      "inherit": [
-        "mail.thread",
-        "mail.activity.mixin"
-      ],
       "fields": [
         "active",
         "child_ids",
@@ -170,13 +159,6 @@
       ]
     },
     "clinic.schedule.rule": {
-      "file": "models/schedule_rule.py",
-      "class": "ClinicScheduleRule",
-      "name": "clinic.schedule.rule",
-      "inherit": [
-        "mail.thread",
-        "mail.activity.mixin"
-      ],
       "fields": [
         "active",
         "allow_overlap_slots",
@@ -232,13 +214,6 @@
       ]
     },
     "clinic.availability.slot": {
-      "file": "models/availability.py",
-      "class": "ClinicAvailabilitySlot",
-      "name": "clinic.availability.slot",
-      "inherit": [
-        "mail.thread",
-        "mail.activity.mixin"
-      ],
       "fields": [
         "appointment_count",
         "appointment_open_count",
@@ -289,13 +264,6 @@
       ]
     },
     "clinic.doctor.leave": {
-      "file": "models/leave.py",
-      "class": "ClinicDoctorLeave",
-      "name": "clinic.doctor.leave",
-      "inherit": [
-        "mail.thread",
-        "mail.activity.mixin"
-      ],
       "fields": [
         "active",
         "apply_to_rooms",
@@ -336,13 +304,6 @@
       ]
     },
     "clinic.appointment": {
-      "file": "models/appointment.py",
-      "class": "ClinicAppointment",
-      "name": "clinic.appointment",
-      "inherit": [
-        "mail.thread",
-        "mail.activity.mixin"
-      ],
       "fields": [
         "allow_overlap",
         "appointment_type",
@@ -399,10 +360,6 @@
       ]
     },
     "inherit:res.partner": {
-      "file": "models/res_partner_inherit.py",
-      "class": "ResPartner",
-      "name": null,
-      "inherit": "res.partner",
       "fields": [
         "appointment_count_as_doctor",
         "doctor_count",
@@ -413,6 +370,7 @@
         "doctor_specialty_names",
         "has_hr_employee",
         "hr_employee_id",
+        "is_doctor",
         "next_available_slot_as_doctor",
         "open_appointment_count_as_doctor",
         "treatment_session_count_as_doctor"
@@ -432,7 +390,7 @@
       ]
     }
   },
-  "expected_models_constraint_count": 7,
+  "expected_models_constraint_count": 8,
   "forbidden": [
     "remove/rename/merge/split business models",
     "remove or repurpose existing business fields",
@@ -445,5 +403,14 @@
     "large refactor or simplification",
     "unbounded retry loops"
   ],
-  "runtime_gate_required": true
+  "runtime_gate_required": true,
+  "prompt09_owner_patch": {
+    "version": "19.0.1.0.2",
+    "acl_rows": 6,
+    "sequence_code": "clinic.appointment",
+    "identity_bridge": [
+      "clinic.doctor.staff_id",
+      "clinic.doctor.branch_id"
+    ]
+  }
 }

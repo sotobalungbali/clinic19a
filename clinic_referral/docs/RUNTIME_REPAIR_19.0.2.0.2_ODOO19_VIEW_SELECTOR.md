@@ -36,3 +36,4 @@ All `clinic_referral` XML files were scanned after the repair. No inherited
 
 No Python business workflow, schema, ACL, rule, sequence, migration, booking
 model ownership, or downstream dependency is changed in this release.
+

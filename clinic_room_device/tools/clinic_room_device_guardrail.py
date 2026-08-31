@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import annotations
@@ -416,6 +417,16 @@ def main():
         manifest.get("depends") == contract["manifest_dependencies"],
         "dependencies exactly baseline",
     )
+    add(
+        "PROMPT12_RUNTIME_REPAIR_VERSION_GATE",
+        manifest.get("version") == "19.0.1.0.1",
+        f"version={manifest.get('version')}",
+    )
+    add(
+        "PROMPT12_SEQUENCE_DATA_LOAD_GATE",
+        "data/clinic_room_device_sequence.xml" in manifest.get("data", []),
+        "owner sequence XML must be loaded during install/upgrade",
+    )
 
     init_tree = ast.parse((ROOT / "models/__init__.py").read_text(encoding="utf-8"))
     imported = []
@@ -546,6 +557,19 @@ def main():
     }
     required_sequences = {"seq_clinic_device", "seq_clinic_room_device_assignment", "seq_clinic_device_movement", "seq_room_session"}
     add("EXISTING_SEQUENCE_CONTRACT_GATE", required_sequences <= sequence_ids, str(sorted(required_sequences-sequence_ids)))
+    sequence_text = (ROOT / "data/clinic_room_device_sequence.xml").read_text(encoding="utf-8")
+    required_sequence_codes = {
+        "clinic.device.code",
+        "clinic.room.device.assignment",
+        "clinic.device.movement",
+        "clinic.room.session",
+    }
+    missing_sequence_codes = sorted(code for code in required_sequence_codes if f">{code}<" not in sequence_text)
+    add(
+        "PROMPT12_RUNTIME_SEQUENCE_CODE_GATE",
+        not missing_sequence_codes,
+        str(missing_sequence_codes),
+    )
 
     backup_loaded = [
         rel for key in ("data", "demo") for rel in manifest.get(key, [])

@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 """
 ClinicOne — Clinical Staff (Nurse & Therapist) Management
@@ -48,4 +49,5 @@ from . import practitioner
 # pindah ke addon clinic_treatment_catalog
 # === Compliance / consent ===
 # from . import integration_consent      # consent templates/versions/requests & enforcement
+
 

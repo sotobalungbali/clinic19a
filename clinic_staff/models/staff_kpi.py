@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne - Clinical Staff (Nurse & Therapist) Management
 # File: staff_kpi.py
@@ -850,3 +851,4 @@ class ClinicStaffKPILine(models.Model):
             "res_id": rec_id_int,
             "target": "current",
         }
+

@@ -1,8 +1,9 @@
+
 # -*- coding: utf-8 -*-
 {
     "name": "ClinicONe: Booking Management",
     "summary": "Appointments & resource scheduling for ClinicONe (patients, doctors, rooms, devices).",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.0.4",
     "category": "Clinic/Booking",
     "author": "ClinicONe Team",
     "website": "https://clinicone.example.com",
@@ -54,4 +55,6 @@ Long description of module's purpose
         'demo/demo.xml',
     ],
 }
+
+
 

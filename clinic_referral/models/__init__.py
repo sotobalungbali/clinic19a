@@ -11,3 +11,4 @@ from . import crm_bridge
 from . import res_company
 from . import res_config_settings
 from . import ui_bridge
+

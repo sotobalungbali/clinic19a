@@ -1,3 +1,4 @@
+
 # ClinicOne / clinic_patient — Enterprise Development Guardrail
 
 ## PROJECT IDENTITY PREFLIGHT — HARD GATE 0

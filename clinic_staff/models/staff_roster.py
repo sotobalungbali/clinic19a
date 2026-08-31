@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne - Clinical Staff (Nurse & Therapist) Management
 # File: staff_roster.py
@@ -626,3 +627,4 @@ class ClinicStaffRoster(models.Model):
             name = rec.display_name or _("Staff Roster")
             res.append((rec.id, name))
         return res
+

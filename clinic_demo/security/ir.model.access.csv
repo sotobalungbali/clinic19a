@@ -21,3 +21,6 @@ access_demo_checkpoint_system_admin,clinic.demo.checkpoint system administrator,
 access_demo_log_system_admin,clinic.demo.log system administrator,model_clinic_demo_log,base.group_system,1,1,1,1
 access_demo_validation_system_admin,clinic.demo.validation.result system administrator,model_clinic_demo_validation_result,base.group_system,1,1,1,1
 access_demo_reset_wizard_system_admin,clinic.demo.reset.confirm.wizard system administrator,model_clinic_demo_reset_confirm_wizard,base.group_system,1,1,1,1
+
+
+

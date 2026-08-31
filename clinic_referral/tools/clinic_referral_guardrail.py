@@ -36,8 +36,8 @@ manifest = ast.literal_eval((ROOT / "__manifest__.py").read_text())
 # ---------------------------------------------------------------------------
 # HARD GATE 0 — PROJECT IDENTITY PREFLIGHT
 # ---------------------------------------------------------------------------
-if manifest.get("version") != "19.0.2.0.5":
-    fail(0, "version must be 19.0.2.0.5")
+if manifest.get("version") != "19.0.2.0.6":
+    fail(0, "version must be 19.0.2.0.6")
 
 required_deps = {
     "clinic_base",
@@ -703,6 +703,19 @@ if not any(item.startswith("[FAIL] HARD GATE 11") for item in ERRORS):
     ok(11, f"models.Constraint={constraint_count}; backup/identifier hygiene passes")
 
 
+
+# Prompt-14 additive historical business-date workflow contract.
+referral_runtime = (ROOT / "models/referral.py").read_text()
+for pattern in (
+    "def action_confirm(self, effective_datetime=None):",
+    "def action_convert(self, effective_datetime=None):",
+    "def action_cancel(self, effective_datetime=None):",
+    "def action_mark_expired(self, as_of_date=None):",
+    "referral.action_convert(effective_datetime=effective_datetime)",
+):
+    if pattern not in referral_runtime:
+        fail(8, f"Prompt-14 historical referral contract missing: {pattern}")
+
 # ---------------------------------------------------------------------------
 # HARD GATE 15 — ENTERPRISE COMPLETENESS MATRIX
 # ---------------------------------------------------------------------------
@@ -739,3 +752,4 @@ print(f"XML files: {len(xml_files)}")
 print(f"ACL rows: {len(acl_rows)}")
 print(f"models.Constraint: {constraint_count}")
 print("HARD GATE 0-15: PASS (source/static)")
+

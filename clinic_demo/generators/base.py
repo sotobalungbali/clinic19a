@@ -1,3 +1,4 @@
+
 """Human-readable contract for bounded ClinicOne demo generators."""
 
 
@@ -23,3 +24,6 @@ class BaseDemoGenerator:
 
     def reset(self, ctx, scenario):
         raise NotImplementedError
+
+
+

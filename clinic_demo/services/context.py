@@ -1,3 +1,4 @@
+
 """Small execution context passed to bounded domain generators."""
 
 from dataclasses import dataclass
@@ -14,3 +15,6 @@ class GenerationContext:
     safe_mode_service: object
     checkpoint_service: object
     logging_service: object
+
+
+

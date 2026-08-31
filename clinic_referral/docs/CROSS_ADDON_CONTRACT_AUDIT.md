@@ -24,3 +24,4 @@ All historical fields are preserved. The legacy public `name_get()` methods on
 Referral, Program and Source are preserved alongside Odoo 19
 `_compute_display_name` implementations. No ClinicOne dependency cycle is
 introduced by this addon.
+

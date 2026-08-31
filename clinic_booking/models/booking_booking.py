@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_booking.py
@@ -697,23 +698,46 @@ class BookingBooking(models.Model):
     # APPOINTMENT HANDSHAKE (soft integration with clinic_doctor)
     # -------------------------------------------------------------------------
     def _create_or_link_appointment(self):
-        """Create or link clinic.appointment record if not present."""
+        """Create/link the optional clinical appointment without field guessing.
+
+        The canonical ``clinic_doctor`` appointment owns ``start``/``end`` and
+        requires ``partner_id``. Keep this bridge tolerant of compatible legacy
+        appointment providers by only writing fields that the target model
+        actually exposes.
+        """
         for rec in self:
             if rec.appointment_id:
                 continue
             Appointment = self.env["clinic.appointment"].sudo()
-            # Prepare values; this assumes clinic_doctor defines these fields
-            vals = {
-                "name": rec.name,
-                "company_id": rec.company_id.id,
-                "patient_id": rec.patient_id.id,
-                "doctor_id": rec.doctor_id.id if rec.doctor_id else False,
-                "room_id": rec.room_id.clinic_room_id.id if rec.room_id and hasattr(rec.room_id, "clinic_room_id") else False,
-                "treatment_id": rec.treatment_id.id if rec.treatment_id else False,
-                "start_datetime": rec.start_datetime,
-                "end_datetime": rec.end_datetime,
-                "booking_id": rec.id,  # back-reference (if clinic_doctor inherits it)
-            }
+            app_fields = Appointment._fields
+
+            vals = {}
+            if "name" in app_fields:
+                vals["name"] = rec.name
+            if "company_id" in app_fields:
+                vals["company_id"] = rec.company_id.id
+            if "patient_id" in app_fields:
+                vals["patient_id"] = rec.patient_id.id
+            if "partner_id" in app_fields:
+                vals["partner_id"] = rec.patient_id.partner_id.id if rec.patient_id and rec.patient_id.partner_id else False
+            if "doctor_id" in app_fields:
+                vals["doctor_id"] = rec.doctor_id.id if rec.doctor_id else False
+            if "room_id" in app_fields:
+                vals["room_id"] = rec.room_id.clinic_room_id.id if rec.room_id and rec.room_id.clinic_room_id else False
+            if "treatment_id" in app_fields:
+                vals["treatment_id"] = rec.treatment_id.id if rec.treatment_id else False
+            if "booking_id" in app_fields:
+                vals["booking_id"] = rec.id
+
+            if "start" in app_fields:
+                vals["start"] = rec.start_datetime
+            elif "start_datetime" in app_fields:
+                vals["start_datetime"] = rec.start_datetime
+            if "end" in app_fields:
+                vals["end"] = rec.end_datetime
+            elif "end_datetime" in app_fields:
+                vals["end_datetime"] = rec.end_datetime
+
             app = Appointment.create(vals)
             rec.appointment_id = app.id
             rec.message_post(
@@ -728,8 +752,10 @@ class BookingBooking(models.Model):
                     # attempt to call a standard cancel if exists
                     if hasattr(rec.appointment_id, "action_cancel"):
                         rec.appointment_id.action_cancel()
-                    else:
+                    elif "active" in rec.appointment_id._fields:
                         rec.appointment_id.write({"active": False})
+                    elif "state" in rec.appointment_id._fields:
+                        rec.appointment_id.write({"state": "canceled"})
                     rec.message_post(body=_("Linked appointment has been cancelled/archived."))
                 except Exception:
                     rec.message_post(body=_("Failed to cancel the linked appointment (manual review needed)."))
@@ -819,4 +845,6 @@ class BookingBooking(models.Model):
                     rec.appointment_id.action_reschedule(new_start, new_end)
                 except Exception:
                     rec.message_post(body=_("Failed to reschedule the linked appointment (manual review needed)."))
+
+
 

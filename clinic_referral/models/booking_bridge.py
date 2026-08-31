@@ -92,3 +92,4 @@ class BookingBookingReferral(models.Model):
                 "default_origin_res_id": self.id,
             },
         }
+

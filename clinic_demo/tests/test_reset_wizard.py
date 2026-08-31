@@ -1,3 +1,4 @@
+
 from odoo import fields
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -31,3 +32,6 @@ class TestDemoResetPreview(TransactionCase):
         self.assertEqual(preview["retain"], 1)
         self.assertTrue(partner.exists())
         self.assertEqual(reference.ownership_kind, "reused")
+
+
+

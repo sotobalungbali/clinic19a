@@ -1,8 +1,9 @@
+
 """Bounded Control Center execution for registered ClinicOne demo generators.
 
-MASTER PROMPT 08 activates the first two real generators. The engine deliberately
-executes only registered work packages, persists one checkpoint per generator /
-scenario, and stops on the first unknown runtime root cause.
+The engine executes only the bounded generators registered by completed Master
+Prompts, persists one checkpoint per generator/scenario, and stops on the first
+unknown runtime root cause.
 """
 
 import traceback
@@ -81,6 +82,12 @@ class DemoExecutionEngine:
         )
 
     def _require_generator_groups(self, generator):
+        # The Control Center explicitly authorizes Odoo System Administrators.
+        # Do not force them to duplicate every functional role merely to execute
+        # a bounded demo generator; ORM ACL/record rules still apply normally.
+        if self.env.user.has_group("base.group_system"):
+            return True
+
         missing = []
         for xmlid in generator.required_groups:
             if not self.env.user.has_group(xmlid):
@@ -108,7 +115,7 @@ class DemoExecutionEngine:
         values = {
             "run_id": run.id,
             "check_key": check_key,
-            "category": "foundation",
+            "category": generator.phase or "generation",
             "severity": severity,
             "state": state,
             "generator_key": generator.key,
@@ -252,13 +259,22 @@ class DemoExecutionEngine:
         failed = run.checkpoint_ids.filtered(lambda checkpoint: checkpoint.state == "failed")
         if failed:
             run.write({"state": "failed"})
+            first_failed = failed.sorted(key=lambda checkpoint: (checkpoint.sequence, checkpoint.id))[:1]
+            first = first_failed[0]
+            summary = (first.error_summary or _("Unknown runtime error")).strip()
+            if len(summary) > 600:
+                summary = summary[:597] + "..."
             return self._notification(
                 _("Generation Paused"),
                 _(
-                    "%s checkpoint(s) failed. The first runtime root cause is logged; "
-                    "dependent generation was stopped."
+                    "%(count)s checkpoint(s) failed. First failure: %(generator)s. "
+                    "%(summary)s Open Logs for the sanitized traceback."
                 )
-                % len(failed),
+                % {
+                    "count": len(failed),
+                    "generator": first.generator_key,
+                    "summary": summary,
+                },
                 "danger",
                 sticky=True,
             )
@@ -273,9 +289,12 @@ class DemoExecutionEngine:
             return self._notification(
                 _("Registered Dataset Scope Complete"),
                 _(
-                    "%(count)s bounded generator(s) completed. FOUNDATION & "
-                    "ORGANIZATION are now real demo data. The full 35-generator "
-                    "enterprise registry is completed progressively by later Master Prompts."
+                    "%(count)s bounded generator(s) completed. Foundation, organization, "
+                    "workforce/provider, patient-persona, Prompt-11 clinical/commercial master, "
+                    "Prompt-12 room/device/resource scheduling, Prompt-13 longitudinal historical "
+                    "backbone, and Prompt-14 referral/booking front-office operations registered so far "
+                    "are now real demo data. The full "
+                    "35-generator enterprise registry is completed progressively by later Master Prompts."
                 )
                 % {"count": count},
                 "success",
@@ -388,3 +407,6 @@ class DemoExecutionEngine:
             "success",
             sticky=True,
         )
+
+
+

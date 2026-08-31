@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 {
     "name": "ClinicOne Doctor Management & Scheduling",
@@ -82,7 +83,7 @@ For issues, enhancements, or contributions, follow the ClinicOne contribution gu
     "category": "ClinicOne",
     "author": "IG @odoocamp",
     "website": "https://www.247opensource.example",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.2",
 
     # Odoo core & foundation
     # (Gunakan 'base' huruf kecil sesuai standar Odoo; 'contacts' memuat res.partner,
@@ -115,7 +116,8 @@ For issues, enhancements, or contributions, follow the ClinicOne contribution gu
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
+        'data/sequences.xml',
         'views/views.xml',
         'views/templates.xml',
     ],
@@ -124,4 +126,5 @@ For issues, enhancements, or contributions, follow the ClinicOne contribution gu
         'demo/demo.xml',
     ],
 }
+
 

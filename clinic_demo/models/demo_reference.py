@@ -1,3 +1,4 @@
+
 """Stable demo-key registry without modifying every ClinicOne business model."""
 
 import re
@@ -123,3 +124,6 @@ class ClinicDemoReference(models.Model):
             "res_id": self.res_id,
             "target": "current",
         }
+
+
+

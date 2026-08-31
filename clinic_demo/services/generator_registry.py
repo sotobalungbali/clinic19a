@@ -1,3 +1,4 @@
+
 """Explicit generator registry. Domain generators are added in later prompts."""
 
 from collections import defaultdict, deque
@@ -54,3 +55,6 @@ class GeneratorRegistry:
 
 
 GENERATOR_REGISTRY = GeneratorRegistry()
+
+
+

@@ -1,3 +1,4 @@
+
 # ClinicOne / clinic_staff — Enterprise Development Guardrail
 
 ## Authority
@@ -75,3 +76,4 @@ Success requires all of:
 
 Only then report:
 `CLINIC_STAFF_MOVE_FORWARD_READY: YES`
+

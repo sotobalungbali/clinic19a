@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_slot.py
@@ -630,3 +631,5 @@ class BookingSlotMixin(models.AbstractModel):
         """Inheriting models (e.g., booking) can override or consume slot defaults."""
         # Example: for booking.booking we will fill defaults in form view onchange via RPC.
         return
+
+

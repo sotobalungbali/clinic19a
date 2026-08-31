@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_policy.py
@@ -782,3 +783,5 @@ class BookingPolicyMixin(models.AbstractModel):
         # Hook left intentionally light; inheriting models may override
         # to prefill deposit flags/values or to refresh computed fields.
         return
+
+

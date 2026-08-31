@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/specialty.py
 # Module: clinic_doctor
@@ -220,3 +221,4 @@ class ClinicSpecialty(models.Model):
             "context": context,
             "target": "current",
         }
+

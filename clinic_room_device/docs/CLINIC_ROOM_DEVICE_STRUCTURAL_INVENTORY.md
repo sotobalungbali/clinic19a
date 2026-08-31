@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_room_device Full Structural Inventory
 
 Authoritative source: original non-backup addon source supplied by the user.

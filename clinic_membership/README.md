@@ -1,5 +1,6 @@
 
 
+
 # ClinicOne Membership — Odoo 19 CE
 
 Enterprise membership, loyalty, benefit entitlement, vouchers, points, holds, and usage traceability for ClinicOne.
@@ -73,3 +74,8 @@ Membership now owns `clinic_membership.action_membership_settings`, a dedicated
 `{'module': 'clinic_membership', 'bin_size': False}` context. The Membership
 Settings menu points to this local action, eliminating an unnecessary fragile
 external action dependency.
+
+
+## Runtime repair 19.0.3.0.6
+
+Reloads the already-declared Membership Manager ACL contract after runtime evidence showed the installed database had no create grant for `membership.plan`. No workflow or permission scope is broadened beyond source-declared manager access.

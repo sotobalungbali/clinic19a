@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_feedback_link.py
@@ -582,3 +583,5 @@ class BookingFeedbackLinkMixin(models.AbstractModel):
             "res_id": link.id,
             "target": "current",
         }
+
+

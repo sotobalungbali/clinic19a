@@ -42,3 +42,4 @@ These models are runtime-detected and intentionally absent from the manifest:
 duplicate historical Referral Source codes before the Odoo 19 UNIQUE constraint
 is applied. It changes only conflicting legacy identifiers and preserves all
 business relations.
+

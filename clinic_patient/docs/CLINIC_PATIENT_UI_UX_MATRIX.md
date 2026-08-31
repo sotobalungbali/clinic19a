@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_patient UI/UX Matrix
 
 Every custom persistent model must have a Search, List, and Form view. UI complements ORM security; it never replaces ACLs/record rules.

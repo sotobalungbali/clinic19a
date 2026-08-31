@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # Copyright (C) ClinicOne
 # Models: clinic.skill (master), clinic.staff.skill (per-staff skill record)
@@ -486,3 +487,4 @@ class ClinicStaffSkill(models.Model):
         if role == "doctor" and not sk.applicable_to_doctor:
             return False
         return True
+

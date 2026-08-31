@@ -1,3 +1,4 @@
+
 # ClinicOne Demo Framework — MASTER PROMPT 07
 
 Build contract:
@@ -33,3 +34,6 @@ The Prompt-07 generation buttons are deliberately safe-gated when zero executabl
 domain generators are registered; they do not create fake business data.
 
 The Control Center is **not** a standalone primary `res.config.settings` form.
+
+
+

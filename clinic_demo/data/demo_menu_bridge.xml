@@ -8,3 +8,6 @@
     -->
     <function model="clinic.demo.run" name="_ensure_demo_dataset_menu_parent"/>
 </odoo>
+
+
+

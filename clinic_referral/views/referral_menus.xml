@@ -33,3 +33,4 @@
 <menuitem id="menu_referral_settings" name="Referral Settings" parent="menu_referral_configuration" action="action_referral_settings" sequence="90" />
 
 </odoo>
+

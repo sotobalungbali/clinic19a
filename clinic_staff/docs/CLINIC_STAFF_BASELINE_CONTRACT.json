@@ -1,12 +1,12 @@
 {
-  "contract_id": "CLINIC_STAFF_ENTERPRISE_BASELINE_V1",
+  "contract_id": "CLINIC_STAFF_ENTERPRISE_BASELINE_PROMPT09_V2",
   "addon": "clinic_staff",
-  "functional_status": "FINISHED",
-  "change_policy": "TECHNICAL_HARDENING_ONLY",
+  "functional_status": "PROMPT_09_OWNER_PATCH_STATIC_PASS_PENDING_RUNTIME",
+  "change_policy": "SOURCE_DRIVEN_ADDITIVE_OWNER_PATCH_UNDER_CLINIC_DEMO_V2_3",
   "odoo_target": "19.0 CE",
   "backup_rule": "Files whose filename begins with digit 0 are user backup files and are excluded from active-source review/gates.",
   "manifest": {
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "depends": [
       "base",
       "mail",
@@ -19,6 +19,8 @@
       "clinic_audit"
     ],
     "data": [
+      "security/ir.model.access.csv",
+      "data/sequences.xml",
       "views/views.xml",
       "views/templates.xml"
     ],
@@ -31,6 +33,7 @@
     "__manifest__.py",
     "controllers/__init__.py",
     "controllers/controllers.py",
+    "data/sequences.xml",
     "demo/demo.xml",
     "models/__init__.py",
     "models/models.py",
@@ -118,6 +121,7 @@
         "can_be_scheduled",
         "company_id",
         "display_name",
+        "employee_id",
         "employment_status",
         "grade",
         "hire_date",
@@ -137,10 +141,12 @@
         "skill_ids",
         "staff_code",
         "telemed_thread_count",
-        "termination_date"
+        "termination_date",
+        "user_id"
       ],
       "methods": [
         "_check_dates",
+        "_check_identity_consistency",
         "_compute_can_be_scheduled",
         "_compute_counts",
         "_compute_display_name",
@@ -158,7 +164,9 @@
         "write"
       ],
       "constraints": [
-        "_staff_code_unique"
+        "_staff_code_unique",
+        "_staff_employee_unique",
+        "_staff_user_unique"
       ]
     },
     "clinic.staff.assignment": {
@@ -824,7 +832,7 @@
   },
   "hard_counts": {
     "persistent_source_models": 20,
-    "models_constraint_objects": 27,
+    "models_constraint_objects": 29,
     "legacy_sql_constraint_assignments": 0
   },
   "codex": {
@@ -836,5 +844,25 @@
       "AUTONOMOUS_SCOPE_EXPANDER",
       "UNBOUNDED_RETRY_ENGINE"
     ]
+  },
+  "prompt09_owner_patch": {
+    "acl_rows": 20,
+    "sequence_codes": [
+      "clinic.staff",
+      "clinic.skill",
+      "clinic.license.type",
+      "clinic.staff.license",
+      "clinic.shift.template",
+      "clinic.staff.assignment",
+      "clinic.workload.policy",
+      "clinic.staff.presence.session",
+      "clinic.kpi.definition",
+      "clinic.practitioner"
+    ],
+    "identity_bridge": [
+      "clinic.staff.user_id",
+      "clinic.staff.employee_id"
+    ],
+    "scheduling_compute_restored": "clinic.staff.can_be_scheduled"
   }
 }

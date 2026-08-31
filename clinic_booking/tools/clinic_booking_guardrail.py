@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """Machine-checkable static enterprise hard gate for ClinicOne clinic_booking.
 
@@ -583,6 +584,34 @@ def main() -> int:
                    feedback_inverse_ok,
                    "booking.booking must effectively own feedback_link_ids and action_new_feedback_link via booking.feedback.link.mixin"))
 
+    channel_source = (ROOT / "models/booking_channel.py").read_text(encoding="utf-8")
+    channel_create_multi_ok = (
+        manifest.get("version") == "19.0.1.0.4"
+        and "@api.model_create_multi" in channel_source
+        and "def create(self, vals_list):" in channel_source
+        and "for original in vals_list:" in channel_source
+        and "def create(self, vals):" not in channel_source
+    )
+    checks.append(("ODOO19_BOOKING_CHANNEL_CREATE_MULTI_CONTRACT",
+                   channel_create_multi_ok,
+                   "booking.channel create must accept Odoo 19 vals_list without list.get failure"))
+
+    doctor_bridge_source = (ROOT / "models/clinic_doctor_inherit.py").read_text(encoding="utf-8")
+    booking_bridge_source = (ROOT / "models/booking_booking.py").read_text(encoding="utf-8")
+    appointment_bridge_ok = (
+        'start_field = "start" if "start" in app_fields' in doctor_bridge_source
+        and 'end_field = "end" if "end" in app_fields' in doctor_bridge_source
+        and '("state", "not in", ["canceled", "no_show"])' in doctor_bridge_source
+        and 'if "start" in app_fields:' in booking_bridge_source
+        and 'vals["start"] = rec.start_datetime' in booking_bridge_source
+        and 'if "end" in app_fields:' in booking_bridge_source
+        and 'vals["end"] = rec.end_datetime' in booking_bridge_source
+        and 'if "partner_id" in app_fields:' in booking_bridge_source
+    )
+    checks.append(("CLINIC_APPOINTMENT_FIELD_COMPATIBILITY_CONTRACT",
+                   appointment_bridge_ok,
+                   "clinic_booking soft appointment bridge must use canonical start/end and field-aware domains"))
+
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     checks.append(("HARD_GATE_1_CODEX_BUKAN_ARCHITECT",
                    "LIMITED IMPLEMENTATION WORKER" in agents and "endless retry engine" in agents.lower(),
@@ -787,3 +816,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+

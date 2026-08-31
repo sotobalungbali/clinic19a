@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # File: clinic_doctor/models/room.py
 # Module: clinic_doctor
@@ -447,3 +448,4 @@ class ClinicRoom(models.Model):
         name = getattr(self, "name", _("Unnamed"))
         code = getattr(self, "code", False)
         return f"{name} [{code}]" if code else name
+

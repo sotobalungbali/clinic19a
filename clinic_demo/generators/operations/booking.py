@@ -1,4 +1,8 @@
 
+
+
+
+
 """MASTER PROMPT 14 — Booking & Front Office Operations."""
 
 from datetime import datetime, time, timedelta
@@ -280,4 +284,12 @@ class BookingOperationsGenerator(BaseDemoGenerator):
         if not golden or not referral or golden.referral_id != referral or referral.state != "converted":
             issues.append("Golden Referral → Booking conversion anchor is incomplete.")
         return issues
+
+
+
+
+
+
+
+
 

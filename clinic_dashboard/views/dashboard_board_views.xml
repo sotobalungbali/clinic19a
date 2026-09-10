@@ -158,3 +158,4 @@
         <field name="search_view_id" ref="view_dashboard_board_search"/>
     </record>
 </odoo>
+

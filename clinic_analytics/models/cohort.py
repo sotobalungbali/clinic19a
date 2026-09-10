@@ -263,3 +263,4 @@ class ClinicAnalyticsCohort(models.Model):
             "view_mode": "list,form",
             "domain": [("cohort_id", "=", self.id)],
         }
+

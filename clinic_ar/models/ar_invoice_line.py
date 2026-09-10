@@ -168,3 +168,5 @@ class ClinicARInvoiceLine(models.Model):
             raise UserError(_("This AR Line is not linked to a Billing Line."))
         return self.billing_line_id._get_records_action(name=_("Billing Line"))
 
+
+

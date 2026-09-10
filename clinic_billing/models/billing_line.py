@@ -301,3 +301,5 @@ class ClinicBillingLine(models.Model):
             raise ValidationError(_("Billing lines cannot be deleted after the accounting invoice is posted."))
         return super().unlink()
 
+
+

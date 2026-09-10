@@ -424,3 +424,6 @@ class ClinicBillingInvoiceClinicalTraceability(models.Model):
                 raise UserError(_("Clinical source links cannot be removed after posting."))
             rec.line_ids.mapped("treatment_link_id").unlink()
         return True
+
+
+

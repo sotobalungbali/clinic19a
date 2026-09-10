@@ -48,3 +48,4 @@ if ($Fatal) {
 
 Write-Host "clinic_ap targeted install completed without the configured fatal markers."
 Write-Host "Log: $Log"
+

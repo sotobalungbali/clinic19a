@@ -20,3 +20,4 @@ access_analytics_insight_analyst,clinic.analytics.insight analyst,model_clinic_a
 access_analytics_insight_manager,clinic.analytics.insight manager,model_clinic_analytics_insight,clinic_analytics.group_analytics_manager,1,1,1,1
 access_analytics_schedule_user,clinic.analytics.schedule user,model_clinic_analytics_schedule,clinic_analytics.group_analytics_user,1,0,0,0
 access_analytics_schedule_manager,clinic.analytics.schedule manager,model_clinic_analytics_schedule,clinic_analytics.group_analytics_manager,1,1,1,1
+

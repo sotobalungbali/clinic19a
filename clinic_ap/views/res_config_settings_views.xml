@@ -77,3 +77,4 @@
         <field name="context">{'module': 'clinic_ap', 'bin_size': False}</field>
     </record>
 </odoo>
+

@@ -24,3 +24,4 @@
 - Source drill-down never uses sudo.
 - Integration event publishing is disabled by default.
 - Analytics integration payloads contain aggregate metadata, not patient PII.
+

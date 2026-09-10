@@ -2,7 +2,7 @@
 
 Enterprise Electronic Medication Administration Record for ClinicOne.
 
-Version: `19.0.3.0.2`
+Version: `19.0.3.0.3`
 
 ## Scope
 
@@ -53,6 +53,13 @@ python tools/clinic_emar_guardrail.py
 See `docs/SOURCE_STATIC_VALIDATION.md` for the evidence matrix.
 
 Windows/Odoo runtime install or upgrade remains a separate acceptance gate.
+
+## Runtime repair 2026-09-08 — prescription validity date API
+
+Release `19.0.3.0.3` replaces the invalid `fields.Date.timedelta` call in the
+stored prescription-expiry computation with Python's deterministic
+`datetime.timedelta`. Prescription validity remains 30 days by default; the
+repair does not bypass the compute or weaken the clinical validity contract.
 
 
 ## Schema-safe source replacement — 19.0.3.0.0

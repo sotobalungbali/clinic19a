@@ -29,3 +29,4 @@ The final release must pass:
 - source-contract unit tests;
 - archive root/integrity/cache hygiene;
 - the same guardrail and tests after re-extracting the ZIP.
+

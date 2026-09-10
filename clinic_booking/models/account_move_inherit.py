@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/account_move_inherit.py
@@ -360,5 +361,3 @@ class AccountMoveLine(models.Model):
                     raise ValidationError(
                         _("The selected Booking Line does not belong to the invoice's Booking.")
                     )
-
-

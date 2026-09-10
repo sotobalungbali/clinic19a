@@ -19,3 +19,4 @@
     <record id="view_emar_schedule_calendar" model="ir.ui.view"><field name="name">clinic.emar.schedule.calendar</field><field name="model">clinic.emar.schedule</field><field name="arch" type="xml"><calendar string="eMAR Schedule" date_start="planned_datetime" color="patient_id" mode="week"><field name="product_id"/><field name="patient_id"/><field name="state"/></calendar></field></record>
     <record id="action_emar_schedules" model="ir.actions.act_window"><field name="name">Administration Schedule</field><field name="res_model">clinic.emar.schedule</field><field name="view_mode">list,calendar,form</field><field name="search_view_id" ref="view_emar_schedule_search"/></record>
 </odoo>
+

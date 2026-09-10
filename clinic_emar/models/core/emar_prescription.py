@@ -18,6 +18,8 @@ Design Principles
   clinic.emar.prescription (avoids multi-inheritance conflicts).
 """
 
+from datetime import timedelta
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -284,7 +286,10 @@ class ClinicEmarPrescription(models.Model):
     def _compute_expires_on(self):
         for rec in self:
             if rec.date_prescribed and rec.valid_days and rec.valid_days > 0:
-                rec.expires_on = (fields.Datetime.from_string(rec.date_prescribed) + fields.Date.timedelta(days=rec.valid_days)).date()
+                rec.expires_on = (
+                    fields.Datetime.from_string(rec.date_prescribed)
+                    + timedelta(days=rec.valid_days)
+                ).date()
             else:
                 rec.expires_on = False
 

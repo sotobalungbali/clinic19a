@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Clinical Queue & Room Management (Odoo 18/19 CE)
 # File: models/clinic_queue.py
@@ -495,8 +496,19 @@ class ClinicQueue(models.Model):
             ("queue_type", "=", self.queue_type),
             ("active", "=", True),
         ]
-        rec = Stage.search(domain + [("|", ("mapped_state", "=", mapped_state), ("code", "=", mapped_state))],
-                           limit=1, order="sequence asc, id asc")
+        # Odoo 19 domain operators are prefix tokens, not a nested
+        # three-item condition tuple. The previous shape
+        # ("|", condition_a, condition_b) was parsed as one condition and Odoo
+        # attempted `.lower()` on condition_a (a tuple).
+        rec = Stage.search(
+            domain + [
+                "|",
+                ("mapped_state", "=", mapped_state),
+                ("code", "=", mapped_state),
+            ],
+            limit=1,
+            order="sequence asc, id asc",
+        )
         return rec or self.stage_id
 
     def _move_to_mapped_state(self, mapped_state):

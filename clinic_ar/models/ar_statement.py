@@ -200,3 +200,5 @@ class ClinicARStatementLine(models.Model):
             raise UserError(_("This statement line has no AR Invoice."))
         return self.invoice_id._get_records_action(name=_("AR Invoice"))
 
+
+

@@ -407,7 +407,15 @@ class ClinicARInvoice(models.Model):
         sequence = self.env["ir.sequence"]
         for vals in vals_list:
             if vals.get("name", "/") in (False, "/", "New"):
-                vals["name"] = sequence.next_by_code("clinic.ar.invoice") or "/"
+                # A bounded dataset may supply a stable business identity through
+                # context.  Normal production callers keep the owner sequence.
+                # The value is deliberately not a generic ``default_name`` so a
+                # UI context cannot accidentally replace production numbering.
+                vals["name"] = (
+                    self.env.context.get("clinic_demo_ar_name")
+                    or sequence.next_by_code("clinic.ar.invoice")
+                    or "/"
+                )
             company = self.env["res.company"].browse(vals.get("company_id")) if vals.get("company_id") else self.env.company
             vals.setdefault("company_id", company.id)
             vals.setdefault("currency_id", company.currency_id.id)
@@ -712,4 +720,6 @@ class ClinicARInvoice(models.Model):
         today = fields.Date.context_today(self)
         invoices.write({"aging_date": today})
         return True
+
+
 

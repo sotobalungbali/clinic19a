@@ -1,4 +1,8 @@
 
+
+
+
+
 # ClinicOne Enterprise Demo Dataset (`clinic_demo`)
 
 Odoo 19 Community Edition.
@@ -33,6 +37,13 @@ transactions yet.
 - foundation through management domain generators (Prompts 08–22)
 - final full reset/regeneration/validation suite (Prompt 23)
 - executive demo script/release hardening (Prompt 24)
+
+## Final release
+
+Version `19.0.1.0.46` freezes the runtime-proven 35-generator dataset and adds
+the MASTER PROMPT 24 presentation/release artifacts. Start with
+`docs/CLINIC_DEMO_EXECUTIVE_DEMO_SCRIPT.md` and verify the target Demo Run shows
+**READY FOR DEMO** before client presentation.
 
 No existing ClinicOne addon is patched or replaced by this package.
 
@@ -263,3 +274,44 @@ booking. The build requires `clinic_referral 19.0.2.0.6` and
 phases. See `docs/PROMPT_14_BOOKING_FRONT_OFFICE_OPERATIONS.md`.
 
 Runtime repair `19.0.1.0.19` requires `clinic_treatment_session 19.0.2.0.3` so Treatment Session room availability remains API-compatible and compositional with `clinic_booking`.
+
+
+## MASTER PROMPT 15 status
+
+Version `19.0.1.0.20` registers `operations.queue_triage` after the runtime-frozen
+Prompt-14 front-office scope. It creates current arrival, Queue Token, Waiting,
+Called/In-Service, Completed Queue, Normal Triage and mild attention-required
+abnormal-vitals scenarios through owner workflow methods. No owner addon is
+patched. A Prompt-14-complete Draft Demo Run may adopt the build through Refresh
+Compatibility and Generate Full Enterprise Dataset on the same run without Reset.
+Existing DONE checkpoints are skipped by the execution engine.
+
+
+## Prompt 15 runtime repair 19.0.1.0.21
+
+Runtime evidence on 2 Sep 2026 showed `operations.queue_triage` stopped in its
+fail-fast preflight because `clinic_demo` incorrectly required
+`clinic.appointment.treatment_id`. The canonical active Appointment owner is
+`clinic_doctor`; Appointment uses `clinic.patient` for `patient_id` and does not
+own `treatment_id`.
+
+This repair removes the invalid Appointment treatment-field assumption, validates
+exact relational comodel contracts, fixes Triage/Appointment patient consistency
+to compare `clinic.patient` to `clinic.patient`, and adds bounded same-run adoption
+for a failed Prompt-15 checkpoint with zero Prompt-15 references committed.
+
+No owner addon is changed. Upgrade `.21`, Refresh Compatibility on the same Failed
+Demo Run, do not Reset, then Continue Generation.
+
+
+## MASTER PROMPT 16
+
+Adds source-driven Encounter and Treatment Session clinical journey generators. See `docs/PROMPT_16_ENCOUNTER_CORE_CLINICAL_JOURNEY.md`.
+
+
+
+
+
+
+
+

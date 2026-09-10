@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
@@ -30,5 +31,3 @@ class BookingTag(models.Model):
         for rec in self:
             if rec.name and not rec.name.strip():
                 raise ValidationError(_("Tag name cannot be blank."))
-
-

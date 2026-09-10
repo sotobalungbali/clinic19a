@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_queue_room Full Structural Inventory
 
 Functional baseline: **FINISHED / PRESERVED**.

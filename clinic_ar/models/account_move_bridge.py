@@ -186,3 +186,5 @@ class AccountMove(models.Model):
         self.invalidate_recordset(["ar_invoice_ids", "ar_payment_ids", "ar_invoice_count", "ar_payment_count"])
         return True
 
+
+

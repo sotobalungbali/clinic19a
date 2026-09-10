@@ -18,3 +18,6 @@
 | Empty scaffold controllers/templates/sample model | REJECT_WITH_REASON | Comment-only Odoo scaffold; no business function, removed to prevent maintenance noise |
 | Forward AR/AP/Audit/Reports integration | DEFER_WITH_CONTRACT | Integration-event outbox; downstream modules consume without circular dependency |
 | Upstream form decoration | KEEP_AND_HARDEN | Runtime-safe optional UI bridge avoids hard external-XML-ID failure |
+
+
+

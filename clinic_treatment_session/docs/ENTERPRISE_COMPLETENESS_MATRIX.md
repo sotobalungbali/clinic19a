@@ -1,4 +1,5 @@
-# ENTERPRISE COMPLETENESS MATRIX — HARD GATE 15
+
+# Enterprise Completeness Matrix — HARD GATE 15
 
 | Capability | Status |
 |---|---|
@@ -19,10 +20,12 @@
 | Multi-company / branch security | PASS |
 | Search/List/Form enterprise UI | PASS |
 | Kanban/Calendar/Graph/Pivot | PASS |
-| Runtime-safe smart-button bridges | PASS |
+| Runtime-safe smart-button bridge contract | PASS |
 | Odoo 19 Settings extension | PASS |
 | Odoo 19 models.Constraint | PASS |
-| Upgrade migration | PASS |
-| Codex bounded-worker policy | PASS |
+| Upgrade migration continuity | PASS |
+| `ignore_booking_id` owner API compatibility | PASS |
+| Digit-prefixed backup exclusion | PASS |
 
-Runtime Odoo remains PENDING until the user installs/upgrades this package.
+Target Odoo runtime remains pending until module upgrade and demo-generation
+acceptance are executed on the user's Odoo instance.

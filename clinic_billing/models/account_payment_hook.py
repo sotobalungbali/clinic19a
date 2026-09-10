@@ -147,3 +147,6 @@ class ClinicBillingInvoiceRegisterPaymentShortcut(models.Model):
         if self.move_id.state != "posted":
             self.move_id.action_post()
         return self.move_id.action_register_payment()
+
+
+

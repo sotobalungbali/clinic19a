@@ -101,7 +101,9 @@ class ClinicAPLine(models.Model):
             if not line.product_id:
                 continue
             line.name = line.product_id.display_name
-            line.product_uom_id = line.product_id.uom_po_id or line.product_id.uom_id
+            # Odoo 19 removed the separate purchase-UoM field. Purchasing,
+            # supplier info, stock, and invoice lines share product.uom_id.
+            line.product_uom_id = line.product_id.uom_id
             line.tax_ids = line.product_id.supplier_taxes_id.filtered(
                 lambda tax: tax.company_id == line.company_id
             )

@@ -230,3 +230,5 @@ class TestClinicBillingEnterprise(TransactionCase):
         self.assertEqual(field.type, "float")
         self.assertTrue(field.company_dependent)
 
+
+

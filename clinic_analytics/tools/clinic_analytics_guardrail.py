@@ -26,7 +26,7 @@ manifest = manifest_dict()
 # ----------------------------------------------------------------------
 # HG0 / HG1 / HG2 / HG3 / HG14 / HG15 identity documents.
 # ----------------------------------------------------------------------
-if manifest.get("version") != "19.0.1.0.0":
+if manifest.get("version") != "19.0.1.0.1":
     fail("HG0 unexpected addon version")
 if "clinic_audit" not in manifest.get("depends", []):
     fail("HG2 final analytics layer must consume the completed Audit contract")

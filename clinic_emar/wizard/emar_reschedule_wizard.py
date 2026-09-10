@@ -65,3 +65,4 @@ class ClinicEmarRescheduleWizard(models.TransientModel):
             self.new_datetime,
             self.reason,
         )
+

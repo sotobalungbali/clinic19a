@@ -33,3 +33,4 @@
 | Upgrade verification | owned eMAR tables asserted after module update | PASS — post-migration included |
 | Background recovery window | cron/autovacuum must not query absent eMAR tables | PASS — schema guards included |
 | Runtime target proof | actual Windows/Odoo upgrade and smoke | PENDING |
+

@@ -1,133 +1,85 @@
+
 # -*- coding: utf-8 -*-
+from datetime import timedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import AccessError, UserError, ValidationError
 
 
 class ClinicTreatmentSessionEnterprise(models.Model):
-    """Enterprise workflow overlay for the historical Treatment Session model.
-
-    The legacy model remains the public contract owner. This file only adds
-    canonical ClinicOne links and hardens workflow semantics that were unsafe
-    to enforce through UI visibility alone.
-    """
+    """Enterprise overlay preserving the historical Treatment Session owner."""
 
     _inherit = "clinic.treatment.session"
 
+    _workflow_states = {
+        "draft": {"confirmed", "in_progress", "no_show", "cancelled"},
+        "confirmed": {"in_progress", "no_show", "cancelled"},
+        "in_progress": {"done", "cancelled"},
+        "done": set(),
+        "no_show": {"draft"},
+        "cancelled": {"draft"},
+    }
+
     branch_id = fields.Many2one(
-        "clinic.branch",
-        string="Branch",
-        index=True,
-        check_company=True,
-        tracking=True,
-        domain="[('company_id', '=', company_id)]",
+        "clinic.branch", string="Branch", index=True, check_company=True,
+        tracking=True, domain="[('company_id', '=', company_id)]",
     )
     clinic_patient_id = fields.Many2one(
-        "clinic.patient",
-        string="Clinic Patient",
-        compute="_compute_canonical_links",
-        store=True,
-        index=True,
-        readonly=True,
+        "clinic.patient", string="Clinic Patient",
+        compute="_compute_canonical_links", store=True, index=True, readonly=True,
     )
     doctor_id = fields.Many2one(
-        "clinic.doctor",
-        string="Clinic Doctor",
-        index=True,
-        check_company=True,
-        tracking=True,
+        "clinic.doctor", string="Clinic Doctor", index=True,
+        check_company=True, tracking=True,
     )
     encounter_id = fields.Many2one(
-        "clinic.encounter",
-        string="Encounter",
-        index=True,
-        check_company=True,
-        tracking=True,
+        "clinic.encounter", string="Encounter", index=True,
+        check_company=True, tracking=True,
     )
     referral_id = fields.Many2one(
-        "clinic.referral",
-        string="Referral",
-        index=True,
-        check_company=True,
-        tracking=True,
+        "clinic.referral", string="Referral", index=True,
+        check_company=True, tracking=True,
     )
     package_allocation_id = fields.Many2one(
-        "clinic.package.allocation",
-        string="Package Allocation",
-        index=True,
-        check_company=True,
-        ondelete="restrict",
+        "clinic.package.allocation", string="Package Allocation",
+        index=True, check_company=True, ondelete="restrict",
     )
     package_allocation_line_id = fields.Many2one(
-        "clinic.package.allocation.line",
-        string="Package Allocation Line",
-        index=True,
-        check_company=True,
-        ondelete="restrict",
+        "clinic.package.allocation.line", string="Package Allocation Line",
+        index=True, check_company=True, ondelete="restrict",
     )
     package_usage_id = fields.Many2one(
-        "clinic.package.usage",
-        string="Package Usage",
-        compute="_compute_package_usage_id",
-        readonly=True,
+        "clinic.package.usage", string="Package Usage",
+        compute="_compute_package_usage_id", readonly=True,
     )
 
     actual_start_datetime = fields.Datetime(
-        string="Actual Start",
-        tracking=True,
-        copy=False,
-        index=True,
+        string="Actual Start", tracking=True, copy=False, index=True,
     )
     actual_end_datetime = fields.Datetime(
-        string="Actual End",
-        tracking=True,
-        copy=False,
-        index=True,
+        string="Actual End", tracking=True, copy=False, index=True,
     )
     execution_duration_minutes = fields.Float(
-        string="Actual Duration (min)",
-        compute="_compute_execution_metrics",
-        store=True,
+        compute="_compute_execution_metrics", store=True,
     )
     duration_variance_minutes = fields.Float(
-        string="Duration Variance (min)",
-        compute="_compute_execution_metrics",
-        store=True,
+        compute="_compute_execution_metrics", store=True,
     )
 
     currency_id = fields.Many2one(
-        "res.currency",
-        related="company_id.currency_id",
-        store=True,
-        readonly=True,
+        "res.currency", related="company_id.currency_id", store=True, readonly=True,
     )
     amount_untaxed = fields.Monetary(
-        compute="_compute_session_amounts",
-        currency_field="currency_id",
-        store=True,
+        compute="_compute_session_amounts", store=True, currency_field="currency_id",
     )
     amount_total = fields.Monetary(
-        compute="_compute_session_amounts",
-        currency_field="currency_id",
-        store=True,
-    )
-
-    billing_invoice_id = fields.Many2one(
-        "clinic.billing.invoice",
-        string="Clinic Billing Invoice",
-        index=True,
-        check_company=True,
-        copy=False,
+        compute="_compute_session_amounts", store=True, currency_field="currency_id",
     )
     billing_state = fields.Selection(
-        related="billing_invoice_id.state",
-        string="Billing Status",
-        readonly=True,
+        related="billing_invoice_id.state", string="Billing Status", readonly=True,
     )
     is_fully_invoiced = fields.Boolean(
-        string="Fully Invoiced / Paid",
-        compute="_compute_is_fully_invoiced",
-        store=True,
+        compute="_compute_is_fully_invoiced", store=True,
     )
 
     line_count = fields.Integer(compute="_compute_operational_counts")
@@ -136,329 +88,128 @@ class ClinicTreatmentSessionEnterprise(models.Model):
     stock_move_count = fields.Integer(compute="_compute_operational_counts")
     audit_event_count = fields.Integer(compute="_compute_operational_counts")
 
-    _workflow_states = {
-        "draft": {"confirmed", "in_progress", "done", "cancelled", "no_show"},
-        "confirmed": {"in_progress", "done", "cancelled", "no_show"},
-        "in_progress": {"done", "cancelled"},
-        "done": set(),
-        "no_show": set(),
-        "cancelled": {"draft"},
-    }
-
     @api.depends("patient_id")
     def _compute_canonical_links(self):
-        for session in self:
-            session.clinic_patient_id = (
-                session.patient_id.patient_id
-                if session.patient_id
-                and "patient_id" in session.patient_id._fields
+        Patient = self.env["clinic.patient"]
+        has_partner = "partner_id" in Patient._fields
+        for rec in self:
+            rec.clinic_patient_id = (
+                Patient.search([("partner_id", "=", rec.patient_id.id)], limit=1)
+                if rec.patient_id and has_partner
                 else False
             )
 
-    @api.depends("booking_id.package_usage_id")
     def _compute_package_usage_id(self):
-        for session in self:
-            session.package_usage_id = (
-                session.booking_id.package_usage_id
-                if session.booking_id
-                and "package_usage_id" in session.booking_id._fields
+        Usage = self.env["clinic.package.usage"]
+        has_session = "treatment_session_id" in Usage._fields
+        for rec in self:
+            rec.package_usage_id = (
+                Usage.search(
+                    [("treatment_session_id", "=", rec.id)],
+                    order="id desc", limit=1,
+                )
+                if has_session and rec.id
                 else False
             )
 
-    @api.depends(
-        "actual_start_datetime",
-        "actual_end_datetime",
-        "duration_planned",
-    )
+    @api.depends("actual_start_datetime", "actual_end_datetime", "duration_planned")
     def _compute_execution_metrics(self):
-        for session in self:
-            actual_minutes = 0.0
-            if session.actual_start_datetime and session.actual_end_datetime:
-                delta = (
-                    session.actual_end_datetime
-                    - session.actual_start_datetime
-                )
-                actual_minutes = max(
-                    delta.total_seconds() / 60.0,
+        for rec in self:
+            actual = 0.0
+            if rec.actual_start_datetime and rec.actual_end_datetime:
+                actual = max(
+                    (
+                        fields.Datetime.to_datetime(rec.actual_end_datetime)
+                        - fields.Datetime.to_datetime(rec.actual_start_datetime)
+                    ).total_seconds() / 60.0,
                     0.0,
                 )
-
-            session.execution_duration_minutes = actual_minutes
-            session.duration_variance_minutes = (
-                actual_minutes - (session.duration_planned or 0.0)
-                if actual_minutes
-                else 0.0
+            rec.execution_duration_minutes = actual
+            rec.duration_variance_minutes = (
+                actual - rec.duration_planned if actual else 0.0
             )
 
     @api.depends(
-        "line_ids.price_subtotal",
-        "line_ids.price_total",
-        "line_ids.is_billable",
-        "line_ids.display_type",
+        "line_ids.price_subtotal", "line_ids.price_total",
+        "line_ids.is_billable", "line_ids.display_type",
     )
     def _compute_session_amounts(self):
-        for session in self:
-            billable = session.line_ids.filtered(
-                lambda line: (
-                    line.display_type == "line"
-                    and line.is_billable
-                )
+        for rec in self:
+            lines = rec.line_ids.filtered(
+                lambda l: l.display_type == "line" and l.is_billable
             )
-            session.amount_untaxed = sum(
-                billable.mapped("price_subtotal")
-            )
-            session.amount_total = sum(
-                billable.mapped("price_total")
-            )
+            rec.amount_untaxed = sum(lines.mapped("price_subtotal"))
+            rec.amount_total = sum(lines.mapped("price_total"))
 
-    @api.depends(
-        "move_id.payment_state",
-        "billing_invoice_id.state",
-        "billing_invoice_id.payment_state",
-    )
+    @api.depends("billing_invoice_id", "billing_invoice_id.state")
     def _compute_is_fully_invoiced(self):
-        for session in self:
-            standard_paid = bool(
-                session.move_id
-                and session.move_id.payment_state
-                in ("paid", "in_payment")
-            )
-            clinic_paid = bool(
-                session.billing_invoice_id
-                and (
-                    session.billing_invoice_id.state == "paid"
-                    or session.billing_invoice_id.payment_state == "paid"
-                )
-            )
-            session.is_fully_invoiced = standard_paid or clinic_paid
+        for rec in self:
+            invoice = rec.billing_invoice_id
+            if not invoice:
+                rec.is_fully_invoiced = False
+                continue
+            state = invoice.state if "state" in invoice._fields else False
+            paid = bool(invoice.is_paid) if "is_paid" in invoice._fields else False
+            rec.is_fully_invoiced = paid or state in ("paid", "done", "posted", "closed")
 
     def _compute_operational_counts(self):
-        AuditEvent = self.env["clinic.audit.event"]
-        for session in self:
-            session.line_count = len(session.line_ids)
-            session.consumed_line_count = len(
-                session.line_ids.filtered(
-                    lambda line: line.consumption_state == "consumed"
-                )
+        Audit = self.env["clinic.audit.event"]
+        has_ref = "ref_model" in Audit._fields and "ref_res_id" in Audit._fields
+        for rec in self:
+            rec.line_count = len(rec.line_ids)
+            rec.consumed_line_count = len(rec.line_ids.filtered(lambda l: l.consumption_state == "consumed"))
+            rec.billable_line_count = len(rec.line_ids.filtered(lambda l: l.display_type == "line" and l.is_billable))
+            rec.stock_move_count = len(rec.line_ids.filtered("stock_move_id"))
+            rec.audit_event_count = (
+                Audit.search_count([("ref_model", "=", rec._name), ("ref_res_id", "=", rec.id)])
+                if has_ref and rec.id else 0
             )
-            session.billable_line_count = len(
-                session.line_ids.filtered(
-                    lambda line: (
-                        line.display_type == "line"
-                        and line.is_billable
-                    )
-                )
-            )
-            session.stock_move_count = len(
-                session.line_ids.mapped("stock_move_id")
-            )
-            session.audit_event_count = AuditEvent.search_count(
-                [
-                    ("ref_model", "=", session._name),
-                    ("ref_res_id", "=", session.id),
-                ]
-            )
-
-    @api.constrains(
-        "company_id",
-        "branch_id",
-        "doctor_id",
-        "encounter_id",
-        "referral_id",
-        "package_allocation_id",
-        "package_allocation_line_id",
-    )
-    def _check_enterprise_company_scope(self):
-        for session in self:
-            company = session.company_id
-            for record, label in (
-                (session.branch_id, _("Branch")),
-                (session.doctor_id, _("Clinic Doctor")),
-                (session.encounter_id, _("Encounter")),
-                (session.referral_id, _("Referral")),
-                (session.package_allocation_id, _("Package Allocation")),
-                (
-                    session.package_allocation_line_id,
-                    _("Package Allocation Line"),
-                ),
-            ):
-                if (
-                    record
-                    and "company_id" in record._fields
-                    and record.company_id
-                    and record.company_id != company
-                ):
-                    raise ValidationError(
-                        _("%s belongs to another company.") % label
-                    )
 
     @api.model_create_multi
     def create(self, vals_list):
-        prepared = []
-        for values in vals_list:
-            vals = dict(values)
-            self._prepare_enterprise_defaults(vals)
-            prepared.append(vals)
-
-        sessions = super().create(prepared)
-        sessions._sync_enterprise_links_from_booking()
-        sessions._sync_stage_with_state()
-        return sessions
+        records = super().create(vals_list)
+        records._sync_enterprise_links_from_booking()
+        records._sync_stage_with_state()
+        return records
 
     def write(self, vals):
-        # A status field is a workflow contract, not a free-edit selection.
-        if (
-            "state" in vals
-            and not self.env.context.get(
-                "clinic_treatment_session_workflow"
-            )
-        ):
-            for session in self:
-                session._check_state_transition(
-                    session.state,
-                    vals["state"],
-                )
-
-        result = super().write(vals)
-
-        if "booking_id" in vals:
+        if "state" in vals and self.env.context.get("clinic_treatment_session_workflow"):
+            for rec in self:
+                rec._check_state_transition(rec.state, vals["state"])
+        res = super().write(vals)
+        if set(vals) & {"booking_id", "patient_id", "clinic_doctor_id"}:
             self._sync_enterprise_links_from_booking()
-
-        return result
-
-    def _prepare_enterprise_defaults(self, vals):
-        """Populate canonical scope from already-provided upstream records."""
-        booking = (
-            self.env["booking.booking"].browse(vals["booking_id"])
-            if vals.get("booking_id")
-            else False
-        )
-        patient = (
-            self.env["res.partner"].browse(vals["patient_id"])
-            if vals.get("patient_id")
-            else booking.patient_id
-            if booking
-            else False
-        )
-
-        if booking:
-            vals.setdefault("company_id", booking.company_id.id)
-
-            if booking.doctor_id:
-                vals.setdefault("doctor_id", booking.doctor_id.id)
-
-            if "referral_id" in booking._fields and booking.referral_id:
-                vals.setdefault("referral_id", booking.referral_id.id)
-
-            if booking.appointment_id and not vals.get("encounter_id"):
-                encounter = self.env["clinic.encounter"].search(
-                    [
-                        ("appointment_id", "=", booking.appointment_id.id),
-                        ("company_id", "=", booking.company_id.id),
-                    ],
-                    order="id desc",
-                    limit=1,
-                )
-                if encounter:
-                    vals["encounter_id"] = encounter.id
-
-            if (
-                "package_allocation_id" in booking._fields
-                and booking.package_allocation_id
-            ):
-                vals.setdefault(
-                    "package_allocation_id",
-                    booking.package_allocation_id.id,
-                )
-
-            if (
-                "package_allocation_line_id" in booking._fields
-                and booking.package_allocation_line_id
-            ):
-                vals.setdefault(
-                    "package_allocation_line_id",
-                    booking.package_allocation_line_id.id,
-                )
-
-        if patient and "branch_id" in patient._fields and patient.branch_id:
-            vals.setdefault("branch_id", patient.branch_id.id)
+        return res
 
     def _sync_enterprise_links_from_booking(self):
-        """Backfill additive links without changing historical ownership."""
-        for session in self:
-            booking = session.booking_id
+        for rec in self:
+            booking = rec.booking_id
             if not booking:
                 continue
-
-            values = {}
-            if booking.doctor_id and not session.doctor_id:
-                values["doctor_id"] = booking.doctor_id.id
-
-            if (
-                "referral_id" in booking._fields
-                and booking.referral_id
-                and not session.referral_id
+            vals = {}
+            for fname in (
+                "doctor_id", "referral_id", "package_allocation_id",
+                "package_allocation_line_id", "branch_id",
             ):
-                values["referral_id"] = booking.referral_id.id
-
-            if (
-                booking.appointment_id
-                and not session.encounter_id
-            ):
-                encounter = self.env["clinic.encounter"].search(
-                    [
-                        ("appointment_id", "=", booking.appointment_id.id),
-                        ("company_id", "=", booking.company_id.id),
-                    ],
-                    order="id desc",
-                    limit=1,
-                )
-                if encounter:
-                    values["encounter_id"] = encounter.id
-
-            if (
-                "package_allocation_id" in booking._fields
-                and booking.package_allocation_id
-                and not session.package_allocation_id
-            ):
-                values["package_allocation_id"] = (
-                    booking.package_allocation_id.id
-                )
-
-            if (
-                "package_allocation_line_id" in booking._fields
-                and booking.package_allocation_line_id
-                and not session.package_allocation_line_id
-            ):
-                values["package_allocation_line_id"] = (
-                    booking.package_allocation_line_id.id
-                )
-
-            if values:
-                session.with_context(
-                    clinic_treatment_session_workflow=True
-                ).write(values)
+                if fname in booking._fields and booking[fname] and not rec[fname]:
+                    if booking[fname]._name == rec._fields[fname].comodel_name:
+                        vals[fname] = booking[fname].id
+            if vals:
+                rec.with_context(clinic_treatment_session_workflow=True).write(vals)
+        return True
 
     def _sync_stage_with_state(self):
-        """Synchronize Kanban stage using the session company and state."""
-        Stage = self.env["clinic.treatment.session.stage"].sudo()
-        for session in self:
-            target = Stage.get_default_stage(
-                company_id=session.company_id.id,
-                technical_state=session.state,
-            )
-            if target and session.stage_id != target:
-                session.stage_id = target.id
+        Stage = self.env["clinic.treatment.session.stage"]
+        for rec in self:
+            stage = Stage.get_default_stage(rec.state, rec.company_id.id)
+            if stage and rec.stage_id != stage:
+                rec.with_context(clinic_treatment_session_workflow=True).write(
+                    {"stage_id": stage.id}
+                )
         return True
 
     def _check_state_transition(self, old_state, new_state):
-        if old_state == new_state:
-            return
-
-        if new_state not in self._workflow_states.get(
-            old_state,
-            set(),
-        ):
+        if old_state != new_state and new_state not in self._workflow_states.get(old_state, set()):
             raise ValidationError(
                 _("Invalid Treatment Session transition: %s → %s.")
                 % (old_state, new_state)
@@ -466,277 +217,117 @@ class ClinicTreatmentSessionEnterprise(models.Model):
 
     def _require_manager(self):
         if not self.env.user.has_group(
-            "clinic_treatment_session."
-            "group_treatment_session_manager"
+            "clinic_treatment_session.group_treatment_session_manager"
         ):
-            raise AccessError(
-                _("Treatment Session Manager access is required.")
-            )
+            raise AccessError(_("Treatment Session Manager access is required."))
 
     def _require_clinician(self):
         if not (
             self.env.user.has_group(
-                "clinic_treatment_session."
-                "group_treatment_session_clinician"
+                "clinic_treatment_session.group_treatment_session_clinician"
             )
             or self.env.user.has_group(
-                "clinic_treatment_session."
-                "group_treatment_session_manager"
+                "clinic_treatment_session.group_treatment_session_manager"
             )
         ):
-            raise AccessError(
-                _("Treatment Session Clinician access is required.")
-            )
-
-    def _workflow_write(self, values):
-        return self.with_context(
-            clinic_treatment_session_workflow=True
-        ).write(values)
+            raise AccessError(_("Treatment Session Clinician access is required."))
 
     def _check_operational_conflicts(self):
-        """Enforce optional doctor/room overlap protection at workflow time."""
         Param = self.env["ir.config_parameter"].sudo()
         check_doctor = Param.get_param(
-            "clinic_treatment_session.prevent_doctor_overlap",
-            "1",
+            "clinic_treatment_session.prevent_doctor_overlap", "1"
         ) in ("1", "True", "true")
         check_room = Param.get_param(
-            "clinic_treatment_session.prevent_room_overlap",
-            "1",
+            "clinic_treatment_session.prevent_room_overlap", "1"
         ) in ("1", "True", "true")
-
-        for session in self:
-            if not session.start_datetime or not session.end_datetime:
-                continue
-
+        for rec in self:
             common = [
-                ("id", "!=", session.id),
-                ("company_id", "=", session.company_id.id),
+                ("id", "!=", rec.id),
+                ("company_id", "=", rec.company_id.id),
                 ("state", "in", ("confirmed", "in_progress")),
-                ("start_datetime", "<", session.end_datetime),
-                ("end_datetime", ">", session.start_datetime),
+                ("start_datetime", "<", rec.end_datetime),
+                ("end_datetime", ">", rec.start_datetime),
             ]
-
-            if check_doctor and session.doctor_id:
-                conflict = self.search(
-                    common + [("doctor_id", "=", session.doctor_id.id)],
-                    limit=1,
-                )
-                if conflict:
-                    raise ValidationError(
-                        _(
-                            "Clinic Doctor is already assigned to overlapping "
-                            "session %s."
-                        )
-                        % conflict.display_name
-                    )
-
-            if check_room and session.room_id:
-                conflict = self.search(
-                    common + [("room_id", "=", session.room_id.id)],
-                    limit=1,
-                )
-                if conflict:
-                    raise ValidationError(
-                        _(
-                            "Room is already assigned to overlapping "
-                            "session %s."
-                        )
-                        % conflict.display_name
-                    )
+            if check_doctor and rec.doctor_id and self.search_count(
+                common + [("doctor_id", "=", rec.doctor_id.id)]
+            ):
+                raise ValidationError(_("Clinic Doctor has an overlapping Treatment Session."))
+            if check_room and rec.room_id and self.search_count(
+                common + [("room_id", "=", rec.room_id.id)]
+            ):
+                raise ValidationError(_("Room has an overlapping Treatment Session."))
 
     def action_confirm(self):
         self._check_operational_conflicts()
-        for session in self:
-            if session.state == "draft":
-                session._workflow_write({"state": "confirmed"})
-                session._sync_stage_with_state()
-        return True
+        return super().action_confirm()
 
     def action_start(self):
         self._require_clinician()
         self._check_operational_conflicts()
         now = fields.Datetime.now()
-
-        for session in self:
-            if session.state not in ("draft", "confirmed"):
-                continue
-            session._workflow_write(
-                {
+        for rec in self:
+            if rec.state in ("draft", "confirmed"):
+                rec._workflow_write({
                     "state": "in_progress",
-                    "actual_start_datetime": (
-                        session.actual_start_datetime or now
-                    ),
-                }
-            )
-            session._sync_stage_with_state()
-
-        return True
-
-    def action_prepare_consumption(self):
-        """Move planned stock-relevant lines to Ready in one controlled action."""
-        self._require_clinician()
-        for session in self:
-            if session.state not in ("confirmed", "in_progress"):
-                raise ValidationError(
-                    _(
-                        "Consumption can be prepared only for Confirmed or "
-                        "In Progress sessions."
-                    )
-                )
-            planned = session.line_ids.filtered(
-                lambda line: (
-                    line.display_type == "line"
-                    and line.consumption_state == "planned"
-                )
-            )
-            planned.action_mark_ready()
-        return True
-
-    def action_consume_ready_lines(self):
-        """Consume all Ready stock-relevant lines through line-level safeguards."""
-        self._require_clinician()
-        for session in self:
-            if session.state not in ("confirmed", "in_progress"):
-                raise ValidationError(
-                    _(
-                        "Materials can be consumed only for Confirmed or "
-                        "In Progress sessions."
-                    )
-                )
-            ready = session.line_ids.filtered(
-                lambda line: (
-                    line.display_type == "line"
-                    and line.consumption_state == "ready"
-                )
-            )
-            ready.action_mark_consumed()
+                    "actual_start_datetime": rec.actual_start_datetime or now,
+                })
+                rec._sync_stage_with_state()
         return True
 
     def action_done(self):
         self._require_clinician()
         now = fields.Datetime.now()
-
-        for session in self:
-            if session.state not in (
-                "draft",
-                "confirmed",
-                "in_progress",
-            ):
-                continue
-
-            values = {
-                "state": "done",
-                "actual_start_datetime": (
-                    session.actual_start_datetime or now
-                ),
-                "actual_end_datetime": now,
-            }
-            session._workflow_write(values)
-            session._sync_stage_with_state()
-            session._post_done_hook()
-
-        return True
-
-    def action_no_show(self):
-        for session in self:
-            if session.state in ("draft", "confirmed"):
-                session._workflow_write({"state": "no_show"})
-                session._sync_stage_with_state()
-        return True
-
-    def action_cancel(self):
-        for session in self:
-            if session.state in ("done", "no_show"):
-                raise UserError(
-                    _(
-                        "Done or No-show sessions cannot be cancelled. "
-                        "Use a documented correction workflow instead."
-                    )
-                )
-            if session.state != "cancelled":
-                session._workflow_write({"state": "cancelled"})
-                session._sync_stage_with_state()
+        for rec in self:
+            if rec.state != "in_progress":
+                raise ValidationError(_("Only an In Progress Treatment Session can be completed."))
+            rec._workflow_write({"state": "done", "actual_end_datetime": now})
+            rec._sync_stage_with_state()
+            rec._post_done_hook()
         return True
 
     def action_reset_draft(self):
         self._require_manager()
-        for session in self:
-            if session.state not in ("cancelled", "no_show"):
-                raise ValidationError(
-                    _(
-                        "Only Cancelled or No-show sessions may be "
-                        "reset to Draft."
-                    )
-                )
-            session._workflow_write(
-                {
-                    "state": "draft",
-                    "actual_start_datetime": False,
-                    "actual_end_datetime": False,
-                }
-            )
-            session._sync_stage_with_state()
-        return True
+        return super().action_reset_draft()
 
     @api.model
     def cron_mark_auto_no_show(self):
-        """Mark overdue unstarted sessions No-show in a bounded batch."""
         Param = self.env["ir.config_parameter"].sudo()
         enabled = Param.get_param(
-            "clinic_treatment_session.auto_no_show_enabled",
-            "0",
+            "clinic_treatment_session.auto_no_show_enabled", "0"
         ) in ("1", "True", "true")
         if not enabled:
             return True
-
         try:
-            hours = int(
-                Param.get_param(
-                    "clinic_treatment_session.auto_no_show_hours",
-                    "2",
-                )
+            hours = float(
+                Param.get_param("clinic_treatment_session.auto_no_show_hours", "2")
             )
         except (TypeError, ValueError):
-            hours = 2
-
-        cutoff = fields.Datetime.subtract(
-            fields.Datetime.now(),
-            hours=max(hours, 0),
+            hours = 2.0
+        cutoff = (
+            fields.Datetime.to_datetime(fields.Datetime.now())
+            - timedelta(hours=max(hours, 0.0))
         )
-        due = self.search(
-            [
-                ("state", "in", ("draft", "confirmed")),
-                ("start_datetime", "!=", False),
-                ("start_datetime", "<=", cutoff),
-            ],
-            limit=200,
-        )
-        for session in due:
-            session._workflow_write({"state": "no_show"})
-            session._sync_stage_with_state()
-
+        due = self.search([
+            ("state", "in", ("draft", "confirmed")),
+            ("start_datetime", "<=", cutoff),
+        ], limit=200)
+        for rec in due:
+            rec._workflow_write({"state": "no_show"})
+            rec._sync_stage_with_state()
         return True
 
     def _post_done_hook(self):
-        """Preserve the historical hook and optionally create Billing."""
         result = super()._post_done_hook()
-
         Param = self.env["ir.config_parameter"].sudo()
-        auto_billing = Param.get_param(
-            "clinic_treatment_session.auto_create_billing",
-            "0",
-        ) in ("1", "True", "true")
-        billing_mode = Param.get_param(
-            "clinic_treatment_session.billing_mode",
-            "clinic_billing",
-        )
-
-        if auto_billing and billing_mode == "clinic_billing":
-            if not self.billing_invoice_id:
-                self.action_create_clinic_billing()
-        elif auto_billing and billing_mode == "account_invoice":
-            if not self.move_id:
-                self.action_create_invoice()
-
+        if Param.get_param(
+            "clinic_treatment_session.auto_create_billing", "0"
+        ) in ("1", "True", "true"):
+            mode = Param.get_param(
+                "clinic_treatment_session.billing_mode", "clinic_billing"
+            )
+            for rec in self:
+                if mode == "clinic_billing" and not rec.billing_invoice_id:
+                    rec.action_create_clinic_billing()
+                elif mode == "account_invoice" and not rec.move_id:
+                    rec.action_create_invoice()
         return result

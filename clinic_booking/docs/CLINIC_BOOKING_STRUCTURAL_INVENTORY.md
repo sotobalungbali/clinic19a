@@ -1,4 +1,5 @@
 
+
 # ClinicOne — clinic_booking Full Structural Inventory
 
 Baseline: active non-backup source from the uploaded ClinicOne dump. Files whose names begin with digit `0` are excluded.
@@ -53,5 +54,3 @@ Baseline: active non-backup source from the uploaded ClinicOne dump. Files whose
 ## Preservation rule
 
 The baseline fields/methods above are preservation contracts. Technical hardening may add helpers, views, security, or Odoo 19 compatibility code, but it must not silently remove existing business structure.
-
-

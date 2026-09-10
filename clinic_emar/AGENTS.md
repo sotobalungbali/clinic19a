@@ -35,3 +35,4 @@ Maximum **2 bounded implementation attempts** for one defect and maximum **1 rep
 ## Acceptance
 
 Static PASS is only a source gate. Do not claim completion until target Odoo 19 CE fresh install/upgrade and the clinical smoke workflow have passed.
+

@@ -109,3 +109,4 @@ class ClinicReportDefinitionAnalytics(models.Model):
                 "default_report_definition_id": self.id
             },
         }
+

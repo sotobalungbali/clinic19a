@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # from odoo import http
 
@@ -20,6 +21,3 @@
 #         return http.request.render('clinic_booking.object', {
 #             'object': obj
 #         })
-
-
-

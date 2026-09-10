@@ -508,3 +508,5 @@ class ClinicBillingInvoice_PatientBridge(models.Model):
             "target": "current",
         }
 
+
+

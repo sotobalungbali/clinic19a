@@ -312,3 +312,4 @@ class ClinicEmarOrderPrescriberGovernance(models.Model):
                 raise UserError(_("Only the prescribing doctor's linked user may digitally attest this order."))
             rec.write({"signed_by_id": self.env.user.id, "signed_on": fields.Datetime.now()})
         return True
+

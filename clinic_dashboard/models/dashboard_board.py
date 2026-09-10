@@ -308,7 +308,7 @@ class ClinicDashboardBoard(models.Model):
         )[:1]
 
     # One refresh creates one immutable Dashboard Snapshot that records full Report provenance per card.
-    def _refresh_snapshot(self, date_from, date_to, branch=None):
+    def _refresh_snapshot(self, date_from, date_to, branch=None, snapshot_name=None):
         self.ensure_one()
         self._require_group(
             "clinic_dashboard.group_dashboard_analyst",
@@ -325,6 +325,7 @@ class ClinicDashboardBoard(models.Model):
             dashboard_generation=True
         )
         snapshot = Snapshot.create({
+            "name": snapshot_name or "/",
             "board_id": self.id,
             "company_id": self.company_id.id,
             "branch_id": branch.id if branch else False,

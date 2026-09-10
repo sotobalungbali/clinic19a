@@ -48,3 +48,4 @@
     </record>
     <record id="action_emar_medication_profiles" model="ir.actions.act_window"><field name="name">Medication Profiles</field><field name="res_model">clinic.emar.medication.profile</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_emar_medication_profile_search"/></record>
 </odoo>
+

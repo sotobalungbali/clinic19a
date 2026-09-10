@@ -559,3 +559,4 @@ class ClinicEmarOrder(models.Model):
             "domain": [("order_id", "=", self.id)],
             "context": {"default_order_id": self.id},
         }
+

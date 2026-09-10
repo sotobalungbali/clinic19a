@@ -69,3 +69,4 @@
         <field name="groups" eval="[Command.link(ref('clinic_dashboard.group_dashboard_user'))]"/>
     </record>
 </odoo>
+

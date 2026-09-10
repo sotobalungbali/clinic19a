@@ -105,3 +105,4 @@ if ($FatalHits.Count -gt 0) {
 Write-Host "clinic_emar module upgrade completed without detected fatal patterns." -ForegroundColor Green
 Write-Host "Now restart the normal Odoo 19.0.20260505 service and open the database."
 Write-Host "Upgrade log: $UpgradeLog"
+

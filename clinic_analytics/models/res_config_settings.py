@@ -26,3 +26,4 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="clinic.analytics.default_horizon_periods",
         default=3,
     )
+

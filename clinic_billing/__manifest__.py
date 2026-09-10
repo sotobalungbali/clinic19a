@@ -21,7 +21,7 @@ Key capabilities
   treatment catalog, room/device and inventory consumption
 * Multi-company security and enterprise-grade UI
 """,
-    "version": "19.0.3.0.2",
+    "version": "19.0.3.0.5",
     "author": "ClinicOne",
     "website": "https://clinic.one",
     "license": "LGPL-3",
@@ -70,3 +70,4 @@ Key capabilities
     ],
     "demo": [],
 }
+

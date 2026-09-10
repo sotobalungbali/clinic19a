@@ -131,3 +131,4 @@ class ClinicAnalyticsForecastPoint(models.Model):
             "view_mode": "list,form",
             "domain": domain,
         }
+

@@ -355,3 +355,5 @@ class ClinicARAllocationLine(models.Model):
         self.ensure_one()
         return self.invoice_id._get_records_action(name=_("Target AR Invoice"))
 
+
+

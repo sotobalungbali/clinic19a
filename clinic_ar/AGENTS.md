@@ -18,3 +18,6 @@ Hard limits:
 
 
 - `res.currency` is global in Odoo 19; direct Many2one fields to it must not use `check_company=True`.
+
+
+

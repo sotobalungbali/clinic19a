@@ -161,3 +161,4 @@ class ClinicAnalyticsSnapshotLine(models.Model):
             "view_mode": "list,form",
             "domain": domain,
         }
+

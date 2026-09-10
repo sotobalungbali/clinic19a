@@ -46,3 +46,5 @@ class ResConfigSettings(models.TransientModel):
         params.set_param(self._clinic_ar_key("auto_refresh_aging"), self.clinic_ar_auto_refresh_aging)
         params.set_param(self._clinic_ar_key("statement_days"), self.clinic_ar_statement_days)
 
+
+

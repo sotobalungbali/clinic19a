@@ -1,26 +1,30 @@
 
+
+
+
+
 """Stable build and policy constants for ClinicOne demo orchestration."""
 
-GENERATOR_VERSION = "19.0.1.0.19"
-AUTHORITATIVE_SOURCE_FINGERPRINT = "1b91d4402f242a91bbbb7a483403187936eab960cc1b9858b059bc7987af2c7e"
-EXPECTED_SUITE_FINGERPRINT = "58bdfcce0d5385599f06a081a21f35ecfcf298298becddf5c0a667e0154fa9f1"
+GENERATOR_VERSION = "19.0.1.0.46"
+AUTHORITATIVE_SOURCE_FINGERPRINT = "8e0d2be47034b5841642ba056df294825f71a6040f7f27b77cd6da32ef417ab2"
+EXPECTED_SUITE_FINGERPRINT = "71c781e1f6649882cc9cad4376cefa63be60134ffe98fdb91caf4b492af18439"
 
 EXPECTED_SUITE_VERSIONS = {
     "clinic_accounting": "19.0.1.0.0",
-    "clinic_analytics": "19.0.1.0.0",
-    "clinic_ap": "19.0.3.0.2",
-    "clinic_ar": "19.0.3.0.2",
+    "clinic_analytics": "19.0.1.0.1",
+    "clinic_ap": "19.0.3.0.3",
+    "clinic_ar": "19.0.3.0.3",
     "clinic_audit": "19.0.2.0.3",
     "clinic_base": "19.0.1.0.0",
-    "clinic_billing": "19.0.3.0.2",
-    "clinic_booking": "19.0.1.0.4",
+    "clinic_billing": "19.0.3.0.5",
+    "clinic_booking": "19.0.1.0.5",
     "clinic_branch": "19.0.2.0.0",
     "clinic_care_plan": "19.0.1.0.0",
     "clinic_consent_legal": "19.0.1.1.0",
-    "clinic_dashboard": "19.0.1.0.0",
+    "clinic_dashboard": "19.0.1.0.1",
     "clinic_doctor": "19.0.1.0.2",
     "clinic_ecommerce": "19.0.1.0.0",
-    "clinic_emar": "19.0.3.0.2",
+    "clinic_emar": "19.0.3.0.3",
     "clinic_encounter": "19.0.1.0.0",
     "clinic_feedback": "19.0.1.0.0",
     "clinic_finance": "19.0.1.0.0",
@@ -37,14 +41,14 @@ EXPECTED_SUITE_VERSIONS = {
     "clinic_portal": "19.0.1.0.0",
     "clinic_post_care_followup": "19.0.1.0.0",
     "clinic_quality": "19.0.1.0.0",
-    "clinic_queue_room": "19.0.1.0.0",
+    "clinic_queue_room": "19.0.1.0.1",
     "clinic_referral": "19.0.2.0.6",
     "clinic_reports": "19.0.1.0.0",
     "clinic_room_device": "19.0.1.0.1",
     "clinic_staff": "19.0.1.0.1",
     "clinic_telemedicine_secure_messaging": "19.0.1.0.1",
     "clinic_treatment_catalog": "19.0.1.0.2",
-    "clinic_treatment_session": "19.0.2.0.3",
+    "clinic_treatment_session": "19.0.2.0.4",
     "clinic_triage_vitals": "19.0.1.1.2",
     "clinic_wallet": "19.0.3.0.5"
 }
@@ -84,6 +88,4 @@ REFERENCE_STATUS_SELECTION = [
     ("reset_retained", "Reset / Retained"),
     ("error", "Error"),
 ]
-
-
 

@@ -23,7 +23,7 @@ Forecast methods are intentionally transparent baseline methods:
 Naive, Moving Average and Linear Trend. The addon does not claim opaque AI/ML
 accuracy and does not introduce an external ML dependency.
 ''',
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "ClinicOne/Analytics",
     "author": "IG @odoocamp",
     "website": "https://www.247opensource.com",

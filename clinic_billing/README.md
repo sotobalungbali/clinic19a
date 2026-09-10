@@ -46,3 +46,6 @@ After replacing the complete folder, run a targeted Odoo update or use:
 `tools/windows_upgrade_clinic_billing.ps1`
 
 Source/static validation does not equal Windows runtime completion. Freeze the addon only after install/upgrade and smoke scenarios pass.
+
+
+

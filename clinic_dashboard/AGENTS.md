@@ -40,3 +40,4 @@ Odoo 19:
 - attribute-free `<search>` and direct `<group>`;
 - Owl client action registered in the actions registry;
 - backend model views remain available as an operational fallback.
+

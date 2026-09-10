@@ -29,3 +29,4 @@ Built-in company dashboards:
 
 Runtime status remains **PENDING** until activation and smoke tests succeed on
 the target Odoo 19 CE database.
+

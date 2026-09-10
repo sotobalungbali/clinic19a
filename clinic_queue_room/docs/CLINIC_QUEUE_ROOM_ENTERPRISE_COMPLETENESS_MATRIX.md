@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_queue_room Enterprise Completeness Matrix
 
 | Hard Gate | Requirement | Result |

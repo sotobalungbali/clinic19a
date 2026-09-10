@@ -1,4 +1,8 @@
 
+
+
+
+
 #!/usr/bin/env python3
 """Static Enterprise Development Guardrail for clinic_demo Prompt 07."""
 
@@ -11,8 +15,8 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_SOURCE_SHA = "1b91d4402f242a91bbbb7a483403187936eab960cc1b9858b059bc7987af2c7e"
-EXPECTED_SUITE_SHA = "58bdfcce0d5385599f06a081a21f35ecfcf298298becddf5c0a667e0154fa9f1"
+EXPECTED_SOURCE_SHA = "8e0d2be47034b5841642ba056df294825f71a6040f7f27b77cd6da32ef417ab2"
+EXPECTED_SUITE_SHA = "71c781e1f6649882cc9cad4376cefa63be60134ffe98fdb91caf4b492af18439"
 EXPECTED_CLINIC_DEPENDENCIES = 41
 EXPECTED_ACL_ROWS = 22
 
@@ -22,6 +26,23 @@ PERSISTENT_UI_MODELS = {
     "clinic.demo.checkpoint",
     "clinic.demo.log",
     "clinic.demo.validation.result",
+}
+
+PROMPT17_OWNER_ADDONS = (
+    "clinic_emar",
+    "clinic_imaging",
+    "clinic_care_plan",
+    "clinic_consent_legal",
+    "clinic_post_care_followup",
+    "clinic_telemedicine_secure_messaging",
+)
+
+VALID_ODOO_TEMPORAL_HELPERS = {
+    "Date": {"add", "context_today", "from_string", "to_date", "to_string", "today"},
+    "Datetime": {
+        "add", "context_timestamp", "from_string", "now", "subtract",
+        "to_datetime", "to_string",
+    },
 }
 
 
@@ -35,6 +56,43 @@ def literal(node):
         return ast.literal_eval(node)
     except Exception:
         return None
+
+
+def prompt17_owner_temporal_api_contract():
+    """Reject nonexistent fields.Date/Datetime helpers on the full owner path."""
+    invalid = []
+    addons_root = ROOT.parent
+    for addon_name in PROMPT17_OWNER_ADDONS:
+        addon_root = addons_root / addon_name
+        if not addon_root.is_dir():
+            fail(f"Prompt-17 owner source is missing: {addon_name}")
+        for path in sorted(addon_root.rglob("*.py")):
+            relative = path.relative_to(addon_root)
+            if (
+                "tests" in relative.parts
+                or "tools" in relative.parts
+                or path.name.startswith("xxx_")
+                or path.name[:1].isdigit()
+            ):
+                continue
+            tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+            for node in ast.walk(tree):
+                if not (
+                    isinstance(node, ast.Attribute)
+                    and isinstance(node.value, ast.Attribute)
+                    and isinstance(node.value.value, ast.Name)
+                    and node.value.value.id == "fields"
+                    and node.value.attr in VALID_ODOO_TEMPORAL_HELPERS
+                ):
+                    continue
+                field_type = node.value.attr
+                if node.attr not in VALID_ODOO_TEMPORAL_HELPERS[field_type]:
+                    invalid.append(
+                        f"{addon_name}/{relative}:{node.lineno} "
+                        f"fields.{field_type}.{node.attr}"
+                    )
+    if invalid:
+        fail("Invalid Prompt-17 owner temporal APIs: " + "; ".join(invalid))
 
 
 def python_contracts(python_files):
@@ -121,8 +179,13 @@ def python_contracts(python_files):
         fail(f"Direct SQL found: {direct_sql}")
     if manual_commit:
         fail(f"Manual commit found: {manual_commit}")
-    if sudo_calls:
-        fail(f"Generic sudo() found in runtime source: {sudo_calls}")
+    allowed_technical_sudo = {
+        "generators/validation/acceptance.py",
+        "services/reset_service.py",
+    }
+    unexpected_sudo = sorted(set(sudo_calls) - allowed_technical_sudo)
+    if unexpected_sudo:
+        fail(f"Generic sudo() found in runtime source: {unexpected_sudo}")
 
     return model_names, transient_models, model_fields, model_methods, model_relations
 
@@ -214,6 +277,8 @@ def main():
         ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     for path in xml_files:
         ET.parse(path)
+
+    prompt17_owner_temporal_api_contract()
 
     manifest = ast.literal_eval(
         ast.parse((ROOT / "__manifest__.py").read_text(encoding="utf-8")).body[0].value
@@ -383,7 +448,7 @@ def main():
     if "EXPECTED_FINAL_GENERATOR_COUNT = 35" not in execution_source:
         fail("Prompt-05 35-generator completion contract is not preserved.")
 
-    print("MASTER PROMPT 14 ENTERPRISE GUARDRAIL: PASS")
+    print("MASTER PROMPT 17 ENTERPRISE GUARDRAIL: PASS")
     print(f"Python parse: {len(python_files)} PASS")
     print(f"XML parse: {len(xml_files)} PASS")
     print("ClinicOne direct dependencies: 41 PASS")
@@ -539,8 +604,53 @@ def main():
                 key = literal(stmt.value)
                 if isinstance(key, str):
                     registered_generator_keys.add(key)
-    if len(registered_generator_keys) != 12:
-        fail(f"Prompt-14 expected 12 registered generators, found {len(registered_generator_keys)}.")
+    if len(registered_generator_keys) != 35:
+        fail(f"Prompt-23 expected 35 registered generators, found {len(registered_generator_keys)}.")
+    prompt19_keys = {"exception.feedback", "exception.incident_quality", "digital.ecommerce_marketing_portal"}
+    if not prompt19_keys <= registered_generator_keys:
+        fail(f"Prompt-19 generator registry incomplete: {sorted(prompt19_keys - registered_generator_keys)}")
+    if "operations.future_pipeline" not in registered_generator_keys:
+        fail("Prompt-20 future-pipeline generator is not registered.")
+    if "management.reports" not in registered_generator_keys:
+        fail("Prompt-21 management-reports generator is not registered.")
+    if not {"management.dashboard", "management.analytics"} <= registered_generator_keys:
+        fail("Prompt-22 Dashboard/Analytics generators are not both registered.")
+    prompt23_keys = {
+        "validation.structural", "validation.temporal", "validation.workflow",
+        "validation.journey_exception", "validation.analytics_evidence",
+        "validation.integrity_reset_regeneration",
+    }
+    if not prompt23_keys <= registered_generator_keys:
+        fail(f"Prompt-23 acceptance registry incomplete: {sorted(prompt23_keys - registered_generator_keys)}")
+    prompt23_source = (ROOT / "generators/validation/acceptance.py").read_text(encoding="utf-8")
+    for token in (
+        "DATETIME_INTERVAL_CONTRACTS",
+        '"clinic.triage.session": ("start_datetime", "end_datetime", "non_decreasing")',
+        '"booking.booking": ("start_datetime", "end_datetime", "strict")',
+        'rule == "strict" and end == start',
+    ):
+        if token not in prompt23_source:
+            fail(f"Prompt-23 model-owned temporal contract missing: {token}")
+    if 'if {"start_datetime", "end_datetime"} <= set(record._fields)' in prompt23_source:
+        fail("Prompt-23 still applies one generic interval rule across unrelated owner models.")
+    reset_source = (ROOT / "services/reset_policy_registry.py").read_text(encoding="utf-8")
+    for model_name in (
+        "account.move", "clinic.ap", "clinic.ar.invoice", "clinic.appointment", "clinic.encounter",
+        "clinic.triage.session", "clinical.imaging", "clinic.emar.order",
+        "clinic.incident", "clinic.queue", "clinic.telemedicine.session",
+        "clinic.dashboard.snapshot", "clinic.analytics.snapshot.line",
+    ):
+        if f'"{model_name}"' not in reset_source:
+            fail(f"Prompt-23 reset-policy closure missing owner model: {model_name}")
+    for release_artifact in (
+        "CLINIC_DEMO_EXECUTIVE_DEMO_SCRIPT.md",
+        "CLINIC_DEMO_ENTERPRISE_COMPLETENESS_MATRIX.md",
+        "CLINIC_DEMO_RELEASE_MANIFEST.md",
+        "CLINIC_DEMO_CORE_PATCH_LEDGER.md",
+        "PROMPT_24_FINAL_HARDENING_RELEASE.md",
+    ):
+        if not (ROOT / "docs" / release_artifact).is_file():
+            fail(f"Prompt-24 release artifact missing: {release_artifact}")
     print("Registered Prompt-13 historical generators: 1 PASS")
     print("Historical business-date contract / longitudinal patient baseline: PASS")
     print("Prompt-13 premature downstream transactions: 0 PASS")
@@ -578,10 +688,9 @@ def main():
     print("Legacy _sql_constraints/direct SQL/manual commit/sudo: 0 PASS")
     print("Numeric-prefix/cache artifacts: 0 PASS")
     print("Human-friendly file-size ceiling: PASS")
+    print("Prompt-17 owner temporal API allowlist: PASS")
 
 
 if __name__ == "__main__":
     main()
-
-
 

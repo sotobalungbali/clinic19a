@@ -182,3 +182,6 @@ class ClinicBillingPaymentIntegrationOutbox(models.Model):
         result = super()._on_after_cancel()
         self._emit_payment_event("payment_cancelled")
         return result
+
+
+

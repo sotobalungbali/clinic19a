@@ -14,3 +14,5 @@
   <menuitem id="menu_clinic_ar_settings" name="Settings" parent="menu_clinic_ar_configuration" action="action_clinic_ar_settings" sequence="30"/>
 </odoo>
 
+
+

@@ -256,3 +256,4 @@ class ClinicDashboardSnapshotLine(models.Model):
             "metric_id": self.metric_id.id if self.metric_id else False,
             "note": self.note or "",
         }
+

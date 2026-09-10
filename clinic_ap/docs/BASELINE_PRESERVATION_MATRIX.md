@@ -17,3 +17,4 @@
 | Controller/demo scaffolds | REJECTED WITH REASON: no business behavior in active baseline scaffold |
 | Generic scaffold templates/views | REPLACED WITH ENTERPRISE UI |
 | Core `res.partner.credit_limit` redeclaration | REJECTED WITH REASON: semantic collision with Odoo core customer credit limit |
+

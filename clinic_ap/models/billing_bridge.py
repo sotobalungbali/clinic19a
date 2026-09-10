@@ -43,3 +43,4 @@ class ClinicBillingLine(models.Model):
             "domain": [("billing_line_id", "=", self.id)],
             "context": {"create": False},
         }
+

@@ -1,4 +1,5 @@
 
+
 # AGENTS.md — ClinicOne clinic_booking
 
 You are working only on `clinic_booking`.
@@ -46,5 +47,3 @@ At attempt 3 failure:
 
 ## Definition of done
 Static guardrail PASS + real Odoo 19 fresh install/upgrade + repeat upgrade + booking functional smoke + no baseline feature loss.
-
-

@@ -39,3 +39,5 @@ class ClinicBillingPaymentARBridge(models.Model):
         self.ensure_one()
         return self.ar_payment_ids._get_records_action(name=_("AR Receipts"))
 
+
+

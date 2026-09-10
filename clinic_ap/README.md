@@ -22,3 +22,4 @@ Enterprise Accounts Payable for ClinicOne on Odoo 19 Community Edition.
 Place the folder directly under the ClinicOne addons path, update the Apps list, and install **ClinicOne - Accounts Payable**.
 
 Authoritative build version: `19.0.3.0.2`.
+

@@ -1,4 +1,8 @@
 
+
+
+
+
 """MASTER PROMPT 12 — Rooms, Devices, Resources & Scheduling."""
 
 from datetime import datetime, time, timedelta
@@ -64,7 +68,7 @@ class ResourcesRoomsDevicesGenerator(BaseDemoGenerator):
     phase = "12_resources"
     sequence = 500
     depends_on = ("master.commercial",)
-    scenario_keys = ("SCN-QUEUE-01",)
+    scenario_keys = ("SCN-BOOKING-TODAY-01",)
     owned_models = (
         "clinic.room.type", "clinic.room", "clinic.room.availability",
         "clinic.device.category", "clinic.device", "clinic.room.device.assignment",
@@ -437,5 +441,12 @@ class ResourcesRoomsDevicesGenerator(BaseDemoGenerator):
 
     def reset(self, ctx, scenario):
         return {"skipped": 1}
+
+
+
+
+
+
+
 
 

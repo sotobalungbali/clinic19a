@@ -38,3 +38,6 @@ Billing emits `clinic.billing.integration.event`. Future modules may consume the
 ## Runtime-safe UI bridge
 
 Smart buttons on Patient, Booking, Encounter, Care Plan, Package Allocation/Usage and eMAR Administration are created only when the target runtime XML ID exists and matches the expected model. Missing/stale external view IDs are logged and skipped safely.
+
+
+

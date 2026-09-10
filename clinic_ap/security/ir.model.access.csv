@@ -17,3 +17,4 @@ access_clinic_cashflow_adjustment_user,clinic.cashflow.adjustment user,model_cli
 access_clinic_cashflow_adjustment_manager,clinic.cashflow.adjustment manager,model_clinic_cashflow_adjustment,clinic_ap.group_clinic_ap_manager,1,1,1,1
 access_clinic_ap_event_user,clinic.ap.integration.event user,model_clinic_ap_integration_event,clinic_ap.group_clinic_ap_user,1,0,0,0
 access_clinic_ap_event_manager,clinic.ap.integration.event manager,model_clinic_ap_integration_event,clinic_ap.group_clinic_ap_manager,1,1,1,1
+

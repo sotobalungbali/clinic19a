@@ -662,3 +662,5 @@ class ClinicBillingInvoice_MembershipExt(models.Model):
 #   <field name="company_id" eval="False"/>
 # </record>
 
+
+

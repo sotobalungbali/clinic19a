@@ -3,24 +3,12 @@
     <record id="mail_template_treatment_session_reminder" model="mail.template">
         <field name="name">Treatment Session Reminder</field>
         <field name="model_id" ref="model_clinic_treatment_session"/>
-        <field name="subject">Reminder: {{ object.display_name }}</field>
+        <field name="subject">Treatment Session Reminder - {{ object.display_name }}</field>
         <field name="email_to">{{ object.patient_email or '' }}</field>
         <field name="body_html" type="html">
             <div>
-                <p>Hello <t t-out="object.patient_id.name or 'Patient'"/>,</p>
-                <p>
-                    This is a reminder for your treatment session
-                    <strong><t t-out="object.display_name"/></strong>.
-                </p>
-                <p>
-                    Planned start:
-                    <strong><t t-out="object.start_datetime"/></strong>
-                </p>
-                <p t-if="object.treatment_id">
-                    Treatment:
-                    <strong><t t-out="object.treatment_id.display_name"/></strong>
-                </p>
-                <p>Please contact the clinic if you need to reschedule.</p>
+                <p>Hello <t t-out="object.patient_id.display_name or 'Patient'"/>,</p>
+                <p>Your Treatment Session is scheduled for <t t-out="object.start_datetime"/>.</p>
             </div>
         </field>
     </record>

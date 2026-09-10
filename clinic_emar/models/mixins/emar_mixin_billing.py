@@ -435,3 +435,4 @@ class ClinicEmarBillingMixin(models.AbstractModel):
             except Exception:
                 pass
         return inv
+

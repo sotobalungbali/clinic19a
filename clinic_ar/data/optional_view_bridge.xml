@@ -7,3 +7,6 @@
     <function model="clinic.ar.invoice"
               name="_ensure_optional_billing_views"/>
 </odoo>
+
+
+

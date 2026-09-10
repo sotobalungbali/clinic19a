@@ -24,3 +24,5 @@ Accounting authority:
 - AR receipt creates standard Odoo `account.payment` and requires successful receivable reconciliation.
 - Open-credit allocation is represented by actual Odoo receivable reconciliation.
 
+
+

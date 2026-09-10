@@ -1,4 +1,8 @@
 
+
+
+
+
 """Ownership-aware reset foundation.
 
 Full cross-domain reset ordering is intentionally completed in Prompt 23. This
@@ -24,16 +28,18 @@ class DemoResetService:
         self.env = env
         self.registry = ResetPolicyRegistry()
 
-    def _record(self, reference):
+    def _record(self, reference, technical=False):
         try:
             model = self.env[reference.model_name]
         except KeyError:
             return False
+        if technical:
+            model = model.sudo()
         return model.browse(reference.res_id).exists()
 
-    def inspect(self, reference):
+    def inspect(self, reference, technical=False):
         reference.ensure_one()
-        record = self._record(reference)
+        record = self._record(reference, technical=technical)
         if not record:
             return {
                 "action": "missing",
@@ -188,15 +194,32 @@ class DemoResetService:
     def reset_run(self, run):
         """Reset demo-owned references in explicit child-first sequence.
 
-        This Prompt-07 foundation keeps immutable/reused/financial evidence and
-        blocks unknown policies. Prompt 23 performs the final cross-domain reset
-        acceptance audit once all domain generators exist.
+        Prompt 23 makes reset atomic: the complete ordered plan is preflighted
+        before the first mutation, and any runtime failure rolls the request
+        back instead of leaving a partially reset dataset.
         """
         run.ensure_one()
         references = self.env["clinic.demo.reference"].search(
             [("run_id", "=", run.id)],
             order="reset_sequence desc, id desc",
         )
+        blocked = []
+        for reference in references:
+            try:
+                inspection = self.inspect(reference)
+                record = self._record(reference)
+                for action_name in inspection.get("pre_actions", ()):
+                    if record and not hasattr(record, action_name):
+                        blocked.append(
+                            f"{reference.demo_key}: missing {record._name}.{action_name}()"
+                        )
+            except Exception as exc:
+                blocked.append(f"{reference.demo_key}: {exc}")
+        if blocked:
+            raise ValidationError(
+                "Reset whole-path preflight failed: " + "; ".join(blocked)
+            )
+
         summary = {
             "removed": 0,
             "deactivated": 0,
@@ -207,11 +230,12 @@ class DemoResetService:
 
         for reference in references:
             try:
-                with self.env.cr.savepoint():
-                    result = self.reset_reference(reference)
-            except Exception:
-                summary["errors"] += 1
-                continue
+                result = self.reset_reference(reference)
+            except Exception as exc:
+                raise ValidationError(
+                    f"Atomic reset failed at {reference.demo_key}; no reset changes "
+                    f"were committed. Root cause: {exc}"
+                ) from exc
 
             status = result.get("status")
             if status in {"removed"}:
@@ -230,6 +254,8 @@ class DemoResetService:
                 "error_summary": False,
             })
 
+        run.validation_result_ids.unlink()
+
         run.write({
             "state": "failed" if summary["errors"] else "draft",
             "validation_status": "not_run",
@@ -245,6 +271,10 @@ class DemoResetService:
             "error_count": summary["errors"],
         })
         return summary
+
+
+
+
 
 
 

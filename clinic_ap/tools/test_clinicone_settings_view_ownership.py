@@ -16,3 +16,4 @@ assert action.find("field[@name='view_id']").get("eval") == "False"
 assert (action.find("field[@name='path']").text or "").strip() == "clinic-ap-settings"
 
 print("CLINIC_AP_SETTINGS_OWNERSHIP: PASS")
+

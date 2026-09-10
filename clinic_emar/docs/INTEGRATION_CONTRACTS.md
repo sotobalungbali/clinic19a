@@ -55,3 +55,4 @@ Business code may continue to read:
 These names are stable API contracts. They are intentionally non-stored on
 `res.company`; storage is company-scoped through `ir.config_parameter`.
 Consumers must not assume a physical `res_company.emar_*` column exists.
+

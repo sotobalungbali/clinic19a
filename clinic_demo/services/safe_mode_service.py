@@ -1,4 +1,8 @@
 
+
+
+
+
 """Central deny-by-default external side-effect policy."""
 
 import re
@@ -38,6 +42,12 @@ class DemoSafeModeService:
         local = re.sub(r"[^a-z0-9]+", "-", (demo_key or "demo").lower()).strip("-")
         local = local or "demo"
         return f"{local}@clinicone-demo.invalid"
+
+
+
+
+
+
 
 
 

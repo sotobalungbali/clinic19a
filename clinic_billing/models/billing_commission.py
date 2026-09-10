@@ -573,3 +573,5 @@ class ClinicBillingInvoice_CommissionExt(models.Model):
             Engine.compute_for_billing(rec)
         return True
 
+
+

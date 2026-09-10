@@ -110,3 +110,4 @@
         <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
     </record>
 </odoo>
+

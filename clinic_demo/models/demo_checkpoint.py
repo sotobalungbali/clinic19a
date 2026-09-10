@@ -1,4 +1,8 @@
 
+
+
+
+
 """Persistent checkpoint used for bounded, resumable demo generation."""
 
 from odoo import fields, models
@@ -87,6 +91,12 @@ class ClinicDemoCheckpoint(models.Model):
             "res_id": self.id,
             "target": "current",
         }
+
+
+
+
+
+
 
 
 

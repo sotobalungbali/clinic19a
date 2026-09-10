@@ -42,6 +42,37 @@ for path in py_files:
         fail(f"python compile: {path.relative_to(ROOT)}: {exc}")
 note(f"python_files={len(py_files)}")
 
+# Reject nonexistent Odoo temporal helpers before a stored compute reaches the
+# database. Date arithmetic must use Python datetime.timedelta or supported
+# Odoo add/subtract helpers.
+valid_temporal_helpers = {
+    "Date": {"add", "context_today", "from_string", "to_date", "to_string", "today"},
+    "Datetime": {
+        "add", "context_timestamp", "from_string", "now", "subtract",
+        "to_datetime", "to_string",
+    },
+}
+for path in py_files:
+    if "tests" in path.parts or "tools" in path.parts or path.name.startswith("xxx_"):
+        continue
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    for node in ast.walk(tree):
+        if not (
+            isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Attribute)
+            and isinstance(node.value.value, ast.Name)
+            and node.value.value.id == "fields"
+            and node.value.attr in valid_temporal_helpers
+        ):
+            continue
+        field_type = node.value.attr
+        if node.attr not in valid_temporal_helpers[field_type]:
+            fail(
+                f"invalid Odoo temporal API: {path.relative_to(ROOT)}:{node.lineno} "
+                f"fields.{field_type}.{node.attr}"
+            )
+note("Odoo temporal API allowlist=PASS")
+
 # Manifest and data paths
 manifest_path = ROOT / "__manifest__.py"
 try:

@@ -93,3 +93,6 @@
         <field name="context">{'module': 'clinic_billing'}</field>
     </record>
 </odoo>
+
+
+

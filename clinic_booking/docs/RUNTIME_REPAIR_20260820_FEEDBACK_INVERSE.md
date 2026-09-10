@@ -1,4 +1,5 @@
 
+
 # Runtime Repair 2026-08-20 — Booking Feedback Inverse Contract
 
 ## Symptom
@@ -26,5 +27,3 @@ Many2one but could not resolve `feedback_link_ids` on a new booking record.
 
 No booking lifecycle, scheduling, billing, inventory, patient, doctor, room,
 resource, policy, channel, security, or feedback behavior is removed.
-
-

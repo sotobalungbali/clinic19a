@@ -522,3 +522,5 @@ class ClinicBillingInvoice_DoctorBridge(models.Model):
             "context": {"group_by": ["provider_partner_id"]},
         }
 
+
+

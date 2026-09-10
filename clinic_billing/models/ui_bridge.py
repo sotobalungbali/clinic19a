@@ -124,3 +124,6 @@ class ClinicBillingRuntimeViewBridge(models.Model):
                     exc,
                 )
         return True
+
+
+

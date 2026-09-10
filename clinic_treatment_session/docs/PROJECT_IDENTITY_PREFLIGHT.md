@@ -1,13 +1,15 @@
-# PROJECT IDENTITY PREFLIGHT — HARD GATE 0
+
+# Project Identity Preflight
 
 - Project: ClinicOne
-- Platform: Odoo 19 Community Edition
 - Addon: `clinic_treatment_session`
-- Source-actual order: **#41 / 41**
-- Authoritative baseline: `clinic19a(20260826-054546).md`
-- Historical draft version: `19.0.1.0.0`
-- Full-corrected version: `19.0.2.0.2`
-- Build mode: Direct Full Addon Build
+- Target: Odoo 19 Community Edition
+- Source-actual addon order: 41 / 41
+- Baseline version: `19.0.2.0.2`
+- Repair version: `19.0.2.0.3`
+- Delivery: Direct Full Replacement Addon
+- Runtime trigger: `operations.booking`
+- Failure: `BookingRoom.is_available() got an unexpected keyword argument 'ignore_booking_id'`
 
-The baseline contained an incomplete historical addon. It is treated as a
-public preservation contract, not as disposable scaffold code.
+The repair belongs to the Treatment Session extension of `booking.room`; it is
+not implemented as a `clinic_demo` workaround.

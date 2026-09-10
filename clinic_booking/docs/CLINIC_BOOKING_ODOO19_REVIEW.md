@@ -1,4 +1,5 @@
 
+
 # ClinicOne — clinic_booking Odoo 19 Enterprise Hardening Review
 
 ## Baseline policy
@@ -55,5 +56,3 @@ The validator also checks:
 
 ## Runtime status
 Static PASS permits runtime testing only. Real Odoo 19 install, repeat upgrade and focused booking workflow smoke on the target PC remain required before freeze.
-
-

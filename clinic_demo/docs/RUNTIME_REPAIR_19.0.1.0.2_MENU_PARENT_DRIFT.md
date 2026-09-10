@@ -1,4 +1,8 @@
 
+
+
+
+
 # Runtime Repair 19.0.1.0.2 — Demo Menu Parent XML-ID Drift
 
 ## Runtime evidence
@@ -32,6 +36,12 @@ ClinicOne business dependency.
    reset-policy and Golden Journey behavior is preserved.
 
 Authoritative repair source SHA-256: `d8ddf19e0b17e706791d2a7c31a0aeacd038a52f717832e8ca1eee32b939caa7`
+
+
+
+
+
+
 
 
 

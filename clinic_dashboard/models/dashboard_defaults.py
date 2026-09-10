@@ -137,3 +137,4 @@ DEFAULT_DASHBOARDS = [
         ],
     },
 ]
+

@@ -1,20 +1,24 @@
-# CROSS-ADDON CONTRACT AUDIT
 
-Confirmed from the authoritative 41-addon source snapshot:
+# Cross-Addon Contract Audit
 
-- Booking owner is `booking.booking`.
-- Booking canonical doctor is `doctor_id → clinic.doctor`.
-- Historical Treatment Session doctor is `clinic_doctor_id → hr.employee`.
-- Booking carries `referral_id`, `package_allocation_id`,
-  `package_allocation_line_id`, and `package_usage_id`.
-- Patient card owner is `clinic.patient` linked to `res.partner`.
-- Encounter owner is `clinic.encounter`.
-- Billing owner is `clinic.billing.invoice`.
-- Audit evidence owner is `clinic.audit.event`.
-- `clinic_membership` is already a downstream consumer of
-  `clinic.treatment.session`.
+Confirmed contracts preserved by this release:
 
-Critical draft defect corrected:
-the legacy Booking payload copied `clinic.doctor.id` directly into an
-`hr.employee` field. The full-corrected build resolves the employee separately
-and stores the canonical Clinic Doctor in `doctor_id`.
+- Booking owner: `booking.booking`.
+- Room availability owner: `clinic_booking` / `booking.room`.
+- Booking canonical Doctor: `clinic.doctor`.
+- Historical Treatment Session Doctor: `hr.employee`.
+- Treatment Session Patient public contract: `res.partner`.
+- Canonical Patient card: `clinic.patient`.
+- Encounter owner: `clinic.encounter`.
+- Referral owner: `clinic.referral`.
+- Billing owner: `clinic.billing.invoice`.
+- Accounting invoice compatibility: `account.move`.
+- Inventory movement owner: `stock.move`.
+- Audit evidence owner: `clinic.audit.event`.
+
+## 19.0.2.0.3 correction
+
+`clinic_treatment_session` no longer narrows
+`booking.room.is_available(...)`. It accepts the owner parameters
+`ignore_booking_id` and `consider_capacity`, delegates them to `super()`, and
+then adds Treatment Session overlap validation.

@@ -415,3 +415,4 @@ class AccountPaymentEmarBridge(models.Model):
                 "res_id": self.emar_prescription_id.id,
             }
         raise UserError(_("No eMAR origin linked to this payment."))
+

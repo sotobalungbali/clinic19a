@@ -2,3 +2,4 @@
 <odoo>
     <function model="clinic.ap" name="_ensure_optional_cross_addon_views"/>
 </odoo>
+

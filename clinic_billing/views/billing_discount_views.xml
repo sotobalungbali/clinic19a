@@ -152,3 +152,6 @@
         <field name="search_view_id" ref="view_clinic_billing_discount_redemption_search"/>
     </record>
 </odoo>
+
+
+

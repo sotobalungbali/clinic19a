@@ -1,4 +1,8 @@
 
+
+
+
+
 #!/usr/bin/env python3
 """Standalone MASTER PROMPT 11 source-contract regression tests."""
 from pathlib import Path
@@ -10,7 +14,7 @@ MASTER = ROOT / "generators/master"
 CATALOG = MASTER / "catalog.py"
 CONSENT = MASTER / "consent.py"
 COMMERCIAL = MASTER / "commercial.py"
-SOURCE_SHA = "1b91d4402f242a91bbbb7a483403187936eab960cc1b9858b059bc7987af2c7e"
+SOURCE_SHA = "8e0d2be47034b5841642ba056df294825f71a6040f7f27b77cd6da32ef417ab2"
 
 
 def assignments(path):
@@ -43,10 +47,10 @@ def class_meta(path, class_name):
 class TestPrompt11SourceContracts(unittest.TestCase):
     def test_build_version_and_source_contract(self):
         manifest = ast.literal_eval(ast.parse((ROOT / "__manifest__.py").read_text()).body[0].value)
-        self.assertEqual(manifest["version"], "19.0.1.0.19")
+        self.assertEqual(manifest["version"], "19.0.1.0.46")
         constants = (ROOT / "services/constants.py").read_text(encoding="utf-8")
         self.assertIn(SOURCE_SHA, constants)
-        self.assertIn('GENERATOR_VERSION = "19.0.1.0.19"', constants)
+        self.assertIn('GENERATOR_VERSION = "19.0.1.0.46"', constants)
 
     def test_three_master_generators_are_registered_in_order(self):
         expected = (
@@ -256,5 +260,12 @@ class TestPrompt11SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+
+
+
+
+
 
 

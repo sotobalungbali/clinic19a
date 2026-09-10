@@ -137,3 +137,4 @@
         <field name="search_view_id" ref="view_analytics_kpi_search"/>
     </record>
 </odoo>
+

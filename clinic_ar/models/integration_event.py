@@ -91,3 +91,5 @@ class ClinicARIntegrationEvent(models.Model):
                 event.write({"state": "failed", "last_error": _("No downstream consumer acknowledged this event.")})
         return True
 
+
+

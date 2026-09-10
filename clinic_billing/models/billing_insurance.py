@@ -721,3 +721,5 @@ class ClinicBillingInvoice_InsuranceExt(models.Model):
             },
         }
 
+
+

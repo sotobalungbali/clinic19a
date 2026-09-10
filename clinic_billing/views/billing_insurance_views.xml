@@ -176,3 +176,6 @@
         <field name="search_view_id" ref="view_clinic_insurance_claim_line_search"/>
     </record>
 </odoo>
+
+
+

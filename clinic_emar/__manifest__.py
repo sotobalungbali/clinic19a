@@ -2,7 +2,7 @@
 {
     "name": "ClinicOne - Electronic Medication Administration Record",
     "summary": "Enterprise prescriptions, medication orders, schedules, administrations, safety alerts, inventory and billing integration.",
-    "version": "19.0.3.0.2",
+    "version": "19.0.3.0.3",
     "category": "Clinic/Clinical",
     "author": "ClinicOne",
     "license": "LGPL-3",

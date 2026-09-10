@@ -228,3 +228,4 @@
         <field name="search_view_id" ref="view_dashboard_snapshot_search"/>
     </record>
 </odoo>
+

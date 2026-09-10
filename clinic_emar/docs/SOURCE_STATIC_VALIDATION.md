@@ -92,3 +92,4 @@ scripts and requires the Odoo-core `Environment(cr, SUPERUSER_ID, {})`
 construction in both schema-recovery scripts.  This prevents a source/static
 PASS from hiding an undeclared runtime dependency on the optional upgrade-util
 library.
+

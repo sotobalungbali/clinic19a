@@ -446,3 +446,5 @@ class AccountMoveClinicCreditNote(models.Model):
             },
         }
 
+
+

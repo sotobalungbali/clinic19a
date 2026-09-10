@@ -12,3 +12,4 @@
   <menuitem id="menu_clinic_ap_events" name="Integration Events" parent="menu_clinic_ap_configuration" action="action_clinic_ap_event" sequence="20"/>
   <menuitem id="menu_clinic_ap_settings" name="AP Settings" parent="menu_clinic_ap_configuration" action="action_clinic_ap_settings" sequence="90"/>
 </odoo>
+

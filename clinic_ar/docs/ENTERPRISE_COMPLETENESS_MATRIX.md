@@ -21,3 +21,6 @@
 
 
 - [x] Odoo 19 global `res.currency` contract: no invalid `check_company=True` on direct currency fields
+
+
+

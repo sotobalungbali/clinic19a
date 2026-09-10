@@ -11,7 +11,7 @@ three-way matching, payment-term policy, vendor exposure controls, aging snapsho
 cashflow projections, Billing cost traceability, accounting settlement navigation,
 multi-company security, and integration-event outbox.
 ''',
-    "version": "19.0.3.0.2",
+    "version": "19.0.3.0.3",
     "author": "ClinicOne",
     "website": "https://clinic.one",
     "license": "LGPL-3",

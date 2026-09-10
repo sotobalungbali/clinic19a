@@ -1,4 +1,5 @@
 
+
 from datetime import datetime
 
 import pytz
@@ -50,4 +51,3 @@ class TestBookingTimezoneSchedule(TransactionCase):
         self.assertTrue(resource.with_context(tz="Asia/Makassar")._fits_weekly_schedule(
             self._utc(2026, 8, 31, 9), self._utc(2026, 8, 31, 10)
         ))
-

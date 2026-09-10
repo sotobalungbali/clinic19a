@@ -1,3 +1,4 @@
+
 # clinic_booking 19.0.1.0.3 — Odoo 19 Booking Channel Multi-Create Repair
 
 ## Runtime evidence

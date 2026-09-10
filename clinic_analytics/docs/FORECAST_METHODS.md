@@ -20,3 +20,4 @@ Ordinary least-squares trend over sequential periods. The release reports:
 
 These are baseline statistical indicators. The software must not present them
 as guaranteed outcomes.
+

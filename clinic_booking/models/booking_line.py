@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_line.py
@@ -423,5 +424,3 @@ class BookingLine(models.Model):
         default.setdefault("price_tax", 0.0)
         default.setdefault("price_total", 0.0)
         return super().copy_data(default)
-
-

@@ -98,3 +98,4 @@ class ClinicAP(models.Model):
         for ap in self:
             ap.line_ids.mapped("match_state")
         return True
+

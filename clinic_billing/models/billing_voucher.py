@@ -758,3 +758,5 @@ class ClinicBillingInvoice_VoucherExt(models.Model):
             except Exception as e:
                 rec.message_post(body=_("Voucher redemption recording failed: %s") % e)
 
+
+

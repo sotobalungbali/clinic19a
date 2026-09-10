@@ -93,3 +93,4 @@ Concrete workflow-guard extensions are single-base `models.Model` classes. Share
   contains an upgrade-window-safe transient vacuum.
 - `models/core/emar_schedule.py`
   contains a schema-ready guard for the scheduled cron.
+

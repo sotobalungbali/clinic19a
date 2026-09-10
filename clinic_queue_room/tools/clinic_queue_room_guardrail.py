@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """ClinicOne clinic_queue_room machine-checkable enterprise hard gate.

@@ -31,3 +31,6 @@ numeric column to remain in the database.
 Static validation does not prove database migration success. Upgrade of
 `clinic_billing` on the target Windows/Odoo 19 database remains the runtime
 acceptance gate.
+
+
+

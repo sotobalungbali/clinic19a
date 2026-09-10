@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_queue_room Odoo 19 Enterprise Hardening Review
 
 ## Baseline

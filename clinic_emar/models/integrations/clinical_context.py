@@ -642,3 +642,4 @@ class ClinicEmarAdministrationClinicalContext(models.Model):
                 if order
                 else (rx.doctor_id if rx else False)
             )
+

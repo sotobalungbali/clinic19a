@@ -112,3 +112,4 @@ class ClinicAnalyticsIntegrationService(models.AbstractModel):
         event._create_deliveries()
         event.sudo().write({"state": "queued"})
         return event
+

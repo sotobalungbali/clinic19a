@@ -341,3 +341,5 @@ class ClinicARFollowup(models.Model):
                 continue
         return True
 
+
+

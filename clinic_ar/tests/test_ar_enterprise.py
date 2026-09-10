@@ -189,3 +189,5 @@ class TestClinicAREnterprise(TransactionCase):
         )
         self.assertFalse(result)
 
+
+

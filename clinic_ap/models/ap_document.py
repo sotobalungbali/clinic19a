@@ -514,3 +514,4 @@ class ClinicAP(models.Model):
         if any(rec.move_id for rec in self):
             raise UserError(_("Detach/delete the draft Vendor Bill before deleting the AP document."))
         return super().unlink()
+

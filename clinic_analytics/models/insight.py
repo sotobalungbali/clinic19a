@@ -244,3 +244,4 @@ class ClinicAnalyticsInsight(models.Model):
             "res_id": res_id,
             "view_mode": "form",
         }
+

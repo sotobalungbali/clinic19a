@@ -208,3 +208,4 @@ class TestClinicAPEnterprise(TransactionCase):
         self.assertEqual(action.path, "clinic-ap-settings")
         self.assertIn("clinic_ap", action.context or "")
 
+

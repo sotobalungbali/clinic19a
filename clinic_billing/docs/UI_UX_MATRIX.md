@@ -23,3 +23,6 @@
 | `clinic.billing.integration.event` | Search/List/Form | Statusbar; processed/retry/ignore outbox actions |
 
 All 19 persistent owner/domain models have dedicated Search, List and Form views. Runtime-safe upstream smart-button decoration is additive and does not replace the owner views.
+
+
+

@@ -11,7 +11,7 @@ class TestClinicAnalyticsSourceContracts(unittest.TestCase):
     def test_manifest_identity_and_order(self):
         tree = ast.parse((ROOT / "__manifest__.py").read_text())
         manifest = ast.literal_eval(tree.body[0].value)
-        self.assertEqual(manifest["version"], "19.0.1.0.0")
+        self.assertEqual(manifest["version"], "19.0.1.0.1")
         self.assertIn("clinic_audit", manifest["depends"])
         self.assertIn("clinic_integration_api", manifest["depends"])
         self.assertNotIn("clinic_analytics", manifest["depends"])
@@ -91,6 +91,29 @@ class TestClinicAnalyticsSourceContracts(unittest.TestCase):
         source = (ROOT / "models/forecast_point.py").read_text()
         self.assertIn("Forecast points can only be created", source)
         self.assertIn("Forecast points are immutable", source)
+
+    def test_owner_workflows_mutate_generated_children_internally(self):
+        snapshot = (ROOT / "models/snapshot.py").read_text()
+        forecast = (ROOT / "models/forecast.py").read_text()
+        self.assertIn("rec.line_ids.sudo().with_context(", snapshot)
+        self.assertIn("Line.sudo().with_context(", snapshot)
+        self.assertIn("rec.point_ids.sudo().with_context(", forecast)
+        self.assertEqual(forecast.count("Point.sudo().with_context("), 2)
+        acl = (ROOT / "security/ir.model.access.csv").read_text()
+        self.assertIn(
+            "access_analytics_snapshot_line_manager,"
+            "clinic.analytics.snapshot.line manager,"
+            "model_clinic_analytics_snapshot_line,"
+            "clinic_analytics.group_analytics_manager,1,0,0,0",
+            acl,
+        )
+        self.assertIn(
+            "access_analytics_forecast_point_manager,"
+            "clinic.analytics.forecast.point manager,"
+            "model_clinic_analytics_forecast_point,"
+            "clinic_analytics.group_analytics_manager,1,0,0,0",
+            acl,
+        )
 
     def test_forecast_methods_are_transparent(self):
         source = (ROOT / "models/forecasting_service.py").read_text()

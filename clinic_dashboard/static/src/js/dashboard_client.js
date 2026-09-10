@@ -231,3 +231,4 @@ registry.category("actions").add(
     "clinic_dashboard.main",
     ClinicDashboardClient
 );
+

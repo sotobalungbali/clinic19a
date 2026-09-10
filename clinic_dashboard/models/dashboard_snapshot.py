@@ -409,3 +409,4 @@ class ClinicDashboardSnapshot(models.Model):
             "state": "archived",
         })
         return True
+

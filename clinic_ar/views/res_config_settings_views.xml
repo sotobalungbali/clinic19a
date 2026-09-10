@@ -4,3 +4,5 @@
   <record id="action_clinic_ar_settings" model="ir.actions.act_window"><field name="name">Accounts Receivable Settings</field><field name="res_model">res.config.settings</field><field name="view_mode">form</field><field name="target">current</field><field name="context">{'module': 'clinic_ar', 'bin_size': False}</field></record>
 </odoo>
 
+
+

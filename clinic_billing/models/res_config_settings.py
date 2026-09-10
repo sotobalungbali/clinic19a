@@ -280,3 +280,5 @@ class ResConfigSettings(models.TransientModel):
             product = Product.create(tmpl_vals)
         return product
 
+
+

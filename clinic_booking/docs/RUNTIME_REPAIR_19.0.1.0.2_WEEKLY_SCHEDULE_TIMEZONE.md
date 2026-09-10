@@ -1,4 +1,5 @@
 
+
 # clinic_booking 19.0.1.0.2 — Weekly Schedule Timezone Repair
 
 ## Root cause
@@ -15,4 +16,3 @@ unchanged. Callers may provide `with_context(tz=...)`; otherwise normal Odoo use
 resolution applies.
 
 This is an additive owner repair required for source-valid Prompt-14 scheduling.
-

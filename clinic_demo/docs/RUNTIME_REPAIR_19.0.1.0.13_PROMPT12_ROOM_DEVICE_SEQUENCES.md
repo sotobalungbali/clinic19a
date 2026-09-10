@@ -1,4 +1,8 @@
 
+
+
+
+
 # Prompt 12 Runtime Repair — Room/Device Sequences
 
 ## Runtime evidence
@@ -24,5 +28,12 @@ the generator preflight.
 
 Authoritative snapshot SHA-256: `03d244d5c894e69188731687aaf62cae6e586db9dc862c90235036f6da592cad`
 Expected suite fingerprint: `17e98031b058cfbf57e3afa6e872a43e949b900265ce38f1109e2cefa9410689`
+
+
+
+
+
+
+
 
 

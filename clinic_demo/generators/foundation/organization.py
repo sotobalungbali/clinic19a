@@ -1,4 +1,8 @@
 
+
+
+
+
 """ClinicOne company/branch/location foundation generated through owner APIs."""
 
 from odoo import _
@@ -550,6 +554,12 @@ class ClinicOrganizationFoundationGenerator(BaseDemoGenerator):
 
 # Prompt-08 generators are deliberately idempotent; missing-record repair reuses
 # the same source-valid generation contract rather than a second code path.
+
+
+
+
+
+
 
 
 

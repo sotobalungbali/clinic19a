@@ -8,19 +8,11 @@
                 <field name="name"/>
                 <field name="technical_state"/>
                 <field name="company_id"/>
-                <filter name="default"
-                        string="Default"
-                        domain="[('is_default','=',True)]"/>
-                <filter name="final"
-                        string="Final"
-                        domain="[('is_final','=',True)]"/>
-                <separator/>
-                <filter name="group_state"
-                        string="Technical State"
-                        context="{'group_by':'technical_state'}"/>
-                <filter name="group_company"
-                        string="Company"
-                        context="{'group_by':'company_id'}"/>
+                <filter name="default" string="Default" domain="[('is_default', '=', True)]"/>
+                <group>
+                    <filter name="group_state" string="Technical State" context="{'group_by': 'technical_state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                </group>
             </search>
         </field>
     </record>
@@ -29,20 +21,16 @@
         <field name="name">clinic.treatment.session.stage.list</field>
         <field name="model">clinic.treatment.session.stage</field>
         <field name="arch" type="xml">
-            <list default_order="sequence,id">
+            <list string="Treatment Session Stages" editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
-                <field name="technical_state" widget="badge"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-                <field name="sessions_count"/>
+                <field name="technical_state"/>
                 <field name="is_default"/>
                 <field name="is_final"/>
                 <field name="fold"/>
                 <field name="active"/>
-                <button name="action_view_sessions"
-                        type="object"
-                        string="Sessions"
-                        icon="fa-stethoscope"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="sessions_count" readonly="1"/>
             </list>
         </field>
     </record>
@@ -51,52 +39,37 @@
         <field name="name">clinic.treatment.session.stage.form</field>
         <field name="model">clinic.treatment.session.stage</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Treatment Session Stage">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_sessions"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-stethoscope">
-                            <field name="sessions_count"
-                                   widget="statinfo"
-                                   string="Sessions"/>
+                        <button name="action_view_sessions" type="object"
+                                class="oe_stat_button" icon="fa-stethoscope">
+                            <field name="sessions_count" widget="statinfo" string="Sessions"/>
                         </button>
                     </div>
-
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1><field name="name"/></h1>
-                    </div>
-
                     <group>
-                        <group string="Workflow Mapping">
-                            <field name="technical_state"/>
+                        <group>
+                            <field name="name"/>
                             <field name="sequence"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="technical_state"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
                             <field name="is_default"/>
                             <field name="is_final"/>
                             <field name="fold"/>
                             <field name="active"/>
-                        </group>
-                        <group string="Kanban Legend">
                             <field name="color"/>
-                            <field name="legend_normal"/>
-                            <field name="legend_done"/>
-                            <field name="legend_blocked"/>
                         </group>
                     </group>
-
-                    <group string="Guidance">
-                        <field name="description"/>
-                    </group>
+                    <field name="description"/>
                 </sheet>
             </form>
         </field>
     </record>
 
     <record id="action_treatment_session_stages" model="ir.actions.act_window">
-        <field name="name">Session Stages</field>
+        <field name="name">Treatment Session Stages</field>
         <field name="res_model">clinic.treatment.session.stage</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_treatment_session_stage_search"/>

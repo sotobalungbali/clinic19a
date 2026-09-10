@@ -124,3 +124,4 @@
         <field name="search_view_id" ref="view_analytics_insight_search"/>
     </record>
 </odoo>
+

@@ -93,3 +93,4 @@ def migrate(cr, version):
         "schema-safe company-scoped parameters.",
         migrated,
     )
+

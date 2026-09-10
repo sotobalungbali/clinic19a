@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_queue_room Enterprise Development Guardrail
 
 ## Project Identity Preflight — Hard Gate 0

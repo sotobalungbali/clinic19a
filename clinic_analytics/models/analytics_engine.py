@@ -535,3 +535,4 @@ class ClinicAnalyticsEngine(models.AbstractModel):
             "retention_90": self._percentage(retained[90], size),
             "source_count": len(bookings),
         }
+

@@ -22,3 +22,4 @@
 
 ## Runtime-safe UI bridge
 Partner, Vendor Bill, Purchase Order and Billing Smart Buttons are created idempotently at runtime. Missing or structurally changed parent views may skip decoration but must not abort AP installation.
+

@@ -29,3 +29,4 @@ The SAME view XML-ID is converted into an extension:
 
 The AP company fields, business logic, security, ACLs, workflows and existing
 external IDs are preserved.
+

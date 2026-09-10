@@ -1,4 +1,8 @@
 
+
+
+
+
 """MASTER PROMPT 13 — deterministic longitudinal patient history.
 
 Prompt 13 proves the historical engine with source-native patient history that
@@ -388,5 +392,12 @@ class HistoricalPatientLongitudinalGenerator(BaseDemoGenerator):
 
     def reset(self, ctx, scenario):
         return True
+
+
+
+
+
+
+
 
 

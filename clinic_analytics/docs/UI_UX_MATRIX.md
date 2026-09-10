@@ -15,3 +15,4 @@ Additional cross-addon UI:
 - Dashboard Board smart buttons: Forecasts + Insights.
 - Report Definition smart button: Analytics KPIs.
 - Dashboard root navigation: Predictive Analytics.
+

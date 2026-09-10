@@ -417,3 +417,5 @@ class ClinicARPayment(models.Model):
         })
         return allocation._get_records_action(name=_("AR Allocation"))
 
+
+

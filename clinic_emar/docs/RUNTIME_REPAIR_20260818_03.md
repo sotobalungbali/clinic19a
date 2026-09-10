@@ -77,3 +77,4 @@ Runtime PASS still requires target-PC proof:
 6. Smoke: Settings → Prescription → safety/prescriber gate → Order → Schedule →
    Administration → Inventory → Alert.
 7. Only then freeze the addon.
+

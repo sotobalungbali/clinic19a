@@ -251,7 +251,7 @@ class ClinicAnalyticsForecast(models.Model):
 
             try:
                 with self.env.cr.savepoint():
-                    rec.point_ids.with_context(
+                    rec.point_ids.sudo().with_context(
                         clinic_analytics_internal=True
                     ).unlink()
 
@@ -296,7 +296,7 @@ class ClinicAnalyticsForecast(models.Model):
                         fitted = forecast_result[
                             "fitted"
                         ][index]
-                        Point.with_context(
+                        Point.sudo().with_context(
                             clinic_analytics_internal=True
                         ).create({
                             "forecast_id": rec.id,
@@ -335,7 +335,7 @@ class ClinicAnalyticsForecast(models.Model):
                         period_end,
                     ) in enumerate(future_periods):
                         row = forecast_result["future"][offset]
-                        Point.with_context(
+                        Point.sudo().with_context(
                             clinic_analytics_internal=True
                         ).create({
                             "forecast_id": rec.id,

@@ -1,4 +1,5 @@
 
+
 <odoo>
   <record id="rule_booking_tag_company" model="ir.rule">
     <field name="name">booking.tag multi-company</field>
@@ -145,5 +146,3 @@
     <field name="groups" eval="[(4, ref('base.group_user'))]"/>
   </record>
 </odoo>
-
-

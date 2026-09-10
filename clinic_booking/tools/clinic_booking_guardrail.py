@@ -1,4 +1,5 @@
 
+
 #!/usr/bin/env python3
 """Machine-checkable static enterprise hard gate for ClinicOne clinic_booking.
 
@@ -816,5 +817,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-

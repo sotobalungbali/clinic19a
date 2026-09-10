@@ -1,4 +1,5 @@
 
+
 <odoo noupdate="1">
   <record id="sequence_booking" model="ir.sequence">
     <field name="name">Clinic Booking</field>
@@ -16,5 +17,3 @@
     <field name="company_id" eval="False"/>
   </record>
 </odoo>
-
-

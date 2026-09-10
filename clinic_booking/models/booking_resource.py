@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_resource.py
@@ -718,5 +719,3 @@ class BookingResourceMixin(models.AbstractModel):
                     }
                 }
         return {}
-
-

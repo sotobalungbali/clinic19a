@@ -102,3 +102,4 @@ class ClinicEmarAdministrationWorkflowGuard(models.Model):
     def write(self, vals):
         self._emar_check_direct_state_write(vals)
         return super().write(vals)
+

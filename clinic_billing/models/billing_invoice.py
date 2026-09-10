@@ -203,7 +203,7 @@ class ClinicBillingInvoice(models.Model):
     # Direct view into move lines for convenience in form/tree (read-only mirror)
     move_line_ids = fields.One2many(
         comodel_name="account.move.line",
-        inverse_name="move_id",
+        related="move_id.line_ids",
         string="Accounting Lines",
         readonly=True,
         help="Lines of the linked accounting invoice (read-only mirror).",
@@ -636,21 +636,37 @@ class ClinicBillingInvoice(models.Model):
 
     # ------- Enrichment hooks for other modules (pricing/lines/insurance/membership) -------
     def _collect_planned_lines(self):
+        """Map the real Clinic Billing lines into standard invoice lines.
+
+        Accounting must reflect the commercial document.  A zero-value
+        placeholder would create a fake ledger and disconnect AR totals from
+        their source billing document.
         """
-        Hook to collect planned line values before creating account.move.
-        Other modules (treatment/package/pricing) can monkey-patch or extend this via inheritance.
-        Return list of dicts suitable for account.move.invoice_line_ids 0/0 commands.
-        """
-        # Default behavior: single placeholder line with 0.0 price.
-        product = self._ensure_placeholder_service_product()
-        income_acc = self._resolve_income_account(product)
-        return [{
-            "name": _("Clinical Services"),
-            "product_id": product.id,
-            "quantity": 1.0,
-            "price_unit": 0.0,
-            "account_id": income_acc.id,
-        }]
+        self.ensure_one()
+        planned = []
+        for line in self.line_ids.sorted("sequence"):
+            if line.display_type:
+                planned.append({
+                    "display_type": line.display_type,
+                    "name": line.name or "",
+                })
+                continue
+            if not line.product_id:
+                raise UserError(_("Every monetary Billing line requires a Product/Service."))
+            if line.quantity <= 0:
+                raise UserError(_("Every monetary Billing line requires a positive quantity."))
+            planned.append({
+                "name": line.name or line.product_id.display_name,
+                "product_id": line.product_id.id,
+                "product_uom_id": line.product_uom_id.id or line.product_id.uom_id.id,
+                "quantity": line.quantity,
+                "price_unit": line.get_effective_unit_price(),
+                "tax_ids": [(6, 0, line.tax_ids.ids)],
+                "account_id": self._resolve_income_account(line.product_id).id,
+            })
+        if not any(not values.get("display_type") for values in planned):
+            raise UserError(_("At least one monetary Billing line is required."))
+        return planned
 
     def _apply_pricing_rules(self, line_vals_list):
         """
@@ -838,7 +854,11 @@ class ClinicBillingInvoice(models.Model):
                     vals.setdefault("doctor_partner_id", doctor.partner_id.id if doctor.partner_id else False)
                     vals.setdefault("doctor_user_id", doctor.user_id.id if doctor.user_id else False)
             if not vals.get("name") or vals.get("name") in ("/", False):
-                vals["name"] = self.env["ir.sequence"].sudo().next_by_code("clinic.billing.invoice") or "/"
+                vals["name"] = (
+                    self.env.context.get("clinic_demo_billing_name")
+                    or self.env["ir.sequence"].sudo().next_by_code("clinic.billing.invoice")
+                    or "/"
+                )
             if not vals.get("company_id"):
                 vals["company_id"] = self.env.company.id
             if not vals.get("currency_id"):

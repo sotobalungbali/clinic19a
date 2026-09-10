@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 """
 ClinicOne — clinic_booking
@@ -42,5 +43,3 @@ from . import clinic_doctor_inherit    # Handshake to clinic.appointment (lives 
 from . import treatment_inherit        # Defaults/pricing/allowed doctors from clinic_treatment
 from . import account_move_inherit     # Invoice linkage (account.move)
 from . import stock_move_inherit       # Stock/consumables linkage (stock.picking / moves)
-
-

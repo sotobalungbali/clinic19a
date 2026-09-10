@@ -32,3 +32,4 @@ The Billing parent form XML ID `clinic_billing.view_clinic_billing_invoice_form`
 
 ## Dependency direction
 `clinic_ap` consumes AR only for treasury cashflow projections; it does not take ownership of AR records. No reverse dependency from the supplied `clinic_ar` baseline creates a cycle.
+

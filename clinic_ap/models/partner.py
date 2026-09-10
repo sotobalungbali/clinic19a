@@ -113,3 +113,4 @@ class ResPartner(models.Model):
             "domain": [("vendor_id", "child_of", self.commercial_partner_id.id)],
             "context": {"default_vendor_id": self.id},
         }
+

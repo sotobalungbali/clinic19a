@@ -1,4 +1,8 @@
 
+
+
+
+
 """MASTER PROMPT 11 — governed consent template masters without patient consent transactions."""
 
 from odoo import _, fields
@@ -269,5 +273,12 @@ class MasterConsentGenerator(BaseDemoGenerator):
         if failures:
             raise UserError(_("Consent master validation failed: %s") % "; ".join(failures))
         return []
+
+
+
+
+
+
+
 
 

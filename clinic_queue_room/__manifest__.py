@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 {
     "name": "ClinicOne: Queue & Room Operations",
@@ -9,7 +10,7 @@ Operational queue and room-routing layer for ClinicOne. This addon preserves
 the existing functional baseline while hardening it for Odoo 19 Community
 Edition and completing the enterprise presentation/security layer.
     """,
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "ClinicOne/Operations",
     "author": "PT Dua Empat Tujuh Open Source",
     "website": "https://odoocamp.net",

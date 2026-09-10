@@ -68,3 +68,4 @@ def migrate(cr, version):
         "[clinic_emar] Post-upgrade schema assertions PASS for %s owned tables.",
         len(_EXPECTED_TABLES),
     )
+

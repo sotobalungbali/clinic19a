@@ -20,3 +20,4 @@
 | Odoo 19 payment lifecycle | PASS | no legacy payment `posted` assumption |
 | Cross-addon UI resilience | PASS (static) | runtime-safe bridge |
 | Runtime install | PENDING | must be confirmed on user Odoo instance |
+

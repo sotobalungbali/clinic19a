@@ -31,3 +31,6 @@ If the same defect recurs, STOP and return to root-cause / architecture review.
 - No executable `_sql_constraints`; use `models.Constraint` where SQL persistence is appropriate.
 - Preserve enterprise UI/security depth.
 - PASS static/test != enterprise completion.
+
+
+

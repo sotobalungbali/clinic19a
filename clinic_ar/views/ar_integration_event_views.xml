@@ -6,3 +6,5 @@
   <record id="action_clinic_ar_integration_event" model="ir.actions.act_window"><field name="name">AR Integration Events</field><field name="res_model">clinic.ar.integration.event</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_clinic_ar_integration_event_search"/></record>
 </odoo>
 
+
+

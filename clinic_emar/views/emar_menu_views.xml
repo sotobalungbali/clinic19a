@@ -13,3 +13,4 @@
     <menuitem id="menu_emar_profiles" name="Medication Profiles" parent="menu_emar_configuration" action="action_emar_medication_profiles" sequence="10"/>
     <menuitem id="menu_emar_settings" name="Settings" parent="menu_emar_configuration" action="action_emar_config_settings" sequence="90"/>
 </odoo>
+

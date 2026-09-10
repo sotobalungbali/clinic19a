@@ -46,3 +46,4 @@ verifies all eMAR-owned tables and the non-stored company-setting contract.
 
 Source/static validation is necessary but not sufficient.  Runtime status
 remains PENDING until the target Odoo 19 CE Windows upgrade completes.
+

@@ -11,3 +11,4 @@
 | `clinic.cashflow.detail` | YES | YES | YES | Source drill-down |
 | `clinic.cashflow.adjustment` | YES | YES | YES | Managed adjustment entry |
 | `clinic.ap.integration.event` | YES | YES | YES | Mark Processed, bounded Retry |
+

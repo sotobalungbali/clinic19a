@@ -131,3 +131,4 @@ class ClinicAnalyticsForecasting(models.AbstractModel):
             "slope": slope,
             "residual_std": residual_std,
         }
+

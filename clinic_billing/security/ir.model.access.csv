@@ -41,3 +41,6 @@ access_clinic_insurance_claim_line_user,clinic.insurance.claim.line user,model_c
 access_clinic_insurance_claim_line_manager,clinic.insurance.claim.line manager,model_clinic_insurance_claim_line,clinic_billing.group_clinic_billing_manager,1,1,1,1
 access_clinic_treatment_billing_link_user,clinic.treatment.billing.link user,model_clinic_treatment_billing_link,clinic_billing.group_clinic_billing_user,1,1,1,0
 access_clinic_treatment_billing_link_manager,clinic.treatment.billing.link manager,model_clinic_treatment_billing_link,clinic_billing.group_clinic_billing_manager,1,1,1,1
+
+
+

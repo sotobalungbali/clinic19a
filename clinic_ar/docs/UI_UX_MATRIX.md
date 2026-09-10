@@ -13,3 +13,5 @@
 | clinic.ar.statement.line | Yes | Yes | Yes | invoice traceability action |
 | clinic.ar.integration.event | Yes | Yes | Yes | bounded retry/ack/cancel |
 
+
+

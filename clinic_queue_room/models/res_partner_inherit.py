@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Clinical Queue & Room Management (Odoo 18/19 CE)
 # File: models/res_partner_inherit.py

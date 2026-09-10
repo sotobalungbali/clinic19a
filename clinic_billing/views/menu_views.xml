@@ -61,3 +61,6 @@
     <menuitem id="menu_clinic_billing_settings" name="Settings"
               parent="menu_clinic_billing_configuration" action="action_clinic_billing_settings" sequence="10"/>
 </odoo>
+
+
+

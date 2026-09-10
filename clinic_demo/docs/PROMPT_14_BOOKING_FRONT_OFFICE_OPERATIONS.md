@@ -1,4 +1,8 @@
 
+
+
+
+
 # MASTER PROMPT 14 — Booking & Front Office Operations
 
 **Build:** `clinic_demo 19.0.1.0.19`
@@ -100,3 +104,12 @@ extension now composes with `clinic_booking` rather than replacing Booking room
 availability semantics.
 
 Expected owner-suite fingerprint: `58bdfcce0d5385599f06a081a21f35ecfcf298298becddf5c0a667e0154fa9f1`.
+
+
+
+
+
+
+
+
+

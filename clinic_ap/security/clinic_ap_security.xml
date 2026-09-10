@@ -83,3 +83,4 @@
         <field name="groups" eval="[Command.link(ref('clinic_ap.group_clinic_ap_user'))]"/>
     </record>
 </odoo>
+

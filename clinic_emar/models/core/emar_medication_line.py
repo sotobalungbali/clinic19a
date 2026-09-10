@@ -274,3 +274,4 @@ class ClinicEmarMedicationLine(models.Model):
                 label = "%s — %s %s" % (label, rec.quantity, rec.product_uom_id.display_name)
             res.append((rec.id, label))
         return res
+

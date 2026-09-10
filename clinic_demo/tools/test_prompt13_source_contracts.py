@@ -1,4 +1,8 @@
 
+
+
+
+
 #!/usr/bin/env python3
 from pathlib import Path
 import ast
@@ -8,7 +12,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 SERVICE = ROOT / "services/historical_service.py"
 GEN = ROOT / "generators/history/patient_longitudinal.py"
-SOURCE_SHA = "1b91d4402f242a91bbbb7a483403187936eab960cc1b9858b059bc7987af2c7e"
+SOURCE_SHA = "8e0d2be47034b5841642ba056df294825f71a6040f7f27b77cd6da32ef417ab2"
 
 
 def assignments(path):
@@ -41,10 +45,10 @@ def class_meta(path, name):
 class TestPrompt13SourceContracts(unittest.TestCase):
     def test_build_contract(self):
         manifest = ast.literal_eval(ast.parse((ROOT / "__manifest__.py").read_text()).body[0].value)
-        self.assertEqual(manifest["version"], "19.0.1.0.19")
+        self.assertEqual(manifest["version"], "19.0.1.0.46")
         constants = (ROOT / "services/constants.py").read_text()
         self.assertIn(SOURCE_SHA, constants)
-        self.assertIn('GENERATOR_VERSION = "19.0.1.0.19"', constants)
+        self.assertIn('GENERATOR_VERSION = "19.0.1.0.46"', constants)
 
     def test_historical_service_is_registered_as_runtime_service(self):
         self.assertTrue(SERVICE.is_file())
@@ -266,5 +270,12 @@ class TestPrompt13SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+
+
+
+
+
 
 

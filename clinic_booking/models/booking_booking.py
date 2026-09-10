@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_booking.py
@@ -716,10 +717,52 @@ class BookingBooking(models.Model):
                 vals["name"] = rec.name
             if "company_id" in app_fields:
                 vals["company_id"] = rec.company_id.id
-            if "patient_id" in app_fields:
-                vals["patient_id"] = rec.patient_id.id
+
+            # Booking patient_id is a res.partner.  Canonical Appointment keeps
+            # the contact identity in partner_id and the optional clinical
+            # profile in patient_id -> clinic.patient. Never copy integer IDs
+            # across different comodels.
+            patient_partner = rec.patient_id
+            clinic_patient = self.env["clinic.patient"]
+            if patient_partner:
+                candidates = self.env["clinic.patient"].with_company(rec.company_id).search([
+                    ("partner_id", "=", patient_partner.id),
+                    ("company_id", "=", rec.company_id.id),
+                ], limit=2)
+                if len(candidates) > 1:
+                    raise UserError(_(
+                        "Multiple Clinic Patient profiles are linked to %(patient)s "
+                        "for %(company)s; Appointment creation requires an exact identity."
+                    ) % {
+                        "patient": patient_partner.display_name,
+                        "company": rec.company_id.display_name,
+                    })
+                clinic_patient = candidates[:1]
+
             if "partner_id" in app_fields:
-                vals["partner_id"] = rec.patient_id.partner_id.id if rec.patient_id and rec.patient_id.partner_id else False
+                partner_field = app_fields["partner_id"]
+                if (
+                    getattr(partner_field, "type", None) == "many2one"
+                    and getattr(partner_field, "comodel_name", None) == "res.partner"
+                ):
+                    vals["partner_id"] = patient_partner.id if patient_partner else False
+                else:
+                    raise UserError(_(
+                        "clinic.appointment.partner_id must target res.partner; found %s."
+                    ) % (getattr(partner_field, "comodel_name", None) or "unknown"))
+
+            if "patient_id" in app_fields:
+                patient_field = app_fields["patient_id"]
+                patient_comodel = getattr(patient_field, "comodel_name", None)
+                if patient_comodel == "clinic.patient":
+                    vals["patient_id"] = clinic_patient.id if clinic_patient else False
+                elif patient_comodel == "res.partner":
+                    vals["patient_id"] = patient_partner.id if patient_partner else False
+                else:
+                    raise UserError(_(
+                        "Unsupported clinic.appointment.patient_id comodel: %s."
+                    ) % (patient_comodel or "unknown"))
+
             if "doctor_id" in app_fields:
                 vals["doctor_id"] = rec.doctor_id.id if rec.doctor_id else False
             if "room_id" in app_fields:
@@ -845,6 +888,3 @@ class BookingBooking(models.Model):
                     rec.appointment_id.action_reschedule(new_start, new_end)
                 except Exception:
                     rec.message_post(body=_("Failed to reschedule the linked appointment (manual review needed)."))
-
-
-

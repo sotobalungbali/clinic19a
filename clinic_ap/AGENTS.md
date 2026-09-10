@@ -33,3 +33,4 @@ The authoritative baseline capabilities are AP document/header and lines, vendor
 - Do not call legacy `account.payment.term.compute(...)`; use Odoo 19 `_compute_terms(...)` via the AP helper.
 - Do not use the pre-19 `stock.valuation.layer` / `stock_move.stock_valuation_layer_ids` contract; Odoo 19 receipt valuation must use native `stock.move.value`.
 - Cross-addon Smart Button decorations must be runtime-safe/idempotent; no fragile hard inherited-view XPath against another ClinicOne addon.
+

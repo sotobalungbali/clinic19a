@@ -1,4 +1,8 @@
 
+
+
+
+
 from odoo import fields
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -39,6 +43,12 @@ class TestCheckpointService(TransactionCase):
         self.assertEqual(first.created_count, 2)
         self.assertEqual(first.reused_count, 1)
         self.assertEqual(run.last_successful_checkpoint_key, first.checkpoint_key)
+
+
+
+
+
+
 
 
 

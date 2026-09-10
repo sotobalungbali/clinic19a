@@ -130,3 +130,4 @@ class AccountPaymentTerm(models.Model):
         fee = (principal_amount or 0.0) * (self.ap_late_fee_percent or 0.0) / 100.0
         fee += self.ap_late_fee_fixed or 0.0
         return {"applies": bool(fee), "late_fee": currency.round(fee), "cutoff": cutoff}
+

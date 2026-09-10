@@ -256,3 +256,4 @@ class ClinicAnalyticsKPI(models.Model):
             "domain": [("kpi_id", "=", self.id)],
             "context": {"default_kpi_id": self.id},
         }
+

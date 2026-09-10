@@ -24,8 +24,8 @@ depends = set(manifest.get("depends", []))
 
 
 # HARD GATE 0 — PROJECT IDENTITY PREFLIGHT.
-if manifest.get("version") != "19.0.1.0.0":
-    fail(0, "authoritative version must be 19.0.1.0.0")
+if manifest.get("version") != "19.0.1.0.1":
+    fail(0, "authoritative version must be 19.0.1.0.1")
 
 required_dependencies = {
     "clinic_base",
@@ -52,7 +52,7 @@ if future_found:
     fail(0, f"future ClinicOne dependencies are forbidden: {future_found}")
 
 build = (ROOT / "BUILD_ID.txt").read_text(encoding="utf-8")
-if "CLINIC_DASHBOARD_BUILD_20260820_V19.0.1.0.0" not in build:
+if "CLINIC_DASHBOARD_BUILD_20260909_V19.0.1.0.1" not in build:
     fail(0, "authoritative Dashboard build marker missing")
 
 preflight = (ROOT / "docs/PROJECT_IDENTITY_PREFLIGHT.md").read_text(encoding="utf-8")

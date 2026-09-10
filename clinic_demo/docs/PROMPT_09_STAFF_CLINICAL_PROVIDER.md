@@ -1,4 +1,8 @@
 
+
+
+
+
 # MASTER PROMPT 09 — STAFF & CLINICAL PROVIDER DATASET
 
 **Build:** `clinic_demo` 19.0.1.0.5  
@@ -47,5 +51,12 @@ Runtime evidence from `workforce.staff` revealed that the active `clinic_doctor`
 `clinic_patient` reading `self.groups_id`. The owner addon is repaired to
 `group_ids` in clinic_patient 19.0.1.0.1. This demo build requires that owner
 version through the suite compatibility contract.
+
+
+
+
+
+
+
 
 

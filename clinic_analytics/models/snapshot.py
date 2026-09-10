@@ -164,7 +164,7 @@ class ClinicAnalyticsSnapshot(models.Model):
 
             try:
                 with self.env.cr.savepoint():
-                    rec.line_ids.with_context(
+                    rec.line_ids.sudo().with_context(
                         clinic_analytics_internal=True
                     ).unlink()
 
@@ -222,7 +222,7 @@ class ClinicAnalyticsSnapshot(models.Model):
                             else 0.0
                         )
 
-                        Line.with_context(
+                        Line.sudo().with_context(
                             clinic_analytics_internal=True
                         ).create({
                             "snapshot_id": rec.id,

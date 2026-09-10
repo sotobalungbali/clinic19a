@@ -1,4 +1,8 @@
 
+
+
+
+
 # Runtime Repair 19.0.1.0.11 — Functional ACL Context
 
 ## Runtime symptom
@@ -49,5 +53,12 @@ A 19.0.1.0.10 run failed at `master.catalog` may adopt 19.0.1.0.11 when:
 Use the same Demo Run, do not Reset, run **Refresh Compatibility**, confirm
 **Compatible**, then run **Generate Full Enterprise Dataset** again as System
 Administrator.
+
+
+
+
+
+
+
 
 

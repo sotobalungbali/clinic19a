@@ -1,4 +1,8 @@
 
+
+
+
+
 """Manager-only explicit confirmation before a demo reset."""
 
 from odoo import api, fields, models, _
@@ -119,6 +123,12 @@ class ClinicDemoResetConfirmWizard(models.TransientModel):
                 },
             },
         }
+
+
+
+
+
+
 
 
 

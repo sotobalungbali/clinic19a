@@ -59,3 +59,4 @@ class AccountPayment(models.Model):
             "domain": [("id", "in", self.clinic_ap_ids.ids)],
             "context": {"create": False},
         }
+

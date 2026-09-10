@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 from odoo.tests.common import TransactionCase
 
@@ -12,5 +13,3 @@ class TestBookingFeedbackInverse(TransactionCase):
 
         feedback = self.env["booking.feedback.link"]
         self.assertEqual(feedback._fields["booking_id"].comodel_name, "booking.booking")
-
-

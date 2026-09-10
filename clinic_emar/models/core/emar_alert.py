@@ -761,3 +761,4 @@ class ClinicEmarAlert(models.Model):
             "source_key": kwargs.get("source_key") or "",
         }
         return self.upsert_alert(vals)
+

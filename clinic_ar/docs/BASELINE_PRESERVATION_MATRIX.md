@@ -18,3 +18,5 @@
 | Small residual write-off policy | PRESERVE + HARDEN | `res.company` + `account.move.action_ar_writeoff_small_residual` |
 | Accounting reverse flags/receivable helpers | PRESERVE | `account.move` / `account.move.line` |
 
+
+

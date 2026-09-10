@@ -296,3 +296,4 @@ class ClinicCashflowAdjustment(models.Model):
     res_model = fields.Char(string="Source Model")
     res_id = fields.Integer(string="Source ID")
     notes = fields.Char()
+

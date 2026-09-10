@@ -1,34 +1,36 @@
-# FULL STRUCTURAL INVENTORY — HARD GATE 4
+
+# Full Structural Inventory
 
 ## Owned persistent models
+- `clinic.treatment.session`
+- `clinic.treatment.session.line`
+- `clinic.treatment.session.stage`
 
-| Model | Role |
-|---|---|
-| `clinic.treatment.session` | Treatment delivery transaction/workflow |
-| `clinic.treatment.session.line` | Procedure/material/medication/billing/stock detail |
-| `clinic.treatment.session.stage` | Kanban/workflow stage configuration |
-
-## Historical extensions preserved
-
+## Extended models
 - `booking.booking`
+- `booking.room`
 - `res.partner`
 - `hr.employee`
-- `booking.room`
-- `res.config.settings`
-
-## Additive canonical bridges
-
 - `clinic.patient`
 - `clinic.doctor`
 - `clinic.encounter`
 - `clinic.branch`
 - `clinic.referral`
+- `res.config.settings`
 
-## Ownership boundaries
+## Runtime-loaded source
+Core models, enterprise overlays and external-model extensions imported by
+`models/__init__.py` and `models/extensions/__init__.py`.
 
-Upstream owners remain upstream:
-Booking, Referral, Package, Encounter, Inventory, Billing, Audit.
+## Manifest-loaded
+Security, ACL, sequences, stage bootstrap, mail template, cron, operational
+views, configuration view, menus and optional UI bridge.
 
-Downstream consumers remain downstream:
-Membership, AR, Wallet, Finance, Accounting, Reports, Dashboard, Analytics and
-other source-actual consumers.
+## Optional / tool / test
+Tests, source guardrail, docs and static description.
+
+## Present but not imported
+`models/models.py`, generic historical scaffold.
+
+## Backup / excluded
+No digit-prefixed backup basename is packaged.

@@ -1,512 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_treatment_session_search" model="ir.ui.view">
+    <record id="view_clinic_treatment_session_search" model="ir.ui.view">
         <field name="name">clinic.treatment.session.search</field>
         <field name="model">clinic.treatment.session</field>
         <field name="arch" type="xml">
             <search string="Treatment Sessions">
                 <field name="name"/>
                 <field name="patient_id"/>
-                <field name="clinic_patient_id"/>
-                <field name="doctor_id"/>
                 <field name="clinic_doctor_id"/>
+                <field name="doctor_id"/>
                 <field name="treatment_id"/>
                 <field name="booking_id"/>
-                <field name="encounter_id"/>
-                <field name="referral_id"/>
                 <field name="room_id"/>
                 <field name="branch_id"/>
-                <filter name="today"
-                        string="Today"
-                        domain="[('start_datetime','&gt;=',context_today().strftime('%Y-%m-%d 00:00:00')),('start_datetime','&lt;=',context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
-                <filter name="open"
-                        string="Open"
-                        domain="[('state','in',('draft','confirmed','in_progress'))]"/>
-                <filter name="in_progress"
-                        string="In Progress"
-                        domain="[('state','=','in_progress')]"/>
-                <filter name="done"
-                        string="Done"
-                        domain="[('state','=','done')]"/>
-                <filter name="no_show"
-                        string="No-show"
-                        domain="[('state','=','no_show')]"/>
-                <filter name="overtime"
-                        string="Overtime"
-                        domain="[('is_overtime','=',True)]"/>
-                <filter name="unbilled_done"
-                        string="Done / Not Billed"
-                        domain="[('state','=','done'),('billing_invoice_id','=',False),('move_id','=',False)]"/>
-                <separator/>
-                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
-                <filter name="group_stage" string="Stage" context="{'group_by':'stage_id'}"/>
-                <filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
-                <filter name="group_doctor" string="Clinic Doctor" context="{'group_by':'doctor_id'}"/>
-                <filter name="group_treatment" string="Treatment" context="{'group_by':'treatment_id'}"/>
-                <filter name="group_room" string="Room" context="{'group_by':'room_id'}"/>
-                <filter name="group_month" string="Month" context="{'group_by':'start_datetime:month'}"/>
+                <filter name="my_sessions" string="My Sessions" domain="[('doctor_user_id', '=', uid)]"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+                <filter name="no_show" string="No-show" domain="[('state', '=', 'no_show')]"/>
+                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <filter name="overtime" string="Overtime" domain="[('is_overtime', '=', True)]"/>
+                <group>
+                    <filter name="group_stage" string="Stage" context="{'group_by': 'stage_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+                    <filter name="group_doctor" string="Doctor" context="{'group_by': 'doctor_id'}"/>
+                    <filter name="group_room" string="Room" context="{'group_by': 'room_id'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'start_datetime:month'}"/>
+                </group>
             </search>
         </field>
     </record>
 
-    <record id="view_treatment_session_list" model="ir.ui.view">
+    <record id="view_clinic_treatment_session_list" model="ir.ui.view">
         <field name="name">clinic.treatment.session.list</field>
         <field name="model">clinic.treatment.session</field>
         <field name="arch" type="xml">
-            <list default_order="start_datetime desc,id desc"
+            <list string="Treatment Sessions"
+                  decoration-info="state == 'confirmed'"
+                  decoration-warning="state == 'in_progress'"
                   decoration-success="state == 'done'"
-                  decoration-info="state == 'in_progress'"
-                  decoration-warning="is_overtime or state == 'no_show'"
-                  decoration-danger="state == 'cancelled'"
-                  decoration-muted="not active">
+                  decoration-danger="state in ('cancelled', 'no_show')">
                 <field name="name"/>
-                <field name="start_datetime"/>
                 <field name="patient_id"/>
                 <field name="doctor_id"/>
-                <field name="treatment_id"/>
-                <field name="room_id" optional="show"/>
+                <field name="treatment_id" optional="show"/>
                 <field name="branch_id" optional="show"/>
-                <field name="stage_id" optional="hide"/>
-                <field name="line_count" optional="hide"/>
-                <field name="consumed_line_count" optional="hide"/>
-                <field name="amount_total" sum="Total" optional="show"/>
-                <field name="billing_state" widget="badge" optional="hide"/>
-                <field name="is_overtime" optional="hide"/>
-                <field name="state" widget="badge"/>
-                <button name="action_view_booking"
-                        type="object"
-                        string="Booking"
-                        icon="fa-calendar"
-                        invisible="not booking_id"/>
-                <button name="action_view_patient"
-                        type="object"
-                        string="Patient"
-                        icon="fa-user"/>
+                <field name="room_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime" optional="show"/>
+                <field name="duration_planned" optional="hide"/>
+                <field name="amount_total" optional="show" sum="Total"/>
+                <field name="state"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
             </list>
         </field>
     </record>
 
-    <record id="view_treatment_session_kanban" model="ir.ui.view">
-        <field name="name">clinic.treatment.session.kanban</field>
-        <field name="model">clinic.treatment.session</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="stage_id"
-                    class="o_kanban_small_column">
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="doctor_id"/>
-                <field name="treatment_id"/>
-                <field name="room_id"/>
-                <field name="start_datetime"/>
-                <field name="state"/>
-                <field name="amount_total"/>
-                <field name="currency_id"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="fw-bold">
-                            <field name="name"/>
-                        </div>
-                        <div class="mt-1">
-                            <i class="fa fa-user me-1"/>
-                            <field name="patient_id"/>
-                        </div>
-                        <div t-if="record.doctor_id.raw_value">
-                            <i class="fa fa-user-md me-1"/>
-                            <field name="doctor_id"/>
-                        </div>
-                        <div t-if="record.treatment_id.raw_value">
-                            <i class="fa fa-stethoscope me-1"/>
-                            <field name="treatment_id"/>
-                        </div>
-                        <div t-if="record.room_id.raw_value">
-                            <i class="fa fa-building-o me-1"/>
-                            <field name="room_id"/>
-                        </div>
-                        <div class="mt-2">
-                            <field name="start_datetime"/>
-                        </div>
-                        <div class="mt-2">
-                            <field name="state" widget="badge"/>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <record id="view_treatment_session_calendar" model="ir.ui.view">
-        <field name="name">clinic.treatment.session.calendar</field>
-        <field name="model">clinic.treatment.session</field>
-        <field name="arch" type="xml">
-            <calendar string="Treatment Sessions"
-                      date_start="start_datetime"
-                      date_stop="end_datetime"
-                      color="doctor_id"
-                      mode="week">
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="doctor_id"/>
-                <field name="treatment_id"/>
-                <field name="room_id"/>
-                <field name="state"/>
-            </calendar>
-        </field>
-    </record>
-
-    <record id="view_treatment_session_graph" model="ir.ui.view">
-        <field name="name">clinic.treatment.session.graph</field>
-        <field name="model">clinic.treatment.session</field>
-        <field name="arch" type="xml">
-            <graph string="Treatment Session Analysis" type="bar">
-                <field name="start_datetime" interval="month"/>
-                <field name="state"/>
-                <field name="amount_total" type="measure"/>
-                <field name="execution_duration_minutes" type="measure"/>
-            </graph>
-        </field>
-    </record>
-
-    <record id="view_treatment_session_pivot" model="ir.ui.view">
-        <field name="name">clinic.treatment.session.pivot</field>
-        <field name="model">clinic.treatment.session</field>
-        <field name="arch" type="xml">
-            <pivot string="Treatment Session Analysis">
-                <field name="branch_id" type="row"/>
-                <field name="doctor_id" type="row"/>
-                <field name="treatment_id" type="row"/>
-                <field name="state" type="row"/>
-                <field name="start_datetime" type="col" interval="month"/>
-                <field name="amount_total" type="measure"/>
-                <field name="execution_duration_minutes" type="measure"/>
-            </pivot>
-        </field>
-    </record>
-
-    <record id="view_treatment_session_form" model="ir.ui.view">
+    <record id="view_clinic_treatment_session_form" model="ir.ui.view">
         <field name="name">clinic.treatment.session.form</field>
         <field name="model">clinic.treatment.session</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Treatment Session">
                 <header>
-                    <button name="action_confirm"
-                            type="object"
-                            string="Confirm"
-                            class="btn-primary"
-                            invisible="state != 'draft'"/>
-                    <button name="action_start"
-                            type="object"
-                            string="Start Session"
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start" type="object" string="Start"
                             class="btn-primary"
                             groups="clinic_treatment_session.group_treatment_session_clinician"
-                            invisible="state not in ('draft','confirmed')"/>
-                    <button name="action_done"
-                            type="object"
-                            string="Complete"
+                            invisible="state not in ('draft', 'confirmed')"/>
+                    <button name="action_done" type="object" string="Complete"
                             class="btn-primary"
                             groups="clinic_treatment_session.group_treatment_session_clinician"
-                            invisible="state not in ('draft','confirmed','in_progress')"/>
-                    <button name="action_no_show"
-                            type="object"
-                            string="No-show"
-                            invisible="state not in ('draft','confirmed')"/>
-                    <button name="action_cancel"
-                            type="object"
-                            string="Cancel"
-                            invisible="state in ('done','no_show','cancelled')"/>
-                    <button name="action_reset_draft"
-                            type="object"
-                            string="Reset to Draft"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_no_show" type="object" string="No-show"
+                            invisible="state not in ('draft', 'confirmed')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('done', 'no_show', 'cancelled')"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft"
                             groups="clinic_treatment_session.group_treatment_session_manager"
-                            invisible="state not in ('cancelled','no_show')"/>
-                    <field name="state"
-                           widget="statusbar"
-                           readonly="1"
+                            invisible="state not in ('cancelled', 'no_show')"/>
+                    <button name="action_create_clinic_billing" type="object"
+                            string="Create Clinic Billing"
+                            groups="clinic_treatment_session.group_treatment_session_manager"
+                            invisible="state != 'done' or billing_invoice_id"/>
+                    <field name="state" widget="statusbar"
                            statusbar_visible="draft,confirmed,in_progress,done,no_show,cancelled"/>
                 </header>
-
                 <sheet>
-                    <field name="can_edit" invisible="1"/>
-                    <field name="currency_id" invisible="1"/>
-
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_booking"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-calendar"
+                        <button name="action_view_booking" type="object"
+                                class="oe_stat_button" icon="fa-calendar"
                                 invisible="not booking_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Booking</span>
-                            </div>
+                            <span class="o_stat_text">Booking</span>
                         </button>
-                        <button name="action_view_encounter"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-hospital-o"
+                        <button name="action_view_encounter" type="object"
+                                class="oe_stat_button" icon="fa-stethoscope"
                                 invisible="not encounter_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Encounter</span>
-                            </div>
+                            <span class="o_stat_text">Encounter</span>
                         </button>
-                        <button name="action_view_referral"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-share-alt"
+                        <button name="action_view_referral" type="object"
+                                class="oe_stat_button" icon="fa-share-alt"
                                 invisible="not referral_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Referral</span>
-                            </div>
+                            <span class="o_stat_text">Referral</span>
                         </button>
-                        <button name="action_view_package_allocation"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-gift"
-                                invisible="not package_allocation_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Package</span>
-                            </div>
+                        <button name="action_view_stock_moves" type="object"
+                                class="oe_stat_button" icon="fa-exchange">
+                            <field name="stock_move_count" widget="statinfo" string="Stock Moves"/>
                         </button>
-                        <button name="action_view_stock_moves"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-exchange">
-                            <field name="stock_move_count"
-                                   widget="statinfo"
-                                   string="Stock Moves"/>
-                        </button>
-                        <button name="action_view_clinic_billing"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-file-text-o"
+                        <button name="action_view_clinic_billing" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
                                 invisible="not billing_invoice_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Clinic Billing</span>
-                            </div>
+                            <span class="o_stat_text">Clinic Billing</span>
                         </button>
-                        <button name="action_view_invoice"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-file-text"
-                                invisible="not move_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Accounting Invoice</span>
-                            </div>
+                        <button name="action_view_attachments" type="object"
+                                class="oe_stat_button" icon="fa-paperclip">
+                            <field name="attachment_count" widget="statinfo" string="Attachments"/>
                         </button>
-                        <button name="action_view_audit_events"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-shield"
-                                groups="clinic_treatment_session.group_treatment_session_manager">
-                            <field name="audit_event_count"
-                                   widget="statinfo"
-                                   string="Audit"/>
-                        </button>
-                        <button name="action_view_attachments"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-paperclip">
-                            <field name="attachment_count"
-                                   widget="statinfo"
-                                   string="Attachments"/>
+                        <button name="action_view_audit_events" type="object"
+                                class="oe_stat_button" icon="fa-shield">
+                            <field name="audit_event_count" widget="statinfo" string="Audit Events"/>
                         </button>
                     </div>
 
-                    <widget name="web_ribbon"
-                            text="Completed"
-                            bg_color="text-bg-success"
-                            invisible="state != 'done'"/>
-                    <widget name="web_ribbon"
-                            text="No-show"
-                            bg_color="text-bg-warning"
-                            invisible="state != 'no_show'"/>
-                    <widget name="web_ribbon"
-                            text="Cancelled"
-                            bg_color="text-bg-danger"
-                            invisible="state != 'cancelled'"/>
+                    <widget name="web_ribbon" title="Cancelled"
+                            bg_color="text-bg-danger" invisible="state != 'cancelled'"/>
+                    <widget name="web_ribbon" title="No-show"
+                            bg_color="text-bg-warning" invisible="state != 'no_show'"/>
 
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1>
-                            <field name="name"/>
-                        </h1>
-                        <div>
-                            <field name="stage_id"
-                                   class="oe_inline"
-                                   options="{'no_create': True}"/>
-                        </div>
+                        <h1><field name="name" readonly="1"/></h1>
                     </div>
 
                     <group>
-                        <group string="Patient and Clinical">
-                            <field name="company_id"
-                                   groups="base.group_multi_company"
-                                   readonly="not can_edit"/>
-                            <field name="branch_id"
-                                   readonly="not can_edit"/>
-                            <field name="patient_id"
-                                   readonly="not can_edit"/>
-                            <field name="clinic_patient_id"
-                                   readonly="1"/>
-                            <field name="doctor_id"
-                                   readonly="not can_edit"/>
-                            <field name="clinic_doctor_id"
-                                   readonly="not can_edit"/>
-                            <field name="treatment_id"
-                                   readonly="not can_edit"/>
-                            <field name="room_id"
-                                   readonly="not can_edit"/>
+                        <group string="Patient and Provider">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="branch_id"/>
+                            <field name="patient_id" readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="clinic_patient_id" readonly="1"/>
+                            <field name="clinic_doctor_id" readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="doctor_id" readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="doctor_user_id" invisible="1"/>
                         </group>
-                        <group string="Schedule and Source">
-                            <field name="start_datetime"
-                                   readonly="not can_edit"/>
-                            <field name="end_datetime"
-                                   readonly="not can_edit"/>
-                            <field name="duration_planned"
-                                   readonly="not can_edit"/>
-                            <field name="booking_id"
-                                   readonly="not can_edit"/>
-                            <field name="encounter_id"
-                                   readonly="not can_edit"/>
-                            <field name="referral_id"
-                                   readonly="not can_edit"/>
-                            <field name="package_allocation_id"
-                                   readonly="not can_edit"/>
-                            <field name="package_allocation_line_id"
-                                   readonly="not can_edit"/>
+                        <group string="Treatment and Scheduling">
+                            <field name="treatment_id" readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="booking_id" readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="room_id" readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="stage_id"/>
+                            <field name="start_datetime" readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="end_datetime" readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="duration_planned" readonly="state not in ('draft', 'confirmed')"/>
                         </group>
                     </group>
 
-                    <div class="d-flex flex-wrap gap-2 my-3">
-                        <button name="action_prepare_consumption"
-                                type="object"
-                                string="Prepare Materials"
-                                class="btn btn-secondary"
-                                groups="clinic_treatment_session.group_treatment_session_clinician"
-                                invisible="state not in ('confirmed','in_progress')"/>
-                        <button name="action_consume_ready_lines"
-                                type="object"
-                                string="Consume Ready Materials"
-                                class="btn btn-secondary"
-                                groups="clinic_treatment_session.group_treatment_session_clinician"
-                                invisible="state not in ('confirmed','in_progress')"/>
-                        <button name="action_create_clinic_billing"
-                                type="object"
-                                string="Create Clinic Billing"
-                                class="btn btn-primary"
-                                groups="clinic_treatment_session.group_treatment_session_manager"
-                                invisible="state != 'done' or billing_invoice_id"/>
-                        <button name="action_create_invoice"
-                                type="object"
-                                string="Create Accounting Invoice"
-                                class="btn btn-secondary"
-                                groups="clinic_treatment_session.group_treatment_session_manager"
-                                invisible="state != 'done' or move_id"/>
-                    </div>
+                    <group string="Execution">
+                        <group>
+                            <field name="actual_start_datetime" readonly="1"/>
+                            <field name="actual_end_datetime" readonly="1"/>
+                            <field name="execution_duration_minutes" readonly="1"/>
+                            <field name="duration_variance_minutes" readonly="1"/>
+                            <field name="is_overtime" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="amount_untaxed" readonly="1"/>
+                            <field name="amount_total" readonly="1"/>
+                            <field name="billing_invoice_id" readonly="1"/>
+                            <field name="billing_state" readonly="1"/>
+                            <field name="is_fully_invoiced" readonly="1"/>
+                        </group>
+                    </group>
 
                     <notebook>
                         <page string="Session Lines">
-                            <field name="line_ids"
-                                   readonly="state in ('done','no_show','cancelled')"
-                                   context="{'default_session_id': id}">
-                                <list editable="bottom"
-                                      decoration-success="consumption_state == 'consumed'"
-                                      decoration-warning="consumption_state == 'ready'"
-                                      decoration-muted="display_type in ('section','note')">
+                            <field name="line_ids" readonly="state in ('done', 'cancelled', 'no_show')">
+                                <list editable="bottom">
                                     <field name="sequence" widget="handle"/>
                                     <field name="display_type"/>
                                     <field name="usage_type"/>
                                     <field name="product_id"/>
                                     <field name="name"/>
                                     <field name="quantity"/>
-                                    <field name="product_uom_id"/>
                                     <field name="consumed_qty"/>
+                                    <field name="consumption_state"/>
                                     <field name="is_billable"/>
                                     <field name="price_unit"/>
                                     <field name="discount"/>
-                                    <field name="price_total" sum="Total"/>
-                                    <field name="consumption_state" widget="badge"/>
-                                    <field name="stock_move_id" optional="hide"/>
-                                    <button name="action_mark_ready"
-                                            type="object"
-                                            string="Ready"
-                                            icon="fa-check"
-                                            groups="clinic_treatment_session.group_treatment_session_clinician"
+                                    <field name="price_subtotal" readonly="1"/>
+                                    <field name="stock_move_id" readonly="1" optional="hide"/>
+                                    <button name="action_mark_ready" type="object"
+                                            string="Ready" icon="fa-check"
                                             invisible="display_type != 'line' or consumption_state != 'planned'"/>
-                                    <button name="action_mark_consumed"
-                                            type="object"
-                                            string="Consume"
-                                            icon="fa-exchange"
-                                            groups="clinic_treatment_session.group_treatment_session_clinician"
-                                            invisible="display_type != 'line' or consumption_state not in ('planned','ready')"/>
-                                    <button name="action_open_stock_move"
-                                            type="object"
-                                            string="Stock"
-                                            icon="fa-external-link"
+                                    <button name="action_mark_consumed" type="object"
+                                            string="Consume" icon="fa-cubes"
+                                            invisible="display_type != 'line' or consumption_state == 'consumed'"/>
+                                    <button name="action_open_stock_move" type="object"
+                                            string="Move" icon="fa-exchange"
                                             invisible="not stock_move_id"/>
                                 </list>
                             </field>
                         </page>
-
                         <page string="Clinical Notes">
                             <group>
-                                <field name="contraindication_flag"/>
                                 <field name="chief_complaint"/>
                                 <field name="objective_notes"/>
                                 <field name="assessment"/>
                                 <field name="plan"/>
+                                <field name="contraindication_flag"/>
                             </group>
                         </page>
-
-                        <page string="Execution">
+                        <page string="Coverage and Referral">
                             <group>
-                                <group>
-                                    <field name="actual_start_datetime" readonly="1"/>
-                                    <field name="actual_end_datetime" readonly="1"/>
-                                    <field name="execution_duration_minutes" readonly="1"/>
-                                    <field name="duration_actual" readonly="1"/>
-                                    <field name="duration_variance_minutes" readonly="1"/>
-                                    <field name="is_overtime" readonly="1"/>
-                                </group>
-                                <group>
-                                    <field name="line_count" readonly="1"/>
-                                    <field name="consumed_line_count" readonly="1"/>
-                                    <field name="billable_line_count" readonly="1"/>
-                                    <field name="stock_move_count" readonly="1"/>
-                                </group>
+                                <field name="encounter_id"/>
+                                <field name="referral_id"/>
+                                <field name="package_allocation_id"/>
+                                <field name="package_allocation_line_id"/>
+                                <field name="package_usage_id" readonly="1"/>
                             </group>
                         </page>
-
-                        <page string="Billing and Coverage">
-                            <group>
-                                <group>
-                                    <field name="amount_untaxed" readonly="1"/>
-                                    <field name="amount_total" readonly="1"/>
-                                    <field name="billing_invoice_id" readonly="1"/>
-                                    <field name="billing_state" readonly="1"/>
-                                    <field name="move_id" readonly="1"/>
-                                    <field name="is_fully_invoiced" readonly="1"/>
-                                </group>
-                                <group>
-                                    <field name="package_allocation_id" readonly="1"/>
-                                    <field name="package_allocation_line_id" readonly="1"/>
-                                    <field name="package_usage_id" readonly="1"/>
-                                </group>
-                            </group>
-                        </page>
-
-                        <page string="Exceptions"
-                              invisible="state not in ('cancelled','no_show')">
-                            <group>
-                                <field name="cancellation_reason"
-                                       invisible="state != 'cancelled'"/>
-                                <field name="no_show_reason"
-                                       invisible="state != 'no_show'"/>
-                            </group>
-                        </page>
-
                         <page string="Notes">
                             <group>
                                 <field name="note_internal"/>
                                 <field name="note_public"/>
+                                <field name="cancellation_reason" invisible="state != 'cancelled'"/>
+                                <field name="no_show_reason" invisible="state != 'no_show'"/>
                             </group>
                         </page>
                     </notebook>
@@ -516,17 +234,83 @@
         </field>
     </record>
 
+    <record id="view_clinic_treatment_session_kanban" model="ir.ui.view">
+        <field name="name">clinic.treatment.session.kanban</field>
+        <field name="model">clinic.treatment.session</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="room_id"/>
+                <field name="start_datetime"/>
+                <field name="state"/>
+                <field name="stage_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="fw-bold"><field name="name"/></div>
+                        <div><field name="patient_id"/></div>
+                        <div class="text-muted"><field name="start_datetime"/></div>
+                        <div><field name="doctor_id"/></div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_session_calendar" model="ir.ui.view">
+        <field name="name">clinic.treatment.session.calendar</field>
+        <field name="model">clinic.treatment.session</field>
+        <field name="arch" type="xml">
+            <calendar string="Treatment Sessions"
+                      date_start="start_datetime" date_stop="end_datetime"
+                      color="doctor_id" mode="week">
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="room_id"/>
+                <field name="treatment_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_session_pivot" model="ir.ui.view">
+        <field name="name">clinic.treatment.session.pivot</field>
+        <field name="model">clinic.treatment.session</field>
+        <field name="arch" type="xml">
+            <pivot string="Treatment Session Analysis">
+                <field name="start_datetime" type="row" interval="month"/>
+                <field name="branch_id" type="row"/>
+                <field name="doctor_id" type="col"/>
+                <field name="amount_total" type="measure"/>
+                <field name="duration_planned" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_clinic_treatment_session_graph" model="ir.ui.view">
+        <field name="name">clinic.treatment.session.graph</field>
+        <field name="model">clinic.treatment.session</field>
+        <field name="arch" type="xml">
+            <graph string="Treatment Sessions" type="bar">
+                <field name="start_datetime" interval="month"/>
+                <field name="state"/>
+                <field name="amount_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
     <record id="action_clinic_treatment_session" model="ir.actions.act_window">
         <field name="name">Treatment Sessions</field>
         <field name="res_model">clinic.treatment.session</field>
         <field name="view_mode">list,kanban,calendar,form</field>
-        <field name="search_view_id" ref="view_treatment_session_search"/>
+        <field name="search_view_id" ref="view_clinic_treatment_session_search"/>
     </record>
 
     <record id="action_treatment_session_analysis" model="ir.actions.act_window">
-        <field name="name">Treatment Session Analytics</field>
+        <field name="name">Treatment Session Analysis</field>
         <field name="res_model">clinic.treatment.session</field>
         <field name="view_mode">graph,pivot,list</field>
-        <field name="search_view_id" ref="view_treatment_session_search"/>
+        <field name="search_view_id" ref="view_clinic_treatment_session_search"/>
     </record>
 </odoo>

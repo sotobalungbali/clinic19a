@@ -1,4 +1,8 @@
 
+
+
+
+
 # MASTER PROMPT 12 — Rooms, Devices, Resources & Scheduling
 
 ## Status
@@ -60,5 +64,12 @@ Reset is child-first because the reset service orders references by `reset_seque
 Existing completed Prompt-11 Demo Run → upgrade `clinic_demo` → Refresh Compatibility → Compatible → Generate Full as System Administrator → `resources.rooms_devices = DONE`.
 
 If the database is still only Prompt-10 complete, this cumulative full-replacement build retains the bounded Prompt-11 adoption route; Prompt-11 generators must complete before Prompt 12 can execute.
+
+
+
+
+
+
+
 
 

@@ -148,3 +148,4 @@ class ClinicEmarOrderInventory(models.Model):
             "domain": [("emar_order_id", "=", self.id)],
             "context": {"create": False},
         }
+

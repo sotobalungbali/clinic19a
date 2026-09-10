@@ -604,3 +604,5 @@ class ClinicBillingInvoice_DiscountExt(models.Model):
             Engine.apply_to_invoice(rec)
         return True
 
+
+

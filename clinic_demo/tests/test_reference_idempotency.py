@@ -1,4 +1,8 @@
 
+
+
+
+
 from odoo import fields
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -91,6 +95,12 @@ class TestDemoReferenceIdempotency(TransactionCase):
             reset_policy=RESET_DELETE_SAFE,
         )
         self.assertEqual(reference.ownership_kind, "reused")
+
+
+
+
+
+
 
 
 

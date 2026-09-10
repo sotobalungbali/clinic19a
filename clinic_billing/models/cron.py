@@ -10,3 +10,6 @@ class ClinicBillingCron(models.Model):
         invoices = self.search([("move_id", "!=", False), ("state", "not in", ("cancelled", "paid"))], limit=1000)
         invoices._sync_state_from_move()
         return True
+
+
+

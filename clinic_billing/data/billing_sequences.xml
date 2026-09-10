@@ -52,3 +52,6 @@
 
     <function model="clinic.billing.invoice" name="_ensure_cross_addon_billing_views"/>
 </odoo>
+
+
+

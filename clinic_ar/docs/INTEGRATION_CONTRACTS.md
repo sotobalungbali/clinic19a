@@ -23,3 +23,6 @@ actions extend `clinic.billing.invoice` and `clinic.billing.payment` directly.
 Only form decoration is runtime-safe: the bridge resolves the upstream form XML
 IDs with `raise_if_not_found=False`, tries validated XPath candidates, and skips
 cosmetic integration if the current database form layout is incompatible.
+
+
+

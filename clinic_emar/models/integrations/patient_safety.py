@@ -437,3 +437,4 @@ class ClinicEmarAdministrationSafety(models.Model):
                 rec.schedule_id, kind="missed_dose"
             ) if rec.schedule_id else None
         return True
+

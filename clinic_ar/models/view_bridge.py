@@ -238,3 +238,6 @@ class ClinicARViewBridge(models.Model):
             for spec in bridge_specs
         ]
         return any(results)
+
+
+

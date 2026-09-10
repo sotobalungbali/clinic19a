@@ -1,4 +1,8 @@
 
+
+
+
+
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
@@ -22,6 +26,12 @@ class TestSourceFingerprintService(TransactionCase):
         self.assertEqual(len(EXPECTED_SUITE_VERSIONS), 41)
         self.assertIn("clinic_referral", EXPECTED_SUITE_VERSIONS)
         self.assertIn("clinic_treatment_session", EXPECTED_SUITE_VERSIONS)
+
+
+
+
+
+
 
 
 

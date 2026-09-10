@@ -4,3 +4,4 @@ def post_init_hook(env):
     Dashboard = env["clinic.dashboard.board"].sudo()
     for company in env["res.company"].sudo().search([]):
         Dashboard._ensure_default_boards(company)
+

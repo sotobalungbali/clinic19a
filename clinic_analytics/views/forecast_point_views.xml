@@ -111,3 +111,4 @@
         <field name="search_view_id" ref="view_analytics_forecast_point_search"/>
     </record>
 </odoo>
+

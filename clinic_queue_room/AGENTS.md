@@ -1,3 +1,4 @@
+
 # ClinicOne clinic_queue_room — Codex Guardrail
 
 You are working only on the ClinicOne addon `clinic_queue_room`.

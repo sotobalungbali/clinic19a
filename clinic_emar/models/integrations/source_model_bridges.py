@@ -125,3 +125,4 @@ class BookingEmarBridge(models.Model):
             "res_model": "clinic.emar.order", "view_mode": "list,form",
             "domain": [("booking_id", "=", self.id)], "context": {"default_booking_id": self.id},
         }
+

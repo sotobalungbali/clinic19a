@@ -142,3 +142,5 @@ class ResPartner(models.Model):
                 rec.ar_on_hold_reason = False
         return True
 
+
+

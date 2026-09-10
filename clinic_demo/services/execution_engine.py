@@ -1,4 +1,8 @@
 
+
+
+
+
 """Bounded Control Center execution for registered ClinicOne demo generators.
 
 The engine executes only the bounded generators registered by completed Master
@@ -292,8 +296,14 @@ class DemoExecutionEngine:
                     "%(count)s bounded generator(s) completed. Foundation, organization, "
                     "workforce/provider, patient-persona, Prompt-11 clinical/commercial master, "
                     "Prompt-12 room/device/resource scheduling, Prompt-13 longitudinal historical "
-                    "backbone, and Prompt-14 referral/booking front-office operations registered so far "
-                    "are now real demo data. The full "
+                    "backbone, Prompt-14 referral/booking front-office operations, Prompt-15 "
+                    "queue/triage arrival operations, Prompt-16 encounter/treatment-session, "
+                    "Prompt-17 advanced clinical workflows, Prompt-18 billing/AR/AP financial "
+                    "journeys, Prompt-19 exception/incident/quality/safe-integration "
+                    "journeys, Prompt-20 deterministic 90-day future pipeline, "
+                    "Prompt-21 source-backed management reports, and Prompt-22 "
+                    "source-backed KPI/dashboard/analytics evidence registered "
+                    "so far are now real demo data. The full "
                     "35-generator enterprise registry is completed progressively by later Master Prompts."
                 )
                 % {"count": count},
@@ -407,6 +417,8 @@ class DemoExecutionEngine:
             "success",
             sticky=True,
         )
+
+
 
 
 

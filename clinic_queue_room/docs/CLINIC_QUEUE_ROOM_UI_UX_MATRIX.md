@@ -1,3 +1,4 @@
+
 # ClinicOne — clinic_queue_room UI/UX Matrix
 
 | Model | Search | List | Form | Statusbar | Action Buttons | Smart Buttons / Navigation | Security |

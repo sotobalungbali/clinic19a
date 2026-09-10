@@ -19,3 +19,5 @@ access_ar_statement_line_user,AR Statement Line User,model_clinic_ar_statement_l
 access_ar_statement_line_manager,AR Statement Line Manager,model_clinic_ar_statement_line,clinic_ar.group_clinic_ar_manager,1,1,1,1
 access_ar_integration_event_manager,AR Integration Event Manager,model_clinic_ar_integration_event,clinic_ar.group_clinic_ar_manager,1,1,1,1
 
+
+

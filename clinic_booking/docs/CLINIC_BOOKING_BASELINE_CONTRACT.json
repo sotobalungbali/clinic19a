@@ -1,4 +1,5 @@
 
+
 {
   "project": "ClinicOne",
   "addon": "clinic_booking",
@@ -1146,5 +1147,3 @@
   "expected_active_models_constraint_count": 19,
   "expected_total_models_constraint_count_after_hardening": 37
 }
-
-

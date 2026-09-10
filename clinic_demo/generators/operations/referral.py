@@ -1,4 +1,8 @@
 
+
+
+
+
 """MASTER PROMPT 14 — Referral acquisition and conversion-ready front-office dataset."""
 
 from datetime import timedelta
@@ -223,4 +227,12 @@ class ReferralOperationsGenerator(BaseDemoGenerator):
         if not required <= states:
             issues.append("Referral lifecycle coverage is incomplete: " + ", ".join(sorted(required - states)))
         return issues
+
+
+
+
+
+
+
+
 

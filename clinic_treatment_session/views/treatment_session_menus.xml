@@ -1,54 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_root"
-              name="Treatment Sessions"
-              sequence="43"
+    <menuitem id="menu_root" name="Treatment Sessions" sequence="43"
               groups="clinic_treatment_session.group_treatment_session_user"/>
-
-    <menuitem id="menu_treatment_session_operations"
-              name="Operations"
-              parent="clinic_treatment_session.menu_root"
-              sequence="10"/>
-
-    <menuitem id="menu_treatment_sessions"
-              name="Treatment Sessions"
-              parent="clinic_treatment_session.menu_treatment_session_operations"
-              action="clinic_treatment_session.action_clinic_treatment_session"
-              sequence="10"/>
-
-    <menuitem id="menu_treatment_session_lines"
-              name="Session Lines and Consumption"
-              parent="clinic_treatment_session.menu_treatment_session_operations"
-              action="clinic_treatment_session.action_treatment_session_lines"
-              sequence="20"
-              groups="clinic_treatment_session.group_treatment_session_clinician"/>
-
-    <menuitem id="menu_treatment_session_analytics"
-              name="Analytics"
-              parent="clinic_treatment_session.menu_root"
+    <menuitem id="menu_treatment_session_operations" name="Operations"
+              parent="menu_root" sequence="10"/>
+    <menuitem id="menu_treatment_sessions" name="Treatment Sessions"
+              parent="menu_treatment_session_operations"
+              action="action_clinic_treatment_session" sequence="10"/>
+    <menuitem id="menu_treatment_session_lines" name="Session Lines"
+              parent="menu_treatment_session_operations"
+              action="action_treatment_session_lines"
+              groups="clinic_treatment_session.group_treatment_session_clinician"
               sequence="20"/>
-
-    <menuitem id="menu_treatment_session_analysis"
-              name="Session Analysis"
-              parent="clinic_treatment_session.menu_treatment_session_analytics"
-              action="clinic_treatment_session.action_treatment_session_analysis"
-              sequence="10"/>
-
-    <menuitem id="menu_treatment_session_configuration"
-              name="Configuration"
-              parent="clinic_treatment_session.menu_root"
-              sequence="90"
-              groups="clinic_treatment_session.group_treatment_session_manager"/>
-
-    <menuitem id="menu_treatment_session_stages"
-              name="Session Stages"
-              parent="clinic_treatment_session.menu_treatment_session_configuration"
-              action="clinic_treatment_session.action_treatment_session_stages"
-              sequence="10"/>
-
-    <menuitem id="menu_treatment_session_settings"
-              name="Treatment Session Settings"
-              parent="clinic_treatment_session.menu_treatment_session_configuration"
-              action="clinic_treatment_session.action_treatment_session_settings"
+    <menuitem id="menu_treatment_session_analytics" name="Analytics"
+              parent="menu_root" sequence="30"/>
+    <menuitem id="menu_treatment_session_analysis" name="Treatment Session Analysis"
+              parent="menu_treatment_session_analytics"
+              action="action_treatment_session_analysis" sequence="10"/>
+    <menuitem id="menu_treatment_session_configuration" name="Configuration"
+              parent="menu_root"
+              groups="clinic_treatment_session.group_treatment_session_manager"
               sequence="90"/>
+    <menuitem id="menu_treatment_session_stages" name="Stages"
+              parent="menu_treatment_session_configuration"
+              action="action_treatment_session_stages" sequence="10"/>
+    <menuitem id="menu_treatment_session_settings" name="Settings"
+              parent="menu_treatment_session_configuration"
+              action="action_treatment_session_settings" sequence="20"/>
 </odoo>

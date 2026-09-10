@@ -23,5 +23,3 @@ access_booking_line_user,booking.line internal user,model_booking_line,base.grou
 access_booking_feedback_link_user,booking.feedback.link internal user,model_booking_feedback_link,base.group_user,1,1,1,1
 access_booking_doctor_schedule_user,booking.doctor.schedule internal user,model_booking_doctor_schedule,base.group_user,1,1,1,1
 access_booking_doctor_blackout_user,booking.doctor.blackout internal user,model_booking_doctor_blackout,base.group_user,1,1,1,1
-
-

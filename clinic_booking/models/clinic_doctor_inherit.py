@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/clinic_doctor_inherit.py
@@ -508,5 +509,3 @@ class BookingDoctorBlackout(models.Model):
             data.update(action)
             return data
         return action
-
-

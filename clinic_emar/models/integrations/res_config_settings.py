@@ -330,3 +330,4 @@ class ResConfigSettings(models.TransientModel):
                 }
             )
         return True
+

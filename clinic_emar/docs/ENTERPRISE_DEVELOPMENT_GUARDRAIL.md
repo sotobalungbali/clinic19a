@@ -99,3 +99,4 @@ The release must carry an explicit matrix covering owned model, purpose, workflo
 - Upgrade on an existing database when applicable: PASS required.
 - Real workflow smoke: prescription → order → schedule → verified administration → inventory/audit: PASS required.
 - Only after runtime evidence may the addon be frozen/completed.
+

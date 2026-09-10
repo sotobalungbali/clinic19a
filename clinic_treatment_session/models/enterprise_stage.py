@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
 
+# -*- coding: utf-8 -*-
 from odoo import api, models
 
 
 class ClinicTreatmentSessionStageEnterprise(models.Model):
-    """Idempotent default-stage bootstrap for existing and fresh databases."""
+    """Idempotently ensure per-company default stages."""
 
     _inherit = "clinic.treatment.session.stage"
 
     @api.model
     def _ensure_enterprise_default_stages(self):
         Stage = self.sudo()
-        companies = self.env["res.company"].sudo().search([])
-
         specs = (
             ("Draft", "draft", 10, False, False),
             ("Confirmed", "confirmed", 20, False, False),
@@ -21,35 +19,21 @@ class ClinicTreatmentSessionStageEnterprise(models.Model):
             ("No-show", "no_show", 50, True, True),
             ("Cancelled", "cancelled", 60, True, True),
         )
-
-        for company in companies:
-            for name, technical_state, sequence, is_final, fold in specs:
-                stage = Stage.search(
-                    [
-                        ("company_id", "=", company.id),
-                        ("technical_state", "=", technical_state),
-                    ],
-                    order="is_default desc, sequence, id",
-                    limit=1,
-                )
-
-                values = {
-                    "name": name,
-                    "company_id": company.id,
-                    "technical_state": technical_state,
-                    "sequence": sequence,
-                    "is_default": True,
-                    "is_final": is_final,
-                    "fold": fold,
-                    "active": True,
+        for company in self.env["res.company"].sudo().search([]):
+            for name, state, sequence, final, fold in specs:
+                stage = Stage.search([
+                    ("company_id", "=", company.id),
+                    ("technical_state", "=", state),
+                ], order="is_default desc, sequence, id", limit=1)
+                vals = {
+                    "name": name, "company_id": company.id,
+                    "technical_state": state, "sequence": sequence,
+                    "is_default": True, "is_final": final,
+                    "fold": fold, "active": True,
                 }
-
                 if stage:
-                    # Preserve a deliberately customized stage name; only fill
-                    # governance flags and ordering needed for the workflow.
-                    values.pop("name")
-                    stage.write(values)
+                    vals.pop("name")
+                    stage.write(vals)
                 else:
-                    Stage.create(values)
-
+                    Stage.create(vals)
         return True

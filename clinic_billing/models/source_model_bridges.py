@@ -195,3 +195,6 @@ class EmarAdministrationBillingBridge(models.Model):
             {"default_emar_administration_id": self.id},
             _("eMAR Billing"),
         )
+
+
+

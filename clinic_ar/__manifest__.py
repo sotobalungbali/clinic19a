@@ -20,7 +20,7 @@ Core capabilities
 * Multi-company security and enterprise-grade Search/List/Form UI
 * Integration event outbox for downstream Wallet, AP, Reports and Analytics
 ''',
-    "version": "19.0.3.0.2",
+    "version": "19.0.3.0.3",
     "author": "ClinicOne",
     "website": "https://clinic.one",
     "license": "LGPL-3",
@@ -79,4 +79,6 @@ Core capabilities
     ],
     "demo": [],
 }
+
+
 

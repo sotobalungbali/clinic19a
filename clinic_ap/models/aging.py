@@ -210,3 +210,4 @@ class ClinicAPAgingLine(models.Model):
             "res_id": self.vendor_id.id,
             "context": {"create": False},
         }
+

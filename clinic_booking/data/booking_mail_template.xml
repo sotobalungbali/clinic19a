@@ -23,5 +23,3 @@
     <field name="auto_delete" eval="True"/>
   </record>
 </odoo>
-
-

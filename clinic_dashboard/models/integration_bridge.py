@@ -92,3 +92,4 @@ class ClinicReportRun(models.Model):
             "view_mode": "list,form",
             "domain": [("report_run_id", "=", self.id)],
         }
+

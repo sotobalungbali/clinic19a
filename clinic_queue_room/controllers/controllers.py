@@ -1,3 +1,4 @@
+
 # from odoo import http
 
 
@@ -18,4 +19,3 @@
 #         return http.request.render('clinic_queue_room.object', {
 #             'object': obj
 #         })
-

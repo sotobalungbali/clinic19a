@@ -571,3 +571,4 @@ class ClinicEmarInventoryMixin(models.AbstractModel):
             except Exception:
                 pass
         return picking, moves
+

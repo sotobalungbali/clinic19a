@@ -784,3 +784,5 @@ class ClinicBillingInvoice_PaymentExt(models.Model):
             },
         }
 
+
+

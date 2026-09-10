@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Clinical Queue & Room Management (Odoo 18 CE)
 # File: models/clinic_queue_stage.py

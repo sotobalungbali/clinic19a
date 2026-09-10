@@ -151,3 +151,6 @@
         <field name="groups" eval="[(4, ref('clinic_billing.group_clinic_billing_user'))]"/>
     </record>
 </odoo>
+
+
+

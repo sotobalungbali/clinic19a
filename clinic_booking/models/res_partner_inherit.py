@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/res_partner_inherit.py
@@ -390,5 +391,3 @@ class ResPartner(models.Model):
         if self.next_booking_id:
             return _("Next: %s") % (fields.Datetime.to_string(self.next_booking_id.start_datetime),)
         return _("Bookings")
-
-

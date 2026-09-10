@@ -1,6 +1,7 @@
-CLINIC_ANALYTICS_BUILD_20260826_V19.0.1.0.0
+CLINIC_ANALYTICS_BUILD_20260909_V19.0.1.0.1
 Project: ClinicOne
 Addon order: 39 / 39
 Baseline: clinic19a(20260825-233741).md
 Architecture: Fixed-source predictive analytics layer
+Repair scope: controlled owner-workflow elevation for immutable generated snapshot lines and forecast points
 Runtime status: PENDING until Odoo 19 CE installation and smoke test

@@ -1,4 +1,8 @@
 
+
+
+
+
 """Source-driven reset-policy decisions.
 
 Unknown model/state combinations are deliberately blocked instead of falling back
@@ -31,6 +35,24 @@ class ResetPolicyRegistry:
 
     def decision_for_values(self, model_name, values):
         state = (values or {}).get("state")
+
+        if model_name in {
+            "clinic.analytics.forecast", "clinic.analytics.snapshot",
+            "clinic.report.run", "clinic.postcare.task",
+        }:
+            return ResetPolicyDecision(
+                RESET_FRESH_DB_ONLY,
+                reason=(
+                    "Generated report, analytics, forecast, and post-care evidence is retained "
+                    "for auditability; a fresh database is the destructive acceptance boundary."
+                ),
+            )
+
+        if model_name in {"res.company", "resource.calendar", "stock.warehouse"}:
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason="Demo-owned organization infrastructure is archived, never generically deleted.",
+            )
 
 
         if model_name in {
@@ -251,7 +273,7 @@ class ResetPolicyRegistry:
             if state in {"draft", "cancelled"}:
                 return ResetPolicyDecision(RESET_DELETE_SAFE)
             raise ValidationError(
-                f"No reset policy is registered for clinic.referral state {{state!r}}."
+                f"No reset policy is registered for clinic.referral state {state!r}."
             )
 
         if model_name == "clinic.treatment.session":
@@ -275,7 +297,7 @@ class ResetPolicyRegistry:
             if state in {"draft", "cancelled"}:
                 return ResetPolicyDecision(RESET_DELETE_SAFE)
             raise ValidationError(
-                f"No reset policy is registered for clinic.treatment.session state {{state!r}}."
+                f"No reset policy is registered for clinic.treatment.session state {state!r}."
             )
 
         if model_name == "clinic.consent.form":
@@ -292,7 +314,7 @@ class ResetPolicyRegistry:
             if state in {"draft", "cancelled"}:
                 return ResetPolicyDecision(RESET_DELETE_SAFE)
             raise ValidationError(
-                f"No reset policy is registered for clinic.consent.form state {{state!r}}."
+                f"No reset policy is registered for clinic.consent.form state {state!r}."
             )
 
         if model_name == "clinic.billing.invoice":
@@ -309,7 +331,7 @@ class ResetPolicyRegistry:
             if state in {"draft", "cancelled"}:
                 return ResetPolicyDecision(RESET_DELETE_SAFE)
             raise ValidationError(
-                f"No reset policy is registered for clinic.billing.invoice state {{state!r}}."
+                f"No reset policy is registered for clinic.billing.invoice state {state!r}."
             )
 
         if model_name == "clinic.billing.payment":
@@ -326,11 +348,60 @@ class ResetPolicyRegistry:
             if state in {"draft", "cancelled"}:
                 return ResetPolicyDecision(RESET_DELETE_SAFE)
             raise ValidationError(
-                f"No reset policy is registered for clinic.billing.payment state {{state!r}}."
+                f"No reset policy is registered for clinic.billing.payment state {state!r}."
+            )
+
+        if model_name in {"account.move", "clinic.ap", "clinic.ar.invoice"}:
+            return ResetPolicyDecision(
+                RESET_REVERSE_THEN_RETAIN,
+                reason=(
+                    "Accounting, receivable, and payable evidence is never deleted by "
+                    "generic demo reset; owner correction/reversal or a fresh database is required."
+                ),
+            )
+
+        if model_name in {
+            "clinic.analytics.forecast.point", "clinic.analytics.insight",
+            "clinic.analytics.snapshot.line", "clinic.api.event",
+            "clinic.appointment",
+            "clinic.care.plan", "clinic.dashboard.snapshot",
+            "clinic.dashboard.snapshot.line", "clinic.diagnosis",
+            "clinic.emar.administration", "clinic.emar.medication.line",
+            "clinic.emar.order", "clinic.emar.prescription", "clinic.encounter",
+            "clinic.encounter.procedure", "clinic.feedback",
+            "clinic.feedback.escalation", "clinic.incident", "clinic.postcare.plan",
+            "clinic.quality.check", "clinic.queue", "clinic.queue.token",
+            "clinic.report.detail", "clinic.report.metric", "clinic.room.assignment",
+            "clinic.soap.note", "clinic.telemedicine.message",
+            "clinic.telemedicine.session", "clinic.telemedicine.thread",
+            "clinic.treatment.session.line", "clinic.triage.session",
+            "clinic.vitals.intake", "clinical.imaging",
+        }:
+            return ResetPolicyDecision(
+                RESET_FRESH_DB_ONLY,
+                reason=(
+                    "This record is clinical, operational, communication, exception, or "
+                    "management evidence. It is retained to preserve provenance and is "
+                    "removed only with the disposable fresh-database acceptance dataset."
+                ),
+            )
+
+        if model_name in {
+            "clinic.api.event.type", "clinic.encounter.stage", "clinic.feedback.survey",
+            "clinic.postcare.protocol", "clinic.procedure.catalog",
+            "clinic.procedure.category", "clinic.quality.check.template",
+            "clinic.triage.level", "clinical.imaging.device",
+        }:
+            return ResetPolicyDecision(
+                RESET_DEACTIVATE,
+                reason=(
+                    "Demo-owned reusable master/configuration records are archived rather "
+                    "than deleted so retained evidence keeps valid relations."
+                ),
             )
 
         raise ValidationError(
-            f"No reset policy is registered for model {{model_name}}. "
+            f"No reset policy is registered for model {model_name}. "
             "Unknown models are blocked from reset."
         )
 
@@ -340,6 +411,8 @@ class ResetPolicyRegistry:
         if "state" in record._fields:
             values["state"] = record.state
         return self.decision_for_values(record._name, values)
+
+
 
 
 

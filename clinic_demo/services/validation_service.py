@@ -1,4 +1,8 @@
 
+
+
+
+
 """Source, identity and registered-generator validation for ClinicOne demo runs."""
 
 from .checkpoint_service import DemoCheckpointService
@@ -105,7 +109,7 @@ class DemoValidationService:
             )
         return results
 
-    def validate_identity_foundation(self, run):
+    def validate_full_readiness(self, run):
         run.ensure_one()
 
         compatibility = SourceFingerprintService(self.env).check_compatibility(run=run)
@@ -163,6 +167,14 @@ class DemoValidationService:
             "fail" if critical_failure else "warning" if warnings else "pass"
         )
         return results
+
+    def validate_identity_foundation(self, run):
+        """Backward-compatible entry point, now executing Prompt-23 readiness."""
+        return self.validate_full_readiness(run)
+
+
+
+
 
 
 

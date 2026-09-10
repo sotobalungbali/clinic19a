@@ -61,3 +61,4 @@ class ClinicAnalyticsScopeMixin(models.AbstractModel):
                     _("The selected Branch is not in your allowed branch scope.")
                 )
         return True
+

@@ -38,3 +38,4 @@ class ResConfigSettings(models.TransientModel):
     ap_price_tolerance_percent = fields.Float(related="company_id.ap_price_tolerance_percent", readonly=False)
     ap_default_purchase_journal_id = fields.Many2one(related="company_id.ap_default_purchase_journal_id", readonly=False)
     ap_default_payment_journal_id = fields.Many2one(related="company_id.ap_default_payment_journal_id", readonly=False)
+

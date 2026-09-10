@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_channel.py
@@ -485,5 +486,3 @@ class BookingChannelMixin(models.AbstractModel):
             except Exception:
                 # Silently ignore to keep the mixin generic/safe.
                 pass
-
-

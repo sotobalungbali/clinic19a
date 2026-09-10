@@ -109,3 +109,4 @@ Every available Dashboard KPI Snapshot Line stores:
 - parallel report engine: 0
 - fabricated branch scope: 0
 - future addon dependency: 0
+

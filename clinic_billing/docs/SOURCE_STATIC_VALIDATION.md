@@ -67,3 +67,6 @@ This release also proactively applies the already-proven ClinicOne Odoo 19 compa
 9. commission;
 10. gateway lifecycle;
 11. multi-company isolation.
+
+
+

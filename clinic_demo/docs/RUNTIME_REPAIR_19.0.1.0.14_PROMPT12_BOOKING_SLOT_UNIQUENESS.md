@@ -1,4 +1,8 @@
 
+
+
+
+
 # Runtime Repair 19.0.1.0.14 — Prompt 12 Booking Slot Uniqueness
 
 ## Runtime evidence
@@ -28,5 +32,12 @@ owner constraints and makes profile expansion deterministic and idempotent.
 No owner-addon patch, SQL cleanup, `sudo()`, or constraint bypass is used.
 
 Authoritative source SHA-256: `75fd525c05123c40c0e44a800c1d71cdd6f020cddd420c9199534cecf6692453`.
+
+
+
+
+
+
+
 
 

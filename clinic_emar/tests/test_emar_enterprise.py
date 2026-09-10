@@ -391,3 +391,4 @@ class TestClinicEmarEnterprise(TransactionCase):
         self.assertEqual(action.view_mode, "form")
         self.assertIn("clinic_emar", action.context or "")
 
+

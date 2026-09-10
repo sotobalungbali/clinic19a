@@ -65,3 +65,6 @@ Billing business/model dependencies remain mandatory, but AR Smart Buttons are
 installed through an idempotent runtime bridge with savepoint-isolated fallback
 architectures. Missing or structurally changed parent views must never abort the
 AR accounting subledger installation.
+
+
+

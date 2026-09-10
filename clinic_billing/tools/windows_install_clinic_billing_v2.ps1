@@ -58,3 +58,6 @@ if ($Found.Count -gt 0) {
     throw "Install log contains critical pattern(s): $($Found -join ', '). Inspect $Log"
 }
 Write-Host "PASS: clinic_billing targeted install completed without detected critical errors."
+
+
+

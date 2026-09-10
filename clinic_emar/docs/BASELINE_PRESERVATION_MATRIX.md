@@ -37,3 +37,4 @@ No baseline file whose basename begins with digit `0` participates in this matri
 | Reschedule wizard | KEEP_AND_HARDEN | Workflow preserved; transient vacuum tolerates only the pre-upgrade missing-table window. |
 | Schedule cron | KEEP_AND_HARDEN | Due/missed logic preserved; cron skips only when owned tables do not yet exist. |
 | Legacy company-column values | PRESERVE_ON_UPGRADE | Odoo 19 pre-migration copies existing values to the schema-safe parameter store. |
+

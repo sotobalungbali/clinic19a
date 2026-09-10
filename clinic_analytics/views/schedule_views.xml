@@ -138,3 +138,4 @@
         <field name="search_view_id" ref="view_analytics_schedule_search"/>
     </record>
 </odoo>
+

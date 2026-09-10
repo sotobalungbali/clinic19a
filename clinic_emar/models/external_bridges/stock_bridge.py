@@ -402,3 +402,4 @@ class StockMoveLineEmarBridge(models.Model):
             if rec.lot_id and (rec.emar_line_id or rec.emar_administration_id):
                 if _is_lot_expired(rec.lot_id):
                     raise ValidationError(_("Selected Lot/Serial is expired for this eMAR move line."))
+

@@ -111,3 +111,4 @@ class ClinicAPViewBridge(models.Model):
         for parent_xmlid, local_name, view_name, model_name, candidates in specs:
             self._upsert_optional_view(parent_xmlid, local_name, view_name, model_name, candidates)
         return True
+

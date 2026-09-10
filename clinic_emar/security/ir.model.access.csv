@@ -22,3 +22,4 @@ access_emar_alert_prescriber,eMAR alert prescriber,model_clinic_emar_alert,clini
 access_emar_alert_nurse,eMAR alert medication administrator,model_clinic_emar_alert,clinic_emar.group_emar_nurse,1,1,1,0
 access_emar_alert_manager,eMAR alert manager,model_clinic_emar_alert,clinic_emar.group_emar_manager,1,1,1,0
 access_emar_reschedule_wizard,eMAR reschedule wizard,model_clinic_emar_reschedule_wizard,clinic_emar.group_emar_nurse,1,1,1,1
+

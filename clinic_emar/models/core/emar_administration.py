@@ -632,3 +632,4 @@ class ClinicEmarAdministration(models.Model):
             "domain": [("id", "in", self.invoice_ids.ids)],
             "context": {"default_move_type": "out_invoice"},
         }
+

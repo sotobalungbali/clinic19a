@@ -1,4 +1,5 @@
 
+
 # ClinicOne — `clinic_booking` (Odoo 19 CE)
 
 **Booking Management** for ClinicOne: front-desk reservations, scheduling handshake with Doctor Appointments, room/equipment allocation, and downstream automation (billing, inventory, feedback, portal).
@@ -261,5 +262,3 @@ Use `@api.model_create_multi`, `@api.depends`, `@api.constrains`, and `_inherit`
 LGPL-3.0-or-later. See `LICENSE`.
 
 > © 2025 ClinicOne Team — Designed for Odoo 19 Community Edition.
-
-

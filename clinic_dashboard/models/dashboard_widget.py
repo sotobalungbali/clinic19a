@@ -256,3 +256,4 @@ class ClinicDashboardWidget(models.Model):
             "view_mode": "form",
             "res_id": metric.id,
         }
+

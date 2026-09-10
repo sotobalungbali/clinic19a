@@ -24,3 +24,4 @@ Codex is NOT:
 6. Executable `_sql_constraints` is forbidden. Use Odoo 19 `models.Constraint`.
 7. Digit-prefixed backup file basenames are never packaged.
 8. Maximum bounded implementation repairs for this build cycle: 3.
+

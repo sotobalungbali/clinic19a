@@ -1,23 +1,21 @@
-# Enterprise Development Guardrail — clinic_treatment_session
 
-This addon is released only when every gate below passes.
+# Enterprise Development Guardrail
 
-0. PROJECT IDENTITY PREFLIGHT
-1. CODEX BUKAN ARCHITECT
-2. EXISTING FUNCTION PRESERVATION
-3. ENTERPRISE COMPLETENESS BUKAN SEKADAR TEST PASS
-4. FULL STRUCTURAL INVENTORY
-5. HUMAN-FRIENDLY CODING STRUCTURE
-6. PROFESSIONAL FORM DESIGN
-7. UI/UX MATRIX PER MODEL
-8. SEARCH VIEW WAJIB
-9. LIST VIEW ENTERPRISE QUALITY
-10. SECURITY TIDAK BOLEH DIKALAHKAN UI
-11. DATABASE IDENTIFIER AND ORM NAMING SAFETY
-12. CODE STYLE HUMAN FRIENDLY
-13. COMMENTS YANG BERGUNA
-14. CODEX RETRY LIMIT
-15. ENTERPRISE COMPLETENESS MATRIX
+HARD GATE 0–15 applies to this release.
 
-Runtime success on the user's Odoo database remains a separate final acceptance
-gate and is never inferred from source/static validation.
+Mandatory:
+- source identity/version/dependency gate;
+- historical model/field/method preservation;
+- complete package/file inventory;
+- Python/XML/CSV parse;
+- Odoo 19 view syntax;
+- object-button/method consistency;
+- `models.Constraint`, no executable `_sql_constraints`;
+- security/ACL/record-rule presence;
+- Booking → Session contract;
+- stock completion verification;
+- billing bridge;
+- digit-prefixed backup exclusion;
+- migration/test evidence;
+- room availability owner-API regression;
+- final ZIP integrity/checksum.

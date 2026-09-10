@@ -65,3 +65,4 @@ class ClinicAPIntegrationEvent(models.Model):
         # Outbox delivery is intentionally delegated to downstream modules.
         # This cron only keeps the bounded lifecycle explicit.
         return True
+

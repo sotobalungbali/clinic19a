@@ -27,3 +27,4 @@ External XML IDs used by this addon were verified in the baseline:
 - `clinic_dashboard.view_dashboard_board_form`
 - `clinic_reports.view_report_definition_form`
 - `clinic_dashboard.menu_dashboard_root`
+

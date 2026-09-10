@@ -20,3 +20,4 @@ needs an app-scoped settings entry.
 
 No clinical, medication, inventory, billing, safety, workflow, security, or
 multi-company feature is removed by this repair.
+

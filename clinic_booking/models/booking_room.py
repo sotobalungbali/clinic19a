@@ -1,4 +1,5 @@
 
+
 # -*- coding: utf-8 -*-
 # ClinicOne — Booking Management (Odoo 19 CE)
 # File: models/booking_room.py
@@ -585,5 +586,3 @@ class BookingRoomBlackout(models.Model):
             data.update(action)
             return data
         return action
-
-

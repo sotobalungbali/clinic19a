@@ -17,3 +17,4 @@
         <field name="implied_ids" eval="[(4, ref('clinic_emar.group_emar_prescriber')), (4, ref('clinic_emar.group_emar_nurse'))]"/>
     </record>
 </odoo>
+

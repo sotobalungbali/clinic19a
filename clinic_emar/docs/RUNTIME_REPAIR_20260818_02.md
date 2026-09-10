@@ -65,3 +65,4 @@ Runtime is PASS only when all are true:
 4. `clinic_emar` opens without HTTP 500.
 5. Configuration, Prescription, Order, Schedule, Administration, Alert, and
    reschedule wizard basic smoke paths can be opened.
+

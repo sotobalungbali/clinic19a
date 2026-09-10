@@ -174,3 +174,4 @@ class ClinicEmarMedicationProfile(models.Model):
             "view_mode": "list,form",
             "domain": [("id", "in", order_ids)],
         }
+

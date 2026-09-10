@@ -10,3 +10,4 @@
         <field name="name">eMAR Administration</field><field name="code">clinic.emar.administration</field><field name="prefix">MAR/%(year)s/</field><field name="padding">6</field><field name="company_id" eval="False"/>
     </record>
 </odoo>
+

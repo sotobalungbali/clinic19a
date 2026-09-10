@@ -12,7 +12,7 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "19.0.3.0.2"
+EXPECTED_VERSION = "19.0.3.0.3"
 EXPECTED_OWNER_MODELS = {
     "clinic.ap",
     "clinic.ap.line",
@@ -441,3 +441,4 @@ if errors:
     print("RESULT: FAIL (SOURCE/STATIC ONLY)")
     sys.exit(1)
 print("RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME NOT ASSERTED)")
+

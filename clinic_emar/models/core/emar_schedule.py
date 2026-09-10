@@ -829,3 +829,4 @@ class ClinicEmarSchedule(models.Model):
             "view_mode": "form",
             "res_id": self.line_id.id,
         }
+

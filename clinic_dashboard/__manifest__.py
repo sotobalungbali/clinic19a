@@ -35,7 +35,7 @@ Enterprise controls:
 - bounded Codex implementation rules;
 - 15-hard-gate Enterprise Development Guardrail.
 """,
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "author": "ClinicOne",
     "website": "https://clinic.one",
     "license": "LGPL-3",

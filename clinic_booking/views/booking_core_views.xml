@@ -1,4 +1,5 @@
 
+
 <odoo>
   <record id="view_booking_booking_search" model="ir.ui.view">
     <field name="name">booking.booking.search</field>
@@ -171,5 +172,3 @@
     <field name="search_view_id" ref="view_booking_booking_search"/>
   </record>
 </odoo>
-
-

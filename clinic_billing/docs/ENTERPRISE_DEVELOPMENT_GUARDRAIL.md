@@ -100,3 +100,6 @@ The following are mandatory source hard gates after proven runtime defects:
 - Search View `<group>` must not carry legacy `expand` / `string` attributes;
 - executable Billing code must not assume `account.account.company_id`; use Odoo 19 company-domain helpers and `check_company=True`;
 - inline relational `type="object"` buttons must resolve on the actual row comodel, not merely somewhere in the addon.
+
+
+

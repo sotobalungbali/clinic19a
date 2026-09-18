@@ -84,6 +84,10 @@
                             type="object"
                             groups="base.group_system,clinic_demo.group_demo_operator"
                             invisible="state not in ['generating','failed']"/>
+                    <button name="action_complete_source_journeys"
+                            string="Complete Source Journeys" type="object"
+                            groups="base.group_system,clinic_demo.group_demo_operator"
+                            invisible="state in ['generating', 'validating']"/>
                     <button name="action_validate"
                             string="Validate"
                             type="object"
@@ -311,6 +315,21 @@
         </field>
     </record>
 </odoo>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

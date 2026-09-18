@@ -44,3 +44,4 @@ Odoo 19 contracts:
 - no legacy `attrs=` / `states=`;
 - Search `<search>` and its direct `<group>` are attribute-free;
 - computed fields used by domains/grouping must be stored or searchable.
+

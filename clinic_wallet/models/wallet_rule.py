@@ -465,3 +465,4 @@ class ClinicWalletRule(models.Model):
 
 
 
+

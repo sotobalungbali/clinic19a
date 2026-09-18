@@ -90,7 +90,10 @@ class SourceFingerprintService:
         messages = []
         if build_source_mismatch:
             messages.append(
-                "Demo Run source fingerprint does not match this clinic_demo build."
+                "Demo Run source fingerprint does not match this clinic_demo build. "
+                f"Stored version/source: {run.generator_version} / {run.source_fingerprint}; "
+                f"expected source: {AUTHORITATIVE_SOURCE_FINGERPRINT}. "
+                f"{run.patch_compatibility_status or ''}"
             )
         if missing:
             messages.append("Modules not installed/ready: " + ", ".join(missing))
@@ -133,6 +136,21 @@ class SourceFingerprintService:
                 "compatibility_message": result["message"],
             })
         return result
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -674,3 +674,4 @@ class ClinicResultValue(models.Model):
 #         action["domain"] = [("encounter_id", "=", self.id)]
 #         action["context"] = {"default_encounter_id": self.id}
 #         return action
+

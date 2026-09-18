@@ -44,3 +44,6 @@ Odoo products that were never explicitly classified as clinical.
 - Windows Odoo runtime gate: PENDING until upgrade/restart and re-test on the
   target database.
 
+
+
+

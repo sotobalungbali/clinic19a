@@ -86,3 +86,18 @@ class ClinicDemoLog(models.Model):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

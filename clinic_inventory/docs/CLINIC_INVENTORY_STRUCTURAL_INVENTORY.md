@@ -157,3 +157,6 @@ Baseline: active source supplied by the user. Files beginning with digit `0` are
 - Fields: `usage_id`, `sequence`, `product_id`, `product_uom`, `product_uom_qty`, `lot_id`, `note`, `qty_onhand_at_source`
 - Methods: `_compute_onhand_at_source()`, `_check_positive_qty()`, `_product_requires_lot()`, `_has_sufficient_stock_at_source()`, `_prepare_consumption_move_vals()`
 
+
+
+

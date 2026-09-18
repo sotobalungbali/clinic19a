@@ -1,0 +1,46 @@
+{
+  "source": "/workspace/scratch/9bdc3c831d82/tmp/odoo19/addons/product/security/ir.model.access.csv",
+  "sha256": "47cdd938b5442d3810d64d8f6ed87b49c7a8c68be394a145ecfe434295212082",
+  "rows": [
+    {
+      "id": "access_product_category_manager",
+      "name": "product.category.manager",
+      "model_id:id": "model_product_category",
+      "group_id:id": "group_product_manager",
+      "perm_read": "1",
+      "perm_write": "1",
+      "perm_create": "1",
+      "perm_unlink": "1"
+    },
+    {
+      "id": "access_product_product_manager",
+      "name": "product.product manager",
+      "model_id:id": "model_product_product",
+      "group_id:id": "group_product_manager",
+      "perm_read": "1",
+      "perm_write": "1",
+      "perm_create": "1",
+      "perm_unlink": "1"
+    },
+    {
+      "id": "access_product_template_manager",
+      "name": "product.template.manager",
+      "model_id:id": "model_product_template",
+      "group_id:id": "group_product_manager",
+      "perm_read": "1",
+      "perm_write": "1",
+      "perm_create": "1",
+      "perm_unlink": "1"
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+

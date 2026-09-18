@@ -1,0 +1,19 @@
+{
+  "parse": {
+    "python": 930,
+    "xml": 517
+  },
+  "owner_guardrails": {
+    "clinic_emar": 0,
+    "clinic_imaging": 0,
+    "clinic_care_plan": 0,
+    "clinic_post_care_followup": 0,
+    "clinic_consent_legal": 0,
+    "clinic_telemedicine_secure_messaging": 1
+  },
+  "native_runtime": "NOT RUN"
+}
+
+
+
+

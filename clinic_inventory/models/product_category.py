@@ -430,3 +430,6 @@ class ProductCategory(models.Model):
         self.ensure_one()
         return self._clinic_hook_default_consumption_location()
 
+
+
+

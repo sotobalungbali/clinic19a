@@ -308,7 +308,7 @@ class ClinicDashboardBoard(models.Model):
         )[:1]
 
     # One refresh creates one immutable Dashboard Snapshot that records full Report provenance per card.
-    def _refresh_snapshot(self, date_from, date_to, branch=None, snapshot_name=None):
+    def _refresh_snapshot(self, date_from, date_to, branch=None, snapshot_name=None, existing_snapshot=None):
         self.ensure_one()
         self._require_group(
             "clinic_dashboard.group_dashboard_analyst",
@@ -324,7 +324,7 @@ class ClinicDashboardBoard(models.Model):
         Snapshot = self.env["clinic.dashboard.snapshot"].sudo().with_context(
             dashboard_generation=True
         )
-        snapshot = Snapshot.create({
+        snapshot_values = {
             "name": snapshot_name or "/",
             "board_id": self.id,
             "company_id": self.company_id.id,
@@ -333,7 +333,20 @@ class ClinicDashboardBoard(models.Model):
             "date_to": date_to,
             "state": "refreshing",
             "generated_by_id": self.env.user.id,
-        })
+        }
+        if existing_snapshot is not None:
+            existing_snapshot.ensure_one()
+            existing_snapshot.check_access("read")
+            if (not snapshot_name or not snapshot_name.startswith("DEMO-")
+                    or existing_snapshot.board_id != self or existing_snapshot.company_id != self.company_id
+                    or existing_snapshot.name != snapshot_name
+                    or existing_snapshot.branch_id.id != (branch.id if branch else False)):
+                raise UserError(_("Snapshot refresh must preserve board, company, branch and identity."))
+            snapshot = Snapshot.browse(existing_snapshot.id)
+            snapshot.line_ids.with_context(dashboard_generation=True).unlink()
+            snapshot.write(snapshot_values)
+        else:
+            snapshot = Snapshot.create(snapshot_values)
 
         line_commands = []
         report_cache = {}
@@ -820,3 +833,4 @@ class ClinicDashboardBoard(models.Model):
                 board.next_refresh_at = next_refresh
 
         return True
+

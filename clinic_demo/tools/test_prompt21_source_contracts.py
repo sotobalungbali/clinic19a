@@ -8,7 +8,7 @@ GENERATOR = ROOT / "generators/management/reports.py"
 class Prompt21SourceContracts(unittest.TestCase):
     def test_version_and_registry_budget(self):
         manifest = ast.literal_eval((ROOT / "__manifest__.py").read_text())
-        self.assertEqual(manifest["version"], "19.0.1.0.46")
+        self.assertEqual(manifest["version"], "19.0.1.0.61")
         self.assertIn('"management.reports" not in registered_generator_keys', (ROOT / "tools/clinic_demo_guardrail.py").read_text())
 
     def test_all_native_reports_have_explicit_contracts(self):
@@ -50,6 +50,21 @@ class Prompt21SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

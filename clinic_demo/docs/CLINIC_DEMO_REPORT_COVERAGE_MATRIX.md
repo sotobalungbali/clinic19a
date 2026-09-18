@@ -14,15 +14,15 @@ metrics or report details directly.
 | Finance Cash Flow | clinic_reports | clinic.finance.transaction | company, transaction_date, posted | Source-supported finance transactions | governed metrics; zero allowed | Coverage-only |
 | Accounting Activity | clinic_reports | account.move.line | company, date, posted parent | Prompt 18 accounting moves | JOURNAL_ITEM_COUNT > 0 | Required non-zero |
 | Indonesia Tax Reporting | clinic_reports | clinic.l10n.id.tax.report | company, overlapping period, generated/locked | Source-supported tax reports | governed metrics; zero allowed | Coverage-only |
-| Insurance Authorization & Claims | clinic_reports | clinic.insurance.authorization / clinic.insurance.claim | company and request/claim date | Prompt 11 insurance journey | AUTH_COUNT > 0 | Required non-zero |
+| Insurance Authorization & Claims | clinic_reports | clinic.insurance.authorization / clinic.insurance.claim | company and request/claim date | GAP: authorization producer missing | AUTH_COUNT > 0 | Required non-zero |
 | Booking Performance | clinic_reports | booking.booking | company and start_datetime | Prompt 14/20 bookings | BOOKING_COUNT > 0 | Required non-zero |
 | Queue Performance | clinic_reports | clinic.queue | company and checkin_time | Prompt 15 queue | QUEUE_COUNT > 0 | Required non-zero |
 | Room Utilization | clinic_reports | clinic.room.assignment | company and assigned_at | Prompt 15 room flow | ROOM_ASSIGNMENTS > 0 | Required non-zero |
-| Clinical Inventory Usage | clinic_reports | clinic.treatment.product.usage | company, date_usage, done | Prompt 16 consumption | INVENTORY_USAGE_COUNT > 0 | Required non-zero |
-| Membership Activity | clinic_reports | membership.contract | company and start_date | Prompt 11 membership | MEMBERSHIP_CONTRACTS > 0 | Required non-zero |
-| Patient Wallet Activity | clinic_reports | clinic.wallet.transaction | company, date, posted | Prompt 11 wallet | WALLET_TX_COUNT > 0 | Required non-zero |
+| Clinical Inventory Usage | clinic_reports | clinic.treatment.product.usage | company, date_usage, done | GAP: completed usage producer missing | INVENTORY_USAGE_COUNT > 0 | Required non-zero |
+| Membership Activity | clinic_reports | membership.contract | company and start_date | GAP: contract producer missing | MEMBERSHIP_CONTRACTS > 0 | Required non-zero |
+| Patient Wallet Activity | clinic_reports | clinic.wallet.transaction | company, date, posted | GAP: posted ledger producer missing | WALLET_TX_COUNT > 0 | Required non-zero |
 | Clinical Encounter Activity | clinic_reports | clinic.encounter | company and date_start | Prompt 16 encounters | ENCOUNTER_COUNT > 0 | Required non-zero |
-| Procedure Performance | clinic_reports | clinic.procedure.session | company and date_start | Prompt 16 sessions | PROCEDURE_SESSION_COUNT > 0 | Required non-zero |
+| Procedure Performance | clinic_reports | clinic.procedure.session | company and date_start | GAP: procedure-session producer missing | PROCEDURE_SESSION_COUNT > 0 | Required non-zero |
 | Triage & Vitals | clinic_reports | clinic.triage.session | company and arrival_datetime | Prompt 15 triage | TRIAGE_COUNT > 0 | Required non-zero |
 | Adverse Event Activity | clinic_reports | clinic.adverse.event | company and date_occurred | Source-supported adverse events | governed metrics; zero allowed | Coverage-only |
 | Post-Care Outcomes | clinic_reports | clinic.postcare.plan | company and start_datetime | Prompt 17/20 follow-up | POSTCARE_PLAN_COUNT > 0 | Required non-zero |
@@ -32,6 +32,21 @@ metrics or report details directly.
 governed zero metric when the registered Prompt 01–21 dataset has no legitimate
 source transaction. No fake tax, cash-flow, or adverse-event record is invented
 merely to make a card non-zero.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

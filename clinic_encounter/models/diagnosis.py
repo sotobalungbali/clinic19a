@@ -535,3 +535,4 @@ class ClinicDiagnosis(models.Model):
         name_domain = ["|", "|", ("name", operator, name), ("code", operator, name), ("display_code", operator, name)]
         recs = self.search(name_domain + extra_domain, limit=limit)
         return [(rec.id, rec.display_name) for rec in recs.sudo()]
+

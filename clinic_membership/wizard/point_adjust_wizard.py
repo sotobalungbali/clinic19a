@@ -21,3 +21,4 @@ class MembershipPointAdjustWizard(models.TransientModel):
         tx = self.env["membership.point.tx"].adjust_points(self.contract_id, self.points, note=self.reason)
         return {"type": "ir.actions.act_window", "name": _("Point Adjustment"), "res_model": "membership.point.tx", "res_id": tx.id, "view_mode": "form", "target": "current"}
 
+

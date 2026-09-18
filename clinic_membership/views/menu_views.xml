@@ -17,3 +17,4 @@
   <menuitem id="menu_membership_settings" name="Settings" parent="menu_membership_configuration" action="action_membership_settings" sequence="10"/>
 </odoo>
 
+

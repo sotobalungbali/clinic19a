@@ -285,3 +285,18 @@ class IntegrityAcceptanceGenerator(AcceptanceGate):
         return _counts(len(references))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

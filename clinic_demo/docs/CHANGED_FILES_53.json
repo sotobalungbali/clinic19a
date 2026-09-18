@@ -1,0 +1,61 @@
+[
+  "README.md",
+  "__manifest__.py",
+  "docs/ACCEPTANCE_A_F_53.md",
+  "docs/DOCUMENT_AUTHORITY.md",
+  "docs/GOVERNING_MODEL_BY_MODEL.md",
+  "docs/JOURNEY_TRACEABILITY_53.md",
+  "docs/RELEASE_53.md",
+  "docs/evidence_53/clinic_demo_guardrail.txt",
+  "docs/evidence_53/clinic_encounter_guardrail.txt",
+  "docs/evidence_53/clinic_insurance_authorization_guardrail.txt",
+  "docs/evidence_53/clinic_inventory_guardrail.txt",
+  "docs/evidence_53/clinic_membership_guardrail.txt",
+  "docs/evidence_53/clinic_reports_guardrail.txt",
+  "docs/evidence_53/clinic_wallet_guardrail.txt",
+  "docs/evidence_53/source_validation.json",
+  "docs/evidence_53/tests.txt",
+  "generators/management/reports.py",
+  "generators/management/source_journeys.py",
+  "models/__init__.py",
+  "models/demo_journey.py",
+  "models/demo_run_journeys.py",
+  "security/clinic_demo_security.xml",
+  "security/ir.model.access.csv",
+  "services/build_adoption_service.py",
+  "services/constants.py",
+  "services/execution_engine.py",
+  "services/journey_engine.py",
+  "services/journey_model_owners.py",
+  "services/journey_registry.py",
+  "services/reporting_sufficiency.py",
+  "services/reset_service.py",
+  "services/source_closure_service.py",
+  "tools/clinic_demo_guardrail.py",
+  "tools/test_journey_migration.py",
+  "tools/test_prompt07_source_contracts.py",
+  "tools/test_prompt09_source_contracts.py",
+  "tools/test_prompt10_source_contracts.py",
+  "tools/test_prompt11_source_contracts.py",
+  "tools/test_prompt12_source_contracts.py",
+  "tools/test_prompt13_source_contracts.py",
+  "tools/test_prompt14_source_contracts.py",
+  "tools/test_prompt18_source_contracts.py",
+  "tools/test_prompt19_source_contracts.py",
+  "tools/test_prompt20_source_contracts.py",
+  "tools/test_prompt21_source_contracts.py",
+  "tools/test_prompt22_source_contracts.py",
+  "tools/test_prompt23_source_contracts.py",
+  "tools/test_prompt24_source_contracts.py",
+  "tools/test_readiness_behavior_source_contracts.py",
+  "tools/test_source_closure_contracts.py",
+  "views/demo_journey_views.xml"
+]
+
+
+
+
+
+
+
+

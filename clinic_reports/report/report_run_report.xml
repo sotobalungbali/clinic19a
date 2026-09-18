@@ -11,3 +11,4 @@
         <field name="print_report_name">'Clinic Report - %s' % (object.name)</field>
     </record>
 </odoo>
+

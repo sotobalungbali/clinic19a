@@ -725,3 +725,6 @@ def _ensure_clinic_adjustment_field_on_move(env):
 def _register_hook(env):
     _ensure_clinic_adjustment_field_on_move(env)
 
+
+
+

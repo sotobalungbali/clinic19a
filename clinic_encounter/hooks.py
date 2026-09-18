@@ -26,3 +26,4 @@ def _post_init_hook(env):
         "ClinicOne Encounter installed with its local root menu because "
         "clinic_base.menu_root is not present in this database revision."
     )
+

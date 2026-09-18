@@ -1,0 +1,29 @@
+ClinicOne clinic_insurance_authorization Enterprise Development Guardrail
+[INFO] model_files=8 python_files=14 xml_files=15
+[INFO] owned_models=6 models.Constraint=18 models.Index=8
+[INFO] search_views=11 acl_rows=16 record_rules=6
+[INFO] test_methods=78 class_methods=198
+[PASS] HARD GATE 0 - ClinicOne / addon 25 / insurance policy + pre-authorization + claim-processing identity locked
+[PASS] HARD GATE 1 - Codex is bounded implementer and cannot redesign/simplify ownership
+[PASS] HARD GATE 14 - Codex retry limit is maximum two bounded attempts / one repeated root cause
+[PASS] HARD GATE 2 - Billing-owned Claim/Claim Line and settlement ownership preserved; extension-only integration passes
+[PASS] HARD GATE 3 - Policy + Eligibility + Authorization + Claim governance + security + UI + PDFs + crons + tests + docs present
+[PASS] HARD GATE 4 - 6 owned models plus Billing Claim extensions and 9 upstream model bridges inventoried
+[PASS] HARD GATE 5 - human-friendly responsibilities split across 8 focused model files
+[PASS] HARD GATE 6 - statusbars, smart buttons, governed header actions, body actions, O2M row buttons and chatter are present
+[PASS] HARD GATE 7 - Search/List/Form complete for 6 owned models and both Billing-owned Claim models
+[PASS] HARD GATE 8 - 11 search views pass search architecture and computed-field searchability gates
+[PASS] HARD GATE 9 - 14 list tags and 66 object buttons pass enterprise list/action quality
+[PASS] HARD GATE 10 - 4-role hierarchy + 6 company rules + 16 ACL rows + backend transition guards pass
+[PASS] HARD GATE 12 - Odoo19 source contracts pass; models.Constraint=18, models.Index=8
+[PASS] HARD GATE 13 - useful comments/docstrings pass: comments=42, docstrings=17
+[PASS] HARD GATE 15 - enterprise completeness matrix + 78 runtime tests pass source/static gate
+RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME INSTALL/SMOKE TEST PENDING)
+
+
+
+
+
+
+
+

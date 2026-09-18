@@ -398,3 +398,6 @@ class StockQuant(models.Model):
             return wh.clinic_quarantine_location_id
         return False
 
+
+
+

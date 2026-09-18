@@ -1,0 +1,162 @@
+[
+  {
+    "model": "stock.lot",
+    "method": "write",
+    "native_keywords": [
+      "vals"
+    ],
+    "owner_keywords": [
+      "vals"
+    ],
+    "missing": []
+  },
+  {
+    "model": "stock.picking",
+    "method": "button_validate",
+    "native_keywords": [],
+    "owner_keywords": [],
+    "missing": []
+  },
+  {
+    "model": "stock.location",
+    "method": "_compute_display_name",
+    "native_keywords": [],
+    "owner_keywords": [],
+    "missing": []
+  },
+  {
+    "model": "product.template",
+    "method": "write",
+    "native_keywords": [
+      "vals"
+    ],
+    "owner_keywords": [
+      "vals"
+    ],
+    "missing": []
+  },
+  {
+    "model": "product.template",
+    "method": "_compute_display_name",
+    "native_keywords": [],
+    "owner_keywords": [],
+    "missing": []
+  },
+  {
+    "model": "product.product",
+    "method": "_compute_display_name",
+    "native_keywords": [],
+    "owner_keywords": [],
+    "missing": []
+  },
+  {
+    "model": "stock.rule",
+    "method": "_get_stock_move_values",
+    "native_keywords": [
+      "company_id",
+      "location_dest_id",
+      "name",
+      "origin",
+      "product_id",
+      "product_qty",
+      "product_uom",
+      "values"
+    ],
+    "owner_keywords": [
+      "company_id",
+      "location_dest_id",
+      "name",
+      "origin",
+      "product_id",
+      "product_qty",
+      "product_uom",
+      "values"
+    ],
+    "missing": []
+  },
+  {
+    "model": "stock.quant",
+    "method": "write",
+    "native_keywords": [
+      "vals"
+    ],
+    "owner_keywords": [
+      "vals"
+    ],
+    "missing": []
+  },
+  {
+    "model": "stock.quant",
+    "method": "_compute_display_name",
+    "native_keywords": [],
+    "owner_keywords": [],
+    "missing": []
+  },
+  {
+    "model": "stock.scrap",
+    "method": "action_validate",
+    "native_keywords": [],
+    "owner_keywords": [],
+    "missing": []
+  },
+  {
+    "model": "res.config.settings",
+    "method": "set_values",
+    "native_keywords": [],
+    "owner_keywords": [],
+    "missing": []
+  },
+  {
+    "model": "stock.move",
+    "method": "_action_confirm",
+    "native_keywords": [
+      "create_proc",
+      "merge",
+      "merge_into"
+    ],
+    "owner_keywords": [
+      "create_proc",
+      "merge",
+      "merge_into"
+    ],
+    "missing": []
+  },
+  {
+    "model": "stock.move",
+    "method": "_action_assign",
+    "native_keywords": [
+      "force_qty"
+    ],
+    "owner_keywords": [
+      "force_qty"
+    ],
+    "missing": []
+  },
+  {
+    "model": "stock.move",
+    "method": "_action_done",
+    "native_keywords": [
+      "cancel_backorder"
+    ],
+    "owner_keywords": [
+      "cancel_backorder"
+    ],
+    "missing": []
+  },
+  {
+    "model": "stock.move",
+    "method": "_do_unreserve",
+    "native_keywords": [],
+    "owner_keywords": [],
+    "missing": []
+  }
+]
+
+
+
+
+
+
+
+
+

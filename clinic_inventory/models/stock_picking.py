@@ -342,3 +342,6 @@ class StockPicking(models.Model):
         """
         return
 
+
+
+

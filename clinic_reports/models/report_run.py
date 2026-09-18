@@ -262,17 +262,30 @@ class ClinicReportRun(models.Model):
         note=None,
     ):
         self.ensure_one()
-        return self.env["clinic.report.metric"].sudo().with_context(
-            report_generation=True
-        ).create({
+        Metric = self.env["clinic.report.metric"].sudo().with_context(report_generation=True)
+        normalized_code = self._metric_code(code)
+        values = {
             "run_id": self.id,
             "sequence": sequence,
-            "code": self._metric_code(code),
+            "code": normalized_code,
             "name": name,
             "metric_type": metric_type,
             "value": float(value or 0.0),
             "note": note,
-        })
+        }
+        runtime = self.env.context.get("report_runtime")
+        if runtime is not None and "metric_codes" in runtime:
+            if normalized_code in runtime["metric_codes"]:
+                raise UserError(_("Duplicate generated metric code: %s") % normalized_code)
+            runtime["metric_codes"].add(normalized_code)
+            # Stable (run, code) identity preserves downstream snapshot links.
+            existing = Metric.search([("run_id", "=", self.id), ("code", "=", normalized_code)])
+            if existing:
+                existing.ensure_one()
+                existing.write(values)
+                return existing
+        return Metric.create(values)
+
 
     def _as_datetime(self, value):
         if not value:
@@ -490,13 +503,16 @@ class ClinicReportRun(models.Model):
 
             try:
                 with self.env.cr.savepoint():
-                    run.metric_ids.sudo().with_context(report_generation=True).unlink()
                     run.detail_ids.sudo().with_context(report_generation=True).unlink()
-                    runtime = {"detail_count": 0}
+                    runtime = {"detail_count": 0, "metric_codes": set()}
                     getattr(
                         run.with_context(report_runtime=runtime),
                         method_name,
                     )()
+                    # Remove obsolete codes only; FK restrictions still protect
+                    # historical consumers if an engine removes a referenced KPI.
+                    obsolete = run.metric_ids.filtered(lambda metric: metric.code not in runtime["metric_codes"])
+                    obsolete.sudo().with_context(report_generation=True).unlink()
                     run.invalidate_recordset(
                         ["metric_ids", "detail_ids", "metric_count", "detail_count"]
                     )
@@ -621,3 +637,4 @@ class ClinicReportRun(models.Model):
         return self.env.ref(
             "clinic_reports.action_report_clinic_report_run"
         ).report_action(self)
+

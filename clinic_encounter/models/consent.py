@@ -668,3 +668,4 @@ class ClinicConsentRisk(models.Model):
 #                     valid = True
 #                     break
 #             rec.consent_valid = valid
+

@@ -248,3 +248,4 @@
         <field name="include_details_by_default">True</field>
     </record>
 </odoo>
+

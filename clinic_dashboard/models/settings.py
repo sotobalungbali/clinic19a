@@ -74,3 +74,4 @@ class ResConfigSettings(models.TransientModel):
         self.ensure_one()
         return self.company_id.action_ensure_clinic_dashboards()
 
+

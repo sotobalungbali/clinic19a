@@ -5,7 +5,11 @@
 
 """Source, identity and registered-generator validation for ClinicOne demo runs."""
 
+from odoo import fields
+
 from .checkpoint_service import DemoCheckpointService
+from .constants import GENERATOR_VERSION, RESET_FRESH_DB_ONLY
+from .reset_policy_registry import ResetPolicyRegistry
 from .context import GenerationContext
 from .fingerprint_service import SourceFingerprintService
 from .generator_registry import GENERATOR_REGISTRY
@@ -33,6 +37,8 @@ class DemoValidationService:
             "severity": severity,
             "state": state,
             "message": message,
+            "expected_value": "Current validation result; generator version " + GENERATOR_VERSION,
+            "actual_value": "Validated at %s: %s" % (fields.Datetime.now(), message),
         }
         values.update(extra)
         if result:
@@ -70,6 +76,11 @@ class DemoValidationService:
                 lambda item: item.generator_key == generator.key and item.state == "done"
             )[:1]
             if not checkpoint:
+                results.append(self._result(
+                    run, f"generator.{generator.key}", "checkpoint", "critical", "fail",
+                    f"{generator.key} has no Done checkpoint; resume generation before validation.",
+                    generator_key=generator.key,
+                ))
                 continue
 
             scenario = ScenarioRegistry.get(generator.scenario_keys[0])
@@ -124,6 +135,19 @@ class DemoValidationService:
             )
         ]
 
+        # Execute the loaded registry, rather than infer its contents from old logs.
+        try:
+            decision = ResetPolicyRegistry().decision_for_values("clinic.appointment", {})
+            reset_ok = decision.policy == RESET_FRESH_DB_ONLY
+            reset_message = "clinic.appointment loaded reset policy: %s" % decision.policy
+        except Exception as exc:
+            reset_ok = False
+            reset_message = "clinic.appointment loaded reset contract failed: %s" % exc
+        results.append(self._result(
+            run, "runtime.appointment_reset_contract", "runtime", "critical",
+            "pass" if reset_ok else "fail", reset_message,
+        ))
+
         references = self.env["clinic.demo.reference"].search(
             [("run_id", "=", run.id)]
         )
@@ -171,6 +195,20 @@ class DemoValidationService:
     def validate_identity_foundation(self, run):
         """Backward-compatible entry point, now executing Prompt-23 readiness."""
         return self.validate_full_readiness(run)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

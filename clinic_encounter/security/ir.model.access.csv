@@ -41,3 +41,4 @@ access_clinic_soap_tag_user,clinic.soap.tag user,model_clinic_soap_tag,base.grou
 access_clinic_soap_template_user,clinic.soap.template user,model_clinic_soap_template,base.group_user,1,1,1,1
 access_clinic_encounter_bill_wizard_user,clinic.encounter.bill.wizard user,model_clinic_encounter_bill_wizard,base.group_user,1,1,1,1
 access_clinic_diagnosis_plan_procedure_wizard_user,clinic.diagnosis.plan.procedure.wizard user,model_clinic_diagnosis_plan_procedure_wizard,base.group_user,1,1,1,1
+

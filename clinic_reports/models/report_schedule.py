@@ -269,3 +269,4 @@ class ClinicReportSchedule(models.Model):
             finally:
                 schedule.next_run_at = next_run_at
         return True
+

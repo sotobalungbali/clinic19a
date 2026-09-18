@@ -428,3 +428,6 @@ class HREmployee(models.Model):
         self.ensure_one()
         return self.env["clinic.doctor.allowed.product"].clinic_allowed_product_domain(self)
 
+
+
+

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "ClinicOne: Inventory & Stock",
-    "version": "19.0.1.0.2",
+    "version": "19.0.1.0.5",
     "summary": "Clinic inventory, clinical stock consumption, adjustments, traceability, and governance",
     "description": """
 ClinicOne Inventory & Stock
@@ -58,4 +58,7 @@ completeness; the business scope is preserved.
     "application": True,
     "auto_install": False,
 }
+
+
+
 

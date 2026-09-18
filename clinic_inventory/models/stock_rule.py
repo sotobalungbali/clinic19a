@@ -136,17 +136,17 @@ class StockRule(models.Model):
     # MOVE VALUE ENRICHMENT (safe—no new move fields)
     # =========================================================================
     def _get_stock_move_values(
-        self, product_id, product_qty, product_uom, location_id, name, origin, company_id, values
+        self, product_id, product_qty, product_uom, location_dest_id, name, origin, company_id, values
     ):
         """Enrich stock move values with clinic-aware hints while keeping them core-safe.
 
         We do NOT add unknown keys to the move; instead we:
-          - Adjust 'name' and 'description_picking' to include clinic hints.
+          - Adjust 'description_picking' to include clinic hints.
           - Potentially update 'location_dest_id' based on clinic destination policy.
           - Optionally set 'date_deadline' to now + min_shelf_life (soft hint for planning).
         """
         move_vals = super()._get_stock_move_values(
-            product_id, product_qty, product_uom, location_id, name, origin, company_id, values
+            product_id, product_qty, product_uom, location_dest_id, name, origin, company_id, values
         )
         # Resolve product/warehouse
         product = self.env["product.product"].browse(product_id)
@@ -171,8 +171,6 @@ class StockRule(models.Model):
 
         if tags:
             hint = " | ".join(tags)
-            base_name = move_vals.get("name") or name or product.display_name
-            move_vals["name"] = f"{base_name} [{hint}]"
             dp = move_vals.get("description_picking") or ""
             move_vals["description_picking"] = (dp + ("\n" if dp else "") + _("Clinic policy: %s") % hint).strip()
 
@@ -326,7 +324,7 @@ class StockRule(models.Model):
             product_id=product.id,
             product_qty=qty,
             product_uom=product.uom_id.id,
-            location_id=src_location.id,
+            location_dest_id=src_location.id,
             name=_("Preview for %s") % product.display_name,
             origin=origin or "debug/preview",
             company_id=self.company_id.id,
@@ -336,4 +334,7 @@ class StockRule(models.Model):
         keys = ["name", "product_id", "product_uom", "product_uom_qty", "location_id", "location_dest_id",
                 "description_picking", "date_deadline"]
         return {k: move_vals.get(k) for k in keys}
+
+
+
 

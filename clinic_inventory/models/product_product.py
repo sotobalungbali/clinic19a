@@ -360,12 +360,12 @@ class ProductProduct(models.Model):
         vals.update({
             "product_id": self.id,
             "product_uom": (uom or self.uom_id).id,
-            "name": vals.get("name") or _("Clinical consumption of %s") % (self.display_name,),
+            "origin": vals.get("origin") or _("Clinical consumption of %s") % (self.display_name,),
         })
         # Hooks may further adjust
         vals = self._clinic_hook_finalize_consumption_vals(vals, treatment=treatment, patient=patient, location=location, **kwargs)
         # Sanity check
-        required_keys = {"product_id", "product_uom_qty", "product_uom", "name"}
+        required_keys = {"product_id", "product_uom_qty", "product_uom", "origin"}
         missing = required_keys - set(vals.keys())
         if missing:
             raise UserError(_("Consumption move is missing required keys: %s") % ", ".join(sorted(missing)))
@@ -480,4 +480,7 @@ class ProductProduct(models.Model):
         for q in Quant.read_group(domain, ["quantity:sum"], []):
             qty += q.get("quantity", 0.0) or 0.0
         return qty >= (required_qty or 0.0)
+
+
+
 

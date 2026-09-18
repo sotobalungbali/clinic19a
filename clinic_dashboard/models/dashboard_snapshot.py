@@ -410,3 +410,4 @@ class ClinicDashboardSnapshot(models.Model):
         })
         return True
 
+

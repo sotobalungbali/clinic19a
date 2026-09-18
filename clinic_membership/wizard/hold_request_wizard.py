@@ -23,3 +23,4 @@ class MembershipHoldRequestWizard(models.TransientModel):
         hold.action_submit()
         return {"type": "ir.actions.act_window", "name": _("Membership Hold"), "res_model": "membership.hold", "res_id": hold.id, "view_mode": "form", "target": "current"}
 
+

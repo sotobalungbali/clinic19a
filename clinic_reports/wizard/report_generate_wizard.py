@@ -98,3 +98,4 @@ class ClinicReportGenerateWizard(models.TransientModel):
             "view_mode": "form",
             "res_id": run.id,
         }
+

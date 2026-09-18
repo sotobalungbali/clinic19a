@@ -67,3 +67,4 @@ After attempt 3 for the same root-cause class: STOP, report the failing gate/com
 - current Odoo 19 stock/account external XML-ID allowlist
 - no active legacy `_sql_constraints`, `name_get`, `args=None`, `.read_group(`, `tree` actions, `account.analytic.tag`, `qty_done`, `quantity_done`
 - backup `0*` exclusion
+

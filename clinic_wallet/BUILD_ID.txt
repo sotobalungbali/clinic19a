@@ -1,3 +1,4 @@
-CLINIC_WALLET_BUILD_20260820_0500_V19.0.3.0.5
+CLINIC_WALLET_BUILD_20260914_0000_V19.0.3.0.6
 Expected partner view anchor: base.view_partner_form
 Forbidden legacy anchor: clinic_patient.view_partner_form_clinic_patient
+

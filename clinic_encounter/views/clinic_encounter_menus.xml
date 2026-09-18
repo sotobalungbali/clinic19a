@@ -36,3 +36,4 @@
   <menuitem id="menu_clinic_ae_type" name="Adverse Event Types" parent="menu_clinic_encounter_configuration" action="action_clinic_ae_type" sequence="80"/>
   <menuitem id="menu_clinic_ae_factor" name="Adverse Event Factors" parent="menu_clinic_encounter_configuration" action="action_clinic_ae_factor" sequence="90"/>
 </odoo>
+

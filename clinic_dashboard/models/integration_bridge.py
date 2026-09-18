@@ -93,3 +93,4 @@ class ClinicReportRun(models.Model):
             "domain": [("report_run_id", "=", self.id)],
         }
 
+

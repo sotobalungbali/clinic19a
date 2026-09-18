@@ -218,3 +218,4 @@
         <field name="search_view_id" ref="view_report_run_search"/>
     </record>
 </odoo>
+

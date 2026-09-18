@@ -603,3 +603,4 @@ class TestClinicReportsEnterprise(TransactionCase):
 
     def test_193_no_parallel_portal_model_owned_by_reports(self):
         self.assertNotIn("clinic.report.portal", self.env.registry)
+

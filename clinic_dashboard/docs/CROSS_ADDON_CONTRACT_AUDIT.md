@@ -110,3 +110,4 @@ Every available Dashboard KPI Snapshot Line stores:
 - fabricated branch scope: 0
 - future addon dependency: 0
 
+

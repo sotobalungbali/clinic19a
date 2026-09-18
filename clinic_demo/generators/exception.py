@@ -302,3 +302,18 @@ class SafeDigitalFailureGenerator(ExceptionBase):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

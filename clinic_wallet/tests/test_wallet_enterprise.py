@@ -291,3 +291,4 @@ class TestClinicWalletEnterprise(TransactionCase):
                 self.assertFalse(group.attrib, f"{xmlid}: search <group> must have no attributes")
 
 
+

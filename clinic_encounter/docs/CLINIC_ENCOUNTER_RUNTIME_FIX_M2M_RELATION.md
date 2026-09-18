@@ -66,3 +66,4 @@ relation schemas.
 - `CLINIC_ENCOUNTER_MOVE_FORWARD_READY: PENDING`
 
 A target-PC Odoo 19 activation/upgrade is still required before freeze.
+

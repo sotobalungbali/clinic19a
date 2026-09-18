@@ -483,3 +483,6 @@ class StockWarehouseOrderpoint(models.Model):
             "rounding_mode": self.clinic_rounding_mode,
         }
 
+
+
+

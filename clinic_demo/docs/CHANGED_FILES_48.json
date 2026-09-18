@@ -1,0 +1,68 @@
+[
+  "clinic_dashboard/__manifest__.py",
+  "clinic_dashboard/BUILD_ID.txt",
+  "clinic_wallet/__manifest__.py",
+  "clinic_wallet/BUILD_ID.txt",
+  "clinic_membership/__manifest__.py",
+  "clinic_encounter/__manifest__.py",
+  "clinic_inventory/__manifest__.py",
+  "clinic_inventory/BUILD_ID.txt",
+  "clinic_demo/README.md",
+  "clinic_demo/__manifest__.py",
+  "clinic_dashboard/tools/clinic_dashboard_guardrail.py",
+  "clinic_dashboard/models/dashboard_board.py",
+  "clinic_wallet/tools/clinic_wallet_guardrail.py",
+  "clinic_wallet/models/wallet_transaction.py",
+  "clinic_membership/models/membership_contract.py",
+  "clinic_encounter/tools/clinic_encounter_guardrail.py",
+  "clinic_encounter/models/execution_log.py",
+  "clinic_encounter/models/encounter.py",
+  "clinic_encounter/models/procedure_session.py",
+  "clinic_inventory/models/product_template.py",
+  "clinic_inventory/models/treatment_product_usage.py",
+  "clinic_demo/services/source_closure_service.py",
+  "clinic_demo/services/constants.py",
+  "clinic_demo/services/reset_policy_registry.py",
+  "clinic_demo/docs/CLINIC_DEMO_ENTERPRISE_COMPLETENESS_MATRIX.md",
+  "clinic_demo/docs/FRESH_DB_REPORT_48.md",
+  "clinic_demo/docs/PROMPT_24_FINAL_HARDENING_RELEASE.md",
+  "clinic_demo/docs/CLINIC_DEMO_CORE_PATCH_LEDGER.md",
+  "clinic_demo/docs/CLINIC_DEMO_EXECUTIVE_DEMO_SCRIPT.md",
+  "clinic_demo/docs/RELEASE_48.md",
+  "clinic_demo/docs/CLINIC_DEMO_RELEASE_MANIFEST.md",
+  "clinic_demo/tools/test_prompt11_source_contracts.py",
+  "clinic_demo/tools/test_prompt19_source_contracts.py",
+  "clinic_demo/tools/test_prompt23_source_contracts.py",
+  "clinic_demo/tools/test_prompt20_source_contracts.py",
+  "clinic_demo/tools/test_prompt24_source_contracts.py",
+  "clinic_demo/tools/test_prompt10_source_contracts.py",
+  "clinic_demo/tools/test_prompt13_source_contracts.py",
+  "clinic_demo/tools/test_prompt12_source_contracts.py",
+  "clinic_demo/tools/test_prompt18_source_contracts.py",
+  "clinic_demo/tools/test_prompt14_source_contracts.py",
+  "clinic_demo/tools/test_prompt09_source_contracts.py",
+  "clinic_demo/tools/clinic_demo_guardrail.py",
+  "clinic_demo/tools/test_prompt07_source_contracts.py",
+  "clinic_demo/tools/test_source_closure_contracts.py",
+  "clinic_demo/tools/test_readiness_behavior_source_contracts.py",
+  "clinic_demo/tools/test_prompt22_source_contracts.py",
+  "clinic_demo/tools/test_prompt21_source_contracts.py",
+  "clinic_demo/models/demo_run.py",
+  "clinic_demo/views/demo_run_views.xml",
+  "clinic_demo/generators/management/reports.py",
+  "clinic_demo/generators/management/source_journeys.py",
+  "clinic_demo/generators/management/dashboard_analytics.py"
+]
+
+
+
+
+
+
+
+
+
+
+
+
+

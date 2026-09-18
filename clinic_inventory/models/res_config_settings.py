@@ -371,3 +371,6 @@ class ResConfigSettings(models.TransientModel):
             "allow_expired_exception": bool(company.clinic_inventory_allow_expired_exception),
         }
 
+
+
+

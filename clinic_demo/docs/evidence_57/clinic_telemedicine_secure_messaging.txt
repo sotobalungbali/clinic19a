@@ -1,0 +1,26 @@
+ClinicOne clinic_telemedicine_secure_messaging Enterprise Development Guardrail
+[INFO] model_files=9 controller_files=1 python_files=17 xml_files=11
+[INFO] owned_models=4 models.Constraint=4 models.Index=4
+[INFO] search_views=5 acl_rows=12 record_rules=4
+[INFO] test_methods=515 class_methods=639 comments=82 docstrings=18
+[PASS] HARD GATE 0 - ClinicOne addon 33 Teleconsultation + Secure Messaging identity locked
+[PASS] HARD GATE 1 - Codex is bounded worker, not Patient/Doctor/Portal/provider/encryption architect
+[PASS] HARD GATE 14 - Codex retry limit locked to two bounded attempts / one repeated root cause
+[PASS] HARD GATE 2 - Staff/Doctor/Patient/Booking/Appointment/Queue/Encounter/Portal ownership preserved
+[PASS] HARD GATE 4 - 4 owned models plus bounded upstream integration layer inventoried
+[PASS] HARD GATE 5 - human-friendly split passes; largest model=thread.py:517 lines, controller=552 lines
+[PASS] HARD GATE 6 - statusbars, smart/body/O2M actions, Kanban and Patient Portal UX present
+[PASS] HARD GATE 7 - Search/List/Form complete for all 4 owned Telemedicine models
+[PASS] HARD GATE 8 - 5 Search Views pass Odoo19 search architecture/searchability
+[PASS] HARD GATE 9 - 9 list tags and 77 object buttons pass enterprise quality
+[PASS] HARD GATE 10 - explicit grants + exact patient/company domains + secure files + HTTPS join + no Portal ACL pass
+[PASS] HARD GATE 11 - 4 owner namespaces/fields/constraints/indexes and ORM method namespaces pass safety
+[PASS] HARD GATE 12 - Odoo19 views/source/class-load contracts pass; models.Constraint=4, models.Index=4
+[PASS] HARD GATE 13 - security/ownership comments and class docs pass: comments=82, docstrings=18
+[PASS] HARD GATE 15 - Teleconsultation + exact-patient messaging/files + source integrations + 515 tests pass source/static completeness
+[FAIL] HARD GATE 3 - enterprise Telemedicine deliverables missing: ['static/src/img/chat.svg', 'static/src/img/video.svg']
+RESULT: FAIL
+
+
+
+

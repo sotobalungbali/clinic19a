@@ -387,3 +387,4 @@ class ClinicReportEngineFinancial(models.AbstractModel):
                 amount=claim.approved_amount,
                 note=_("Requested %.2f") % (claim.requested_amount or 0.0),
             )
+

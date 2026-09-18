@@ -125,3 +125,4 @@
         <field name="search_view_id" ref="view_report_schedule_search"/>
     </record>
 </odoo>
+

@@ -1,0 +1,16 @@
+{
+  "parse": {
+    "python": 929,
+    "xml": 517
+  },
+  "owners": {
+    "clinic_encounter": 0,
+    "clinic_treatment_session": 0
+  },
+  "native_runtime": "NOT RUN"
+}
+
+
+
+
+

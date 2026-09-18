@@ -498,7 +498,7 @@ class ProductTemplate(models.Model):
             "product_id": product.id,
             "product_uom_qty": qty,
             "product_uom": (uom or product.uom_id).id,
-            "name": _("Clinical consumption of %s") % (self.display_name,),
+            "origin": _("Clinical consumption of %s") % (self.display_name,),
         }
 
     def _clinic_hook_post_write(self, vals):
@@ -543,7 +543,7 @@ class ProductTemplate(models.Model):
             qty=qty, uom=uom, treatment=treatment, patient=patient, location=location, **kwargs
         )
         # Ensure minimal required keys exist; let bridges add links/analytics
-        required_keys = {"product_id", "product_uom_qty", "product_uom", "name"}
+        required_keys = {"product_id", "product_uom_qty", "product_uom", "origin"}
         missing = required_keys - set(vals.keys())
         if missing:
             raise UserError(_("Consumption move is missing required keys: %s") % ", ".join(sorted(missing)))
@@ -569,4 +569,7 @@ class ProductTemplate(models.Model):
             return [("id", "=", 0)]  # no expiration tracking available
         # We do not compute exact dates here; bridges may add company-specific logic
         return [("has_expiration", "=", True)]
+
+
+
 

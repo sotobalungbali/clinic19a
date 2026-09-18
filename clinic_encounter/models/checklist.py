@@ -771,3 +771,4 @@ class ClinicChecklistItem(models.Model):
     #             if not ok:
     #                 raise UserError(_("Checklist is required before starting this session. Please complete the required checklist."))
     #     return res
+

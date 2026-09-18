@@ -24,3 +24,4 @@
 | Target-PC install/upgrade | **PENDING** |
 
 `STATIC_MOVE_FORWARD_READY` is not equivalent to runtime completion. The addon becomes FROZEN only after target-PC Odoo 19 install/upgrade succeeds.
+

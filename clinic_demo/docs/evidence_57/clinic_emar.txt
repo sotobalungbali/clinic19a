@@ -1,0 +1,12 @@
+clinic_emar Enterprise Development Guardrail
+[INFO] python_files=33
+[INFO] Odoo temporal API allowlist=PASS
+[INFO] xml_files=14
+[INFO] models.Constraint=9
+[INFO] object_buttons=43
+[INFO] test_methods=31
+RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME NOT ASSERTED)
+
+
+
+

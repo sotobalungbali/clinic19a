@@ -371,3 +371,18 @@ class TreatmentSessionClinicalJourneyGenerator(BaseDemoGenerator):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

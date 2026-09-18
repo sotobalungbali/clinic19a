@@ -491,13 +491,13 @@ class ClinicEncounter(models.Model):
                 rec.date_planned_end = rec.date_planned_start + timedelta(minutes=rec.planned_duration)
         return True
 
-    def push_activity_followup(self, summary=None, days=1, user=None):
+    def push_activity_followup(self, summary=None, days=1, user=None, date_from=None):
         for rec in self:
             rec.activity_schedule(
                 "mail.mail_activity_data_todo",
                 summary=summary or _("Follow up encounter"),
                 user_id=(user.id if isinstance(user, models.BaseModel) else user) or rec.user_id.id or self.env.user.id,
-                date_deadline=fields.Date.today() + timedelta(days=days),
+                date_deadline=(fields.Date.to_date(date_from) if date_from else fields.Date.today()) + timedelta(days=days),
             )
         return True
 
@@ -535,3 +535,4 @@ class ClinicEncounter(models.Model):
         name_domain = ["|", ("name", operator, name), ("patient_id.display_name", operator, name)]
         recs = self.search(name_domain + extra_domain, limit=limit)
         return [(rec.id, rec.display_name) for rec in recs.sudo()]
+

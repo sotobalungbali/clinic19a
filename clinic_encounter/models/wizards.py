@@ -215,3 +215,4 @@ class ClinicDiagnosisPlanProcedureWizard(models.TransientModel):
             "default_diagnosis_id": self.diagnosis_id.id,
         }
         return action
+

@@ -1,7 +1,8 @@
-CLINIC_DASHBOARD_BUILD_20260909_V19.0.1.0.1
+CLINIC_DASHBOARD_BUILD_20260914_V19.0.1.0.2
 Project: ClinicOne
 Addon: clinic_dashboard
 Official sequence: 29 of 39
 Authoritative upstream baseline: clinic_reports 19.0.1.0.0
 Runtime status: PENDING
 Repair scope: deterministic external snapshot identity for clinic_demo Prompt 22
+

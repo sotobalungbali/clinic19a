@@ -608,3 +608,4 @@ class ClinicWalletPortalMixin(models.AbstractModel):
 
 
 
+

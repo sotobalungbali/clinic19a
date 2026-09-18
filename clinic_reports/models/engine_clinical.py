@@ -401,3 +401,4 @@ class ClinicReportEngineClinical(models.AbstractModel):
                     (feedback.feedback_type or "").title(),
                 ),
             )
+

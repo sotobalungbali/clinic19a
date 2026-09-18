@@ -337,3 +337,4 @@ class ClinicReportEngineOperational(models.AbstractModel):
                 amount=transaction.amount_signed,
                 note=transaction.note or transaction.reference or "",
             )
+

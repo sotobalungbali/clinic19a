@@ -121,3 +121,4 @@ class ClinicReportMetric(models.Model):
             "view_mode": "form",
             "res_id": self.run_id.id,
         }
+

@@ -60,3 +60,4 @@ class MembershipConfigService(models.AbstractModel):
         )
         return True
 
+

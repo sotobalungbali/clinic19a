@@ -55,3 +55,4 @@ All persistent custom models retain Search/List/Form coverage. Primary clinical 
 - `clinic.adverse.event`: review/CAPA/regulatory workflow with action and follow-up ledgers.
 - `clinic.checklist`: execution/scoring surface with item-level parent navigation.
 - One2many child navigation buttons are implemented in `models/navigation_helpers.py` and kept human-readable.
+

@@ -10,6 +10,14 @@ from ...services.constants import RESET_FRESH_DB_ONLY
 from ...services.generator_registry import GENERATOR_REGISTRY
 
 
+REPORT_SOURCE_GAPS = {
+    "FIN-INS": "clinic.insurance.authorization; request_date; insurance plans are not authorizations",
+    "OPS-INV": "clinic.treatment.product.usage; date_usage; state=done; product masters are not consumption",
+    "OPS-MEM": "membership.contract; start_date; membership plans are not member contracts",
+    "OPS-WALLET": "clinic.wallet.transaction; date; state=posted; wallet rules are not ledger transactions",
+    "CLN-PROC": "clinic.procedure.session; date_start; encounter procedures and treatment sessions are different models",
+}
+
 REPORT_SPECS = (
     ("FIN-REV", "clinic_reports.report_definition_fin_revenue", "INVOICE_COUNT", True),
     ("FIN-AR", "clinic_reports.report_definition_fin_receivables", "AR_INVOICE_COUNT", True),
@@ -69,7 +77,13 @@ class ManagementReportsGenerator(BaseDemoGenerator):
     sequence = 1000
     depends_on = ("operations.future_pipeline",)
     scenario_keys = ("SCN-REPORT-01",)
-    owned_models = ("clinic.report.run", "clinic.report.metric", "clinic.report.detail")
+    owned_models = (
+        "clinic.report.run", "clinic.report.metric", "clinic.report.detail",
+        "clinic.insurance.policy", "clinic.insurance.authorization", "membership.contract",
+        "clinic.treatment.product.usage", "clinic.wallet", "clinic.wallet.transaction",
+        "clinic.procedure.session", "stock.move", "stock.location", "product.category",
+        "product.product", "account.account", "account.journal", "account.move",
+    )
     required_groups = ("clinic_reports.group_reports_manager",)
 
     @staticmethod
@@ -136,7 +150,7 @@ class ManagementReportsGenerator(BaseDemoGenerator):
         if issues:
             raise UserError(_("MASTER PROMPT 21 whole-path runtime preflight failed: %s") % "; ".join(issues))
 
-    def _ensure_run(self, ctx, counts, manager, code, definition):
+    def _ensure_run(self, ctx, counts, manager, code, definition, refresh=False):
         key = f"DEMO-REPORT-{code}"
         Model = self._actor(ctx.env["clinic.report.run"], manager, ctx)
         values = {
@@ -159,6 +173,8 @@ class ManagementReportsGenerator(BaseDemoGenerator):
         )
         run = self._actor(run, manager, ctx)
         counts[status if status in counts else "created"] += 1
+        if refresh and run.state == "ready":
+            run.action_reset_to_draft()
         if run.state in {"draft", "failed"}:
             if run.state == "failed":
                 run.action_reset_to_draft()
@@ -167,17 +183,26 @@ class ManagementReportsGenerator(BaseDemoGenerator):
             raise UserError(_("Report %s did not reach Ready state: %s") % (code, run.error_message or run.state))
         return run
 
-    def generate(self, ctx, scenario):
+    def generate(self, ctx, scenario, refresh=False, include_sources=True):
         counts = self._counts()
         manager = self._prepare_actor(ctx)
         self._whole_path_preflight(ctx, manager)
+        from .source_journeys import ReportSourceJourneys
+        source_counts = ReportSourceJourneys(self, ctx, manager).generate() if include_sources else {}
+        for status, count in source_counts.items():
+            counts[status] += count
         for code, xmlid, _primary_metric, _must_be_nonzero in REPORT_SPECS:
-            self._ensure_run(ctx, counts, manager, code, ctx.env.ref(xmlid))
+            self._ensure_run(ctx, counts, manager, code, ctx.env.ref(xmlid), refresh=refresh)
         return counts
+
+    def _validate_source_journeys(self, ctx, manager):
+        from .source_journeys import ReportSourceJourneys
+        ReportSourceJourneys(self, ctx, manager).validate(reports=True)
 
     def validate(self, ctx, scenario):
         issues = []
         manager = self._resolve(ctx, "DEMO-USER-MGR", "res.users")
+        self._validate_source_journeys(ctx, manager)
         for code, _xmlid, primary_metric, must_be_nonzero in REPORT_SPECS:
             run = self._resolve(ctx, f"DEMO-REPORT-{code}", "clinic.report.run", True, manager)
             if not run or run.state != "ready":
@@ -191,16 +216,37 @@ class ManagementReportsGenerator(BaseDemoGenerator):
                 issues.append(f"{code} missing primary metric {primary_metric}")
             elif must_be_nonzero and metric.value <= 0:
                 issues.append(f"{code} primary metric {primary_metric} unexpectedly zero")
+                if code in REPORT_SOURCE_GAPS:
+                    issues.append(
+                        f"{code} source coverage gap: {REPORT_SOURCE_GAPS[code]}; "
+                        f"report period {run.date_from} through {run.date_to}; "
+                        "the report metric must not be fabricated or waived"
+                    )
             invalid_details = run.detail_ids.filtered(lambda item: not item.source_model or not item.source_res_id)
             if invalid_details:
                 issues.append(f"{code} contains details without source provenance")
-        return issues
+        if issues:
+            raise UserError(_("Report readiness failed: %s") % "; ".join(issues))
+        return []
 
     def repair_missing(self, ctx, scenario):
         return self.generate(ctx, scenario)
 
     def reset(self, ctx, scenario):
         return {"skipped": 1}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

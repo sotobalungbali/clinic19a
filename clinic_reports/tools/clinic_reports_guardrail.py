@@ -26,8 +26,8 @@ depends = set(manifest.get("depends", []))
 # ---------------------------------------------------------------------------
 # HARD GATE 0 — PROJECT IDENTITY PREFLIGHT
 # ---------------------------------------------------------------------------
-if manifest.get("version") != "19.0.1.0.0":
-    fail(0, "authoritative version must be 19.0.1.0.0")
+if manifest.get("version") != "19.0.1.0.1":
+    fail(0, "authoritative version must be 19.0.1.0.1")
 
 required_dependencies = {
     "clinic_billing",
@@ -722,3 +722,4 @@ if errors:
     sys.exit(1)
 
 print("RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME INSTALL/SMOKE TEST PENDING)")
+

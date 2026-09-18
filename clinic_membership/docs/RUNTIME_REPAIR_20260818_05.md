@@ -44,3 +44,4 @@ owned action with the expected `res.config.settings` contract.
 
 ## Status
 Source/static PASS only. Windows Odoo runtime activation remains pending.
+

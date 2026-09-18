@@ -270,7 +270,27 @@ class DemoResetService:
             "warning_count": 0,
             "error_count": summary["errors"],
         })
+        from ..models.demo_journey import JOURNEY_TOKEN
+        run.journey_ids.with_context(_clinic_journey_token=JOURNEY_TOKEN).write({
+            'state':'waiting','classification':'rebuild','last_validation':False,
+            'needs_refresh':False,'diagnostic':'Safe reset completed; reconcile retained records before rebuild'})
+        run.write({'reporting_status':'pending','reporting_evidence':False})
         return summary
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

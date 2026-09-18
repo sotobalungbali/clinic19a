@@ -628,3 +628,4 @@ class ClinicWallet(models.Model):
 
 
 
+

@@ -1,0 +1,30 @@
+ClinicOne clinic_reports Enterprise Development Guardrail
+[INFO] model_files=11 python_files=19 xml_files=14
+[INFO] persistent_models=5 abstract_models=4 transient_models=1
+[INFO] models.Constraint=7 models.Index=7
+[INFO] search_views=5 acl_rows=14 record_rules=4
+[INFO] built_in_reports=19 engine_dispatches=19
+[INFO] test_methods=193 class_methods=281
+[PASS] HARD GATE 0 - ClinicOne / addon 28 / financial + operational + clinical reporting identity locked
+[PASS] HARD GATE 1 - Codex is bounded implementation worker, never reporting architect/simplifier
+[PASS] HARD GATE 14 - Codex retry limit = maximum two bounded attempts / one repeated root cause
+[PASS] HARD GATE 2 - transaction ownership preserved; engines are read-only and snapshot-only
+[PASS] HARD GATE 3 - 19 report engines + governed snapshots + CSV/PDF + schedules + security + tests/docs present
+[PASS] HARD GATE 4 - 5 persistent + 4 abstract + 1 transient owned reporting models inventoried
+[PASS] HARD GATE 5 - report responsibilities split across 11 focused model files + dedicated wizard
+[PASS] HARD GATE 6 - statusbars, smart buttons, body actions, O2M source buttons, alerts, CSV/PDF controls present
+[PASS] HARD GATE 7 - Search/List/Form complete for all 5 owned persistent reporting models
+[PASS] HARD GATE 8 - 5 search views pass Odoo19 architecture and searchability gates
+[PASS] HARD GATE 9 - 7 list tags and 44 object buttons pass enterprise quality
+[PASS] HARD GATE 10 - 3-role hierarchy + 4 company rules + 14 ACL rows + engine-owned snapshots pass
+[PASS] HARD GATE 12 - Odoo19 contracts pass; models.Constraint=7, models.Index=7, branch scope hardened
+[PASS] HARD GATE 13 - useful ownership/KPI/governance comments pass: comments=94, docstrings=13
+[PASS] HARD GATE 15 - 19-report catalog + 19 engine dispatches + 193 runtime tests pass source/static completeness
+RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME INSTALL/SMOKE TEST PENDING)
+
+
+
+
+
+
+

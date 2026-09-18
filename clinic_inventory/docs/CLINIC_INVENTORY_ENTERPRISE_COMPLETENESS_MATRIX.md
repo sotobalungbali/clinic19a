@@ -23,3 +23,6 @@
 | Codex | Max 3 focused repair attempts | PASS | Guardrail + validator |
 | Runtime | PC fresh/install/upgrade/smoke | PENDING | Must run on target PC |
 
+
+
+

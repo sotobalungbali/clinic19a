@@ -257,3 +257,4 @@ class ClinicDashboardSnapshotLine(models.Model):
             "note": self.note or "",
         }
 
+

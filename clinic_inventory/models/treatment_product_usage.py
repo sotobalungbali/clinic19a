@@ -236,6 +236,7 @@ class ClinicTreatmentProductUsage(models.Model):
             # Confirm, assign (reservation), set done quantities (respect lots), then done
             moves._action_confirm()
             rec._apply_done_move_lines(moves)
+            moves.write({"picked": True})
             moves._action_done()
 
             # Optional post hooks
@@ -611,7 +612,7 @@ class ClinicTreatmentProductUsageLine(models.Model):
         else:
             # Fallback vanilla payload
             vals = {
-                "name": _("Clinical consumption of %s") % (product.display_name,),
+                "origin": _("Clinical consumption of %s") % (product.display_name,),
                 "product_id": product.id,
                 "product_uom": self.product_uom.id,
                 "product_uom_qty": self.product_uom_qty,
@@ -621,7 +622,7 @@ class ClinicTreatmentProductUsageLine(models.Model):
         vals.setdefault("product_id", product.id)
         vals.setdefault("product_uom", self.product_uom.id)
         vals.setdefault("product_uom_qty", self.product_uom_qty)
-        vals.setdefault("name", _("Clinical consumption of %s") % (product.display_name,))
+        vals.setdefault("origin", _("Clinical consumption of %s") % (product.display_name,))
 
         # Locations
         vals["location_id"] = src_location.id
@@ -660,4 +661,7 @@ def _ensure_clinic_usage_field_on_move(env):
 # Ensure field is present when models are loaded
 def _register_hook(env):
     _ensure_clinic_usage_field_on_move(env)
+
+
+
 

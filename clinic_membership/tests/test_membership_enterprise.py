@@ -165,3 +165,4 @@ class TestClinicMembershipEnterprise(TransactionCase):
             'company_id': self.env.company.id,
         })
         self.assertTrue(plan)
+

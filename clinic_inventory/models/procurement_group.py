@@ -409,3 +409,6 @@ class ProcurementGroup(models.Model):
         """Override in bridges to propagate clinic context to manufacturing orders."""
         return mo_vals
 
+
+
+

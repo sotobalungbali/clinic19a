@@ -349,3 +349,6 @@ class StockLot(models.Model):
     def _clinic_hook_post_write(self, vals):
         return
 
+
+
+

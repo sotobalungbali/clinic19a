@@ -157,3 +157,4 @@
         <field name="search_view_id" ref="view_report_detail_search"/>
     </record>
 </odoo>
+

@@ -7,7 +7,7 @@ PIPELINE = ROOT / "generators/operations/future_pipeline.py"
 
 class Prompt20SourceContracts(unittest.TestCase):
     def test_version_and_registry_budget(self):
-        self.assertEqual(ast.literal_eval((ROOT / "__manifest__.py").read_text())["version"], "19.0.1.0.46")
+        self.assertEqual(ast.literal_eval((ROOT / "__manifest__.py").read_text())["version"], "19.0.1.0.61")
         self.assertIn('"operations.future_pipeline" not in registered_generator_keys', (ROOT / "tools/clinic_demo_guardrail.py").read_text())
 
     def test_explicit_temporal_matrix_and_dependencies(self):
@@ -35,7 +35,7 @@ class Prompt20SourceContracts(unittest.TestCase):
 
     def test_future_records_cannot_masquerade_as_completed(self):
         text = PIPELINE.read_text()
-        self.assertIn('task.state not in {"pending", "scheduled"}', text)
+        self.assertIn('task.state not in {"pending", "scheduled", "due"}', text)
         self.assertIn("task.completed_at or task.sent_at", text)
         self.assertIn("line.expected_date > anchor", text)
         self.assertIn("item.start_datetime.date() > anchor", text)
@@ -45,6 +45,21 @@ class Prompt20SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

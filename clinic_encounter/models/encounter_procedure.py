@@ -602,3 +602,4 @@ class ClinicEncounterProcedure(models.Model):
                   ("encounter_id.name", operator, name)]
         recs = self.search(name_domain + extra_domain, limit=limit)
         return [(rec.id, rec.display_name) for rec in recs.sudo()]
+

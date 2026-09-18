@@ -1,0 +1,25 @@
+ClinicOne clinic_post_care_followup Enterprise Development Guardrail
+[INFO] model_files=8 python_files=14 xml_files=16
+[INFO] owned_models=6 models.Constraint=6 models.Index=10
+[INFO] search_views=9 acl_rows=18 record_rules=6
+[INFO] test_methods=81 class_methods=175
+[PASS] HARD GATE 0 - ClinicOne / addon 26 / post-treatment instructions + automated reminders identity locked
+[PASS] HARD GATE 1 - Codex is bounded implementer, not architect/simplifier
+[PASS] HARD GATE 14 - Codex retry limit is maximum two bounded attempts / one repeated root cause
+[PASS] HARD GATE 2 - Staff/Patient/Encounter/Booking/Care Plan/Treatment ownership preserved and historical task contract supplied
+[PASS] HARD GATE 3 - Protocols + plans + reminders + check-ins + escalation + automation + security + PDFs + tests + docs present
+[PASS] HARD GATE 4 - 6 owned persistent Post-Care models plus 8 inherited integration models inventoried
+[PASS] HARD GATE 5 - human-friendly responsibilities split across 8 focused model files
+[PASS] HARD GATE 6 - statusbars, smart buttons, body actions, O2M row actions, alerts and chatter are present
+[PASS] HARD GATE 7 - Search/List/Form complete for all 6 owned Post-Care models
+[PASS] HARD GATE 8 - 9 search views pass architecture and computed-field searchability gates
+[PASS] HARD GATE 9 - 14 list tags and 59 object buttons pass enterprise list/action quality
+[PASS] HARD GATE 10 - 4-role hierarchy + 6 company rules + 18 ACL rows + backend guards pass
+[PASS] HARD GATE 12 - Odoo19 source contracts pass; models.Constraint=6, models.Index=10
+[PASS] HARD GATE 13 - useful comments/docstrings pass: comments=34, docstrings=15
+[PASS] HARD GATE 15 - enterprise completeness matrix + 81 runtime tests pass source/static gate
+RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME INSTALL/SMOKE TEST PENDING)
+
+
+
+

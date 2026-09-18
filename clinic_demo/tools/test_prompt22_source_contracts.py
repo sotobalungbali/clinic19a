@@ -8,8 +8,8 @@ DASHBOARD_ROOT = ROOT.parent / "clinic_dashboard"
 
 class Prompt22SourceContracts(unittest.TestCase):
     def test_versions_and_registry_budget(self):
-        self.assertEqual(ast.literal_eval((ROOT / "__manifest__.py").read_text())["version"], "19.0.1.0.46")
-        self.assertEqual(ast.literal_eval((DASHBOARD_ROOT / "__manifest__.py").read_text())["version"], "19.0.1.0.1")
+        self.assertEqual(ast.literal_eval((ROOT / "__manifest__.py").read_text())["version"], "19.0.1.0.61")
+        self.assertEqual(ast.literal_eval((DASHBOARD_ROOT / "__manifest__.py").read_text())["version"], "19.0.1.0.2")
         self.assertIn("Prompt-23 expected 35 registered generators", (ROOT / "tools/clinic_demo_guardrail.py").read_text())
 
     def test_two_explicit_generator_owners(self):
@@ -55,6 +55,21 @@ class Prompt22SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

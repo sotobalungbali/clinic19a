@@ -41,3 +41,4 @@ if ($bad) {
 
 Write-Host "clinic_membership targeted install completed without detected critical errors." -ForegroundColor Green
 
+

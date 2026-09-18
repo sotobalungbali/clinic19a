@@ -1158,3 +1158,4 @@ class TestClinicDashboardEnterprise(TransactionCase):
     def test_256_settings_field_clinic_dashboard_snapshot_retention_days(self):
         self.assertIn("clinic_dashboard_snapshot_retention_days", self.env["res.config.settings"]._fields)
 
+

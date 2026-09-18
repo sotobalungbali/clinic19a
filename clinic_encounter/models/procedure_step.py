@@ -370,3 +370,4 @@ class ClinicProcedureStepChecklist(models.Model):
         "CHECK (char_length(coalesce(name, '')) > 0)",
         'Checklist item must have a name.',
     )
+

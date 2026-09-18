@@ -83,3 +83,4 @@ Dormant and intentionally not imported: `models/xxx_clinic_encounter.py`.
 ## Preserved integration domains
 
 Patient, doctor, room, booking, queue, triage/vitals, consent/legal, inventory/stock, product/UoM, accounting/invoice, portal, mail/activity.
+

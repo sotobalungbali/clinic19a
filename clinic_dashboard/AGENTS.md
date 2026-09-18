@@ -41,3 +41,4 @@ Odoo 19:
 - Owl client action registered in the actions registry;
 - backend model views remain available as an operational fallback.
 
+

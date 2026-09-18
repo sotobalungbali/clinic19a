@@ -36,3 +36,4 @@ Every report produces:
 - source-record drill-down where a source exists.
 
 Finalized Report Runs are immutable snapshots.
+

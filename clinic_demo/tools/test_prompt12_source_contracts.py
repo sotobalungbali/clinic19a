@@ -10,7 +10,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 GEN = ROOT / "generators/resources/rooms_devices.py"
-SOURCE_SHA = "8e0d2be47034b5841642ba056df294825f71a6040f7f27b77cd6da32ef417ab2"
+SOURCE_SHA = "6904ebf6d62ae5f60371fd91287d99b00eba10addb2d7f952602fb0165ef5c2b"
 
 
 def assignments(path):
@@ -39,10 +39,10 @@ def class_meta(path, name):
 class TestPrompt12SourceContracts(unittest.TestCase):
     def test_build_contract(self):
         manifest = ast.literal_eval(ast.parse((ROOT / "__manifest__.py").read_text()).body[0].value)
-        self.assertEqual(manifest["version"], "19.0.1.0.46")
+        self.assertEqual(manifest["version"], "19.0.1.0.61")
         constants = (ROOT / "services/constants.py").read_text()
         self.assertIn(SOURCE_SHA, constants)
-        self.assertIn('GENERATOR_VERSION = "19.0.1.0.46"', constants)
+        self.assertIn('GENERATOR_VERSION = "19.0.1.0.61"', constants)
 
     def test_generator_registration_and_dependency(self):
         cls, meta = class_meta(GEN, "ResourcesRoomsDevicesGenerator")
@@ -205,6 +205,21 @@ class TestPrompt12SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

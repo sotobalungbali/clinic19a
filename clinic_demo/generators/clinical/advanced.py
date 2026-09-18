@@ -10,6 +10,8 @@ from odoo.exceptions import UserError
 from ..base import BaseDemoGenerator
 from ...services.constants import RESET_FRESH_DB_ONLY
 from ...services.generator_registry import GENERATOR_REGISTRY
+from ...services.journey_read_context import actor_key, read_model
+from ...services.telemedicine_scope import prepare_telemedicine_scope
 
 
 ADVANCED_RUNTIME_CONTRACTS = {
@@ -164,11 +166,19 @@ class AdvancedClinicalBase(BaseDemoGenerator):
                 "skipped": 0, "warning": 0, "error": 0}
 
     def _resolve(self, ctx, key, model, missing_ok=False, record_user=None):
+        # Validation and prerequisite reads must use the same functional actor
+        # as creation. Resolve from verified run provenance, never ACL retries.
+        if record_user is None:
+            reference = ctx.reference_service._reference(ctx.run, key)
+            if reference and actor_key(reference):
+                record_user = read_model(ctx.run, reference).env.user
         record = ctx.reference_service.resolve(
             ctx.run, key, model, missing_ok=missing_ok, record_user=record_user,
         )
         if record and record_user:
-            return self._as_actor(record, record_user)
+            return self._as_actor(record, record_user).with_company(ctx.run.company_id).with_context(
+                allowed_company_ids=[ctx.run.company_id.id],
+            )
         return record
 
     @staticmethod
@@ -345,6 +355,7 @@ class AdvancedClinicalBase(BaseDemoGenerator):
     def _prepare_advanced_runtime(self, ctx):
         """Reconcile and preflight the entire Prompt-17 path at every stage."""
         self._reconcile_advanced_actor_entitlements(ctx)
+        prepare_telemedicine_scope(ctx.run, optional=True)
         return self._preflight_all_advanced_paths(ctx)
 
     def repair_missing(self, ctx, scenario):
@@ -688,7 +699,7 @@ class AdvancedTelemedicineGenerator(AdvancedClinicalBase):
             "clinic.telemedicine.session", {
                 "name": "DEMO-TELE-SESSION-001",
                 "company_id": ctx.run.company_id.id,
-                "branch_id": False,
+                "branch_id": prepare_telemedicine_scope(ctx.run).id if patient.partner_id.branch_id else False,
                 "patient_id": patient.id, "doctor_id": doctor.id,
                 "consent_form_id": consent.id, "scheduled_start": start,
                 "scheduled_end": start + timedelta(minutes=30),
@@ -748,6 +759,21 @@ class AdvancedTelemedicineGenerator(AdvancedClinicalBase):
         if not message or not message.body:
             issues.append("Secure Message evidence is missing.")
         return issues
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

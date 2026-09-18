@@ -37,6 +37,19 @@ class ResetPolicyRegistry:
         state = (values or {}).get("state")
 
         if model_name in {
+            "clinic.insurance.policy", "clinic.insurance.authorization",
+            "clinic.insurance.authorization.line", "membership.contract",
+            "clinic.treatment.product.usage", "clinic.treatment.product.usage.line",
+            "clinic.wallet", "clinic.wallet.transaction", "clinic.procedure.session", "clinic.execution.log",
+            "stock.move", "stock.move.line", "stock.location", "product.category",
+            "account.account", "account.journal",
+        }:
+            return ResetPolicyDecision(
+                RESET_FRESH_DB_ONLY,
+                reason="Operational source and dependent stock/financial evidence is retained; use a fresh database for destructive rehearsal.",
+            )
+
+        if model_name in {
             "clinic.analytics.forecast", "clinic.analytics.snapshot",
             "clinic.report.run", "clinic.postcare.task",
         }:
@@ -411,6 +424,21 @@ class ResetPolicyRegistry:
         if "state" in record._fields:
             values["state"] = record.state
         return self.decision_for_values(record._name, values)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

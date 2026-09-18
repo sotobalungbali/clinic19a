@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class Prompt23SourceContracts(unittest.TestCase):
     def test_version_and_final_registry(self):
         manifest = ast.literal_eval((ROOT / "__manifest__.py").read_text(encoding="utf-8"))
-        self.assertEqual(manifest["version"], "19.0.1.0.46")
+        self.assertEqual(manifest["version"], "19.0.1.0.61")
         source = (ROOT / "generators/validation/acceptance.py").read_text(encoding="utf-8")
         for key in (
             "validation.structural", "validation.temporal", "validation.workflow",
@@ -63,4 +63,19 @@ class Prompt23SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

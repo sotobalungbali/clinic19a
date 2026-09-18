@@ -376,7 +376,7 @@ def run():
     if ROOT.name != "clinic_encounter":
         fail(f"HARD GATE 0: expected folder clinic_encounter, got {ROOT.name}")
     man = manifest()
-    if man.get("version") != "19.0.1.0.0": fail("Manifest version mismatch")
+    if man.get("version") != "19.0.1.0.1": fail("Manifest version mismatch")
     if "Odoo 19 CE" not in man.get("description", ""): fail("Manifest description must state Odoo 19 CE")
     ok("PROJECT_IDENTITY_AND_MANIFEST_CONTRACT")
 
@@ -581,3 +581,4 @@ if __name__ == "__main__":
         print("CLINIC_ENCOUNTER_STATIC_MOVE_FORWARD_READY: NO")
         print("CLINIC_ENCOUNTER_MOVE_FORWARD_READY: NO")
         sys.exit(1)
+

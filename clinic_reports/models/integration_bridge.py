@@ -62,3 +62,4 @@ class ResCompany(models.Model):
             "domain": [("company_id", "=", self.id)],
             "context": {"default_company_id": self.id},
         }
+

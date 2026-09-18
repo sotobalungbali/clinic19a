@@ -14,3 +14,30 @@ release index records the frozen closure:
 | Integration | Safe Mode; no outbound side effects |
 | Acceptance | 35 checkpoints and Prompt 23 readiness validation |
 | Release | `clinic_demo 19.0.1.0.46`, MASTER PROMPT 24 closure |
+
+
+
+## v48 bounded owner closure
+
+- clinic_membership: preserve explicit create name without eager sequence consumption.
+- clinic_wallet: optional Manager-authorized explicit accounting name/date/liability contract; no default caller behavior removed.
+- clinic_inventory: supported stock.move.origin payload; mark owner consumption as picked before native completion.
+- clinic_dashboard: same-company/board/branch DEMO-only derived snapshot reconstruction.
+- clinic_demo: five source examples, atomic completed-run closure, native row lock, full source/report provenance and reset policy checks.
+
+No core Odoo files changed.
+
+- clinic_encounter 19.0.1.0.1: explicit execution-event contract and optional activity base date; no production sequence is consumed by the three source session logs.
+
+
+
+
+
+
+
+
+
+
+
+
+

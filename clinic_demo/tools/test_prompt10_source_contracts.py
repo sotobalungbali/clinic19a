@@ -12,7 +12,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 PATIENT = ROOT / "generators/patient/personas.py"
-SOURCE_SHA = "8e0d2be47034b5841642ba056df294825f71a6040f7f27b77cd6da32ef417ab2"
+SOURCE_SHA = "6904ebf6d62ae5f60371fd91287d99b00eba10addb2d7f952602fb0165ef5c2b"
 
 
 def assignment_values(path):
@@ -50,7 +50,7 @@ def class_metadata(path, class_name):
 class TestPrompt10SourceContracts(unittest.TestCase):
     def test_build_version_and_source_fingerprint(self):
         manifest = ast.literal_eval(ast.parse((ROOT / "__manifest__.py").read_text()).body[0].value)
-        self.assertEqual(manifest["version"], "19.0.1.0.46")
+        self.assertEqual(manifest["version"], "19.0.1.0.61")
         constants = (ROOT / "services/constants.py").read_text(encoding="utf-8")
         self.assertIn(SOURCE_SHA, constants)
         self.assertIn('"clinic_patient": "19.0.1.0.1"', constants)
@@ -173,6 +173,21 @@ class TestPrompt10SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -48,7 +48,7 @@ for p in xml_files:
     except Exception as exc: err(12, f"XML parse: {p.relative_to(ROOT)}: {exc}")
 
 # 0 — project identity / dependency direction.
-if manifest.get("version") != "19.0.3.0.5": err(0, "authoritative version must be 19.0.3.0.5")
+if manifest.get("version") != "19.0.3.0.6": err(0, "authoritative version must be 19.0.3.0.6")
 required = {"base_setup","portal","uom","analytic","purchase","stock_account","clinic_base","clinic_patient","clinic_inventory","clinic_booking","clinic_membership","clinic_billing","clinic_ar","clinic_ap"}
 missing = required - set(manifest.get("depends", []))
 if missing: err(0, f"required dependencies missing: {sorted(missing)}")
@@ -221,7 +221,7 @@ build_marker_path = ROOT / "BUILD_ID.txt"
 if not build_marker_path.exists():
     err(12, "BUILD_ID.txt missing from active clinic_wallet source")
 marker_text = build_marker_path.read_text(encoding="utf-8")
-if "CLINIC_WALLET_BUILD_20260820_0500_V19.0.3.0.5" not in marker_text:
+if "CLINIC_WALLET_BUILD_20260914_0000_V19.0.3.0.6" not in marker_text:
     err(12, "unexpected clinic_wallet build marker")
 partner_view_source = txt("views/res_partner_views.xml")
 if 'ref="clinic_patient.view_partner_form_clinic_patient"' in partner_view_source:
@@ -265,6 +265,7 @@ if failed:
     print("RESULT: FAIL")
     sys.exit(1)
 print("RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME INSTALL/UPGRADE/SMOKE TEST PENDING)")
+
 
 
 

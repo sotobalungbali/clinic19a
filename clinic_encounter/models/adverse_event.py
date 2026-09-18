@@ -592,3 +592,4 @@ class ClinicAdverseEventFollowup(models.Model):
 #             "default_diagnosis_id": self.diagnosis_id.id if self.diagnosis_id else False,
 #         }
 #         return action
+

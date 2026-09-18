@@ -89,3 +89,18 @@ class ClinicDemoValidationResult(models.Model):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

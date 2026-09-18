@@ -35,3 +35,6 @@ from . import inventory_adjustment #
 # from . import procurement_group # sudah tidak ada lagi di Odoo 19 CE
 from . import integration_hooks #
 
+
+
+

@@ -99,3 +99,6 @@ Runtime re-install/upgrade on the target Odoo 19 PC is still required.
 - Attempt 1: removed optional `stock.lot.life_date` from hard-coded compute decorator dependencies; dynamic fallback retained.
 - Attempt 2: removed legacy search-group `expand` from all affected Clinic Inventory search views and added `ODOO19_SEARCH_VIEW_ARCHITECTURE_GATE`.
 
+
+
+

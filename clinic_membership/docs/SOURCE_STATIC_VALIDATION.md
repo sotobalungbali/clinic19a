@@ -134,3 +134,4 @@ requires the Settings menu to use the addon-owned action.
 - External action XML IDs used by Membership menu items: **0**
 - External core XML IDs remaining in Membership views are limited to stable core
   contracts required for security/multi-company/settings view inheritance.
+

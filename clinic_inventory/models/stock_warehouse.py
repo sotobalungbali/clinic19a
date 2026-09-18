@@ -424,3 +424,6 @@ class StockWarehouse(models.Model):
             return self.clinic_pharmacy_location_id
         return self.lot_stock_id
 
+
+
+

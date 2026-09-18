@@ -17,7 +17,7 @@ class TestPrompt18SourceContracts(unittest.TestCase):
         demo_manifest = ast.literal_eval(ast.parse((ROOT / "__manifest__.py").read_text()).body[0].value)
         billing_manifest = ast.literal_eval(ast.parse((SUITE / "clinic_billing/__manifest__.py").read_text()).body[0].value)
         ap_manifest = ast.literal_eval(ast.parse((SUITE / "clinic_ap/__manifest__.py").read_text()).body[0].value)
-        self.assertEqual(demo_manifest["version"], "19.0.1.0.46")
+        self.assertEqual(demo_manifest["version"], "19.0.1.0.61")
         self.assertEqual(billing_manifest["version"], "19.0.3.0.5")
         self.assertEqual(ap_manifest["version"], "19.0.3.0.3")
         source = FINANCE.read_text()
@@ -79,6 +79,21 @@ class TestPrompt18SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 {
     "name": "ClinicOne Patient Wallet",
-    "version": "19.0.3.0.5",
+    "version": "19.0.3.0.6",
     "summary": "Enterprise patient prepaid wallet, reservations, settlement, controls and accounting",
     "description": """
 ClinicOne Patient Wallet
@@ -81,6 +81,7 @@ Key capabilities:
     "application": True,
     "auto_install": False,
 }
+
 
 
 

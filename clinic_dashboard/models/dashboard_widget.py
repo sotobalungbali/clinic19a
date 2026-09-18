@@ -257,3 +257,4 @@ class ClinicDashboardWidget(models.Model):
             "res_id": metric.id,
         }
 
+

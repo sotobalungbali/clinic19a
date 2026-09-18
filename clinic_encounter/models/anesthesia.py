@@ -810,3 +810,4 @@ class ClinicAnesthesiaEvent(models.Model):
     )
     description = fields.Text(string="Description")
     critical = fields.Boolean(string="Critical?")
+

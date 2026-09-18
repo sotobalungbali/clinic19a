@@ -24,7 +24,7 @@ Core capabilities
 * Soft downstream integration events for Billing, AR, Wallet, Portal, Marketing and Analytics
 * Multi-company security and enterprise-grade Search/List/Form UI
 """,
-    "version": "19.0.3.0.6",
+    "version": "19.0.3.0.7",
     "author": "ClinicOne",
     "website": "https://clinic.one",
     "license": "LGPL-3",
@@ -84,4 +84,5 @@ Core capabilities
     ],
     "demo": [],
 }
+
 

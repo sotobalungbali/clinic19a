@@ -79,3 +79,4 @@ external action dependency.
 ## Runtime repair 19.0.3.0.6
 
 Reloads the already-declared Membership Manager ACL contract after runtime evidence showed the installed database had no create grant for `membership.plan`. No workflow or permission scope is broadened beyond source-declared manager access.
+

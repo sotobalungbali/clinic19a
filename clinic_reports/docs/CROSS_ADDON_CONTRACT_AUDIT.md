@@ -171,3 +171,4 @@ Source records remain authoritative. Report snapshots are downstream evidence on
 - source-state mutation: 0
 - fabricated Branch semantics: 0
 - future addon hard dependencies: 0
+

@@ -67,3 +67,4 @@ class MembershipPlanUiBridge(models.Model):
             self._membership_upsert_optional_view(*args)
         return True
 
+

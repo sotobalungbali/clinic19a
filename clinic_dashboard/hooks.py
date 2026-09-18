@@ -5,3 +5,4 @@ def post_init_hook(env):
     for company in env["res.company"].sudo().search([]):
         Dashboard._ensure_default_boards(company)
 
+

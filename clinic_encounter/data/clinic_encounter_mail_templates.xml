@@ -17,3 +17,4 @@
     <field name="auto_delete" eval="False"/>
   </record>
 </odoo>
+

@@ -90,6 +90,9 @@ class ManagementDashboardGenerator(ManagementEvidenceBase):
         for method in ("_refresh_snapshot", "_validate_runtime_scope", "_ensure_report_run"):
             if not hasattr(Board, method):
                 issues.append(f"clinic.dashboard.board missing {method}")
+        import inspect
+        if 'existing_snapshot' not in inspect.signature(Board._refresh_snapshot).parameters:
+            issues.append('Dashboard explicit in-place refresh API is missing')
         boards = self._actor(Board, manager, ctx).search([
             ("company_id", "=", ctx.run.company_id.id), ("code", "in", list(DASHBOARD_CODES)),
         ])
@@ -111,7 +114,7 @@ class ManagementDashboardGenerator(ManagementEvidenceBase):
             raise UserError(_("MASTER PROMPT 22 Dashboard whole-path preflight failed: %s") % "; ".join(issues))
         return boards
 
-    def generate(self, ctx, scenario):
+    def generate(self, ctx, scenario, refresh=False):
         counts = self._counts()
         manager = self._manager(ctx, "clinic_dashboard.group_dashboard_manager")
         boards = self._preflight(ctx, manager)
@@ -121,7 +124,12 @@ class ManagementDashboardGenerator(ManagementEvidenceBase):
             key = f"DEMO-DASH-SNAPSHOT-{board.code}"
             existing = self._resolve(ctx, key, "clinic.dashboard.snapshot", True, manager)
             if existing:
-                counts["reused"] += 1
+                if refresh:
+                    board._refresh_snapshot(date_from, date_to, branch=None,
+                                            snapshot_name=key, existing_snapshot=existing)
+                    counts["updated"] += 1
+                else:
+                    counts["reused"] += 1
                 continue
             snapshot = board._refresh_snapshot(date_from, date_to, branch=None, snapshot_name=key)
             ctx.reference_service.bind(
@@ -165,7 +173,7 @@ class ManagementAnalyticsGenerator(ManagementEvidenceBase):
         Snapshot = ctx.env["clinic.analytics.snapshot"]
         Forecast = ctx.env["clinic.analytics.forecast"]
         Engine = ctx.env["clinic.analytics.engine"]
-        for Model, methods in ((Snapshot, ("action_generate", "action_generate_insights")), (Forecast, ("action_run",)), (Engine, ("evaluate", "historical_periods", "future_periods"))):
+        for Model, methods in ((Snapshot, ("action_generate", "action_generate_insights", "action_reset_draft")), (Forecast, ("action_run", "action_reset_draft")), (Engine, ("evaluate", "historical_periods", "future_periods"))):
             for method in methods:
                 if not hasattr(Model, method):
                     issues.append(f"{Model._name} missing {method}")
@@ -237,10 +245,18 @@ class ManagementAnalyticsGenerator(ManagementEvidenceBase):
             raise UserError(_("Booking Analytics forecast failed: %s") % (forecast.error_message or forecast.state))
         return forecast
 
-    def generate(self, ctx, scenario):
+    def generate(self, ctx, scenario, refresh=False):
         counts = self._counts()
         manager = self._manager(ctx, "clinic_analytics.group_analytics_manager")
         self._preflight(ctx, manager)
+        if refresh:
+            for label, _start, _end in ANALYTICS_PERIODS:
+                snapshot = self._resolve(ctx, f"DEMO-ANL-SNAPSHOT-{label}", "clinic.analytics.snapshot", True, manager)
+                if snapshot:
+                    snapshot.action_reset_draft()
+            forecast = self._resolve(ctx, "DEMO-ANL-FORECAST-BOOKING", "clinic.analytics.forecast", True, manager)
+            if forecast:
+                forecast.action_reset_draft()
         for period in ANALYTICS_PERIODS:
             self._ensure_snapshot(ctx, counts, manager, *period)
         self._ensure_forecast(ctx, counts, manager)
@@ -263,6 +279,21 @@ class ManagementAnalyticsGenerator(ManagementEvidenceBase):
         if not forecast or forecast.state != "done" or len(forecast.point_ids.filtered(lambda point: point.point_type == "actual")) != 12 or len(forecast.point_ids.filtered(lambda point: point.point_type == "forecast")) != 3:
             issues.append("Booking forecast does not contain the deterministic 12-history/3-future series")
         return issues
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

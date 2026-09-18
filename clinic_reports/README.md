@@ -14,3 +14,4 @@ PDF/CSV output, and provides a stable metric layer for the later
 
 Runtime status: **PENDING** until activation and smoke testing succeeds on the
 target Odoo 19 CE environment.
+

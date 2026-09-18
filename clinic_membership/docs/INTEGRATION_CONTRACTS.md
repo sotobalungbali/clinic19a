@@ -8,3 +8,4 @@
 - Downstream side effects are announced through `membership.integration.event`.
 - Cross-addon form decorations use runtime-safe `env.ref(..., raise_if_not_found=False)` bridges rather than hard inherited view XML IDs.
 
+

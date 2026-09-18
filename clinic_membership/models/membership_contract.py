@@ -307,7 +307,8 @@ class MembershipContract(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            vals.setdefault("name", self._next_name())
+            if not vals.get("name") or vals["name"] == "/":
+                vals["name"] = self._next_name()
             vals.setdefault("company_id", self.env.company.id)
             plan = self.env["membership.plan"].browse(vals.get("plan_id")).exists()
             if plan:
@@ -765,4 +766,5 @@ class MembershipContract(models.Model):
             "target": "new",
             "context": {"default_contract_id": self.id},
         }
+
 

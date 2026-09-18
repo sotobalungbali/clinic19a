@@ -285,6 +285,13 @@ class ClinicDemoRun(models.Model):
         """
         self.ensure_one()
         from ..services.progressive_adoption import prompt_stage_adoption
+        from ..services.build_adoption_service import adopt_supported_build
+        if adopt_supported_build(self):
+            return True
+        if self.checkpoint_ids.filtered(lambda row: row.generator_key == "management.analytics" and row.state == "done"):
+            # Release-stage failures must not fall through to a looser old
+            # progressive-stage adoption route.
+            return False
         if self.state not in {"draft", "failed", "ready"}:
             return False
         foundation_generators = {"foundation.native", "foundation.organization"}
@@ -751,6 +758,7 @@ class ClinicDemoRun(models.Model):
     def _check_generation_preflight(self):
         self.ensure_one()
         self._check_operator()
+        self.lock_for_update()
         compatibility = self.action_refresh_compatibility()
         if self.compatibility_state != "compatible":
             raise UserError(
@@ -777,9 +785,14 @@ class ClinicDemoRun(models.Model):
         self._check_generation_preflight()
         from ..services.execution_engine import DemoExecutionEngine
         return DemoExecutionEngine(self.env).continue_generation(self)
+    def action_complete_source_journeys(self):
+        from ..services.source_closure_service import complete_source_journeys
+        return complete_source_journeys(self)
+
     def action_validate(self):
         self.ensure_one()
         self._check_operator()
+        self.lock_for_update()
         from ..services.validation_service import DemoValidationService
         self.write({"state": "validating"})
         try:
@@ -809,7 +822,7 @@ class ClinicDemoRun(models.Model):
             _("Validation Failed") if failed else _("READY FOR DEMO"),
             _("Enterprise readiness validation failed. Open Validation Results for the complete evidence.")
             if failed
-            else _("All critical structural, temporal, workflow, journey, exception, analytics, integrity, reset, regeneration, and fresh-database readiness checks passed."),
+            else _("Current dataset checks passed. Fresh-database, destructive reset, and regeneration rehearsals require separate execution evidence."),
             "danger" if failed else "success",
             sticky=failed,
         )
@@ -869,6 +882,7 @@ class ClinicDemoRun(models.Model):
         self.ensure_one()
         self._check_operator()
         from ..services.fingerprint_service import SourceFingerprintService
+        self.lock_for_update()
         self._adopt_current_build_if_pristine()
         result = SourceFingerprintService(self.env).check_compatibility(run=self)
         if self.env.context.get("return_compatibility_notification"):
@@ -918,6 +932,3 @@ class ClinicDemoRun(models.Model):
             "clinic.demo.validation.result",
             [("run_id", "=", self.id)],
         )
-
-
-

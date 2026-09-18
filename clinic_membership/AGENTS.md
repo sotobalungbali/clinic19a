@@ -9,3 +9,4 @@ Codex is a bounded implementation worker. It is not the architect, simplifier, o
 - Never delete enterprise capability merely to make a test pass.
 - The Enterprise Development Guardrail is a hard gate.
 
+

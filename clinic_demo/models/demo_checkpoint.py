@@ -100,3 +100,18 @@ class ClinicDemoCheckpoint(models.Model):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

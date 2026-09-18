@@ -362,3 +362,6 @@ class StockScrap(models.Model):
         """
         return False
 
+
+
+

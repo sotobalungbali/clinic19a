@@ -148,7 +148,7 @@ class DemoExecutionEngine:
                 return False, dependency
         return True, False
 
-    def _execute_generator(self, run, generator, force=False, repair=False):
+    def _execute_generator(self, run, generator, force=False, repair=False, generate_kwargs=None):
         scenario = self._scenario_for(generator)
         checkpoint = self.checkpoints.ensure(
             run=run,
@@ -187,7 +187,7 @@ class DemoExecutionEngine:
                 counters = (
                     instance.repair_missing(ctx, scenario)
                     if repair
-                    else instance.generate(ctx, scenario)
+                    else instance.generate(ctx, scenario, **(generate_kwargs or {}))
                 )
                 warnings = instance.validate(ctx, scenario)
         except Exception as exc:
@@ -331,92 +331,35 @@ class DemoExecutionEngine:
         return self._finish_registered_scope(run, generators)
 
     def request_full_generation(self, run):
-        run.ensure_one()
-        generators = self._registered_generators()
-        if not generators:
-            return self._notification(
-                _("No Generators Registered"),
-                _("No executable domain generator is registered."),
-                "warning",
-                sticky=True,
-            )
-        return self._execute_scope(run, generators)
+        from .journey_engine import JourneyEngine
+        return JourneyEngine(self.env).dispatch(run, 'full')
 
     def request_current_phase(self, run):
-        run.ensure_one()
-        generators = self._registered_generators()
-        if not generators:
-            return self._notification(
-                _("No Generators Registered"),
-                _("No executable domain generator is registered."),
-                "warning",
-            )
-
-        phases = sorted({generator.phase for generator in generators})
-        phase = run.current_phase if run.current_phase in phases else phases[0]
-        phase_generators = tuple(
-            generator for generator in generators if generator.phase == phase
-        )
-        return self._execute_scope(run, phase_generators)
+        from .journey_engine import JourneyEngine
+        return JourneyEngine(self.env).dispatch(run, 'phase')
 
     def continue_generation(self, run):
-        run.ensure_one()
-        generators = self._registered_generators()
-        pending_or_failed = []
-        for generator in generators:
-            checkpoints = run.checkpoint_ids.filtered(
-                lambda checkpoint: checkpoint.generator_key == generator.key
-            )
-            if not checkpoints or checkpoints.filtered(
-                lambda checkpoint: checkpoint.state in {"pending", "failed"}
-            ):
-                pending_or_failed.append(generator)
-
-        if not pending_or_failed:
-            return self._notification(
-                _("Nothing Pending"),
-                _("All currently registered generator checkpoints are complete."),
-                "info",
-            )
-        return self._execute_scope(run, tuple(pending_or_failed), force=True)
+        from .journey_engine import JourneyEngine
+        return JourneyEngine(self.env).dispatch(run, 'resume')
 
     def repair_missing(self, run, references):
-        run.ensure_one()
-        generator_map = self._generator_map()
-        keys = sorted(
-            {
-                reference.generator_key
-                for reference in references
-                if reference.generator_key in generator_map
-            }
-        )
-        if not keys:
-            return self._notification(
-                _("No Repair Generator"),
-                _("No registered generator owns the missing references."),
-                "warning",
-                sticky=True,
-            )
+        from .journey_engine import JourneyEngine
+        return JourneyEngine(self.env).dispatch(run, 'full')
 
-        repaired = 0
-        for key in keys:
-            generator = generator_map[key]
-            ok, _message = self._execute_generator(
-                run,
-                generator,
-                force=True,
-                repair=True,
-            )
-            if not ok:
-                return self._finish_registered_scope(run, tuple(generator_map[k] for k in keys))
-            repaired += 1
 
-        return self._notification(
-            _("Missing Records Repaired"),
-            _("%s owning generator(s) completed missing-record repair.") % repaired,
-            "success",
-            sticky=True,
-        )
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

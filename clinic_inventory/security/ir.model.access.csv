@@ -13,3 +13,6 @@ access_clinic_treatment_product_usage_manager,clinic.treatment.product.usage man
 access_clinic_treatment_product_usage_line_user,clinic.treatment.product.usage.line user,model_clinic_treatment_product_usage_line,stock.group_stock_user,1,1,1,0
 access_clinic_treatment_product_usage_line_manager,clinic.treatment.product.usage.line manager,model_clinic_treatment_product_usage_line,stock.group_stock_manager,1,1,1,1
 
+
+
+

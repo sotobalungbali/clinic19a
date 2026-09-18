@@ -48,3 +48,4 @@ to `membership.contract.benefit`.
 ## Status
 Source/static validation: PASS.
 Windows/Odoo runtime installation: PENDING.
+

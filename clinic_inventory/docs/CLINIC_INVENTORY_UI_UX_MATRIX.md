@@ -19,3 +19,6 @@
 
 Odoo core extensions not listed above continue to use their canonical Odoo 19 Search/List/Form surfaces. Their ClinicOne APIs/fields remain preserved; dedicated UI is added only where it materially improves inventory operation.
 
+
+
+

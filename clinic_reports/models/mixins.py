@@ -120,3 +120,4 @@ class ClinicReportCompanyMixin(models.AbstractModel):
             if "display_name" in record._fields
             else str(record.id)
         )
+

@@ -259,13 +259,18 @@ class ClinicWalletTransaction(models.Model):
             })
         return True
 
-    def action_post(self):
+    def action_post(self, accounting_name=None, accounting_date=None, liability_account_id=None):
         """
         Finalisasi transaksi:
         - Validasi rule & ketersediaan saldo (untuk transaksi pengurang: redeem/refund/adjust_out).
         - Buat jurnal (topup/refund/adjust_in/adjust_out).
         - Untuk redeem: default tanpa jurnal di sini, kecuali setting mengharuskan.
         """
+        if accounting_name is not None or accounting_date is not None or liability_account_id is not None:
+            self.ensure_one()
+            self.wallet_id._check_access_manager()
+            if not accounting_name or not accounting_date or not liability_account_id:
+                raise UserError(_("Explicit posting requires name, date and liability account together."))
         for rec in self:
             rec.wallet_id._lock_for_update()
             if rec.state == "posted":
@@ -283,7 +288,7 @@ class ClinicWalletTransaction(models.Model):
 
             # Buat jurnal bila diperlukan
             if rec._should_post_accounting_now():
-                move = rec._create_account_move()
+                move = rec._create_account_move(accounting_name, accounting_date, liability_account_id)
                 rec.with_context(wallet_tx_transition=True).write({"move_id": move.id})
 
             # Tandai posted & lepaskan flag reserved
@@ -404,7 +409,7 @@ class ClinicWalletTransaction(models.Model):
             return bool(self.wallet_id.company_id.wallet_redeem_post_accounting)
         return False
 
-    def _create_account_move(self):
+    def _create_account_move(self, accounting_name=None, accounting_date=None, liability_account_id=None):
         """
         Buat account.move untuk transaksi ini.
         Mapping akun:
@@ -427,7 +432,12 @@ class ClinicWalletTransaction(models.Model):
         if not journal:
             raise UserError(_("Wallet journal is not configured."))
 
-        liability_acc = wallet.get_liability_account()
+        liability_acc = self.env["account.account"].browse(liability_account_id).exists() if liability_account_id else wallet.get_liability_account()
+        if liability_account_id:
+            liability_acc.check_access("read")
+            if (not liability_acc or wallet.company_id not in liability_acc.company_ids
+                    or not liability_acc.active or liability_acc.account_type not in ("liability_current", "liability_non_current")):
+                raise UserError(_("Explicit Wallet liability account must be active and belong to the Wallet company."))
         if not liability_acc:
             raise UserError(_("Wallet liability account is not configured."))
 
@@ -436,11 +446,14 @@ class ClinicWalletTransaction(models.Model):
         # Tanggal & ref
         move_vals = {
             "ref": self._build_move_ref(),
-            "date": fields.Date.context_today(self),
+            "date": fields.Date.to_date(accounting_date) if accounting_date else fields.Date.context_today(self),
             "journal_id": journal.id,
             "company_id": wallet.company_id.id,
             "line_ids": [],
         }
+
+        if accounting_name:
+            move_vals["name"] = accounting_name
 
         amt = self.amount
         def _add_line(account, debit=0.0, credit=0.0, name=None):
@@ -639,6 +652,7 @@ class ClinicWalletTransaction(models.Model):
             "res_id": self.id,
             "target": "current",
         }
+
 
 
 

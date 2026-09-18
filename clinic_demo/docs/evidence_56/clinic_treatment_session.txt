@@ -1,0 +1,22 @@
+CLINIC_TREATMENT_SESSION_GUARDRAIL: PASS
+[PASS] HARD GATE 0: ClinicOne / Odoo 19 release identity locked
+[PASS] HARD GATE 1: source-actual direct dependencies retained
+[PASS] HARD GATE 2: historical models and public API preserved
+[PASS] HARD GATE 3: workflow/security/stock/billing/UI/migration/docs/tests packaged
+[PASS] HARD GATE 4: three owned persistent models inventoried
+[PASS] HARD GATE 5: model files remain responsibility-bounded
+[PASS] HARD GATE 6: 14 XML files parse using Odoo 19 syntax
+[PASS] HARD GATE 7: Odoo 19 privilege hierarchy, ACL and branch/company rules present
+[PASS] HARD GATE 8: Odoo 19 models.Constraint policy PASS
+[PASS] HARD GATE 9: backend workflow enforcement present
+[PASS] HARD GATE 10: stock completion verification and immutable reset guard present
+[PASS] HARD GATE 11: ignore_booking_id/consider_capacity owner API + super() delegation PASS
+[PASS] HARD GATE 12: Clinic Billing bridge present
+[PASS] HARD GATE 13: Python AST PASS; no digit-prefixed backup files
+[PASS] HARD GATE 14: migration, regression and patch-ledger evidence packaged
+[PASS] HARD GATE 15: enterprise completeness evidence PASS
+
+
+
+
+

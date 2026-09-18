@@ -56,3 +56,6 @@ Only after target-PC install/upgrade/repeat-upgrade and focused inventory smoke 
 `CLINIC_INVENTORY_MOVE_FORWARD_READY: YES`
 and `SOURCE_FROZEN: YES`.
 
+
+
+

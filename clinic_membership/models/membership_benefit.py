@@ -413,3 +413,4 @@ class MembershipPlanBenefit(models.Model):
             "res_id": self.plan_id.id,
         }
 
+

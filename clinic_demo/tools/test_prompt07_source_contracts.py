@@ -32,7 +32,7 @@ class TestPrompt07SourceContracts(unittest.TestCase):
         manifest = ast.literal_eval(
             ast.parse((ROOT / "__manifest__.py").read_text(encoding="utf-8")).body[0].value
         )
-        self.assertEqual(manifest["version"], "19.0.1.0.46")
+        self.assertEqual(manifest["version"], "19.0.1.0.61")
         clinic_dependencies = [
             name for name in manifest["depends"] if name.startswith("clinic_")
         ]
@@ -100,6 +100,21 @@ class TestPrompt07SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

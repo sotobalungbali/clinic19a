@@ -23,3 +23,4 @@ def migrate(cr, version):
         raise RuntimeError('clinic_membership schema incomplete after upgrade: ' + ', '.join(missing))
     _logger.info('[clinic_membership] Upgrade schema verified: %s tables', len(required))
 
+

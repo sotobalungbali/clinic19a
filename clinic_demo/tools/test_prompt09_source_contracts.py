@@ -22,10 +22,10 @@ def class_meta(path, name):
 class TestPrompt09(unittest.TestCase):
     def test_version_and_owner_versions(self):
         m=ast.literal_eval(ast.parse((ROOT/'__manifest__.py').read_text()).body[0].value)
-        self.assertEqual(m['version'],'19.0.1.0.46')
+        self.assertEqual(m['version'],'19.0.1.0.61')
         c=(ROOT/'services/constants.py').read_text()
         self.assertIn('"clinic_staff": "19.0.1.0.1"',c); self.assertIn('"clinic_doctor": "19.0.1.0.2"',c); self.assertIn('"clinic_patient": "19.0.1.0.1"',c)
-        self.assertIn('8e0d2be47034b5841642ba056df294825f71a6040f7f27b77cd6da32ef417ab2',c)
+        self.assertIn('6904ebf6d62ae5f60371fd91287d99b00eba10addb2d7f952602fb0165ef5c2b',c)
     def test_workforce_generators(self):
         _,p=class_meta(ROOT/'generators/workforce/preflight.py','WorkforcePreflightGenerator')
         _,w=class_meta(ROOT/'generators/workforce/staff_provider.py','WorkforceStaffProviderGenerator')
@@ -104,6 +104,21 @@ class TestPrompt09(unittest.TestCase):
         self.assertNotIn('"groups_id" in vals', active)
 
 if __name__=='__main__': unittest.main(verbosity=2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

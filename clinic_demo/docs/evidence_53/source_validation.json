@@ -1,0 +1,25 @@
+{
+  "guardrails": {
+    "clinic_demo": 0,
+    "clinic_inventory": 0,
+    "clinic_reports": 0,
+    "clinic_insurance_authorization": 0,
+    "clinic_membership": 0,
+    "clinic_wallet": 0,
+    "clinic_encounter": 0
+  },
+  "parse": {
+    "python": 926,
+    "xml": 517
+  },
+  "errors": [],
+  "native_odoo": "NOT RUN: no configured Odoo database runtime"
+}
+
+
+
+
+
+
+
+

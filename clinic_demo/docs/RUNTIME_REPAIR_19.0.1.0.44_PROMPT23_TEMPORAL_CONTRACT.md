@@ -29,3 +29,18 @@ The failed-prefix adoption contract resumes at `validation.temporal` while the
 completed `validation.structural` checkpoint remains authoritative.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,33 @@
+ClinicOne clinic_dashboard Enterprise Development Guardrail
+[INFO] model_files=7 python_files=14 xml_files=11
+[INFO] owned_models=4 models.Constraint=6 models.Index=5
+[INFO] search_views=4 acl_rows=6 record_rules=4
+[INFO] built_in_boards=6 built_in_widgets=50
+[INFO] test_methods=256 class_methods=323
+[PASS] HARD GATE 0 - ClinicOne / addon 29 / KPI + revenue + performance + room-utilization Dashboard identity locked
+[PASS] HARD GATE 1 - Codex is bounded implementation worker, not architect/KPI owner/simplifier
+[PASS] HARD GATE 14 - Codex retry limit = maximum two bounded attempts / one repeated root cause
+[PASS] HARD GATE 2 - clinic_reports remains KPI owner; Dashboard only delegates missing Report Runs and snapshots normalized metrics
+[PASS] HARD GATE 3 - interactive client + six boards + snapshots + trends + thresholds + schedules + backend fallback + tests/docs present
+[PASS] HARD GATE 4 - 4 owned persistent Dashboard models plus additive Company/Branch/Report integrations inventoried
+[PASS] HARD GATE 5 - human-friendly Dashboard responsibilities split across 7 focused model files
+[PASS] HARD GATE 6 - statusbars, smart/body/O2M actions plus Odoo 19 Owl interactive workspace are present
+[PASS] HARD GATE 7 - Search/List/Form complete for all 4 owned Dashboard models; Kanban/Pivot/Graph supplement the matrix
+[PASS] HARD GATE 8 - 4 Dashboard search views pass Odoo19 architecture/searchability gates
+[PASS] HARD GATE 9 - 6 list tags and 47 object buttons pass enterprise Dashboard quality
+[PASS] HARD GATE 10 - 3-role hierarchy + Reports implications + 4 company rules + 6 ACL rows + immutable generated output pass
+[PASS] HARD GATE 12 - Odoo19 source/frontend contracts pass; models.Constraint=6, models.Index=5
+[PASS] HARD GATE 13 - useful scope/provenance/ownership comments pass: comments=49, docstrings=9
+[PASS] HARD GATE 15 - 6 Boards + 50 KPI Widgets + Owl client + 256 runtime tests pass source/static completeness
+RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME INSTALL/BROWSER SMOKE TEST PENDING)
+
+
+
+
+
+
+
+
+
+
+

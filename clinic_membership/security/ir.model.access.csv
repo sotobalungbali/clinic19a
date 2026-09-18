@@ -21,3 +21,4 @@ access_membership_contract_renew_wizard,renew wizard,model_membership_contract_r
 access_membership_hold_request_wizard,hold wizard,model_membership_hold_request_wizard,clinic_membership.group_clinic_membership_user,1,1,1,1
 access_membership_point_adjust_wizard,points wizard,model_membership_point_adjust_wizard,clinic_membership.group_clinic_membership_manager,1,1,1,1
 
+

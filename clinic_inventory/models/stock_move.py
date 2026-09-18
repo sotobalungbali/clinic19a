@@ -148,18 +148,18 @@ class StockMove(models.Model):
     # =========================================================================
     # OVERRIDES: Confirm / Assign / Done
     # =========================================================================
-    def _action_confirm(self, merge=True, merge_into=False):
+    def _action_confirm(self, merge=True, merge_into=False, create_proc=True):
         """Pre-validate governance before confirming."""
         for move in self:
             move._clinic_pre_confirm_checks()
-        res = super()._action_confirm(merge=merge, merge_into=merge_into)
+        res = super()._action_confirm(merge=merge, merge_into=merge_into, create_proc=create_proc)
         for move in self:
             move._clinic_hook_post_confirm()
         return res
 
-    def _action_assign(self):
+    def _action_assign(self, force_qty=False):
         """After reservation, verify expiration policy of reserved lots."""
-        res = super()._action_assign()
+        res = super()._action_assign(force_qty=force_qty)
         # Validate lots after standard reservation
         for move in self:
             move._clinic_validate_expiration_on_reserved_lots()
@@ -335,4 +335,7 @@ class StockMove(models.Model):
             if self.picking_id:
                 self.picking_id.do_unreserve()
         return True
+
+
+
 

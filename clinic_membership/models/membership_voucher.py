@@ -412,3 +412,4 @@ class MembershipVoucher(models.Model):
             "res_id": self.contract_id.id,
         }
 
+

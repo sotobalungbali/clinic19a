@@ -591,6 +591,36 @@ class EncounterCoreClinicalJourneyGenerator(BaseDemoGenerator):
 
         return counters
 
+    def _treatment_completion_issues(self, ctx, encounter):
+        """Validate canonical links across clinic.patient and res.partner."""
+        booking = self._resolve(ctx, "DEMO-BOOK-TODAY-002", "booking.booking", missing_ok=True)
+        if not booking or not booking.doctor_id.user_id:
+            return ["declared booking or clinician is missing"]
+        refs = ctx.run.reference_ids.filtered(lambda ref: ref.demo_key == "DEMO-SESSION-001")
+        if len(refs) != 1 or refs.model_name != "clinic.treatment.session" or refs.generator_key != "operations.treatment_session":
+            return ["DEMO-SESSION-001 provenance does not match its owner journey"]
+        session = self._resolve(ctx, "DEMO-SESSION-001", "clinic.treatment.session",
+                                missing_ok=True, record_user=booking.doctor_id.user_id)
+        if not session:
+            return ["DEMO-SESSION-001 is missing"]
+        checks = {
+            "session is not done": session.state == "done",
+            "session encounter link differs": session.encounter_id == encounter,
+            "session booking link differs": session.booking_id == booking,
+            "session company differs": session.company_id == ctx.run.company_id,
+            "canonical clinic patient differs": session.clinic_patient_id == encounter.patient_id,
+            "session partner differs from encounter patient partner": bool(encounter.patient_id.partner_id) and session.patient_id == encounter.patient_id.partner_id,
+            "booking patient partner differs": booking.patient_id == session.patient_id,
+            "actual session chronology is missing or reversed": bool(session.actual_start_datetime and session.actual_end_datetime and session.actual_end_datetime >= session.actual_start_datetime),
+            "encounter start differs from session actual start": encounter.date_start == session.actual_start_datetime,
+            "encounter end differs from session actual end": encounter.date_end == session.actual_end_datetime,
+            "no completed encounter procedure": bool(encounter.procedure_line_ids.filtered(lambda line: line.state == "done")),
+        }
+        return [reason for reason, passed in checks.items() if not passed]
+
+    def _completed_by_treatment_session(self, ctx, encounter):
+        return not self._treatment_completion_issues(ctx, encounter)
+
     def validate(self, ctx, scenario):
         issues = []
         expected_states = {
@@ -605,9 +635,14 @@ class EncounterCoreClinicalJourneyGenerator(BaseDemoGenerator):
             if not encounter:
                 issues.append(f"{key} is missing.")
                 continue
-            if encounter.state != expected_state:
+            downstream_issues = None
+            if key == "DEMO-ENC-LIVE-001" and encounter.state == "done":
+                downstream_issues = self._treatment_completion_issues(ctx, encounter)
+            completed_downstream = downstream_issues == []
+            if encounter.state != expected_state and not completed_downstream:
                 issues.append(
                     f"{key} expected state {expected_state}, found {encounter.state}."
+                    + (" Downstream completion evidence: " + "; ".join(downstream_issues) if downstream_issues else "")
                 )
             if not encounter.patient_id or not encounter.doctor_id:
                 issues.append(f"{key} is missing patient/provider.")
@@ -647,6 +682,21 @@ class EncounterCoreClinicalJourneyGenerator(BaseDemoGenerator):
 
     def reset(self, ctx, scenario):
         return {"skipped": 1}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

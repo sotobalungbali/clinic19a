@@ -276,3 +276,4 @@ class ClinicEncounterStage(models.Model):
             limit=1,
         )
         return stage
+

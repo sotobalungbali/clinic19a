@@ -53,3 +53,18 @@ class TestPrompt08FoundationRegistry(TransactionCase):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

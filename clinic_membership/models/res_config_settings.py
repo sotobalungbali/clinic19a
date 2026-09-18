@@ -112,3 +112,4 @@ class ResConfigSettingsMembership(models.TransientModel):
                 company,
             )
 
+

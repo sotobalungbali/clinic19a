@@ -1,0 +1,19 @@
+clinic_membership Enterprise Development Guardrail
+[INFO] python_files=27
+[INFO] xml_files=18
+[INFO] models.Constraint=22
+[INFO] persistent_models=9/9
+[INFO] object_buttons=43
+[INFO] test_methods=30
+RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME NOT ASSERTED)
+
+
+
+
+
+
+
+
+
+
+

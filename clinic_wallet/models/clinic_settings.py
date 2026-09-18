@@ -191,3 +191,4 @@ class ResConfigSettings(models.TransientModel):
 
 
 
+

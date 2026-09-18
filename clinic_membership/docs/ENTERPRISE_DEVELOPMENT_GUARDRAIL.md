@@ -81,3 +81,4 @@ As part of HARD GATE 6, HARD GATE 10 and HARD GATE 15:
 - that action MUST target `res.config.settings` in form mode and select the
   `clinic_membership` settings app through context;
 - a source/static PASS is not a Windows runtime PASS.
+

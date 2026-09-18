@@ -6,3 +6,4 @@ access_dashboard_widget_manager,Dashboard Widget Manager,model_clinic_dashboard_
 access_dashboard_snapshot_user,Dashboard Snapshot User,model_clinic_dashboard_snapshot,clinic_dashboard.group_dashboard_user,1,0,0,0
 access_dashboard_snapshot_line_user,Dashboard Snapshot KPI User,model_clinic_dashboard_snapshot_line,clinic_dashboard.group_dashboard_user,1,0,0,0
 
+

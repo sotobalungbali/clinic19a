@@ -232,3 +232,4 @@ registry.category("actions").add(
     ClinicDashboardClient
 );
 
+

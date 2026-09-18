@@ -523,3 +523,6 @@ class ClinicPatientProductHistory(models.Model):
             data[pid] = r.get("qty", 0.0) or 0.0
         return data
 
+
+
+

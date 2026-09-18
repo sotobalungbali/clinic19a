@@ -25,7 +25,7 @@ This Odoo 19 hardening preserves the finished functional baseline while adding
 machine-checkable enterprise guardrails, complete UI/security surfaces and
 bounded integration resilience.
 """,
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "Healthcare",
     "license": "LGPL-3",
     "author": "ClinicOne",
@@ -73,3 +73,4 @@ bounded integration resilience.
     "installable": True,
     "application": True,
 }
+

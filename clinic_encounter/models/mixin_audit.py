@@ -571,3 +571,4 @@ class ClinicAuditMixin(models.AbstractModel):
         if not self._audit_is_enabled():
             return False
         return self._audit_create_log(category="comment", summary=_("Comment"), note=text, changes={})
+

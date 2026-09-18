@@ -1,3 +1,71 @@
+# Current release 19.0.1.0.61
+
+See docs/RELEASE_61.md; upgrade bundled clinic_reports first.
+
+# Current release: 19.0.1.0.60
+
+See docs/RELEASE_60.md. Upgrade bundled clinic_inventory first.
+
+# Current release: 19.0.1.0.59
+
+See docs/RELEASE_59.md for the anchor-relative follow-up repair and upgrade steps.
+
+# Current release: 19.0.1.0.58
+
+See [release 58](docs/RELEASE_58.md) for Telemedicine branch preparation and exact resume steps. Previous release notes below are historical.
+
+# Current release: 19.0.1.0.57
+
+Read [release 57](docs/RELEASE_57.md) for the advanced clinical actor correction and resume steps. Earlier notes below are historical.
+
+# Current release: 19.0.1.0.56
+
+See [release 56](docs/RELEASE_56.md) for the canonical patient bridge correction and exact resume steps. Older release notes below are historical.
+
+# Current release: 19.0.1.0.55
+
+See [release 55](docs/RELEASE_55.md) for state progression and Journey Progress navigation. Earlier notes below are historical.
+
+# Current release: 19.0.1.0.54
+
+Read [release 54](docs/RELEASE_54.md) for the reconciliation-reader correction and upgrade steps. Earlier release notes below are historical.
+
+# Current release: 19.0.1.0.53
+
+Read [release and migration steps](docs/RELEASE_53.md), [journey traceability](docs/JOURNEY_TRACEABILITY_53.md), and [native acceptance A–F](docs/ACCEPTANCE_A_F_53.md). Permanent execution/migration authority: [GOVERNING_MODEL_BY_MODEL.md](docs/GOVERNING_MODEL_BY_MODEL.md). The historical documentation below is retained for traceability; current behavior is governed by release 53.
+
+# clinic_demo 19.0.1.0.52
+
+Current instructions: docs/RELEASE_52.md. Upgrade bundled clinic_inventory 19.0.1.0.4 first, then clinic_demo 19.0.1.0.52. Same run → Refresh Compatibility → Complete Source Journeys → automatic acceptance and Validate. No reset. Native readiness pending. Older notes below are historical.
+
+# clinic_demo 19.0.1.0.51
+
+Current release: docs/RELEASE_51.md and docs/TEST_REPORT_51.md. Replace only clinic_demo. Same run → Refresh Compatibility → Complete Source Journeys → automatic acceptance and Validate. Do not reset. Previous companion versions remain required. Native runtime acceptance pending.
+
+Older instructions below are historical and superseded by v51.
+
+# ClinicOne clinic_demo 19.0.1.0.50
+
+Current release: docs/RELEASE_50.md and docs/TEST_REPORT_50.md. Full replacement clinic_demo; same Demo Run → Refresh Compatibility → Complete Source Journeys → automatic acceptance resume and Validate. Do not reset. Companion versions remain pinned. Native readiness acceptance remains pending.
+
+Older release instructions below are historical and superseded by v50.
+
+# ClinicOne clinic_demo 19.0.1.0.49
+
+Current release: **docs/RELEASE_49.md** and **docs/TEST_REPORT_49.md**. Replace and upgrade only clinic_demo, then use the same run: Refresh Compatibility → Complete Source Journeys → automatic acceptance resume and Validate. Exact companion versions from v48 remain required. Native readiness acceptance is pending.
+
+The v49 release notes supersede older upgrade instructions below. Earlier reports and notes are retained as history.
+
+# ClinicOne clinic_demo 19.0.1.0.48
+
+Current release: see **docs/RELEASE_48.md** for the six-addon upgrade and **Complete Source Journeys** action on the existing run. The five report-source families are now implemented, with owner-based evidence refresh and explicit identifiers/dates. Required report metrics remain mandatory. Native runtime acceptance remains pending.
+
+Historical notes below are retained for context and do not supersede the v48 manifest, matrix or test report.
+
+# v47 Readiness repair — partial delivery
+
+See docs/VALIDATION_REPAIR_47.md. Five required transaction families remain incomplete. Do not treat 35 Done checkpoints as full enterprise acceptance.
+
 
 
 
@@ -307,6 +375,21 @@ Demo Run, do not Reset, then Continue Generation.
 ## MASTER PROMPT 16
 
 Adds source-driven Encounter and Treatment Session clinical journey generators. See `docs/PROMPT_16_ENCOUNTER_CORE_CLINICAL_JOURNEY.md`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

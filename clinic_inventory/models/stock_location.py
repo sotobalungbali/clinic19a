@@ -400,3 +400,6 @@ class StockLocation(models.Model):
             cur = cur.location_id
         return " / ".join(reversed(parts))
 
+
+
+

@@ -465,7 +465,7 @@ class ClinicProcedureSession(models.Model):
                     "mail.mail_activity_data_todo",
                     summary=_("Execute procedure session"),
                     user_id=rec.performer_user_id.id or (rec.encounter_id.user_id.id if rec.encounter_id and rec.encounter_id.user_id else self.env.user.id),
-                    date_deadline=fields.Date.today(),
+                    date_deadline=(fields.Date.to_date(rec.date_start) if rec.env.context.get("clinic_execution_event_contract") else fields.Date.today()),
                 )
             except Exception:
                 pass
@@ -572,6 +572,7 @@ class ClinicProcedureSession(models.Model):
             try:
                 rec.encounter_id.push_activity_followup(
                     summary=_("Review session results"),
+                    date_from=rec.date_end if rec.env.context.get("clinic_execution_event_contract") else None,
                     days=1,
                     user=rec.encounter_id.user_id or rec.performer_user_id,
                 )
@@ -880,3 +881,4 @@ class ClinicProcedureSession(models.Model):
         action["domain"] = [("id", "=", self.encounter_procedure_id.id)]
         action["view_mode"] = "form"
         return action
+

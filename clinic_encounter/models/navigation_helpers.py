@@ -128,3 +128,4 @@ class ClinicChecklistTemplateItemOptionNavigation(models.Model):
     def action_open_item(self):
         self.ensure_one()
         return _open_record(self.item_id, name="Checklist Template Item")
+

@@ -258,3 +258,4 @@ class ClinicReportDefinition(models.Model):
             "domain": [("definition_id", "=", self.id)],
             "context": {"default_definition_id": self.id},
         }
+

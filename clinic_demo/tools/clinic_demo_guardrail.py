@@ -15,12 +15,13 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_SOURCE_SHA = "8e0d2be47034b5841642ba056df294825f71a6040f7f27b77cd6da32ef417ab2"
-EXPECTED_SUITE_SHA = "71c781e1f6649882cc9cad4376cefa63be60134ffe98fdb91caf4b492af18439"
+EXPECTED_SOURCE_SHA = "6904ebf6d62ae5f60371fd91287d99b00eba10addb2d7f952602fb0165ef5c2b"
+EXPECTED_SUITE_SHA = "0b28236cd75ba56f9dc86ac26230ba04aeeec9e8952f03907e9e8cc19a98aade"
 EXPECTED_CLINIC_DEPENDENCIES = 41
-EXPECTED_ACL_ROWS = 22
+EXPECTED_ACL_ROWS = 26
 
 PERSISTENT_UI_MODELS = {
+    "clinic.demo.journey",
     "clinic.demo.run",
     "clinic.demo.reference",
     "clinic.demo.checkpoint",
@@ -136,7 +137,7 @@ def python_contracts(python_files):
             for stmt in cls.body:
                 if isinstance(stmt, ast.Assign):
                     for target in stmt.targets:
-                        if isinstance(target, ast.Name) and target.id == "_name":
+                        if isinstance(target, ast.Name) and (target.id == "_name" or (target.id == "_inherit" and model_name is None)):
                             model_name = literal(stmt.value)
 
             if not isinstance(model_name, str) or not model_name.startswith("clinic.demo."):
@@ -383,6 +384,7 @@ def main():
         and row["perm_unlink"] == "1"
     }
     expected_admin_models = {
+        "model_clinic_demo_journey",
         "model_clinic_demo_run",
         "model_clinic_demo_reference",
         "model_clinic_demo_checkpoint",
@@ -452,8 +454,8 @@ def main():
     print(f"Python parse: {len(python_files)} PASS")
     print(f"XML parse: {len(xml_files)} PASS")
     print("ClinicOne direct dependencies: 41 PASS")
-    print("Control models: 5 persistent + 1 transient PASS")
-    print("Search/List/Form UI matrix: 5/5 PASS")
+    print("Control models: 6 persistent + 1 transient PASS")
+    print("Search/List/Form UI matrix: 6/6 PASS")
     print("Object button/model-method audit: PASS")
     print("View field/model audit: PASS")
     print("Odoo 19 search-view group syntax: PASS")
@@ -693,4 +695,19 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

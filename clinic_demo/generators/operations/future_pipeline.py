@@ -9,6 +9,7 @@ from odoo.exceptions import UserError
 from ..base import BaseDemoGenerator
 from ...services.constants import RESET_CANCEL_THEN_DELETE
 from ...services.generator_registry import GENERATOR_REGISTRY
+from ...services.journey_read_context import actor_key, read_model
 
 
 PIPELINE_OFFSETS = (1, 7, 14, 30, 60, 90)
@@ -16,7 +17,9 @@ PIPELINE_CONTRACTS = {
     "booking.booking": {"start_datetime", "end_datetime", "state", "room_id", "doctor_id"},
     "clinic.care.plan.line": {"expected_date", "scheduled_datetime", "state", "plan_id"},
     "clinic.postcare.plan": {"expected_end_date", "state", "task_ids"},
-    "clinic.postcare.task": {"plan_id", "reference", "due_datetime", "state", "auto_send"},
+    "clinic.postcare.task": {"plan_id", "reference", "due_datetime", "state", "auto_send",
+        "company_id", "assignee_id", "channel", "completed_at", "sent_at",
+        "contacted_at", "send_count", "escalate_if_overdue"},
     "clinic.telemedicine.session": {"scheduled_start", "scheduled_end", "state"},
 }
 PIPELINE_RELATIONS = {
@@ -54,6 +57,10 @@ class FuturePipelineGenerator(BaseDemoGenerator):
         return local.astimezone(pytz.UTC).replace(tzinfo=None)
 
     def _resolve(self, ctx, key, model, missing_ok=False, user=None):
+        if user is None:
+            reference = ctx.reference_service._reference(ctx.run, key)
+            if reference and actor_key(reference):
+                user = read_model(ctx.run, reference).env.user
         record = ctx.reference_service.resolve(ctx.run, key, model, missing_ok=missing_ok, record_user=user)
         if not record:
             return record
@@ -99,9 +106,38 @@ class FuturePipelineGenerator(BaseDemoGenerator):
                     issues.append(f"DEMO-USER-MGR cannot {mode} clinic.postcare.task: {error}")
         if found.get("DEMO-POSTCARE-PLAN-001") and found["DEMO-POSTCARE-PLAN-001"].company_id != ctx.run.company_id:
             issues.append("DEMO-POSTCARE-PLAN-001 belongs to another company")
+        if found.get("DEMO-POSTCARE-PLAN-001") and found.get("DEMO-STAFF-MGR"):
+            for offset in PIPELINE_OFFSETS:
+                task = self._resolve(ctx, f"DEMO-FUT-FOLLOWUP-{offset:03d}", "clinic.postcare.task", True, manager)
+                if task:
+                    issues.extend(self._followup_issues(ctx, task, offset,
+                        found["DEMO-POSTCARE-PLAN-001"], found["DEMO-STAFF-MGR"]))
         if issues:
             raise UserError(_("MASTER PROMPT 20 whole-path runtime preflight failed: %s") % "; ".join(issues))
         return found
+
+    def _followup_issues(self, ctx, task, offset, plan, staff):
+        """Anchor-relative open work; owner cron may age pending work into due.
+
+        Due is an undelivered work state, not proof of contact or completion.
+        Never move the anchor, rewrite workflow state, or erase delivery evidence.
+        """
+        key = f"DEMO-FUT-FOLLOWUP-{offset:03d}"
+        if not task:
+            return [f"{key}: missing follow-up"]
+        issues = []
+        if task.state not in {"pending", "scheduled", "due"}:
+            issues.append(f"{key}: expected open undelivered work, found {task.state}")
+        if task.completed_at or task.sent_at or task.contacted_at or task.send_count:
+            issues.append(f"{key}: contact/delivery/completion evidence is present")
+        if task.due_datetime != self._utc(ctx, offset):
+            issues.append(f"{key}: expected UTC deadline {self._utc(ctx, offset)}, found {task.due_datetime}")
+        if (task.reference != key or task.plan_id != plan or task.assignee_id != staff
+                or task.company_id != ctx.run.company_id):
+            issues.append(f"{key}: identity/plan/assignee/company contract mismatch")
+        if task.channel != "internal" or task.auto_send or task.escalate_if_overdue:
+            issues.append(f"{key}: internal-only non-escalating follow-up contract mismatch")
+        return issues
 
     def _ensure_followup(self, ctx, counts, plan, staff, manager, offset):
         key = f"DEMO-FUT-FOLLOWUP-{offset:03d}"
@@ -143,13 +179,11 @@ class FuturePipelineGenerator(BaseDemoGenerator):
     def validate(self, ctx, scenario):
         issues = []
         anchor = ctx.run.anchor_date
-        tasks = [self._resolve(ctx, f"DEMO-FUT-FOLLOWUP-{offset:03d}", "clinic.postcare.task", True) for offset in PIPELINE_OFFSETS]
-        for offset, task in zip(PIPELINE_OFFSETS, tasks):
-            expected = anchor + timedelta(days=offset)
-            if not task or task.state not in {"pending", "scheduled"}:
-                issues.append(f"T+{offset} follow-up is missing or not future-facing")
-            elif task.due_datetime.date() != expected or task.completed_at or task.sent_at:
-                issues.append(f"T+{offset} follow-up violates the deterministic date/completion contract")
+        plan = self._resolve(ctx, "DEMO-POSTCARE-PLAN-001", "clinic.postcare.plan", True)
+        staff = self._resolve(ctx, "DEMO-STAFF-MGR", "clinic.staff", True)
+        for offset in PIPELINE_OFFSETS:
+            task = self._resolve(ctx, f"DEMO-FUT-FOLLOWUP-{offset:03d}", "clinic.postcare.task", True)
+            issues.extend(self._followup_issues(ctx, task, offset, plan, staff))
         bookings = [self._resolve(ctx, f"DEMO-FUT-BOOK-{index:03d}", "booking.booking", True) for index in range(1, 13)]
         if not any(item and item.start_datetime.date() > anchor and item.state not in {"done", "cancelled"} for item in bookings):
             issues.append("The source-owned future Booking workload is missing")
@@ -166,6 +200,21 @@ class FuturePipelineGenerator(BaseDemoGenerator):
 
     def reset(self, ctx, scenario):
         return {"skipped": 1}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

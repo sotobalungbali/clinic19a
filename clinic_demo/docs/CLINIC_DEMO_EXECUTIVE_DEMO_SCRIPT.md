@@ -1,3 +1,17 @@
+# v48 source-journey supplement
+
+Before presenting, complete RELEASE_48.md and require current Validate PASS. Upgrade success alone is not readiness evidence.
+
+For Chapter 9, open Demo Run → Golden Journeys/References and the exact record key:
+- DEMO-SOURCE-MEMBER-001: explain a paid-plan enrollment awaiting confirmation; do not call it paid/active.
+- DEMO-SOURCE-AUTH-001: show Prepared service request and policy/patient linkage; no payer approval is asserted.
+- DEMO-SOURCE-TOPUP-001: open its Posted journal, compare the two balanced lines and the Wallet balance.
+- DEMO-SOURCE-USAGE-001: open its Done stock move and preceding DEMO-SOURCE-RECEIPT-001.
+
+For Chapter 7, DEMO-SOURCE-PROC-001 is the actual clinic.procedure.session model. Show Done and its positive encounter-contained time window.
+
+For Chapters 12–14, open DEMO-REPORT-FIN-INS, DEMO-REPORT-OPS-INV, DEMO-REPORT-OPS-MEM, DEMO-REPORT-OPS-WALLET and DEMO-REPORT-CLN-PROC. Drill into the source detail, then compare the refreshed Dashboard/Analytics. Explain the difference between a request/enrollment count and approved/active revenue-bearing business.
+
 # ClinicOne Executive Demo Script
 
 This script uses only records registered by the Full Enterprise Demo Run. Start
@@ -26,3 +40,18 @@ database IDs, mutable sequence values, and assumptions about list ordering.
 
 Return to the Demo Run and show: 35 Done checkpoints, Compatible fingerprint,
 Safe Mode enabled, Validation PASS, and **READY FOR DEMO**.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

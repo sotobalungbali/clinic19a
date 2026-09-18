@@ -300,6 +300,15 @@ class ClinicExecutionLog(models.Model):
         if not session or session._name != "clinic.procedure.session":
             raise UserError(_("A valid Procedure Session is required to log events."))
 
+        # An explicit caller contract can supply stable event identity/time.
+        # Existing callers retain the normal audit log numbering behavior.
+        contract = self.env.context.get("clinic_execution_event_contract")
+        if contract is not None:
+            event = contract.get(event_type, {})
+            if not event.get("name") or not event.get("date_event"):
+                raise UserError(_("Explicit execution log contract requires event name and date."))
+            extra_vals = dict(extra_vals, name=event["name"], date_event=event["date_event"])
+
         vals = {
             "session_id": session.id,
             "company_id": session.company_id.id,
@@ -421,3 +430,4 @@ class ClinicExecutionLog(models.Model):
 #             raise UserError(_("Message is required to create a note log."))
 #         self._log_event("note", message=message, role=role, **extra_vals)
 #         return True
+

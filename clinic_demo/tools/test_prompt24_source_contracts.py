@@ -9,9 +9,9 @@ ROOT = Path(__file__).resolve().parents[1]
 class Prompt24SourceContracts(unittest.TestCase):
     def test_release_version_and_generator_freeze(self):
         manifest = ast.literal_eval((ROOT / "__manifest__.py").read_text(encoding="utf-8"))
-        self.assertEqual(manifest["version"], "19.0.1.0.46")
+        self.assertEqual(manifest["version"], "19.0.1.0.61")
         constants = (ROOT / "services/constants.py").read_text(encoding="utf-8")
-        self.assertIn('GENERATOR_VERSION = "19.0.1.0.46"', constants)
+        self.assertIn('GENERATOR_VERSION = "19.0.1.0.61"', constants)
 
     def test_required_release_artifacts(self):
         for name in (
@@ -38,3 +38,18 @@ class Prompt24SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

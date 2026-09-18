@@ -31,7 +31,7 @@ Ownership boundaries:
 - future clinic_dashboard, clinic_portal, clinic_quality,
   clinic_integration_api and clinic_analytics are not dependencies.
 """,
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "author": "ClinicOne",
     "website": "https://clinic.one",
     "license": "LGPL-3",
@@ -95,3 +95,4 @@ Ownership boundaries:
     ],
     "demo": []
 }
+

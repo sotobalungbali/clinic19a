@@ -513,3 +513,4 @@ class ClinicSoapNote(models.Model):
                   ("chief_complaint", operator, name)]
         recs = self.search(name_domain + extra_domain, limit=limit)
         return [(rec.id, rec.display_name) for rec in recs.sudo()]
+

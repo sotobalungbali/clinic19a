@@ -30,3 +30,4 @@ The safe repair is to upgrade the owner addon so Odoo reloads its declared ACL d
 
 `clinic_membership` upgrade -> `clinic_demo` upgrade -> Refresh Compatibility ->
 Generate Full on the same failed Demo Run.
+

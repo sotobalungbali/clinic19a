@@ -1,0 +1,47 @@
+MASTER PROMPT 17 ENTERPRISE GUARDRAIL: PASS
+Python parse: 102 PASS
+XML parse: 10 PASS
+ClinicOne direct dependencies: 41 PASS
+Control models: 5 persistent + 1 transient PASS
+Search/List/Form UI matrix: 5/5 PASS
+Object button/model-method audit: PASS
+View field/model audit: PASS
+Odoo 19 search-view group syntax: PASS
+Primary res.config.settings hijack: 0 PASS
+Runtime-safe Demo Dataset menu routing: PASS
+Registered foundation generators: 2 PASS
+Registered workforce generators: 2 PASS
+Registered patient persona generators: 1 PASS
+Registered Prompt-11 master generators: 3 PASS
+Clinical catalog / consent / package / membership / insurance / wallet masters: PASS
+Prompt-11 premature downstream transactions: 0 PASS
+Registered Prompt-12 resource generators: 1 PASS
+Rooms / devices / booking resources / schedules / blackouts: PASS
+Prompt-12 premature downstream transactions: 0 PASS
+Registered Prompt-13 historical generators: 1 PASS
+Historical business-date contract / longitudinal patient baseline: PASS
+Prompt-13 premature downstream transactions: 0 PASS
+Registered Prompt-14 front-office generators: 2 PASS
+Referral acquisition/conversion + Booking historical/current/future: PASS
+Prompt-14 premature Queue/Triage/Encounter/Treatment Session transactions: 0 PASS
+Patient budgets: Compact 16 / Standard 24 / Full Enterprise 32 PASS
+Patient identity: registry + source sequence + MRN/NIK/BPJS foundation PASS
+Foundation → Workforce → Patient dependency chain: PASS
+Bounded savepoint execution: PASS
+Reset confirmation + Manager/System-Admin ACL: PASS
+ACL rows: 22 PASS
+Legacy _sql_constraints/direct SQL/manual commit/sudo: 0 PASS
+Numeric-prefix/cache artifacts: 0 PASS
+Human-friendly file-size ceiling: PASS
+Prompt-17 owner temporal API allowlist: PASS
+
+
+
+
+
+
+
+
+
+
+

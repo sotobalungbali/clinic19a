@@ -53,3 +53,4 @@ class MembershipEventMixin(models.AbstractModel):
             created |= Event.create(vals)
         return created
 
+

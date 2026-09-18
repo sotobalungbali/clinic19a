@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ <record id="view_demo_journey_search" model="ir.ui.view">
+  <field name="name">clinic.demo.journey.search</field><field name="model">clinic.demo.journey</field>
+  <field name="arch" type="xml"><search string="Journeys"><field name="name"/><field name="journey_key"/><field name="run_id"/>
+   <filter name="pass" string="Validated" domain="[('state','=','pass')]"/><filter name="blocked" string="Needs Attention" domain="[('state','in',['blocked','failed','partial'])]"/>
+   <group><filter name="by_state" string="Status" context="{'group_by':'state'}"/><filter name="by_run" string="Run" context="{'group_by':'run_id'}"/></group>
+  </search></field>
+ </record>
+ <record id="view_demo_journey_list" model="ir.ui.view">
+  <field name="name">clinic.demo.journey.list</field><field name="model">clinic.demo.journey</field>
+  <field name="arch" type="xml"><list create="false" edit="false" delete="false" decoration-success="state == 'pass'" decoration-danger="state in ['failed','blocked']">
+   <field name="sequence"/><field name="name"/><field name="primary_model"/><field name="state"/><field name="classification"/>
+   <field name="expected"/><field name="existing"/><field name="adopted"/><field name="created"/><field name="missing"/><field name="invalid"/><field name="duplicate"/>
+   <field name="reconciled" optional="hide"/><field name="last_execution" optional="hide"/><field name="last_validation" optional="show"/>
+   <button name="action_open_journey" type="object" string="Details"/>
+  </list></field>
+ </record>
+ <record id="view_demo_journey_form" model="ir.ui.view">
+  <field name="name">clinic.demo.journey.form</field><field name="model">clinic.demo.journey</field>
+  <field name="arch" type="xml"><form create="false" edit="false" delete="false">
+   <header><button name="action_execute_current" string="Execute Current" type="object" groups="base.group_system,clinic_demo.group_demo_operator" invisible="state in ['waiting','blocked','running']"/>
+    <button name="action_open_run" string="Demo Run" type="object"/><field name="state" widget="statusbar"/>
+   </header><sheet><group><field name="name"/><field name="journey_key"/><field name="run_id"/><field name="company_id"/><field name="primary_model"/><field name="owner_addon"/><field name="master_prompt"/><field name="dependencies"/><field name="classification"/></group>
+   <group><field name="expected"/><field name="existing"/><field name="adopted"/><field name="created"/><field name="reconciled"/><field name="missing"/><field name="invalid"/><field name="duplicate"/><field name="last_execution"/><field name="last_validation"/></group>
+   <notebook><page string="Diagnostic"><field name="diagnostic"/></page><page string="Record Evidence"><field name="evidence"/></page><page string="Execution Contract"><field name="contract"/></page></notebook>
+   </sheet></form></field>
+ </record>
+ <record id="view_demo_run_journeys" model="ir.ui.view">
+  <field name="name">clinic.demo.run.journeys</field><field name="model">clinic.demo.run</field><field name="inherit_id" ref="view_clinic_demo_run_form"/>
+  <field name="arch" type="xml">
+   <xpath expr="//div[@name='button_box']" position="inside">
+    <button name="action_open_journeys" type="object" class="oe_stat_button" icon="fa-list-ol" string="Journey Progress"/>
+   </xpath>
+   <xpath expr="//header" position="inside">
+    <button name="action_open_journeys" string="Journey Progress" type="object" class="btn-primary"/>
+    <button name="action_reconcile_existing" string="Reconcile Existing Dataset" type="object" groups="base.group_system,clinic_demo.group_demo_operator"/>
+    <button name="action_execute_current" string="Execute Current" type="object" groups="base.group_system,clinic_demo.group_demo_operator"/>
+    <button name="action_execute_next" string="Execute Next / Resume" type="object" groups="base.group_system,clinic_demo.group_demo_operator"/>
+    <button name="action_rebuild_journeys" string="Rebuild Retained Dataset" type="object" groups="base.group_system,clinic_demo.group_demo_manager"/>
+    <button name="action_preview_journey_reset" string="Reset Preview" type="object" groups="base.group_system,clinic_demo.group_demo_manager"/>
+   </xpath>
+   <xpath expr="//notebook" position="inside">
+    <page string="Journey Progress"><group><field name="selected_journey_id" options="{'no_create': True, 'no_open': True}"/><field name="journey_progress" widget="progressbar"/><button name="action_open_journeys" type="object" string="Open Journey Details"/></group>
+     <field name="journey_ids" readonly="1"><list create="false" edit="false" delete="false" decoration-success="state == 'pass'" decoration-danger="state in ['blocked','failed']">
+      <field name="sequence"/><field name="name"/><field name="state"/><field name="classification"/><field name="expected"/><field name="existing"/><field name="adopted"/><field name="created"/><field name="missing"/><field name="invalid"/><field name="duplicate"/>
+      <button name="action_open_journey" type="object" string="Details"/>
+     </list></field>
+    </page>
+    <page string="Reporting Sufficiency"><field name="reporting_status"/><field name="reporting_evidence"/></page>
+    <page string="Reset Journey Evidence"><field name="reset_journey_evidence"/></page>
+   </xpath>
+  </field>
+ </record>
+</odoo>
+
+
+
+
+
+
+
+

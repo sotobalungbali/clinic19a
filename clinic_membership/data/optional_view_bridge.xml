@@ -3,3 +3,4 @@
   <function model="membership.plan" name="_ensure_optional_cross_addon_views"/>
 </odoo>
 
+

@@ -1,7 +1,7 @@
 {
     "name": "ClinicOne Enterprise Demo Dataset",
     "summary": "Deterministic, ownership-aware ClinicOne enterprise demo orchestration framework",
-    "version": "19.0.1.0.46",
+    "version": "19.0.1.0.61",
     "category": "ClinicOne/Configuration",
     "author": "ClinicOne",
     "website": "",
@@ -26,10 +26,25 @@
         "data/demo_sequence.xml", "views/demo_reference_views.xml",
         "views/demo_checkpoint_views.xml", "views/demo_log_views.xml",
         "views/demo_validation_views.xml", "views/demo_run_views.xml",
-        "wizard/demo_reset_confirm_views.xml", "views/demo_menus.xml",
+        "views/demo_journey_views.xml", "wizard/demo_reset_confirm_views.xml", "views/demo_menus.xml",
         "data/demo_menu_bridge.xml",
     ],
     "installable": True,
     "application": False,
     "auto_install": False,
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

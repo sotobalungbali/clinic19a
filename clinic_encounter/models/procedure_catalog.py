@@ -476,3 +476,4 @@ class ClinicProcedureConsumable(models.Model):
         for rec in self:
             if rec.product_id and rec.uom_id and rec.product_id.uom_id.category_id != rec.uom_id.category_id:
                 raise ValidationError(_("The selected Unit of Measure is not compatible with the product's UoM."))
+

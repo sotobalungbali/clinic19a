@@ -73,3 +73,4 @@ Status:
 - Static guardrail: PASS required before packaging
 - Windows Odoo runtime activation: PENDING
 
+

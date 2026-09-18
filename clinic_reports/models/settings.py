@@ -66,3 +66,4 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.clinic_reports_retention_days",
         readonly=False,
     )
+

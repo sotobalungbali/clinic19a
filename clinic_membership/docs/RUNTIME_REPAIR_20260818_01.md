@@ -32,3 +32,4 @@ clinical bridge, menu, ACL, record rule, or enterprise UI feature was removed.
 SOURCE/STATIC: PASS after repair.
 WINDOWS ODOO INSTALL: PENDING.
 
+

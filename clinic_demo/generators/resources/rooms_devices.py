@@ -450,3 +450,18 @@ class ResourcesRoomsDevicesGenerator(BaseDemoGenerator):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

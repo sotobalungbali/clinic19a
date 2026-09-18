@@ -1,0 +1,23 @@
+{
+  "parse": {
+    "python": 928,
+    "xml": 517
+  },
+  "errors": [],
+  "owner_guardrails": {
+    "clinic_emar": 0,
+    "clinic_reports": 0,
+    "clinic_membership": 0,
+    "clinic_wallet": 0,
+    "clinic_inventory": 0
+  },
+  "tests": 211,
+  "native_odoo": "NOT RUN"
+}
+
+
+
+
+
+
+

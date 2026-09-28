@@ -22,5 +22,15 @@ class TestClinicBranchSourceContracts(unittest.TestCase):
         self.assertIn("<search", (ROOT / "views/branch_views.xml").read_text())
         self.assertIn("<search", (ROOT / "views/branch_location_views.xml").read_text())
 
+    def test_warehouse_explicit_no_branch_is_not_replaced_by_a_default(self):
+        source = (ROOT / "models/stock_warehouse_inherit.py").read_text()
+        self.assertIn("if 'branch_id' not in vals:", source)
+        self.assertNotIn("if not vals.get('branch_id'):\n                default_bid", source)
+
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+

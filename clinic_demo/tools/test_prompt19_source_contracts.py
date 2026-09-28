@@ -13,7 +13,7 @@ SOURCE = ROOT / "generators/exception.py"
 class TestPrompt19SourceContracts(unittest.TestCase):
     def test_version_registry_and_order(self):
         manifest = ast.literal_eval(ast.parse((ROOT / "__manifest__.py").read_text()).body[0].value)
-        self.assertEqual(manifest["version"], "19.0.1.0.61")
+        self.assertEqual(manifest["version"], "19.0.1.0.76")
         source = SOURCE.read_text()
         for token in (
             'key = "exception.feedback"', 'depends_on = ("commercial.ap",)',
@@ -55,6 +55,19 @@ class TestPrompt19SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

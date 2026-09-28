@@ -812,3 +812,18 @@ class QueueTriageArrivalOperationsGenerator(BaseDemoGenerator):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

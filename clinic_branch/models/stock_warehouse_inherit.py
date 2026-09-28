@@ -190,8 +190,11 @@ class StockWarehouse(models.Model):
         - Guard hak akses memilih branch
         """
         for vals in vals_list:
-            # default branch
-            if not vals.get('branch_id'):
+            # Apply a default only when the caller omitted the field.  An
+            # explicit ``False`` is a frozen owner decision (for example a
+            # company-wide warehouse) and must never be replaced by mutable
+            # user/company defaults.
+            if 'branch_id' not in vals:
                 default_bid = self._default_branch_for_warehouse()
                 if default_bid:
                     vals['branch_id'] = default_bid
@@ -375,4 +378,9 @@ class StockWarehouse(models.Model):
             return False
         allowed = self._user_allowed_branches(company=branch.company_id)
         return branch.id in allowed.ids
+
+
+
+
+
 

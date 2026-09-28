@@ -44,3 +44,18 @@ ZIP integrity checked. Raw evidence is in docs/evidence_60.
 Native Odoo runtime execution is pending; 40/40 and enterprise readiness are
 not claimed. Governing Model-by-Model prompt remains bundled unchanged.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -61,9 +61,11 @@ class ReadContracts(unittest.TestCase):
             self.assertFalse(target.calls)
 
     def test_inspection_and_reporting_share_policy_without_privilege_mutations(self):
-        for filename in ['journey_engine.py','reporting_sufficiency.py']:
-            text=(ROOT/'services'/filename).read_text()
-            self.assertIn('read_model(run,ref)',text)
+        engine=(ROOT/'services/journey_engine.py').read_text()
+        reporting=(ROOT/'services/reporting_sufficiency.py').read_text()
+        self.assertIn('read_model(run,ref)',engine)
+        self.assertIn('read_model(run,representative)',reporting)
+        self.assertIn('actor_key(ref)',reporting)
         helper=(ROOT/'services/journey_read_context.py').read_text()
         for forbidden in ['.sudo(','.write(','.create(','.unlink(']:self.assertNotIn(forbidden,helper)
 
@@ -83,7 +85,31 @@ class ReadContracts(unittest.TestCase):
         exec(compile(tree,'adoption','exec'),ns)
         self.assertIn('19.0.1.0.53',ns['SUPPORTED_LINEAGE']['f61e5c5a23b01744e5cc3111e5f34dd6c2274014a2de8efd6013743987204a1c'])
 
+    def test_v74_runtime_pass_lineage_is_explicit_for_v75(self):
+        ns={};source=(ROOT/'services/build_adoption_service.py').read_text()
+        tree=ast.parse(source);tree.body=[n for n in tree.body if not isinstance(n,(ast.Import,ast.ImportFrom))]
+        exec(compile(tree,'adoption','exec'),ns)
+        self.assertIn('19.0.1.0.74',ns['SUPPORTED_LINEAGE']['d755105adadb2907585be0e5940578b0f89ee3604dc1c4e1ac2388558b8f5b66'])
+
+    def test_v75_runtime_acceptance_lineage_is_explicit_for_v76(self):
+        ns={};source=(ROOT/'services/build_adoption_service.py').read_text()
+        tree=ast.parse(source);tree.body=[n for n in tree.body if not isinstance(n,(ast.Import,ast.ImportFrom))]
+        exec(compile(tree,'adoption','exec'),ns)
+        self.assertIn('19.0.1.0.75',ns['SUPPORTED_LINEAGE']['c32b8ad5699716828f0e02e1f78128831b5b56bb0f6e03643c1c3b9da0968009'])
+
 if __name__=='__main__':unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

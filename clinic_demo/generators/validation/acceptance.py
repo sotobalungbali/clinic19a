@@ -300,3 +300,18 @@ class IntegrityAcceptanceGenerator(AcceptanceGate):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -403,3 +403,10 @@ class StockLocation(models.Model):
 
 
 
+
+
+
+
+
+
+

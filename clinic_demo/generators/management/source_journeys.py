@@ -335,16 +335,9 @@ class ReportSourceJourneys:
         if receipt.state != 'done':
             if receipt.state != 'draft':
                 raise UserError('Demo receipt has an unexpected intermediate state')
-            receipt._action_confirm()
-            receipt.write({'move_line_ids': [(0, 0, {'product_id': product.id,
-                'product_uom_id': product.uom_id.id, 'quantity': 10,
-                'location_id': supplier.id, 'location_dest_id': source.id})]})
-            receipt.write({'picked': True})
-            receipt._action_done()
-            # Native stock workflow stamps processing time. Set the explicit
-            # business event date on this new, zero-value demo receipt only.
-            receipt.write({'date': received})
-            receipt.move_line_ids.write({'date': received})
+            receipt._clinic_demo_complete_bounded_receipt(10, received)
+        if not receipt._clinic_demo_has_completed_quantity(10):
+            raise UserError('Demo receipt must have one exact completed quantity')
         usage = self.ensure('DEMO-SOURCE-USAGE-001', 'clinic.treatment.product.usage', {
             'name': 'DEMO-SOURCE-USAGE-001', 'company_id': c, 'warehouse_id': wh.id,
             'patient_id': patient.partner_id.id, 'src_location_id': source.id,
@@ -433,6 +426,20 @@ class ReportSourceJourneys:
                     issues.append(f'Procedure {event} log must retain its explicit identity and event time')
         if issues:
             raise UserError('Source journeys evidence failed: ' + '; '.join(issues))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -817,3 +817,10 @@ class ClinicBillingInvoice_GatewayExt(models.Model):
 
 
 
+
+
+
+
+
+
+

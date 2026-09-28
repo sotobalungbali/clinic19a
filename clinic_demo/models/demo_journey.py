@@ -52,13 +52,28 @@ class ClinicDemoJourney(models.Model):
 
     def action_open_journey(self):
         self.ensure_one()
-        return {'type':'ir.actions.act_window','name':self.name,'res_model':self._name,
+        return {'views': [(False, 'form')], 'type':'ir.actions.act_window','name':self.name,'res_model':self._name,
                 'view_mode':'form','res_id':self.id,'target':'current'}
 
     def action_open_run(self):
         self.ensure_one()
-        return {'type':'ir.actions.act_window','name':'Demo Run','res_model':'clinic.demo.run',
+        return {'views': [(False, 'form')], 'type':'ir.actions.act_window','name':'Demo Run','res_model':'clinic.demo.run',
                 'view_mode':'form','res_id':self.run_id.id,'target':'current'}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

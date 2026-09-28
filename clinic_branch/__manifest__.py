@@ -2,7 +2,7 @@
 {
     "name": "ClinicOne - Branch Management",
     "summary": "Enterprise multi-branch and franchise governance with branch-aware segregation.",
-    "version": "19.0.2.0.0",
+    "version": "19.0.2.0.1",
     "category": "ClinicOne/Operations",
     "author": "IG @odoocamp",
     "website": "https://www.247opensource.com",
@@ -37,3 +37,8 @@
     "application": True,
     "auto_install": False,
 }
+
+
+
+
+

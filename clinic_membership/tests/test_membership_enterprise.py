@@ -166,3 +166,4 @@ class TestClinicMembershipEnterprise(TransactionCase):
         })
         self.assertTrue(plan)
 
+

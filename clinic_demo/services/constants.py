@@ -5,9 +5,9 @@
 
 """Stable build and policy constants for ClinicOne demo orchestration."""
 
-GENERATOR_VERSION = "19.0.1.0.61"
-AUTHORITATIVE_SOURCE_FINGERPRINT = "6904ebf6d62ae5f60371fd91287d99b00eba10addb2d7f952602fb0165ef5c2b"
-EXPECTED_SUITE_FINGERPRINT = "0b28236cd75ba56f9dc86ac26230ba04aeeec9e8952f03907e9e8cc19a98aade"
+GENERATOR_VERSION = "19.0.1.0.76"
+AUTHORITATIVE_SOURCE_FINGERPRINT = "4264ed977d2e2de6f92281a49cf0833003a42ad63a76289e40f861941258c9b0"
+EXPECTED_SUITE_FINGERPRINT = "3087f27e7588c43573dcbd0d9c5083b190c949ad239601a07e89c60b06ca0e7a"
 
 EXPECTED_SUITE_VERSIONS = {
     "clinic_accounting": "19.0.1.0.0",
@@ -16,9 +16,9 @@ EXPECTED_SUITE_VERSIONS = {
     "clinic_ar": "19.0.3.0.3",
     "clinic_audit": "19.0.2.0.3",
     "clinic_base": "19.0.1.0.0",
-    "clinic_billing": "19.0.3.0.5",
+    "clinic_billing": "19.0.3.0.9",
     "clinic_booking": "19.0.1.0.5",
-    "clinic_branch": "19.0.2.0.0",
+    "clinic_branch": "19.0.2.0.1",
     "clinic_care_plan": "19.0.1.0.0",
     "clinic_consent_legal": "19.0.1.1.0",
     "clinic_dashboard": "19.0.1.0.2",
@@ -32,10 +32,10 @@ EXPECTED_SUITE_VERSIONS = {
     "clinic_incident_event": "19.0.1.0.1",
     "clinic_insurance_authorization": "19.0.1.0.1",
     "clinic_integration_api": "19.0.1.0.0",
-    "clinic_inventory": "19.0.1.0.5",
+    "clinic_inventory": "19.0.1.0.9",
     "clinic_l10n_id": "19.0.1.0.1",
     "clinic_marketing": "19.0.1.0.1",
-    "clinic_membership": "19.0.3.0.7",
+    "clinic_membership": "19.0.3.0.8",
     "clinic_package": "19.0.3.0.0",
     "clinic_patient": "19.0.1.0.1",
     "clinic_portal": "19.0.1.0.0",
@@ -88,6 +88,10 @@ REFERENCE_STATUS_SELECTION = [
     ("reset_retained", "Reset / Retained"),
     ("error", "Error"),
 ]
+
+
+
+
 
 
 

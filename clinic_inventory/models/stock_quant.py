@@ -401,3 +401,10 @@ class StockQuant(models.Model):
 
 
 
+
+
+
+
+
+
+

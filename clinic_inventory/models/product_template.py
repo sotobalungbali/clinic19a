@@ -573,3 +573,10 @@ class ProductTemplate(models.Model):
 
 
 
+
+
+
+
+
+
+

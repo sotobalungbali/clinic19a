@@ -365,3 +365,10 @@ class StockScrap(models.Model):
 
 
 
+
+
+
+
+
+
+

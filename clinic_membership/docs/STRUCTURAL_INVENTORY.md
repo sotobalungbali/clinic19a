@@ -7,3 +7,4 @@ Transient workflows: contract renewal, hold request, point adjustment.
 Extensions: res.partner, clinic.patient, booking.booking, clinic.treatment, clinic.encounter, clinic.treatment.session, clinic.care.plan, clinic.package.allocation, clinic.package.usage, clinic.emar.administration, res.config.settings.
 
 
+

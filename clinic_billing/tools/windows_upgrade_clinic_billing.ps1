@@ -80,3 +80,10 @@ Write-Host "Restart the normal Odoo service and perform the billing smoke scenar
 
 
 
+
+
+
+
+
+
+

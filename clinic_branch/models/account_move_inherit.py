@@ -499,3 +499,9 @@ class AccountPaymentRegister(models.TransientModel):
             pass
         return action
 
+
+
+
+
+
+

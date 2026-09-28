@@ -575,3 +575,10 @@ class ClinicBillingInvoice_CommissionExt(models.Model):
 
 
 
+
+
+
+
+
+
+

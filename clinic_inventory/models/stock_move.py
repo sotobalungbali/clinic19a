@@ -18,6 +18,7 @@
 from datetime import date
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.float_utils import float_compare
 
 
 class StockMove(models.Model):
@@ -148,6 +149,83 @@ class StockMove(models.Model):
     # =========================================================================
     # OVERRIDES: Confirm / Assign / Done
     # =========================================================================
+    def _clinic_demo_has_completed_quantity(self, quantity):
+        """Prove the exact completed quantity in the move's UoM.
+
+        Odoo permits move lines to use a UoM different from the parent move.
+        Comparing a raw sum of ``stock.move.line.quantity`` therefore is not a
+        valid stock contract. ``_quantity_sml`` is the native conversion used
+        by ``stock.move.quantity`` and by ``_action_done`` itself.
+        """
+        self.ensure_one()
+        done_quantity = self._quantity_sml()
+        rounding = self.product_uom.rounding or 0.01
+        return (
+            self.state == "done"
+            and len(self.move_line_ids) == 1
+            and all(self.move_line_ids.mapped("picked"))
+            and float_compare(done_quantity, quantity, precision_rounding=rounding) == 0
+        )
+
+    def _clinic_demo_complete_bounded_receipt(self, quantity, business_date):
+        """Complete one deterministic supplier-to-internal demo receipt.
+
+        The sequence is deliberately owner-controlled for Odoo 19: confirm
+        without merge, let Odoo create a bypass-reservation line when required,
+        set the native writable ``stock.move.quantity`` field, mark the
+        resulting line picked, finish without a backorder, then validate the
+        recordset returned by the native transition. This avoids adding a
+        second line after supplier-location confirmation.
+        """
+        self.ensure_one()
+        if not self.env.context.get("clinic_demo_safe_mode"):
+            raise UserError(_("Bounded demo receipt requires Demo Safe Mode."))
+        if self.state != "draft" or self.move_line_ids:
+            raise UserError(_("Bounded demo receipt must start as one empty Draft move."))
+        if quantity <= 0:
+            raise UserError(_("Bounded demo receipt quantity must be positive."))
+        if (not self.product_id or not self.product_uom
+                or self.product_id.tracking != "none"
+                or self.location_id.usage != "supplier"
+                or self.location_dest_id.usage != "internal"
+                or self.company_id not in self.env.user.company_ids):
+            raise UserError(_("Bounded demo receipt identity or company scope is invalid."))
+
+        receipt = self.with_context(
+            clinic_demo_safe_mode=True,
+            tracking_disable=True,
+            mail_create_nosubscribe=True,
+            mail_notify_noemail=True,
+            mail_notify_force_send=False,
+        )
+        receipt._action_confirm(merge=False)
+        # ``quantity`` owns the Odoo 19 inverse that creates or adjusts move
+        # lines. Supplier moves can already have one after confirmation, so an
+        # x2many create here would double the completed quantity.
+        receipt.write({"quantity": quantity})
+        receipt.invalidate_recordset(["quantity", "move_line_ids", "picked"])
+        if len(receipt.move_line_ids) != 1:
+            raise UserError(_("Bounded demo receipt requires exactly one native move line."))
+        receipt.move_line_ids.write({"picked": True, "date": business_date})
+        receipt.invalidate_recordset(["quantity", "move_line_ids", "picked"])
+        prepared_quantity = receipt._quantity_sml()
+        rounding = receipt.product_uom.rounding or 0.01
+        if (not receipt.move_line_ids.picked
+                or float_compare(prepared_quantity, quantity,
+                                 precision_rounding=rounding) != 0):
+            raise UserError(_("Bounded demo receipt preparation changed its exact quantity."))
+
+        completed = receipt._action_done(cancel_backorder=True).exists()
+        completed_receipt = completed.filtered(lambda move: move.id == receipt.id)
+        if len(completed_receipt) != 1:
+            raise UserError(_("Bounded demo receipt completion returned an unexpected move set."))
+        receipt = completed_receipt
+        receipt.invalidate_recordset(["state", "quantity", "move_line_ids"])
+        if not receipt._clinic_demo_has_completed_quantity(quantity):
+            raise UserError(_("Bounded demo receipt did not complete its exact quantity."))
+        receipt.write({"date": business_date})
+        return receipt
+
     def _action_confirm(self, merge=True, merge_into=False, create_proc=True):
         """Pre-validate governance before confirming."""
         for move in self:
@@ -335,6 +413,10 @@ class StockMove(models.Model):
             if self.picking_id:
                 self.picking_id.do_unreserve()
         return True
+
+
+
+
 
 
 

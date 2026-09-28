@@ -63,3 +63,18 @@ class Payload(unittest.TestCase):
         self.assertEqual(vals['clinic_usage_id'],30);self.assertNotIn('name',vals)
 if __name__=='__main__':unittest.main()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

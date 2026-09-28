@@ -147,3 +147,18 @@ class ClinicDemoResetConfirmWizard(models.TransientModel):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

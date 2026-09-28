@@ -33,10 +33,12 @@
     <button name="action_open_journeys" type="object" class="oe_stat_button" icon="fa-list-ol" string="Journey Progress"/>
    </xpath>
    <xpath expr="//header" position="inside">
+    <button name="action_open_acceptance_results" string="Acceptance Results" type="object"/>
     <button name="action_open_journeys" string="Journey Progress" type="object" class="btn-primary"/>
     <button name="action_reconcile_existing" string="Reconcile Existing Dataset" type="object" groups="base.group_system,clinic_demo.group_demo_operator"/>
     <button name="action_execute_current" string="Execute Current" type="object" groups="base.group_system,clinic_demo.group_demo_operator"/>
     <button name="action_execute_next" string="Execute Next / Resume" type="object" groups="base.group_system,clinic_demo.group_demo_operator"/>
+    <button name="action_execute_next_10" string="Execute Next 10" type="object" class="btn-primary" groups="base.group_system,clinic_demo.group_demo_operator"/>
     <button name="action_rebuild_journeys" string="Rebuild Retained Dataset" type="object" groups="base.group_system,clinic_demo.group_demo_manager"/>
     <button name="action_preview_journey_reset" string="Reset Preview" type="object" groups="base.group_system,clinic_demo.group_demo_manager"/>
    </xpath>
@@ -47,12 +49,31 @@
       <button name="action_open_journey" type="object" string="Details"/>
      </list></field>
     </page>
-    <page string="Reporting Sufficiency"><field name="reporting_status"/><field name="reporting_evidence"/></page>
+    <page string="Reporting Sufficiency">
+     <group><field name="reporting_status"/><field name="reporting_checked_at" string="Last Evaluated"/></group>
+     <div class="alert alert-info" invisible="reporting_status != 'pending'">No saved population assessment yet. Click Validate on this Demo Run. Journey PASS alone does not prove population sufficiency.</div>
+     <button name="action_open_acceptance_results" string="Open Acceptance Results" type="object"/>
+     <group string="Population Evidence"><field name="reporting_evidence" nolabel="1"/></group>
+    </page>
     <page string="Reset Journey Evidence"><field name="reset_journey_evidence"/></page>
    </xpath>
   </field>
  </record>
 </odoo>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

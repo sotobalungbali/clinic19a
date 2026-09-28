@@ -53,3 +53,18 @@ class Refresh(unittest.TestCase):
         line=(ROOT/'clinic_dashboard/models/dashboard_snapshot_line.py').read_text()
         self.assertIn('ondelete="restrict"',line[line.index('    metric_id ='):line.index('    value =')])
 if __name__=='__main__':unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

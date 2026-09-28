@@ -34,6 +34,14 @@ class BuildAdoptionContracts(unittest.TestCase):
         for patch in (31,38,42,43,47):
             self.assertEqual(self.check(version=f'19.0.1.0.{patch}'),[])
         self.assertEqual(self.check(version='19.0.1.0.48',source=V48),[])
+        self.assertEqual(self.check(version='19.0.1.0.66',source=ns['V66_SOURCE']),[])
+        self.assertEqual(self.check(version='19.0.1.0.67',source=ns['V67_SOURCE']),[])
+        self.assertEqual(self.check(version='19.0.1.0.68',source=ns['V68_SOURCE']),[])
+        self.assertEqual(self.check(version='19.0.1.0.69',source=ns['V69_SOURCE']),[])
+        self.assertEqual(self.check(version='19.0.1.0.70',source=ns['V70_SOURCE']),[])
+        self.assertEqual(self.check(version='19.0.1.0.71',source=ns['V71_SOURCE']),[])
+        self.assertEqual(self.check(version='19.0.1.0.72',source=ns['V72_SOURCE']),[])
+        self.assertEqual(self.check(version='19.0.1.0.73',source=ns['V73_SOURCE']),[])
 
     def test_no_raw_35_row_requirement_or_acceptance_deadlock(self):
         self.assertEqual(self.check(),[])
@@ -86,6 +94,11 @@ class BuildAdoptionContracts(unittest.TestCase):
         self.assertFalse(scope['adopt_supported_build'](run))
 
 if __name__=='__main__':unittest.main()
+
+
+
+
+
 
 
 

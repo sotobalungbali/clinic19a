@@ -336,3 +336,9 @@ class ResCompany(models.Model):
         if not self.env.user.has_group('clinic_branch.group_branch_manager'):
             raise AccessError(_("You need Branch Manager rights to perform this action."))
 
+
+
+
+
+
+

@@ -486,3 +486,10 @@ class StockWarehouseOrderpoint(models.Model):
 
 
 
+
+
+
+
+
+
+

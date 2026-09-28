@@ -12,8 +12,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 REF_GEN = ROOT / "generators/operations/referral.py"
 BOOK_GEN = ROOT / "generators/operations/booking.py"
-SOURCE_SHA = "6904ebf6d62ae5f60371fd91287d99b00eba10addb2d7f952602fb0165ef5c2b"
-SUITE_SHA = "0b28236cd75ba56f9dc86ac26230ba04aeeec9e8952f03907e9e8cc19a98aade"
+SOURCE_SHA = "4264ed977d2e2de6f92281a49cf0833003a42ad63a76289e40f861941258c9b0"
+SUITE_SHA = "3087f27e7588c43573dcbd0d9c5083b190c949ad239601a07e89c60b06ca0e7a"
 
 
 def assignments(path):
@@ -46,11 +46,11 @@ def class_meta(path, name):
 class TestPrompt14SourceContracts(unittest.TestCase):
     def test_build_contract(self):
         manifest = ast.literal_eval(ast.parse((ROOT / "__manifest__.py").read_text()).body[0].value)
-        self.assertEqual(manifest["version"], "19.0.1.0.61")
+        self.assertEqual(manifest["version"], "19.0.1.0.76")
         constants = (ROOT / "services/constants.py").read_text()
         self.assertIn(SOURCE_SHA, constants)
         self.assertIn(SUITE_SHA, constants)
-        self.assertIn('GENERATOR_VERSION = "19.0.1.0.61"', constants)
+        self.assertIn('GENERATOR_VERSION = "19.0.1.0.76"', constants)
         self.assertIn('"clinic_booking": "19.0.1.0.5"', constants)
         self.assertIn('"clinic_referral": "19.0.2.0.6"', constants)
 
@@ -271,6 +271,15 @@ class TestPrompt14SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
 
 
 

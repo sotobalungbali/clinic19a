@@ -8,3 +8,9 @@
 - Upgrade posture: preserve existing `clinic.branch`, `clinic.branch.location`, `res.users.allowed_branch_ids`,
   `res.users.working_branch_id`, and `res.company.default_branch_id` contracts because downstream ClinicOne addons
   already consume them.
+
+
+
+
+
+

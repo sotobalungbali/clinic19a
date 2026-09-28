@@ -520,3 +520,9 @@ class ClinicBranch(models.Model):
             'tz': self.tz or 'UTC',
         }
 
+
+
+
+
+
+

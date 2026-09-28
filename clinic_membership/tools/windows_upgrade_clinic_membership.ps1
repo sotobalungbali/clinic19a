@@ -17,3 +17,4 @@ if ($bad) { $bad | Out-Host; throw "Critical pattern found in $Log" }
 Write-Host "clinic_membership targeted upgrade completed without detected critical errors." -ForegroundColor Green
 
 
+

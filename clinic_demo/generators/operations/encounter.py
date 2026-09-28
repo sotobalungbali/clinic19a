@@ -706,3 +706,18 @@ class EncounterCoreClinicalJourneyGenerator(BaseDemoGenerator):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

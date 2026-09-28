@@ -760,3 +760,10 @@ class ClinicBillingInvoice_VoucherExt(models.Model):
 
 
 
+
+
+
+
+
+
+

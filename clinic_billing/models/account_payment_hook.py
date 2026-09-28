@@ -150,3 +150,10 @@ class ClinicBillingInvoiceRegisterPaymentShortcut(models.Model):
 
 
 
+
+
+
+
+
+
+

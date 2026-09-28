@@ -524,3 +524,10 @@ class ClinicBillingInvoice_DoctorBridge(models.Model):
 
 
 
+
+
+
+
+
+
+

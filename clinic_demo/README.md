@@ -1,3 +1,32 @@
+# Current release 19.0.1.0.76
+
+Reporting Sufficiency now evaluates exactly the declared L1-L8 transaction and
+exception populations. All other master/child integrity remains owned by the
+137 dependency-closed bounded journeys. Final Validate also reports the actual
+failing gate and first concrete deficit instead of a generic acceptance banner.
+See `docs/RELEASE_76.md`.
+
+# Previous release 19.0.1.0.75
+
+Final Validate now consumes the persisted, dependency-closed PASS evidence
+created by the 137 bounded journeys instead of replaying every owner validator
+inside one HTTP request. Reporting Sufficiency resolves run provenance in
+model/reader batches while retaining ORM ACL, record-rule, company, temporal,
+state and dimensional checks. See `docs/RELEASE_75.md`.
+
+# Previous release 19.0.1.0.74
+
+See docs/RELEASE_69.md. Upgrade bundled `clinic_billing` first, then
+`clinic_demo`; resume the same `population.billing.m01` journey without Reset.
+
+# Release 19.0.1.0.63
+
+See docs/RELEASE_63.md: complete browser window action payloads.
+
+# Release 19.0.1.0.62
+
+See docs/RELEASE_62.md for acceptance evidence visibility repair and upgrade steps.
+
 # Current release 19.0.1.0.61
 
 See docs/RELEASE_61.md; upgrade bundled clinic_reports first.
@@ -375,6 +404,11 @@ Demo Run, do not Reset, then Continue Generation.
 ## MASTER PROMPT 16
 
 Adds source-driven Encounter and Treatment Session clinical journey generators. See `docs/PROMPT_16_ENCOUNTER_CORE_CLINICAL_JOURNEY.md`.
+
+
+
+
+
 
 
 

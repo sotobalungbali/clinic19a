@@ -44,6 +44,23 @@ class AccountMoveClinicBridge(models.Model):
         for rec in self:
             rec.is_clinic_billing = bool(rec.clinic_invoice_id)
 
+    def _clinic_billing_product_invoice_lines(self):
+        """Return real invoice product lines across Odoo display-type versions.
+
+        Odoo 19 marks normal invoice rows with ``display_type='product'``.
+        Older contracts treated a false display type as the only monetary-row
+        marker, which silently returned an empty recordset on Odoo 19.  Product
+        identity is the stable owner invariant here; tax, payment-term,
+        rounding, section and note rows are deliberately excluded.
+        """
+        self.ensure_one()
+        return self.invoice_line_ids.filtered(
+            lambda line: (
+                line.display_type not in ("line_section", "line_note")
+                and bool(line.product_id)
+            )
+        )
+
     # ----- Lifecycle hooks -----
     def action_post(self):
         """
@@ -276,8 +293,23 @@ class ClinicBillingAccountBuilder(models.AbstractModel):
     def _resolve_income_account(self, product, company):
         """
         Standard Odoo resolution: product property → category property → any income account.
+
+        A bounded demo caller may freeze the already-proven account through
+        ``clinic_billing_income_account_id``.  This is deliberately optional:
+        ordinary production callers retain the standard resolution below.
         """
         Account = self.env["account.account"].sudo().with_company(company)
+        explicit_id = self.env.context.get("clinic_billing_income_account_id")
+        if explicit_id:
+            explicit = Account.browse(explicit_id).exists()
+            if (not explicit or len(explicit) != 1
+                    or explicit.account_type != "income"
+                    or company not in explicit.company_ids):
+                raise UserError(_(
+                    "Explicit Billing income account is missing, is not Income, "
+                    "or is outside company %s."
+                ) % company.display_name)
+            return explicit
         if product:
             acc = product.with_company(company).property_account_income_id or product.categ_id.with_company(company).property_account_income_categ_id
             if acc and company in acc.company_ids:
@@ -301,6 +333,71 @@ class ClinicBillingInvoice_AccountingHook(models.Model):
     These methods are consumed by Voucher/Membership/Gateway engines or other flows.
     """
     _inherit = "clinic.billing.invoice"
+
+    def _validate_explicit_income_account(self, account):
+        """Owner-side contract used before bounded Billing population starts."""
+        self.ensure_one()
+        if (not account or len(account) != 1
+                or account.account_type != "income"
+                or self.company_id not in account.company_ids):
+            raise UserError(_(
+                "The explicit Billing income account is invalid for company %s."
+            ) % self.company_id.display_name)
+        account.check_access("read")
+        return True
+
+    def _clinic_demo_generate_move_with_income(self, account):
+        """Build one bounded draft move with an explicit, source-proven account.
+
+        The normal production lifecycle deliberately resolves accounts from
+        product/category properties.  Population generation needs a frozen
+        account contract that survives every cross-addon override.  This
+        private owner API validates the final draft line before it can be
+        posted and restores both account and Billing-line provenance when a
+        downstream mapping layer replaced either value.
+        """
+        self.ensure_one()
+        self._validate_explicit_income_account(account)
+        if self.move_id:
+            raise UserError(_("A bounded Billing move is already linked."))
+
+        bounded = self.with_context(
+            clinic_billing_income_account_id=account.id,
+            clinic_demo_safe_mode=True,
+            mail_notify_noemail=True,
+            mail_notify_force_send=False,
+        )
+        bounded.action_generate_account_move()
+        move = bounded.move_id
+        if not move or move.state != "draft" or move.company_id.id != self.company_id.id:
+            raise UserError(_("Bounded Billing owner did not create one company-scoped draft move."))
+
+        billing_lines = bounded.line_ids.filtered(
+            lambda line: line.display_type not in ("line_section", "line_note")
+        )
+        if len(billing_lines) != 1:
+            raise UserError(_("Bounded Billing requires exactly one monetary source and move line."))
+        billing_line = billing_lines
+        move_lines = move._clinic_billing_product_invoice_lines().filtered(
+            lambda line: line.product_id.id == billing_line.product_id.id
+        )
+        if len(move_lines) != 1:
+            raise UserError(_("Bounded Billing requires exactly one monetary source and move line."))
+        move_line = move_lines
+        if move_line.product_id.id != billing_line.product_id.id:
+            raise UserError(_("Bounded Billing product provenance differs from its source line."))
+
+        corrections = {}
+        if move_line.account_id.id != account.id:
+            corrections["account_id"] = account.id
+        if move_line.clinic_billing_line_id.id != billing_line.id:
+            corrections["clinic_billing_line_id"] = billing_line.id
+        if corrections:
+            move_line.write(corrections)
+        if (move_line.account_id.id != account.id
+                or move_line.clinic_billing_line_id.id != billing_line.id):
+            raise UserError(_("Bounded Billing Income account/provenance was not honored."))
+        return move
 
     def action_generate_account_move(self):
         """
@@ -445,6 +542,8 @@ class AccountMoveClinicCreditNote(models.Model):
                 "default_refund_method": "refund",
             },
         }
+
+
 
 
 

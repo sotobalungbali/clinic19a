@@ -22,3 +22,4 @@ class MembershipPointAdjustWizard(models.TransientModel):
         return {"type": "ir.actions.act_window", "name": _("Point Adjustment"), "res_model": "membership.point.tx", "res_id": tx.id, "view_mode": "form", "target": "current"}
 
 
+

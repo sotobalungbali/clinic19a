@@ -42,3 +42,18 @@ def prepare_telemedicine_scope(run, optional=False):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

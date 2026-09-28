@@ -47,3 +47,10 @@ Odoo products that were never explicitly classified as clinical.
 
 
 
+
+
+
+
+
+
+

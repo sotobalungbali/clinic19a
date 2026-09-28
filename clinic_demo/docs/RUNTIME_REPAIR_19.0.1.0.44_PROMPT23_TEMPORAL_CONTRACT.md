@@ -44,3 +44,18 @@ completed `validation.structural` checkpoint remains authoritative.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -33,12 +33,30 @@ class MembershipEventMixin(models.AbstractModel):
     _name = "membership.event.mixin"
     _description = "Membership Integration Event Publisher"
 
+    def _explicit_membership_event_name(self, event_code):
+        self.ensure_one()
+        names=self.env.context.get('clinic_membership_event_names')
+        if names is None:return None
+        name=names.get(self.name+':'+event_code) if isinstance(names,dict) else None
+        if not isinstance(name,str) or not name.strip():
+            raise UserError(_('Explicit membership event contract is incomplete.'))
+        return name
+
     def _membership_publish_event(self, event_code, payload=None, source=None):
         Event = self.env["membership.integration.event"].sudo()
         created = self.env["membership.integration.event"]
         for rec in self:
             src = source or rec
+            name=rec._explicit_membership_event_name(event_code)
+            if name:
+                existing=Event.search([('name','=',name)])
+                if existing:
+                    if len(existing)!=1 or existing.source_model!=src._name or existing.source_res_id!=src.id or existing.event_code!=event_code or existing.company_id!=rec.company_id:
+                        raise UserError(_('Explicit membership event identity belongs to another source.'))
+                    created |= existing
+                    continue
             vals = {
+                **({'name':name} if name else {}),
                 "event_code": event_code,
                 "company_id": getattr(rec, "company_id", self.env.company).id,
                 "source_model": src._name,
@@ -52,5 +70,6 @@ class MembershipEventMixin(models.AbstractModel):
                 vals["contract_id"] = rec.contract_id.id
             created |= Event.create(vals)
         return created
+
 
 

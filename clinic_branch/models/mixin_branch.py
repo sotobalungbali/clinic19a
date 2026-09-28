@@ -390,3 +390,9 @@ class ClinicBranchMixin(models.AbstractModel):
             res.append((rec.id, "%s%s" % (name, suffix)))
         return res
 
+
+
+
+
+
+

@@ -869,7 +869,7 @@ class ClinicDemoRun(models.Model):
     def action_open_reset_wizard(self):
         self.ensure_one()
         self._check_manager()
-        return {
+        return {'views': [(False, 'form')], 
             "type": "ir.actions.act_window",
             "name": _("Reset Demo Dataset"),
             "res_model": "clinic.demo.reset.confirm.wizard",
@@ -898,7 +898,7 @@ class ClinicDemoRun(models.Model):
     # ------------------------------------------------------------------
     def _open_related_action(self, name, res_model, domain):
         self.ensure_one()
-        return {
+        return {'views': [(False, 'list'), (False, 'form')], 
             "type": "ir.actions.act_window",
             "name": name,
             "res_model": res_model,
@@ -932,3 +932,18 @@ class ClinicDemoRun(models.Model):
             "clinic.demo.validation.result",
             [("run_id", "=", self.id)],
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

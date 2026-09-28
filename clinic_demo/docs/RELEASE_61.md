@@ -40,3 +40,18 @@ reference identity preservation, new codes, cross-run isolation and duplicate
 codes. Source checks verify obsolete cleanup within savepoint and FK retention.
 The governing Model-by-Model prompt remains bundled. Overall readiness is not
 claimed; 31/40 is the last user-confirmed runtime progress.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

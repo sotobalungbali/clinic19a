@@ -24,3 +24,4 @@ def migrate(cr, version):
     _logger.info('[clinic_membership] Upgrade schema verified: %s tables', len(required))
 
 
+

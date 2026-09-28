@@ -620,6 +620,18 @@ class ClinicBillingInvoice(models.Model):
 
     def _resolve_income_account(self, product):
         """Resolve income account for a product; fallback to a generic income account."""
+        explicit_id = self.env.context.get("clinic_billing_income_account_id")
+        if explicit_id:
+            company = self.env.company
+            explicit = self.env["account.account"].sudo().with_company(company).browse(explicit_id).exists()
+            if (not explicit or len(explicit) != 1
+                    or explicit.account_type != "income"
+                    or company not in explicit.company_ids):
+                raise UserError(_(
+                    "Explicit Billing income account is missing, is not Income, "
+                    "or is outside company %s."
+                ) % company.display_name)
+            return explicit
         income = product.property_account_income_id or product.categ_id.property_account_income_categ_id
         if income:
             return income
@@ -944,4 +956,10 @@ class ClinicBillingInvoice(models.Model):
             "membership_used": self.membership_amount_used or 0.0,
             "voucher_code": self.voucher_code or "",
         }
+
+
+
+
+
+
 

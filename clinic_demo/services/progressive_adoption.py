@@ -75,3 +75,18 @@ def prompt_stage_adoption(run, completed_generators, sequence):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

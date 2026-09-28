@@ -80,3 +80,4 @@ external action dependency.
 
 Reloads the already-declared Membership Manager ACL contract after runtime evidence showed the installed database had no create grant for `membership.plan`. No workflow or permission scope is broadened beyond source-declared manager access.
 
+

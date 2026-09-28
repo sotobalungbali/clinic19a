@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from .generator_registry import GENERATOR_REGISTRY
 from .scenario_registry import ScenarioRegistry
 from .journey_model_owners import MODEL_OWNER_ADDONS
+from .population_plan import batch_specs, DOMAINS, volume
 
 SOURCE_FAMILIES = {
     'source.insurance': ('FIN-INS', 'Insurance authorization', 'clinic_insurance_authorization', 'clinic.insurance.authorization'),
@@ -50,7 +51,7 @@ def ordered_journeys():
         models = tuple(generator.owned_models)
         deps = tuple(generator.depends_on)
         if generator.key == 'management.reports':
-            deps = tuple(dict.fromkeys((*deps, *SOURCE_FAMILIES)))
+            deps = tuple(dict.fromkeys((*deps, *SOURCE_FAMILIES, batch_specs()[-1][0])))
         items[generator.key] = Journey(
             generator.key, generator.sequence, generator.key.replace('.', ' / '),
             MODEL_OWNER_ADDONS.get(models[0], 'clinic_demo') if models else 'clinic_demo', ('clinic.encounter' if generator.key == 'operations.encounter' else models[0]) if models else 'validation evidence', models,
@@ -62,6 +63,17 @@ def ordered_journeys():
         items[key] = Journey(key, 2000+index, name, owner, model, SOURCE_MODELS[family],
                              ('operations.future_pipeline',), 'MP-11/16/18/21', family=family, expected_records='Run-owned '+family+' source aggregate and children',
                              generation_callable='ReportSourceJourneys.generate_family',validation_callable='ReportSourceJourneys.validate(families)')
+    previous='population.setup'
+    items[previous]=Journey(previous,2100,'Population / Shared resources','clinic_demo','stock.warehouse',
+        ('stock.warehouse','stock.location','clinic.wallet'), tuple(SOURCE_FAMILIES), 'Population v1',
+        family='population', expected_records='3 warehouses, 9 scoped locations, 4 wallets',
+        generation_callable='PopulationService.generate',validation_callable='PopulationService.validate')
+    for index,(key,domain,month) in enumerate(batch_specs()):
+        model,owner=DOMAINS[domain]
+        items[key]=Journey(key,2101+index,f'Population / {domain} / period {month:02d}',owner,model,(model,),
+            (previous,), 'Population v1',family='population',expected_records=str(volume(domain,month))+' primary records plus owner children',
+            generation_callable='PopulationService.generate',validation_callable='PopulationService.validate')
+        previous=key
     return topological_order(items)
 
 
@@ -74,6 +86,21 @@ def topological_order(items):
         for item in sorted(ready,key=lambda item:(item.sequence,item.key)):
             result.append(item);done.add(item.key)
     return tuple(result)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -41,3 +41,10 @@ Smart buttons on Patient, Booking, Encounter, Care Plan, Package Allocation/Usag
 
 
 
+
+
+
+
+
+
+

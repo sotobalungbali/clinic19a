@@ -17,11 +17,61 @@
 #   - Bridges may override *_clinic_hook_* methods to enrich behavior.
 
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import AccessError, ValidationError, UserError
+
+
+_DEMO_POPULATION_WAREHOUSES = {
+    "DP1": "Demo Population Supply Unit 1",
+    "DP2": "Demo Population Supply Unit 2",
+    "DP3": "Demo Population Supply Unit 3",
+}
 
 
 class StockWarehouse(models.Model):
     _inherit = "stock.warehouse"
+
+    @api.model
+    def _clinic_demo_create_bounded_warehouse(self, values):
+        """Create one strictly bounded demo warehouse through its owner model.
+
+        Native ``stock.warehouse.create`` provisions configuration-owned child
+        resources and, on Odoo 19, may instantiate ``res.config.settings``.
+        Functional Stock Managers must not receive the global Administrator
+        role merely to cross that internal boundary.  This private (therefore
+        non-RPC) owner adapter validates the complete payload as the caller and
+        elevates only the native warehouse creation transaction.
+        """
+        if not self.env.context.get("clinic_demo_safe_mode"):
+            raise AccessError(_("Bounded demo warehouse creation requires Demo Safe Mode."))
+        run_id = self.env.context.get("clinic_demo_run_id")
+        if not isinstance(run_id, int) or run_id <= 0:
+            raise AccessError(_("Bounded demo warehouse creation requires an explicit Demo Run."))
+        if not self.env.user.has_group("stock.group_stock_manager"):
+            raise AccessError(_("Only a Stock Manager may request a bounded demo warehouse."))
+
+        allowed_fields = {"name", "code", "company_id", "branch_id"}
+        if set(values) != allowed_fields:
+            raise ValidationError(_("Bounded demo warehouse payload fields are not exact."))
+        code = values.get("code")
+        if _DEMO_POPULATION_WAREHOUSES.get(code) != values.get("name"):
+            raise ValidationError(_("Bounded demo warehouse identity is not registered."))
+        if values.get("branch_id") is not False:
+            raise ValidationError(_("Bounded demo warehouses must disable mutable branch defaults."))
+
+        company = self.env["res.company"].browse(values.get("company_id")).exists()
+        if len(company) != 1 or company not in self.env.user.company_ids:
+            raise AccessError(_("Bounded demo warehouse company is outside the actor scope."))
+        collision = self.sudo().search([
+            ("company_id", "=", company.id), ("code", "=", code)
+        ], limit=1)
+        if collision:
+            raise ValidationError(_("Warehouse code %(code)s already exists outside demo provenance.") % {
+                "code": code,
+            })
+
+        # The elevation is deliberately confined to Odoo's owner create call;
+        # callers and returned records continue under their functional actor.
+        return self.sudo().with_company(company).create(dict(values))
 
     # =========================================================================
     # Clinic identity & key locations
@@ -423,6 +473,12 @@ class StockWarehouse(models.Model):
         if self.clinic_pharmacy_location_id:
             return self.clinic_pharmacy_location_id
         return self.lot_stock_id
+
+
+
+
+
+
 
 
 

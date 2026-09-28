@@ -46,3 +46,10 @@ if __name__=='__main__':
     rows=audit(Path(sys.argv[1]));print(json.dumps(rows,indent=2))
     sys.exit(1 if not rows or any(row['missing'] for row in rows) else 0)
 
+
+
+
+
+
+
+

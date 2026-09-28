@@ -102,3 +102,10 @@ Runtime re-install/upgrade on the target Odoo 19 PC is still required.
 
 
 
+
+
+
+
+
+
+

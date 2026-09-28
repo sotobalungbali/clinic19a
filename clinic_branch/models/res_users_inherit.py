@@ -356,3 +356,9 @@ class ResUsers(models.Model):
         except Exception:
             raise UserError(_("Branch switch wizard is not available. Please contact your administrator."))
 
+
+
+
+
+
+

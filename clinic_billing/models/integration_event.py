@@ -3,6 +3,7 @@
 # This keeps clinic_billing upstream of clinic_ar, clinic_wallet, clinic_audit, etc.
 
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class ClinicBillingIntegrationEvent(models.Model):
@@ -90,10 +91,27 @@ class ClinicBillingInvoiceIntegrationOutbox(models.Model):
         for rec in self:
             rec.integration_event_count = len(rec.integration_event_ids)
 
+    def _explicit_billing_event_name(self, event_type):
+        self.ensure_one()
+        names=self.env.context.get('clinic_billing_event_names')
+        if names is None:return None
+        name=names.get(self.name+':'+event_type) if isinstance(names,dict) else None
+        if not isinstance(name,str) or not name.strip():
+            raise UserError(_('Explicit billing event contract is incomplete.'))
+        return name
+
     def _emit_billing_event(self, event_type, payload=None):
         Event = self.env["clinic.billing.integration.event"].sudo()
         for rec in self:
+            name=rec._explicit_billing_event_name(event_type)
+            if name:
+                existing=Event.search([('name','=',name)])
+                if existing:
+                    if len(existing)!=1 or existing.invoice_id!=rec or existing.event_type!=event_type or existing.company_id!=rec.company_id:
+                        raise UserError(_('Explicit billing event identity belongs to another source.'))
+                    continue
             Event.create({
+                **({'name':name} if name else {}),
                 "company_id": rec.company_id.id,
                 "event_type": event_type,
                 "invoice_id": rec.id,
@@ -182,6 +200,13 @@ class ClinicBillingPaymentIntegrationOutbox(models.Model):
         result = super()._on_after_cancel()
         self._emit_payment_event("payment_cancelled")
         return result
+
+
+
+
+
+
+
 
 
 

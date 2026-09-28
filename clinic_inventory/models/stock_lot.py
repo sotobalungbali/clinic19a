@@ -352,3 +352,10 @@ class StockLot(models.Model):
 
 
 
+
+
+
+
+
+
+

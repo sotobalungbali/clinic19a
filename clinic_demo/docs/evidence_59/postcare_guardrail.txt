@@ -21,3 +21,18 @@ ClinicOne clinic_post_care_followup Enterprise Development Guardrail
 RESULT: PASS (SOURCE/STATIC ONLY; ODOO RUNTIME INSTALL/SMOKE TEST PENDING)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

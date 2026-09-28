@@ -526,3 +526,10 @@ class ClinicPatientProductHistory(models.Model):
 
 
 
+
+
+
+
+
+
+

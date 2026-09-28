@@ -70,3 +70,10 @@ This release also proactively applies the already-proven ClinicOne Odoo 19 compa
 
 
 
+
+
+
+
+
+
+

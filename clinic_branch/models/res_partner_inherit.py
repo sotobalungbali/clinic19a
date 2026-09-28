@@ -326,3 +326,9 @@ class ResPartner(models.Model):
             'target': 'current',
         }
 
+
+
+
+
+
+

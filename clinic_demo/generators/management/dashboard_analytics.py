@@ -297,3 +297,18 @@ class ManagementAnalyticsGenerator(ManagementEvidenceBase):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

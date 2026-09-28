@@ -21,3 +21,9 @@
 - inherited user/company/warehouse/account/employee/contact views
 - actions and branch-management menu
 - static validation tool and source tests
+
+
+
+
+
+

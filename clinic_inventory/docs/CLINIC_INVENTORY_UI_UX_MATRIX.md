@@ -22,3 +22,10 @@ Odoo core extensions not listed above continue to use their canonical Odoo 19 Se
 
 
 
+
+
+
+
+
+
+

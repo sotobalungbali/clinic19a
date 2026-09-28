@@ -42,7 +42,7 @@ class ResetPolicyRegistry:
             "clinic.treatment.product.usage", "clinic.treatment.product.usage.line",
             "clinic.wallet", "clinic.wallet.transaction", "clinic.procedure.session", "clinic.execution.log",
             "stock.move", "stock.move.line", "stock.location", "product.category",
-            "account.account", "account.journal",
+            "account.account", "account.journal", "clinic.billing.integration.event",
         }:
             return ResetPolicyDecision(
                 RESET_FRESH_DB_ONLY,
@@ -424,6 +424,21 @@ class ResetPolicyRegistry:
         if "state" in record._fields:
             values["state"] = record.state
         return self.decision_for_values(record._name, values)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

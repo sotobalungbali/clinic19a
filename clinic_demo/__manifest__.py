@@ -1,7 +1,7 @@
 {
     "name": "ClinicOne Enterprise Demo Dataset",
     "summary": "Deterministic, ownership-aware ClinicOne enterprise demo orchestration framework",
-    "version": "19.0.1.0.61",
+    "version": "19.0.1.0.76",
     "category": "ClinicOne/Configuration",
     "author": "ClinicOne",
     "website": "",
@@ -33,6 +33,12 @@
     "application": False,
     "auto_install": False,
 }
+
+
+
+
+
+
 
 
 

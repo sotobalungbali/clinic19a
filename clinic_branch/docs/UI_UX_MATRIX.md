@@ -10,3 +10,9 @@
 | account.move | inherited | native | native | branch stamping | n/a | n/a |
 | hr.employee | inherited | native | native | branch/location assignment | n/a | n/a |
 | res.partner | inherited | native | native | branch assignment | n/a | n/a |
+
+
+
+
+
+

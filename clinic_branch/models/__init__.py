@@ -30,3 +30,9 @@ from . import hr_employee_inherit          # hr
 from . import stock_warehouse_inherit      # stock
 from . import account_move_inherit         # account
 
+
+
+
+
+
+

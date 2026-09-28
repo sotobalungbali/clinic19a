@@ -664,3 +664,10 @@ class ClinicBillingInvoice_MembershipExt(models.Model):
 
 
 
+
+
+
+
+
+
+

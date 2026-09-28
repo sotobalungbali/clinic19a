@@ -226,3 +226,18 @@ class NativeOdooFoundationGenerator(BaseDemoGenerator):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

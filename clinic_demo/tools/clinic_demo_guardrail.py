@@ -15,8 +15,8 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_SOURCE_SHA = "6904ebf6d62ae5f60371fd91287d99b00eba10addb2d7f952602fb0165ef5c2b"
-EXPECTED_SUITE_SHA = "0b28236cd75ba56f9dc86ac26230ba04aeeec9e8952f03907e9e8cc19a98aade"
+EXPECTED_SOURCE_SHA = "4264ed977d2e2de6f92281a49cf0833003a42ad63a76289e40f861941258c9b0"
+EXPECTED_SUITE_SHA = "3087f27e7588c43573dcbd0d9c5083b190c949ad239601a07e89c60b06ca0e7a"
 EXPECTED_CLINIC_DEPENDENCIES = 41
 EXPECTED_ACL_ROWS = 26
 
@@ -695,6 +695,16 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
 
 
 

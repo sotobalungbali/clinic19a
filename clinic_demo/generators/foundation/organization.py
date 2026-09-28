@@ -578,3 +578,18 @@ class ClinicOrganizationFoundationGenerator(BaseDemoGenerator):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

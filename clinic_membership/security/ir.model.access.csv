@@ -22,3 +22,4 @@ access_membership_hold_request_wizard,hold wizard,model_membership_hold_request_
 access_membership_point_adjust_wizard,points wizard,model_membership_point_adjust_wizard,clinic_membership.group_clinic_membership_manager,1,1,1,1
 
 
+

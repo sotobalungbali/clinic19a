@@ -47,3 +47,4 @@ class MembershipContractRenewWizard(models.TransientModel):
         return {"type": "ir.actions.act_window", "name": _("Renewed Membership"), "res_model": "membership.contract", "res_id": new.id, "view_mode": "form", "target": "current"}
 
 
+

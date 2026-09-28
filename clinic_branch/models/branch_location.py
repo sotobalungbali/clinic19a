@@ -565,3 +565,9 @@ class ClinicBranchLocation(models.Model):
             'target': 'current',
         }
 
+
+
+
+
+
+

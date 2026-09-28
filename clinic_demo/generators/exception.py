@@ -317,3 +317,18 @@ class SafeDigitalFailureGenerator(ExceptionBase):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

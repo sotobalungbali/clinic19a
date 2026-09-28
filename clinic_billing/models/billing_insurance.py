@@ -279,7 +279,7 @@ class ClinicInsuranceClaim(models.Model):
                 if not rec.move_id:
                     # Generate accounting invoice first if needed
                     rec.invoice_id.action_generate_account_move()
-                for aml in rec.move_id.invoice_line_ids.filtered(lambda l: not l.display_type):
+                for aml in rec.move_id._clinic_billing_product_invoice_lines():
                     s_vals = {
                         "claim_id": rec.id,
                         "billing_line_id": False,
@@ -720,6 +720,12 @@ class ClinicBillingInvoice_InsuranceExt(models.Model):
                 "default_coverage_percent": self.insurance_coverage_percent or 0.0,
             },
         }
+
+
+
+
+
+
 
 
 

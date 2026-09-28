@@ -120,7 +120,7 @@ class ClinicDemoReference(models.Model):
             raise ValidationError(
                 f"The record for demo key {self.demo_key} no longer exists."
             )
-        return {
+        return {'views': [(False, 'form')], 
             "type": "ir.actions.act_window",
             "name": self.display_name or self.demo_key,
             "res_model": self.model_name,
@@ -128,6 +128,21 @@ class ClinicDemoReference(models.Model):
             "res_id": self.res_id,
             "target": "current",
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

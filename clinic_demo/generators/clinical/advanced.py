@@ -783,3 +783,18 @@ class AdvancedTelemedicineGenerator(AdvancedClinicalBase):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

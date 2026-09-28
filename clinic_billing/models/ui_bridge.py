@@ -127,3 +127,10 @@ class ClinicBillingRuntimeViewBridge(models.Model):
 
 
 
+
+
+
+
+
+
+

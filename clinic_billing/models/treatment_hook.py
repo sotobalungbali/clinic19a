@@ -427,3 +427,10 @@ class ClinicBillingInvoiceClinicalTraceability(models.Model):
 
 
 
+
+
+
+
+
+
+

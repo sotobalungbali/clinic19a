@@ -70,7 +70,7 @@ class ClinicDemoCheckpoint(models.Model):
     def action_open_run(self):
         """Navigate back to the owning Demo Control Center run."""
         self.ensure_one()
-        return {
+        return {'views': [(False, 'form')], 
             "type": "ir.actions.act_window",
             "name": self.run_id.display_name,
             "res_model": "clinic.demo.run",
@@ -83,7 +83,7 @@ class ClinicDemoCheckpoint(models.Model):
     def action_open_checkpoint(self):
         """Open this exact service-managed record from an embedded One2many row."""
         self.ensure_one()
-        return {
+        return {'views': [(False, 'form')], 
             "type": "ir.actions.act_window",
             "name": "Generation Checkpoint",
             "res_model": "clinic.demo.checkpoint",
@@ -91,6 +91,21 @@ class ClinicDemoCheckpoint(models.Model):
             "res_id": self.id,
             "target": "current",
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

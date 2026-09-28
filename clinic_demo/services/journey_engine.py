@@ -45,14 +45,24 @@ class JourneyEngine:
             if spec.key not in by_key:
                 by_key[spec.key] = self.Rows.create(dict(values,run_id=run.id,journey_key=spec.key))
             else:
-                by_key[spec.key].write(values)
+                # Registry metadata is immutable for a build. Avoid 137
+                # tracked writes on every Execute Next request when nothing
+                # changed; this keeps the bounded runner inside HTTP limits.
+                row = by_key[spec.key]
+                if any(((row[field] or '') != value) if isinstance(value,str)
+                       else row[field] != value for field,value in values.items()):
+                    row.write(values)
         return by_key
 
     def references(self, run, spec):
         refs = run.reference_ids
+        if spec.family=='population':
+            from .population_plan import prefix
+            tag='DEMO-POP-SETUP-' if spec.key=='population.setup' else prefix(spec.key.split('.')[1],int(spec.key.split('.')[2][1:]))+'-'
+            return refs.filtered(lambda row:row.generator_key=='management.reports' and row.demo_key.startswith(tag))
         if spec.family:
             return refs.filtered(lambda row:row.generator_key=='management.reports' and row.demo_key.startswith(SOURCE_PREFIXES[spec.family]))
-        return refs.filtered(lambda row:row.generator_key==spec.key and not (spec.key=='management.reports' and row.demo_key.startswith('DEMO-SOURCE-')))
+        return refs.filtered(lambda row:row.generator_key==spec.key and not (spec.key=='management.reports' and row.demo_key.startswith(('DEMO-SOURCE-','DEMO-POP-'))))
 
     def source(self, run):
         from ..generators.management.reports import ManagementReportsGenerator
@@ -62,12 +72,18 @@ class JourneyEngine:
         manager = owner._resolve(ctx, 'DEMO-USER-MGR', 'res.users')
         return ReportSourceJourneys(owner, ctx, manager)
 
+    def population(self,run,spec):
+        from .population_service import PopulationService
+        return PopulationService(self.source(run),spec.key)
+
     def validate_owner(self, run, spec):
         # Always roll back validator side effects. Only evidence outside this
         # savepoint is persisted by reconciliation, never business corrections.
         try:
             with self.env.cr.savepoint():
-                if spec.family:
+                if spec.family=='population':
+                    result=self.population(run,spec).validate()
+                elif spec.family:
                     result = self.source(run).validate(families={spec.family}) or []
                 else:
                     scenario = ScenarioRegistry.get(spec.generator.scenario_keys[0])
@@ -81,10 +97,18 @@ class JourneyEngine:
 
     def inspect(self, run, spec):
         refs = self.references(run,spec)
-        evidence=[]; blocked=[]; existing=0; missing=0; duplicates=0
+        evidence=[]; blocked=[]; issues=[]; notes=[]; existing=0; missing=0; duplicates=0
+        expected_keys=None
+        if spec.family=='population':
+            expected_keys=set(self.population(run,spec).expected_reference_keys())
+        referenced_keys=set(refs.mapped('demo_key')) if hasattr(refs,'mapped') else {ref.demo_key for ref in refs}
+        if expected_keys is not None:
+            missing += len(expected_keys-referenced_keys)
         for ref in refs:
             item={'model':ref.model_name,'business_key':ref.demo_key,'owner':ref.ownership_kind,'candidates':0}
             try:
+                if expected_keys is not None and ref.demo_key not in expected_keys:
+                    raise UserError('Unexpected population provenance identity')
                 if not ref.demo_key.startswith('DEMO-') or ref.ownership_kind not in ('created','reused','updated_demo_owned'):
                     raise UserError('Unresolved identity/provenance')
                 item['reader']=actor_key(ref) or 'control_center_operator'
@@ -120,16 +144,21 @@ class JourneyEngine:
             except Exception as exc:
                 item.update(classification='BLOCK',reason=str(exc));blocked.append(f'{ref.model_name} / {ref.demo_key}: {exc}')
             evidence.append(item)
-        issues=[]
-        if not blocked:
+        # An entirely absent population batch is valid MISSING/READY evidence,
+        # not a semantic validation failure.  Once any provenance exists, the
+        # full owner validator runs and partial aggregates remain fail-closed.
+        if not blocked and not (spec.family=='population' and not refs):
             try:issues=list(self.validate_owner(run,spec))
             except Exception as exc:issues=[f'{exc.__class__.__name__}: {exc}']
         needs_provenance=not spec.key.startswith('validation.') and spec.key!='workforce.preflight'
         if not refs and needs_provenance:
             missing=max(missing,1)
-            issues.append('No run provenance exists for this journey; execute through the owner adapter')
+            message='No run provenance exists for this journey; execute through the owner adapter'
+            if spec.family=='population':notes.append(message)
+            else:issues.append(message)
         return dict(existing=existing,missing=missing,duplicate=duplicates,invalid=len(blocked)+len(issues),
-                    expected=max(len(refs),1 if needs_provenance else 0),evidence=evidence,blocked=blocked,issues=issues)
+                    expected=(len(expected_keys) if expected_keys is not None else max(len(refs),1 if needs_provenance else 0)),
+                    evidence=evidence,blocked=blocked,issues=issues,notes=notes)
 
     def reconcile(self, run, rows=None, keys=None):
         rows=rows or self.sync(run)
@@ -158,9 +187,9 @@ class JourneyEngine:
                 state,kind=('partial','reconcile') if facts['existing'] else ('ready','missing')
             for item in facts['evidence']:
                 if item.get('classification')=='ADOPT_CANDIDATE':item['classification']='ADOPT' if clean else 'RECONCILE'
-            if row.state=='failed' and state in ('ready','partial'):
+            if row.state=='failed' and state=='partial':
                 state='failed'
-            diagnostic='; '.join(facts['blocked']+facts['issues']+(['Waiting for: '+', '.join(deps)] if deps else [])+(['Consumer refresh required after upstream changes'] if row.needs_refresh else []))
+            diagnostic='; '.join(facts['blocked']+facts['issues']+facts.get('notes',[])+(['Waiting for: '+', '.join(deps)] if deps else [])+(['Consumer refresh required after upstream changes'] if row.needs_refresh else []))
             if clean and not deps and not spec.family:
                 self.adopt_checkpoint(run,spec)
             row.write({key:facts[key] for key in ('expected','existing','missing','duplicate','invalid')} | {
@@ -169,6 +198,45 @@ class JourneyEngine:
                 'evidence':json.dumps(facts['evidence'],sort_keys=True),
             })
         return rows
+
+    def acceptance_snapshot(self, run):
+        """Validate the persisted journey closure without replaying 137 owners.
+
+        Every PASS row is produced only after ``inspect`` and the owner
+        validator succeed in the bounded runner.  Final acceptance therefore
+        verifies the immutable registry, the stored validation timestamp,
+        refresh flags and dependency closure.  An explicit Reconcile Existing
+        Dataset remains the operation that deliberately re-reads every owner
+        aggregate.
+        """
+        rows = self.sync(run)
+        stored = self.Rows.search([('run_id', '=', run.id)])
+        expected_keys = set(self.by_key)
+        actual_keys = set(stored.mapped('journey_key'))
+        issues = []
+        if actual_keys != expected_keys:
+            missing = sorted(expected_keys - actual_keys)
+            unknown = sorted(actual_keys - expected_keys)
+            if missing:
+                issues.append('Missing journey rows: ' + ', '.join(missing))
+            if unknown:
+                issues.append('Unknown journey rows: ' + ', '.join(unknown))
+        if len(stored) != len(self.specs):
+            issues.append(
+                f'Journey registry cardinality is {len(stored)}; expected {len(self.specs)}'
+            )
+        for spec in self.specs:
+            row = rows[spec.key]
+            if row.state != 'pass':
+                issues.append(f'{spec.key}: state is {row.state}, expected pass')
+            if row.needs_refresh:
+                issues.append(f'{spec.key}: downstream refresh is still required')
+            if not row.last_validation:
+                issues.append(f'{spec.key}: no persisted owner-validation timestamp')
+            incomplete = [key for key in spec.dependencies if rows[key].state != 'pass']
+            if incomplete:
+                issues.append(f'{spec.key}: dependencies are not PASS: {", ".join(incomplete)}')
+        return rows, issues
 
     def adopt_checkpoint(self,run,spec):
         scenario=ScenarioRegistry.get(spec.generator.scenario_keys[0])
@@ -199,7 +267,9 @@ class JourneyEngine:
         row.write({'state':'running','last_execution':fields.Datetime.now(),'created':0,'reconciled':0})
         try:
             with self.env.cr.savepoint():
-                if spec.family:
+                if spec.family=='population':
+                    counts=self.population(run,spec).generate()
+                elif spec.family:
                     counts=self.source(run).generate_family(spec.family)
                 else:
                     kwargs={}
@@ -232,32 +302,73 @@ class JourneyEngine:
 
     def dispatch(self, run, mode, key=None):
         run.ensure_one();run.lock_for_update()
-        rows=self.reconcile(run)
-        if mode=='reconcile':return self.notice(run,rows,'Existing dataset reconciled')
+        rows=self.sync(run)
+        if mode=='reconcile':
+            rows=self.reconcile(run,rows)
+            return self.notice(run,rows,'Existing dataset reconciled')
         if mode=='current':
             if key not in self.by_key:raise UserError('Unknown journey key')
-            targets=[self.by_key[key]]
-        elif mode in ('next','resume'):
-            targets=[spec for spec in self.specs if rows[spec.key].state!='pass'][:1]
+            spec=self.by_key[key]
+            self.reconcile(run,rows,keys={spec.key})
+            if not self.run_one(run,spec,rows):return self.notice(run,rows,'Journey stopped')
+            following=next((item for item in self.specs if rows[item.key].state!='pass'),None)
+            if following and following.key!=spec.key:self.reconcile(run,rows,keys={following.key})
+            return self.notice(run,rows,'Journey progress updated')
+        elif mode in ('next','resume','next10'):
+            # These modes are incremental. PASS rows already contain actual
+            # owner-validation evidence and must not be re-read on every click.
+            # The target is reconciled immediately before execution and the
+            # next remaining target once at the end.
+            limit=10 if mode=='next10' else 1
+            completed=0
+            while completed<limit:
+                spec=next((item for item in self.specs if rows[item.key].state!='pass'),None)
+                if not spec:break
+                self.reconcile(run,rows,keys={spec.key})
+                before=rows[spec.key].state
+                if not self.run_one(run,spec,rows):
+                    title='Execute Next 10 stopped' if mode=='next10' else 'Journey stopped'
+                    return self.notice(run,rows,title,prefix=f'{completed} journey(s) completed in this request. ' if mode=='next10' else '')
+                if before!='pass' or rows[spec.key].state=='pass':completed+=1
+            following=next((item for item in self.specs if rows[item.key].state!='pass'),None)
+            if following:self.reconcile(run,rows,keys={following.key})
+            title='Execute Next 10 completed' if mode=='next10' else 'Journey progress updated'
+            prefix=f'{completed} journey(s) completed in this request. ' if mode=='next10' else ''
+            return self.notice(run,rows,title,prefix=prefix)
         elif mode=='phase':targets=[spec for spec in self.specs if spec.generator and spec.generator.phase==run.current_phase]
         elif mode=='sources':
             targets=[spec for spec in self.specs if spec.family or spec.key.startswith(('management.','validation.'))]
         else:targets=list(self.specs)
+        # Broad modes intentionally perform whole-path reconciliation. The
+        # incremental buttons above never sweep all 137 rows.
+        self.reconcile(run,rows)
         for spec in targets:
             # Upstream success releases dependents using the same validation path.
             self.reconcile(run,rows,keys={spec.key})
+            executed_population=spec.family=='population' and (rows[spec.key].state!='pass' or rows[spec.key].needs_refresh)
             if not self.run_one(run,spec,rows):return self.notice(run,rows,'Journey stopped')
+            # Never put multiple population batches into one long HTTP transaction.
+            if executed_population:break
         self.reconcile(run,rows)
         if all(row.state=='pass' for row in rows.values()) and mode not in ('current','next','resume','phase'):
             return run.action_validate()
         return self.notice(run,rows,'Journey progress updated')
 
-    def notice(self,run,rows,title):
+    def notice(self,run,rows,title,prefix=''):
         passed=sum(row.state=='pass' for row in rows.values())
         first=next((row for spec in self.specs if (row:=rows[spec.key]).state!='pass'),None)
-        message=f'{passed}/{len(rows)} journeys validated PASS.'
+        message=prefix+f'{passed}/{len(rows)} journeys validated PASS.'
         if first:message+=f' Next: {first.name} [{first.state.upper()}]. {first.diagnostic or ""}'
         return self.kernel._notification(title,message,'danger' if first and first.state in ('failed','blocked') else 'info',sticky=True)
+
+
+
+
+
+
+
+
+
 
 
 

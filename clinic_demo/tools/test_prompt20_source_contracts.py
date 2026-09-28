@@ -7,7 +7,7 @@ PIPELINE = ROOT / "generators/operations/future_pipeline.py"
 
 class Prompt20SourceContracts(unittest.TestCase):
     def test_version_and_registry_budget(self):
-        self.assertEqual(ast.literal_eval((ROOT / "__manifest__.py").read_text())["version"], "19.0.1.0.61")
+        self.assertEqual(ast.literal_eval((ROOT / "__manifest__.py").read_text())["version"], "19.0.1.0.76")
         self.assertIn('"operations.future_pipeline" not in registered_generator_keys', (ROOT / "tools/clinic_demo_guardrail.py").read_text())
 
     def test_explicit_temporal_matrix_and_dependencies(self):
@@ -45,6 +45,19 @@ class Prompt20SourceContracts(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

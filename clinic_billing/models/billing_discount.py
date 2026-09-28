@@ -606,3 +606,10 @@ class ClinicBillingInvoice_DiscountExt(models.Model):
 
 
 
+
+
+
+
+
+
+

@@ -338,3 +338,10 @@ class StockRule(models.Model):
 
 
 
+
+
+
+
+
+
+

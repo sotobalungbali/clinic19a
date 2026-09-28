@@ -23,3 +23,18 @@ Replace the full clinic_demo folder; restart Odoo, Update Apps List and upgrade 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -20,3 +20,18 @@ Stop Odoo, replace the full clinic_demo folder, restart and upgrade to 19.0.1.0.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
